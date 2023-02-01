@@ -5,7 +5,7 @@ https://www.toptal.com/developers/gitignore?templates=xcode,swift,macos
 
 ### macOS ###
 # General
-.DS_Store
+**.DS_Store
 .AppleDouble
 .LSOverride
 
@@ -42,7 +42,7 @@ Temporary Items
 # gitignore contributors: remember to update Global/Xcode.gitignore, 
 Objective-C.gitignore & Swift.gitignore
 
-*UserInterfaceState.xcuserstate
+**UserInterfaceState.xcuserstate
 
 ## User settings
 xcuserdata/
