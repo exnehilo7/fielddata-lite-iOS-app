@@ -26,4 +26,4 @@ Traveling Salesman iOS App for the WGU Bachelor's Capstone. Working Title: FERN 
 		a. Click its >.
 		b. Add "Scene Configuration" (Dictionary).
 	4. Clean the project 
-    		a. Menu Bar > Product > Clean Build Folder.
+    	a. Menu Bar > Product > Clean Build Folder.
