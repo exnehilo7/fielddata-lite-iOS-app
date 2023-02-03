@@ -11,7 +11,9 @@ import SwiftUI
 struct FERNApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationStack {
+                LoginView(userName: "Wonder Woman", password: "402436").navigationTitle("Login")
+           }
         }
     }
 }
