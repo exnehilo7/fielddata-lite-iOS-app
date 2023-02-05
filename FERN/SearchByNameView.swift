@@ -10,8 +10,10 @@ import SwiftUI
 
 struct SearchByNameView: View {
     
+
     @StateObject var models = PlotList() //: [ResponseModel] = []
 //    @State var isChecked = PlotList(isSelected)
+
 
     var body: some View {
         // VStack for All
@@ -60,6 +62,7 @@ struct SearchByNameView: View {
                     // convert JSON response into class model as an array
                     do {
                         self.models.plotList = try JSONDecoder().decode([SearchByNameModel].self, from: data)
+
                         // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
                     } catch DecodingError.keyNotFound(let key, let context) {
                         Swift.print("could not find key \(key) in JSON: \(context.debugDescription)")
