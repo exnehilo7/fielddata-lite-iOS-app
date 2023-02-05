@@ -10,9 +10,10 @@ import SwiftUI
 
 struct SearchByNameView: View {
     
-    @StateObject var areaName = AreaName()
+    // Get the env obj from SelectAreaView
+    @EnvironmentObject var areaName: AreaName
     @StateObject var searchOrganismName = SearchOrganismName()
-    @State var doesThisWork: [ResponseModel] = []
+    @State private var doesThisWork: [ResponseModel] = []
     @State var organismName = ""
     
     var body: some View {
@@ -22,12 +23,13 @@ struct SearchByNameView: View {
             HStack {
                 // Keep auto correction off
                 TextField("Search by Organism Name", text: $organismName, onCommit: {
-                    // Call function after user is done entering text
-                    getMapPoints(organismName)
+                    // Call function after user is done entering text. Pass env obj prop and TextField text
+                    getMapPoints(areaName.areaName, organismName)
                 }).textFieldStyle(.roundedBorder).disableAutocorrection(true)
             }
             // VStack for Results
             VStack {
+               
                 List (self.doesThisWork) { (does) in
                     HStack {
                         // they are optional
@@ -39,7 +41,10 @@ struct SearchByNameView: View {
         }
     } //end body
     
-    func getMapPoints (_ organismName: String) {
+    // call PHP post and get query results. Pass area/plot name, org name, name of query to use
+    func getMapPoints (_ areaName: String, _ organismName: String) {
+        
+        // create POST envs
         
         guard let url: URL = URL(string: "http://covid-samples01.ornl.gov/fielddata-lite/php/routesTestQuery.php") else {
             Swift.print("invalid URL")
