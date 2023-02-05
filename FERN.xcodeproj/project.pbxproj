@@ -12,6 +12,10 @@
 		D10BB320298ADAA500667E86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D10BB31F298ADAA500667E86 /* Assets.xcassets */; };
 		D10BB323298ADAA500667E86 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D10BB322298ADAA500667E86 /* Preview Assets.xcassets */; };
 		D10BB32A298ADAD600667E86 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10BB329298ADAD600667E86 /* Models.swift */; };
+		D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7129901A2000835B5E /* SelectAreaView.swift */; };
+		D16A6C7429901A3800835B5E /* SelectPlotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7329901A3800835B5E /* SelectPlotView.swift */; };
+		D16A6C7629901A4700835B5E /* LoadSavedRouteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7529901A4700835B5E /* LoadSavedRouteView.swift */; };
+		D16A6C7829901A5D00835B5E /* CreateCustomRouteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7729901A5D00835B5E /* CreateCustomRouteView.swift */; };
 		D1766C9B298DB922002F594D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766C9A298DB922002F594D /* LoginView.swift */; };
 		D1766C9D298DB978002F594D /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766C9C298DB978002F594D /* MainMenuView.swift */; };
 		D1766C9F298DB9B2002F594D /* SearchByNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766C9E298DB9B2002F594D /* SearchByNameView.swift */; };
@@ -28,6 +32,10 @@
 		D10BB322298ADAA500667E86 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		D10BB329298ADAD600667E86 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		D10BB32B298AF42000667E86 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		D16A6C7129901A2000835B5E /* SelectAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAreaView.swift; sourceTree = "<group>"; };
+		D16A6C7329901A3800835B5E /* SelectPlotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPlotView.swift; sourceTree = "<group>"; };
+		D16A6C7529901A4700835B5E /* LoadSavedRouteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadSavedRouteView.swift; sourceTree = "<group>"; };
+		D16A6C7729901A5D00835B5E /* CreateCustomRouteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCustomRouteView.swift; sourceTree = "<group>"; };
 		D1766C9A298DB922002F594D /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		D1766C9C298DB978002F594D /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuView.swift; sourceTree = "<group>"; };
 		D1766C9E298DB9B2002F594D /* SearchByNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchByNameView.swift; sourceTree = "<group>"; };
@@ -68,8 +76,12 @@
 			children = (
 				D10BB32B298AF42000667E86 /* Info.plist */,
 				D10BB31B298ADAA400667E86 /* FERNApp.swift */,
+				D16A6C7529901A4700835B5E /* LoadSavedRouteView.swift */,
 				D1766CA2298DBAA3002F594D /* Functions.swift */,
+				D16A6C7729901A5D00835B5E /* CreateCustomRouteView.swift */,
 				D1766C9C298DB978002F594D /* MainMenuView.swift */,
+				D16A6C7329901A3800835B5E /* SelectPlotView.swift */,
+				D16A6C7129901A2000835B5E /* SelectAreaView.swift */,
 				D1766CA0298DB9C6002F594D /* MapView.swift */,
 				D1766C9E298DB9B2002F594D /* SearchByNameView.swift */,
 				D1766C9A298DB922002F594D /* LoginView.swift */,
@@ -160,9 +172,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D16A6C7629901A4700835B5E /* LoadSavedRouteView.swift in Sources */,
+				D16A6C7429901A3800835B5E /* SelectPlotView.swift in Sources */,
+				D16A6C7829901A5D00835B5E /* CreateCustomRouteView.swift in Sources */,
 				D1766CA1298DB9C6002F594D /* MapView.swift in Sources */,
 				D1766C9D298DB978002F594D /* MainMenuView.swift in Sources */,
 				D10BB32A298ADAD600667E86 /* Models.swift in Sources */,
+				D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */,
 				D1766CA3298DBAA3002F594D /* Functions.swift in Sources */,
 				D1766C9F298DB9B2002F594D /* SearchByNameView.swift in Sources */,
 				D10BB31E298ADAA400667E86 /* ContentView.swift in Sources */,

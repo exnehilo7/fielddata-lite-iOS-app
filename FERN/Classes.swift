@@ -8,6 +8,14 @@
 
 import Foundation
 
+class SearchOrganismName : ObservableObject {
+    @Published var organismName = ""
+}
+
+class AreaName : ObservableObject {
+    @Published var areaName = ""
+}
+
 //// Class for SearchByNameView's list
 //class SearchByNameModel: Codable, Identifiable, ObservableObject {
 //    enum CodingKeys: CodingKey {
@@ -46,19 +54,6 @@ import Foundation
 //    @Published var plotList = [SearchByNameModel]()
 //}
 
-
-// Class object for map points
-class MapPointList: ObservableObject {
-    var siteId = ""
-    var geoPoint = ""
-}
-
-// Teeeest
-class ResponseModel: Codable, Identifiable {
-    var id: String? = ""
-    var type: String? = ""
-//    var isSelected: String? = ""
-}
 
 
 //@propertyWrapper
