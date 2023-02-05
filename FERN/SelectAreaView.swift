@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SelectAreaView: View {
     
-    @State var areaList: [SelectLocationModel] = []
+    @State private var areaList: [SelectLocationModel] = []
     @StateObject var areaName = AreaName()
     @State private var transitView: Bool = false
     
@@ -30,7 +30,8 @@ struct SelectAreaView: View {
                             }
                     }.bold()
                 }
-            }
+                // place areaName in an env obj
+            }.environmentObject(areaName)
         // query areas
         }.onAppear(perform: {
                 // send request to server
