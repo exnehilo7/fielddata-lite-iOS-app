@@ -6,8 +6,4 @@
 
 import Foundation
 
-class ResponseModel: Codable, Identifiable {
-    // Be sure the types match what the JSON response is returning
-    var id: String? = ""
-    var type: String? = ""
-}
+

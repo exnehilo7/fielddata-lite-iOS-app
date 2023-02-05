@@ -10,8 +10,10 @@ import SwiftUI
 
 struct SearchByNameView: View {
     
-    @State var models: [ResponseModel] = []
-    @State var doesClose = true
+
+    @StateObject var models = PlotList() //: [ResponseModel] = []
+//    @State var isChecked = PlotList(isSelected)
+
 
     var body: some View {
         // VStack for All
@@ -25,13 +27,17 @@ struct SearchByNameView: View {
                 // now show in list
                 // to show in list, model class must be identifiable
                 
-                List (self.models) { (model) in
-                    HStack {
-                        let label = (model.type ?? "")
-                        Toggle(label, isOn: $doesClose).bold().toggleStyle(CheckToggleStyle())
-                        // they are optional
-                        Text(model.id ?? "")
-                        
+//                List (models.plotList, id: \.testId) { (model) in
+                List {
+                    ForEach(0..<models.plotList.count) { idx in
+                        HStack {
+//                            let label = (model.type ?? "")
+                            let label = (models.plotList[idx].type ?? "")
+//                            Toggle(label, isOn: $models.isSelected[idx]).bold().toggleStyle(CheckToggleStyle())
+                            // they are optional
+                            Text(models.plotList[idx].testId)
+                            
+                        }
                     }
                 }
              // query for search result plot groupings
@@ -55,7 +61,8 @@ struct SearchByNameView: View {
                     
                     // convert JSON response into class model as an array
                     do {
-                        self.models = try JSONDecoder().decode([ResponseModel].self, from: data)
+                        self.models.plotList = try JSONDecoder().decode([SearchByNameModel].self, from: data)
+
                         // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
                     } catch DecodingError.keyNotFound(let key, let context) {
                         Swift.print("could not find key \(key) in JSON: \(context.debugDescription)")
