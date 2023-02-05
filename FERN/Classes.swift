@@ -11,19 +11,19 @@ import Foundation
 // Class for SearchByNameView's list
 class SearchByNameModel: Codable, Identifiable, ObservableObject {
     enum CodingKeys: CodingKey {
-        case testId, type, isSelected
+        case id, type, isSelected
     }
     
-    // Be sure the types match what the JSON response is returning
-    @Published var testId = ""
+    // Be sure the types match (for each and every item??) what the JSON response is returning
+    @Published var id = ""
     @Published var type: String? = ""
-    @Published var isSelected = true
+//    @Published var isSelected = true
     
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        testId = try container.decode(String.self, forKey: .testId)
+        id = try container.decode(String.self, forKey: .id)
         type = try container.decode(String.self, forKey: .type)
-        isSelected = try container.decode(Bool.self, forKey: .isSelected)
+//        isSelected = try container.decode(Bool.self, forKey: .isSelected)
     }
 
     init(){
@@ -32,12 +32,13 @@ class SearchByNameModel: Codable, Identifiable, ObservableObject {
 
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(testId, forKey: .testId)
+        try container.encode(id, forKey: .id)
         try container.encode(type, forKey: .type)
-        try container.encode(isSelected, forKey: .isSelected)
+//        try container.encode(isSelected, forKey: .isSelected)
     }
 }
 
+// An array of Search By Name items from the query return
 class PlotList: ObservableObject{
     @Published var plotList = [SearchByNameModel]()
 }
@@ -47,4 +48,10 @@ class PlotList: ObservableObject{
 class MapPointList: ObservableObject {
     var siteId = ""
     var geoPoint = ""
+}
+
+// Teeeest
+class ResponseModel: Codable, Identifiable {
+    var id: String? = ""
+    var type: String? = ""
 }
