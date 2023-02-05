@@ -9,19 +9,28 @@ import SwiftUI
 
 struct MainMenuView: View {
     var body: some View {
-        List {
-            Text("Main Menu")
-            
-            Section("Options") {
-                NavigationLink("Search By Name") {
-                    SearchByNameView()
-                        .navigationTitle("Search By Name")
-                }
-                
+        NavigationStack{
+            List {
+                    NavigationLink("Select Area") {
+                        SelectAreaView()
+                            .navigationTitle("Select Area")
+                    }
+                    NavigationLink("Select Plot") {
+                        SelectPlotView()
+                            .navigationTitle("Select Plot")
+                    }
+                    NavigationLink("Load Saved Route") {
+                       LoadSavedRouteView()
+                            .navigationTitle("Load Saved Route")
+                    }
+                    NavigationLink("Create Custom Route") {
+                        CreateCustomRouteView()
+                            .navigationTitle("Create Custom Route")
+                    }
+                }.bold()
             }
         }
     }
-}
 
 struct MainMenuView_Previews: PreviewProvider {
     static var previews: some View {
