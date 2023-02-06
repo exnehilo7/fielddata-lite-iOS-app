@@ -8,10 +8,12 @@
 
 import SwiftUI
 
+/**
+  Test DocC
+ */
 struct SearchByNameView: View {
     
-    // Get the env obj from SelectAreaView
-    @ObservedObject var areaName = AreaName.shared //@EnvironmentObject var areaName: AreaName
+    var areaName: String // THIS is how variables are passed view-to-view. @EnvironmentObject method has issues(?). See https://medium.com/swlh/swiftui-and-the-missing-environment-object-1a4bf8913ba7 for more info.
     @StateObject var searchOrganismName = SearchOrganismName()
     @State var searchResults: [MapPointModel] = []
 //    @StateObject var searchResults = MapPointModel()
@@ -20,7 +22,8 @@ struct SearchByNameView: View {
     
     var body: some View {
         
-        //Text("A name: \(areaName.areaName)")
+//        Text("A name: \(areaName.selectedAreaName)")
+        
         // VStack for All
         VStack {
             
@@ -29,7 +32,7 @@ struct SearchByNameView: View {
                 // Keep auto correction off
                 TextField("Search by Organism Name", text: $organismName, onCommit: {
                     // Call function after user is done entering text. Pass env obj prop and TextField text
-                    getMapPoints("Davis", organismName)//areaName.areaName, organismName)
+                    getMapPoints(areaName, organismName)//areaName.areaName, organismName)
                 }).textFieldStyle(.roundedBorder).disableAutocorrection(true)
             }
             // VStack for Results
@@ -45,10 +48,8 @@ struct SearchByNameView: View {
         }
     } //end body
     
-    // call PHP post and get query results. Pass area/plot name, org name
+    // call PHP POST and get query results. Pass area/plot name, org name
     func getMapPoints (_ areaName: String, _ organismName: String) {
-        
-        // create POST envs
         
         
         // pass name of search column to use
@@ -65,7 +66,7 @@ struct SearchByNameView: View {
                return
            }
 
-            print("response = \(String(describing: response))")
+//            print("response = \(String(describing: response))")
 
 //            let responseString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
             
@@ -84,68 +85,32 @@ struct SearchByNameView: View {
             } catch let error as NSError {
                 NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
             }
-            
-//            print("responseString = \(String(describing: responseString))")
-            }
-            task.resume()
-        
-//        guard let url: URL = URL(string: htmlRoot.htmlRoot + "/php/routesTestQuery.php") else {
-//            Swift.print("invalid URL")
-//            return
-//        }
-//
-//
-//        var urlRequest: URLRequest = URLRequest(url: url)
-//        urlRequest.httpMethod = "GET"
-//        URLSession.shared.dataTask(with: urlRequest, completionHandler: { (data, response, error) in
-//            // check if response is okay
-//            guard let data = data else {
-//                print("invalid response")
-//                return
-//            }
-//
-//            do {
-//                // convert JSON response into class model as an array
-//                self.doesThisWork = try JSONDecoder().decode([ResponseModel].self, from: data)
-//                // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
-//            } catch DecodingError.keyNotFound(let key, let context) {
-//                Swift.print("could not find key \(key) in JSON: \(context.debugDescription)")
-//            } catch DecodingError.valueNotFound(let type, let context) {
-//                Swift.print("could not find type \(type) in JSON: \(context.debugDescription)")
-//            } catch DecodingError.typeMismatch(let type, let context) {
-//                Swift.print("type mismatch for type \(type) in JSON: \(context.debugDescription)")
-//            } catch DecodingError.dataCorrupted(let context) {
-//                Swift.print("data found to be corrupted in JSON: \(context.debugDescription)")
-//            } catch let error as NSError {
-//                NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
-//            }
-//
-//        }).resume()
-        
+        }
+        task.resume()
     }// end getMapPoints
     
-    // Checkbox style toggle from https://www.hackingwithswift.com/quick-start/swiftui/customizing-toggle-with-togglestyle
-    struct CheckToggleStyle: ToggleStyle {
-        func makeBody(configuration: Configuration) -> some View {
-            Button {
-                configuration.isOn.toggle()
-            } label: {
-                Label {
-                    configuration.label
-                } icon: {
-                    Image(systemName: configuration.isOn ? "checkmark.circle.fill" : "circle")
-                        .foregroundColor(configuration.isOn ? .accentColor : .secondary)
-                        .accessibility(label: Text(configuration.isOn ? "Checked" : "Unchecked"))
-                        .imageScale(.large)
-                }
-            }
-            .buttonStyle(PlainButtonStyle())
-        }
-    }
+//    // Checkbox style toggle from https://www.hackingwithswift.com/quick-start/swiftui/customizing-toggle-with-togglestyle
+//    struct CheckToggleStyle: ToggleStyle {
+//        func makeBody(configuration: Configuration) -> some View {
+//            Button {
+//                configuration.isOn.toggle()
+//            } label: {
+//                Label {
+//                    configuration.label
+//                } icon: {
+//                    Image(systemName: configuration.isOn ? "checkmark.circle.fill" : "circle")
+//                        .foregroundColor(configuration.isOn ? .accentColor : .secondary)
+//                        .accessibility(label: Text(configuration.isOn ? "Checked" : "Unchecked"))
+//                        .imageScale(.large)
+//                }
+//            }
+//            .buttonStyle(PlainButtonStyle())
+//        }
+//    }
     
     struct SearchByNameView_Previews: PreviewProvider {
         static var previews: some View {
-            SearchByNameView()
+            SearchByNameView(areaName: "plchldr")
         }
     }
 }//end View

@@ -12,10 +12,6 @@ class SearchOrganismName : ObservableObject {
     @Published var organismName = ""
 }
 
-class AreaName : ObservableObject {
-    static let shared = AreaName()
-    @Published var areaName = ""
-}
 //final class SharedAreaName: ObservableObject {
 //
 //    static let shared = AreaName()

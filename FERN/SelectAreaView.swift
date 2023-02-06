@@ -10,14 +10,10 @@ import SwiftUI
 struct SelectAreaView: View {
     
     @State private var areaList: [SelectLocationModel] = []
-//    @StateObject private var areaName = AreaName()
-    @ObservedObject var areaName = AreaName.shared
-    @State private var transitView: Bool = false
+    @StateObject var areaName = SelectedAreaName()
+
+    // Get html root
     let htmlRoot = HtmlRootModel()
-    
-    func assignAreaName(_ name: String){
-        areaName.areaName = name
-    }
     
     var body: some View {
         
@@ -25,16 +21,13 @@ struct SelectAreaView: View {
             NavigationStack {
                 List (self.areaList) { (area) in
                     NavigationLink(area.name) {
-                        SearchByNameView()
-                            .navigationTitle("Search by Organism Name").onTapGesture {
-                                self.assignAreaName(area.name)
-                                self.transitView = true
-                            }
-                    }.bold()
+                        SearchByNameView(areaName: area.name).navigationTitle("Search by Organism Name")
+                    }
+                    .bold()
                 }
                 // place areaName in an env obj
-            }//.environmentObject(areaName)
-        // query areas
+            }.environmentObject(areaName)
+        // query areas. Call PHP GET
         }.onAppear(perform: {
                 // send request to server
             guard let url: URL = URL(string: htmlRoot.htmlRoot + "/php/menuSelectAreaView.php") else {
