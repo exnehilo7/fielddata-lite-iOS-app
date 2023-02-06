@@ -14,6 +14,7 @@ import SwiftUI
 struct SearchByNameView: View {
     
     var areaName: String // THIS is how variables are passed view-to-view. @EnvironmentObject method has issues(?). See https://medium.com/swlh/swiftui-and-the-missing-environment-object-1a4bf8913ba7 for more info.
+    var columnName: String
     @StateObject var searchOrganismName = SearchOrganismName()
     @State var searchResults: [MapPointModel] = []
 //    @StateObject var searchResults = MapPointModel()
@@ -30,7 +31,7 @@ struct SearchByNameView: View {
             // HStack for Search field
             HStack {
                 // Keep auto correction off
-                TextField("Search by Organism Name", text: $organismName, onCommit: {
+                TextField("Enter Organism Name", text: $organismName, onCommit: {
                     // Call function after user is done entering text. Pass env obj prop and TextField text
                     getMapPoints(areaName, organismName)//areaName.areaName, organismName)
                 }).textFieldStyle(.roundedBorder).disableAutocorrection(true)
@@ -55,7 +56,7 @@ struct SearchByNameView: View {
         // pass name of search column to use
         let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/searchOrgNameByArea.php")! as URL)
         request.httpMethod = "POST"
-        let postString = "_column_name=area_name&_column_value=\(areaName)&_org_name=\(organismName)"
+        let postString = "_column_name=\(columnName)&_column_value=\(areaName)&_org_name=\(organismName)"
         request.httpBody = postString.data (using: String.Encoding.utf8)
         
         let task = URLSession.shared.dataTask(with: request as URLRequest) {
@@ -110,7 +111,7 @@ struct SearchByNameView: View {
     
     struct SearchByNameView_Previews: PreviewProvider {
         static var previews: some View {
-            SearchByNameView(areaName: "plchldr")
+            SearchByNameView(areaName: "Davis", columnName: "area_name")
         }
     }
 }//end View

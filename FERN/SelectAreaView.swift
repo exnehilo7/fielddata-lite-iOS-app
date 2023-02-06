@@ -10,7 +10,8 @@ import SwiftUI
 struct SelectAreaView: View {
     
     @State private var areaList: [SelectLocationModel] = []
-    @StateObject var areaName = SelectedAreaName()
+    var phpFile: String
+    var columnName: String
 
     // Get html root
     let htmlRoot = HtmlRootModel()
@@ -21,16 +22,16 @@ struct SelectAreaView: View {
             NavigationStack {
                 List (self.areaList) { (area) in
                     NavigationLink(area.name) {
-                        SearchByNameView(areaName: area.name).navigationTitle("Search by Organism Name")
+                        SearchByNameView(areaName: area.name, columnName: columnName).navigationTitle(area.name)
                     }
                     .bold()
                 }
                 // place areaName in an env obj
-            }.environmentObject(areaName)
+            }
         // query areas. Call PHP GET
         }.onAppear(perform: {
                 // send request to server
-            guard let url: URL = URL(string: htmlRoot.htmlRoot + "/php/menuSelectAreaView.php") else {
+            guard let url: URL = URL(string: htmlRoot.htmlRoot + "/php/" + phpFile) else {
                     Swift.print("invalid URL")
                     return
                 }
@@ -65,6 +66,6 @@ struct SelectAreaView: View {
 
 struct SelectAreaView_Previews: PreviewProvider {
     static var previews: some View {
-        SelectAreaView()
+        SelectAreaView(phpFile: "menuSelectAreaView.php", columnName: "area_name")
     }
 }
