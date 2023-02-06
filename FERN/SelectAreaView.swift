@@ -10,8 +10,10 @@ import SwiftUI
 struct SelectAreaView: View {
     
     @State private var areaList: [SelectLocationModel] = []
-    @StateObject var areaName = AreaName()
+//    @StateObject private var areaName = AreaName()
+    @ObservedObject var areaName = AreaName.shared
     @State private var transitView: Bool = false
+    let htmlRoot = HtmlRootModel()
     
     func assignAreaName(_ name: String){
         areaName.areaName = name
@@ -31,11 +33,11 @@ struct SelectAreaView: View {
                     }.bold()
                 }
                 // place areaName in an env obj
-            }.environmentObject(areaName)
+            }//.environmentObject(areaName)
         // query areas
         }.onAppear(perform: {
                 // send request to server
-                guard let url: URL = URL(string: "http://covid-samples01.ornl.gov/fielddata-lite/php/menuSelectAreaView.php") else {
+            guard let url: URL = URL(string: htmlRoot.htmlRoot + "/php/menuSelectAreaView.php") else {
                     Swift.print("invalid URL")
                     return
                 }

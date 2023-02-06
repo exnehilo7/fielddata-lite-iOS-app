@@ -12,7 +12,7 @@ struct FERNApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                LoginView(userName: "Wonder Woman", password: "402436").navigationTitle("Login")
+                LoginView(userName: "uName", password: "402436").navigationTitle("Login")
            }
         }
     }

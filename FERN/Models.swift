@@ -6,14 +6,20 @@
 
 import Foundation
 
+// Model object for html root
+class HtmlRootModel: Codable {
+    var htmlRoot = "http://covid-samples01.ornl.gov/fielddata-lite"
+}
+
 // Model object for SelectAreaView
 class SelectLocationModel: Codable, Identifiable {
     var name = ""
 }
 
 // Model object for map points
-class MapPointModel: ObservableObject {
+class MapPointModel: Codable, Identifiable { //ObservableObject
     var siteId = ""
+    var organismName = ""
     var geoPoint = ""
 }
 
