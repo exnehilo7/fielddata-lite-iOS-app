@@ -13,8 +13,14 @@ class SearchOrganismName : ObservableObject {
 }
 
 class AreaName : ObservableObject {
+    static let shared = AreaName()
     @Published var areaName = ""
 }
+//final class SharedAreaName: ObservableObject {
+//
+//    static let shared = AreaName()
+//
+//}
 
 //// Class for SearchByNameView's list
 //class SearchByNameModel: Codable, Identifiable, ObservableObject {
