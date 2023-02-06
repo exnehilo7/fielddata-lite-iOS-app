@@ -12,11 +12,11 @@ struct MainMenuView: View {
         NavigationStack{
             List {
                     NavigationLink("Select Area") {
-                        SelectAreaView()
+                        SelectAreaView(phpFile: "menuSelectAreaView.php", columnName: "area_name")
                             .navigationTitle("Select Area")
                     }
                     NavigationLink("Select Plot") {
-                        SelectPlotView()
+                        SelectAreaView(phpFile: "menuSelectPlotView.php",  columnName: "plot_name")
                             .navigationTitle("Select Plot")
                     }
                     NavigationLink("Load Saved Route") {
