@@ -19,11 +19,60 @@ class SelectLocationModel: Codable, Identifiable {
     var name = ""
 }
 
-// Model object for map points
-class MapPointModel: Codable, Identifiable { //ObservableObject
+
+//class MapPointModel: Identifiable, ObservableObject{
+//
+//    var annotationItems = [MapAnnotationItem]()
+//
+//    var siteId = ""
+//    var organismName = ""
+//    var coordinate: CLLocationCoordinate2D
+//    let id = UUID()
+//
+//    init(siteId: String = "", organismName: String = "", coordinate: CLLocationCoordinate2D) {
+//        self.siteId = siteId
+//        self.organismName = organismName
+//        self.coordinate = coordinate
+//
+//        annotationItems.append(MapAnnotationItem(coordinate: coordinate, siteId: siteId, organismName: organismName))
+//
+//    }
+//}
+
+class Temp_MapPointModel: Codable, Identifiable {
     var siteId = ""
     var organismName = ""
     var geoPoint = ""
+}
+
+class Temp_MapPointModel_ObsvObj: Codable, ObservableObject {  // Identifiable,
+    
+    enum CodingKeys: CodingKey {
+        case siteId, organismName, geoPoint
+    }
+    
+     var siteId = ""
+   var organismName = ""
+   var geoPoint = ""
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(siteId, forKey: .siteId)
+        try container.encode(organismName, forKey: .organismName)
+        try container.encode(geoPoint, forKey: .geoPoint)
+    }
+    
+    init() { }
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        siteId = try container.decode(String.self, forKey: .siteId)
+        organismName = try container.decode(String.self, forKey: .organismName)
+        geoPoint = try container.decode(String.self, forKey: .geoPoint)
+    }
+    
 }
 
 // Model for map annotations
@@ -32,6 +81,10 @@ struct MapAnnotationItem: Identifiable {
     let id = UUID()
 //    var color: Color?
 //    var tint: Color { color ?? .red }
+    
+    // try more vars
+    var siteId = ""
+    var organismName = ""
 }
 
 // Teeeest

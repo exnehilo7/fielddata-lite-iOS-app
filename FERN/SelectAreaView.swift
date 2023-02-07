@@ -22,6 +22,7 @@ struct SelectAreaView: View {
             NavigationStack {
                 List (self.areaList) { (area) in
                     NavigationLink(area.name) {
+                        // Pass vars to view
                         SearchByNameView(areaName: area.name, columnName: columnName).navigationTitle(area.name)
                     }
                     .bold()
