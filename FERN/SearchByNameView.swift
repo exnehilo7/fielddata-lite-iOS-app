@@ -22,6 +22,8 @@ struct SearchByNameView: View {
     @State var organismName = ""
     let htmlRoot = HtmlRootModel()
     
+    @State var hasResults = false
+    
     var body: some View {
         
 //        var arrayOfObsvObjs = [Temp_MapPointModel_ObsvObj] = []
@@ -39,10 +41,14 @@ struct SearchByNameView: View {
             }
             // VStack for Results
             VStack {
-                // To the test screen!
+                // To the map screen!
                 NavigationStack {
-                    NavigationLink("See in map") {
-                        MapView().navigationTitle("Map")
+                    // Show NavLink only if there's results
+                    if hasResults {
+                        NavigationLink("Test Observeable Object") {
+//                            MapView().navigationTitle("Map")
+                            Test_OvsvObj(willItWork: test_ObsvObj).navigationTitle("Test")
+                        }
                     }
                     List (searchResults) { (result) in
                         HStack {
@@ -62,6 +68,14 @@ struct SearchByNameView: View {
     // call PHP POST and get query results. Pass area/plot name, org name
     func getMapPoints (_ areaName: String, _ organismName: String) {
         
+//        do{
+//        // try with URLsession extension
+//        let url1 = URL(string: htmlRoot.htmlRoot + "/php/searchOrgNameByArea.php")!
+//            let user = try await URLSession.shared.decode(Temp_MapPointModel_ObsvObj.self, from: url1)
+//            print("Downloaded \(user.geoPoint)")
+//        } catch {
+//            print("Download error: \(error.localizedDescription)")
+//        }
         
         // pass name of search column to use
         let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/searchOrgNameByArea.php")! as URL)
@@ -77,16 +91,29 @@ struct SearchByNameView: View {
                return
            }
 
-//            print("response = \(String(describing: response))")
-
-//            let responseString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
             
             do {
-                // convert JSON response into class model as an array
-                self.searchResults = try JSONDecoder().decode([Temp_MapPointModel].self, from: data!)
+                // ummmm
+//                let user = try await URLSession.shared.decode(Temp_MapPointModel_ObsvObj.self, from: data!)
+//                print("Downloaded \(user.geoPoint)")
                 
-                // try obsv obj
-                _ = try JSONDecoder().decode(Temp_MapPointModel_ObsvObj.self, from: data!)
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .useDefaultKeys
+                decoder.dataDecodingStrategy = .deferredToData
+                decoder.dateDecodingStrategy = .deferredToDate
+                
+                _ = try decoder.decode([Temp_MapPointModel_ObsvObj].self, from: data!)
+                
+                
+                
+                // convert JSON response into class model as an array
+                self.searchResults = try decoder.decode([Temp_MapPointModel].self, from: data!)
+                
+                hasResults.toggle()
+                
+//                // try obsv obj
+//                _ = try JSONDecoder().decode(Temp_MapPointModel_ObsvObj.self, from: data!)
+//                // Result: type mismatch for type Dictionary<String, Any> in JSON: Expected to decode Dictionary<String, Any> but found an array instead.
                 
                 // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
             } catch DecodingError.keyNotFound(let key, let context) {

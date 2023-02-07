@@ -18,6 +18,17 @@ struct Test_OvsvObj: View {
             print(willItWork.geoPoint)
         }
     }
+    
+//    List (willItWork, id: \.id) { (result) in
+//        HStack {
+//            //Text(result.siteId ?? 0)
+//            Text(result.organismName)
+//            Text(result.geoPoint)
+//            Text(result.siteId)
+//            // try placing in an obsv obj?
+//
+//        }
+//    }
 }
 
 //struct Test_OvsvObj_Previews: PreviewProvider {
