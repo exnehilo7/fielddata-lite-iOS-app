@@ -7,93 +7,44 @@
 // Decodeable syntax error fix help from https://www.hackingwithswift.com/forums/swiftui/trying-to-make-a-observable-object-with-an-array-of-codable-objects-to-be-able-to-reference-it-anywhere-in-my-app/6560
 
 import Foundation
+import CoreLocation
 
 class SearchOrganismName : ObservableObject {
     @Published var organismName = ""
 }
 
-//final class SharedAreaName: ObservableObject {
-//
-//    static let shared = AreaName()
-//
-//}
+// Core location functionality from https://www.mongodb.com/developer/products/realm/realm-swiftui-maps-location/
+class LocationHelper: NSObject, ObservableObject {
 
-//// Class for SearchByNameView's list
-//class SearchByNameModel: Codable, Identifiable, ObservableObject {
-//    enum CodingKeys: CodingKey {
-//        case id, type, isSelected
-//    }
-//
-//    // Be sure the types match (for each and every item??) what the JSON response is returning
-//    @Published var id = ""
-//    @Published var type: String? = ""
-////    @SomeKindOfBool var wtf: Bool
-////    @Published var isSelected: Bool = true
-//    @Published var isSelected = ""
-//
-//    required init(from decoder: Decoder) throws {
-//        let container = try decoder.container(keyedBy: CodingKeys.self)
-//        id = try container.decode(String.self, forKey: .id)
-//        type = try container.decode(String.self, forKey: .type)
-////        isSelected = try container.decode(Bool.self, forKey: .isSelected)
-//        isSelected = try container.decode(String.self, forKey: .isSelected)
-//    }
-//
-//    init(){
-//
-//    }
-//
-//    func encode(to encoder: Encoder) throws {
-//        var container = encoder.container(keyedBy: CodingKeys.self)
-//        try container.encode(id, forKey: .id)
-//        try container.encode(type, forKey: .type)
-//        try container.encode(isSelected, forKey: .isSelected)
-//    }
-//}
-//
-//// An array of Search By Name items from the query return
-//class PlotList: ObservableObject{
-//    @Published var plotList = [SearchByNameModel]()
-//}
+    static let shared = LocationHelper()
+    static let DefaultLocation = CLLocationCoordinate2D(latitude: 35.93212, longitude: -84.31022)
 
+    static var currentLocation: CLLocationCoordinate2D {
+        guard let location = shared.locationManager.location else {
+            return DefaultLocation
+        }
+        return location.coordinate
+    }
 
+    private let locationManager = CLLocationManager()
 
-//@propertyWrapper
-//struct SomeKindOfBool: Decodable {
-//    var wrappedValue: Bool
-//
-//    init(from decoder: Decoder) throws {
-//        let container = try decoder.singleValueContainer()
-//
-//        //Handle String value
-//        if let stringValue = try? container.decode(String.self) {
-//            switch stringValue.lowercased() {
-//            case "false", "no", "0": wrappedValue = false
-//            case "true", "yes", "1": wrappedValue = true
-//            default: throw DecodingError.dataCorruptedError(in: container, debugDescription: "Expect true/false, yes/no or 0/1 but`\(stringValue)` instead")
-//            }
-//        }
-//
-//        //Handle Int value
-//        else if let intValue = try? container.decode(Int.self) {
-//            switch intValue {
-//            case 0: wrappedValue = false
-//            case 1: wrappedValue = true
-//            default: throw DecodingError.dataCorruptedError(in: container, debugDescription: "Expect `0` or `1` but found `\(intValue)` instead")
-//            }
-//        }
-//
-//        //Handle Int value
-//        else if let doubleValue = try? container.decode(Double.self) {
-//            switch doubleValue {
-//            case 0: wrappedValue = false
-//            case 1: wrappedValue = true
-//            default: throw DecodingError.dataCorruptedError(in: container, debugDescription: "Expect `0` or `1` but found `\(doubleValue)` instead")
-//            }
-//        }
-//
-//        else {
-//            wrappedValue = try container.decode(Bool.self)
-//        }
-//    }
-//}
+    private override init() {
+        super.init()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+    }
+}
+
+extension LocationHelper: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) { }
+
+    public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("Location manager failed with error: \(error.localizedDescription)")
+    }
+
+    public func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        print("Location manager changed the status: \(status)")
+    }
+}

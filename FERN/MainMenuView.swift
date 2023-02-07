@@ -27,6 +27,10 @@ struct MainMenuView: View {
                         CreateCustomRouteView()
                             .navigationTitle("Create Custom Route")
                     }
+                    NavigationLink("Test Map") {
+                        MapView()
+                            .navigationTitle("Test Map")
+                    }
                 }.bold()
             }
         }

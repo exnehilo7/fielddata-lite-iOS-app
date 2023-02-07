@@ -5,6 +5,9 @@
 //  Created by Hopp, Dan on 2/1/23.
 
 import Foundation
+import CoreLocation
+//import UIkit // Needed for MapAnnotationItem's color. Apparently I need to change some swiftc options
+                // to build the project against proper sdk and target?
 
 // Model object for html root
 class HtmlRootModel: Codable {
@@ -21,6 +24,14 @@ class MapPointModel: Codable, Identifiable { //ObservableObject
     var siteId = ""
     var organismName = ""
     var geoPoint = ""
+}
+
+// Model for map annotations
+struct MapAnnotationItem: Identifiable {
+    var coordinate: CLLocationCoordinate2D
+    let id = UUID()
+//    var color: Color?
+//    var tint: Color { color ?? .red }
 }
 
 // Teeeest
