@@ -1,5 +1,5 @@
 # fielddata-lite-iOS-app
-Traveling Salesman iOS App for the WGU Bachelor's Capstone. Working Title: FERN (Field Expedition Route Navigation)
+Traveling Salesman iOS App for the WGU Bachelor's Capstone. Working Title: FERN (Field Expedition Routing and Navigation)
 
 
 ## Set iOS App Security Settings
@@ -27,3 +27,8 @@ Traveling Salesman iOS App for the WGU Bachelor's Capstone. Working Title: FERN 
 		b. Add "Scene Configuration" (Dictionary).
 	4. Clean the project 
     	a. Menu Bar > Product > Clean Build Folder.
+
+## Set App Request Permissions
+In the info file:
+	1. Add a key "Privacy - Location When In Usage Description". Include a String message to display to the user.
+
