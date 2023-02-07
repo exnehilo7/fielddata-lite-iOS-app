@@ -16,14 +16,15 @@ struct SearchByNameView: View {
     var areaName: String // THIS is how variables are passed view-to-view. @EnvironmentObject method has issues(?). See https://medium.com/swlh/swiftui-and-the-missing-environment-object-1a4bf8913ba7 for more info.
     var columnName: String
     @StateObject var searchOrganismName = SearchOrganismName()
-    @State var searchResults: [MapPointModel] = []
-//    @StateObject var searchResults = MapPointModel()
+    @State var searchResults: [Temp_MapPointModel] = []
+    @ObservedObject var test_ObsvObj = Temp_MapPointModel_ObsvObj()
+    
     @State var organismName = ""
     let htmlRoot = HtmlRootModel()
     
     var body: some View {
         
-//        Text("A name: \(areaName.selectedAreaName)")
+//        var arrayOfObsvObjs = [Temp_MapPointModel_ObsvObj] = []
         
         // VStack for All
         VStack {
@@ -38,14 +39,23 @@ struct SearchByNameView: View {
             }
             // VStack for Results
             VStack {
-                List (searchResults) { (result) in
-                    HStack {
-//                        Text(result.siteId ?? 0)
-                        Text(result.organismName)
-                        Text(result.geoPoint)
+                // To the test screen!
+                NavigationStack {
+                    NavigationLink("See in map") {
+                        MapView().navigationTitle("Map")
                     }
-                }
-            }
+                    List (searchResults) { (result) in
+                        HStack {
+                            //Text(result.siteId ?? 0)
+                            Text(result.organismName)
+                            Text(result.geoPoint)
+                            
+                            // try placing in an obsv obj?
+                            
+                        }
+                    }
+                } // end navstack
+            } //end Results Vstack
         }
     } //end body
     
@@ -73,7 +83,11 @@ struct SearchByNameView: View {
             
             do {
                 // convert JSON response into class model as an array
-                self.searchResults = try JSONDecoder().decode([MapPointModel].self, from: data!)
+                self.searchResults = try JSONDecoder().decode([Temp_MapPointModel].self, from: data!)
+                
+                // try obsv obj
+                _ = try JSONDecoder().decode(Temp_MapPointModel_ObsvObj.self, from: data!)
+                
                 // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
             } catch DecodingError.keyNotFound(let key, let context) {
                 Swift.print("could not find key \(key) in JSON: \(context.debugDescription)")
