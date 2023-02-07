@@ -45,15 +45,13 @@ class Temp_MapPointModel: Codable, Identifiable {
     var geoPoint = ""
 }
 
-class Temp_MapPointModel_ObsvObj: Codable, ObservableObject {  // Identifiable,
+class Temp_MapPointModel_ObsvObj: ObservableObject, Identifiable {  // Identifiable,
     
-    enum CodingKeys: CodingKey {
-        case siteId, organismName, geoPoint
-    }
+    let id = UUID()
     
-     var siteId = ""
-   var organismName = ""
-   var geoPoint = ""
+    var siteId = ""
+    var organismName = ""
+    var geoPoint = ""
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -72,7 +70,14 @@ class Temp_MapPointModel_ObsvObj: Codable, ObservableObject {  // Identifiable,
         organismName = try container.decode(String.self, forKey: .organismName)
         geoPoint = try container.decode(String.self, forKey: .geoPoint)
     }
-    
+}
+extension Temp_MapPointModel_ObsvObj: Codable {
+    enum CodingKeys: CodingKey {
+        case siteId, organismName, geoPoint
+    }
+}
+class Temp_MapPointModel_ObsvObj_Container: ObservableObject {
+    @Published var objects = [Temp_MapPointModel_ObsvObj]()
 }
 
 // Model for map annotations
