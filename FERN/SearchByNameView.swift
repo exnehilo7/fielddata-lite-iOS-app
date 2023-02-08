@@ -31,7 +31,7 @@ struct SearchByNameView: View {
             // HStack for Search field
             HStack {
                 // Keep auto correction off
-                TextField("Enter Organism Name", text: $organismName, onCommit: {
+                TextField("Enter Organism Name (Leave Blank for All)", text: $organismName, onCommit: {
                     // Call function after user is done entering text. Pass env obj prop and TextField text
                     getMapPoints()
                 }).textFieldStyle(.roundedBorder).disableAutocorrection(true)
@@ -77,7 +77,7 @@ struct SearchByNameView: View {
 //        }
         
         // pass name of search column to use
-        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/searchOrgNameByArea.php")! as URL)
+        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/searchOrgNameBySite.php")! as URL)
         request.httpMethod = "POST"
         let postString = "_column_name=\(columnName)&_column_value=\(areaName)&_org_name=\(organismName)"
         request.httpBody = postString.data (using: String.Encoding.utf8)
