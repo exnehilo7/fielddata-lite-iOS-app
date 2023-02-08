@@ -17,9 +17,13 @@ struct MapView: View {
     var columnName: String
     var organismName: String
     
+    @State var currentAnnoItem = 1
+    @State var totalAnnoItems = 0
+    
     // For map points PHP response
     @State var searchResults: [TempMapPointModel] = []
     @State var hasResults = false
+    
     
     // For starting region and zooom level PHP response
     @State var startingRegion: [StartingRegionModel] = []
@@ -64,15 +68,12 @@ struct MapView: View {
     var body: some View {
         
         
-        VStack {
-            Text("lat: \(region.center.latitude), long: \(region.center.longitude). Zoom: \(region.span.latitudeDelta)")
-                .font(.caption)
-                .padding()
+        ZStack {
             Map(coordinateRegion: $region,
                 interactionModes: .all,
                 showsUserLocation: true,
                 annotationItems: annotationItems
-            ) { item in
+            ) { item in // add points
                 // A vanilla point:
 //                 MapMarker(coordinate: item.coordinate)
                 
@@ -82,9 +83,42 @@ struct MapView: View {
                         .symbolRenderingMode(.palette)
                         .foregroundStyle(.green, .red).font(.system(size: 35))
                 }
+            } // end add points
+            Text("lat: \(region.center.latitude), long: \(region.center.longitude). Zoom: \(region.span.latitudeDelta)")
+                .font(.caption)
+                .fontWeight(.semibold)
+//                .foregroundColor(.red)
+                .offset(y: -350)
+                .padding()
+            // Don't display if no results
+            if hasResults {
+                Button("< Previous"){
+                    print(annotationItems[currentAnnoItem].siteId)
+                    currentAnnoItem -= 1
+                }.buttonStyle(.borderless)
+                    .offset(y: 325).offset(x: -50)
+                    .font(.title3)
+                    .fontWeight(.bold)
+                
+                Button("Next >"){
+                    print(annotationItems[currentAnnoItem].siteId)
+                    currentAnnoItem += 1
+                }.buttonStyle(.borderless)
+                    .offset(y: 325).offset(x: 50)
+                    .font(.title3)
+                    .fontWeight(.bold)
+                // Button images demo:
+                Button {
+                    print("pressed")
+                } label: {
+                    Image(systemName: "leaf.circle.fill")
+                        .font(.system(size: 50))
+                }
             }
         }.onAppear(perform: getMapPoints).onAppear(perform: getRegion)
     }
+    
+    // Function to make sure forward and backward stay within annotation's item count
     
     func getMapPoints () {
         
@@ -117,6 +151,14 @@ struct MapView: View {
                 
                 // dont insert if result is empty
                 if !searchResults.isEmpty {
+                    
+                    totalAnnoItems = searchResults.count
+                    
+                    // Don't show items if no data
+                    if hasResults == false {
+                        hasResults.toggle()
+                    }
+                    
                     // Put results in an array
                         for result in searchResults {
                             annotationItems.append(MapAnnotationItem(
