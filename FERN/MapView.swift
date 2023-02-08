@@ -8,19 +8,30 @@
 import SwiftUI
 import MapKit
 
-
+// Within the database funcion, divide general region's zoom level by 125,000 to
+// adjust for the table's CesiumJS value.
 struct MapView: View {
     
+    // From calling view
     var areaName: String
     var columnName: String
     var organismName: String
+    
+    // For map points PHP response
     @State var searchResults: [TempMapPointModel] = []
     @State var hasResults = false
     
-//    var annotationItems: [Any] = [MapAnnotationItem()]
+    // For starting region and zooom level PHP response
+    @State var startingRegion: [StartingRegionModel] = []
+    
+    // To hold Annotated Map Point Models
     @State var annotationItems = [MapAnnotationItem]()
     
-    // Set startig geo loc
+//    // To hold Annotated starting region
+//    @State var regionItem = [RegionAnnotationItem]()
+    
+    
+    // Set hard-coded starting geo loc
     private enum MapDefaults {
         static let latitude = 35.93212
         static let longitude = -84.31022
@@ -42,10 +53,12 @@ struct MapView: View {
 //            longitude: -84.31728)
 //    ]
     
-    // Set general region at launch
-    @State private var region: MKCoordinateRegion = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: MapDefaults.latitude, longitude: MapDefaults.longitude),
-        span: MKCoordinateSpan(latitudeDelta: MapDefaults.zoom, longitudeDelta: MapDefaults.zoom))
+    // Set hard-coded general region at launch.
+//    @State private var region: MKCoordinateRegion = MKCoordinateRegion(
+//        center: CLLocationCoordinate2D(latitude: MapDefaults.latitude, longitude: MapDefaults.longitude),
+//        span: MKCoordinateSpan(latitudeDelta: MapDefaults.zoom, longitudeDelta: MapDefaults.zoom))
+    
+    @State private var region: MKCoordinateRegion = MKCoordinateRegion()
     
     
     var body: some View {
@@ -58,7 +71,6 @@ struct MapView: View {
             Map(coordinateRegion: $region,
                 interactionModes: .all,
                 showsUserLocation: true,
-//                annotationItems: annotationItems
                 annotationItems: annotationItems
             ) { item in
                 // A vanilla point:
@@ -71,7 +83,7 @@ struct MapView: View {
                         .foregroundStyle(.green, .red).font(.system(size: 35))
                 }
             }
-        }.onAppear(perform: getMapPoints)
+        }.onAppear(perform: getMapPoints).onAppear(perform: getRegion)
     }
     
     func getMapPoints () {
@@ -80,7 +92,7 @@ struct MapView: View {
         let htmlRoot = HtmlRootModel()
         
         // pass name of search column to use
-        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/searchOrgNameByArea.php")! as URL)
+        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/searchOrgNameBySite.php")! as URL)
         request.httpMethod = "POST"
         let postString = "_column_name=\(columnName)&_column_value=\(areaName)&_org_name=\(organismName)"
         request.httpBody = postString.data (using: String.Encoding.utf8)
@@ -93,7 +105,6 @@ struct MapView: View {
                 return
             }
             
-            
             do {
                 
                 let decoder = JSONDecoder()
@@ -101,16 +112,11 @@ struct MapView: View {
                 decoder.dataDecodingStrategy = .deferredToData
                 decoder.dateDecodingStrategy = .deferredToDate
                 
-                // convert JSON response into class model as an array
+                // Get list of points
                 self.searchResults = try decoder.decode([TempMapPointModel].self, from: data!)
                 
-                // dont show link if result is empty
+                // dont insert if result is empty
                 if !searchResults.isEmpty {
-//                    if hasResults == false {
-//                        hasResults.toggle()
-//                    }
-//                    let annotationItems = [
-                        
                     // Put results in an array
                         for result in searchResults {
                             annotationItems.append(MapAnnotationItem(
@@ -120,21 +126,6 @@ struct MapView: View {
                                           organismName: result.organismName
                                           ))
                         }
-                    
-//                    for item in annotationItems {
-//                       print(item)
-//                    }
-                    
-//                        ForEach (searchResults, id: \.self) {result in
-//                            MapAnnotationItem(coordinate: CLLocationCoordinate2D(
-//                                latitude: 35.931,
-//                                longitude: -84.31528),
-//                                              siteId: result.siteId,
-//                                              organismName: result.organismName
-//                                              )
-//                        }
-                        
-//                        ]
                 }
                 
             // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
@@ -152,10 +143,61 @@ struct MapView: View {
         }
         task.resume()
     }// end getMapPoints
+    
+    func getRegion () {
+        
+        // get root
+        let htmlRoot = HtmlRootModel()
+        
+        // pass name of search column to use
+        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/siteCenterPointAndZoom.php")! as URL)
+        request.httpMethod = "POST"
+        let postString = "_site_name=\(areaName)"
+        request.httpBody = postString.data (using: String.Encoding.utf8)
+        
+        let task = URLSession.shared.dataTask(with: request as URLRequest) {
+            data, response, error in
+            
+            if error != nil {
+                print("error=\(String(describing: error))")
+                return
+            }
+            
+            do {
+                
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .useDefaultKeys
+                decoder.dataDecodingStrategy = .deferredToData
+                decoder.dateDecodingStrategy = .deferredToDate
+                
+                // Get list of points
+                self.startingRegion = try decoder.decode([StartingRegionModel].self, from: data!)
+                
+                // dont assign result is empty
+                if !startingRegion.isEmpty {
+                    self.region = MKCoordinateRegion( center: CLLocationCoordinate2D(latitude: Double(startingRegion[0].lat) ?? 0, longitude: Double(startingRegion[0].long) ?? 0),
+                          span: MKCoordinateSpan(latitudeDelta: Double(startingRegion[0].zoom) ?? 0, longitudeDelta: Double(startingRegion[0].zoom) ?? 0))
+                }
+                
+            // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
+            } catch DecodingError.keyNotFound(let key, let context) {
+                Swift.print("could not find key \(key) in JSON: \(context.debugDescription)")
+            } catch DecodingError.valueNotFound(let type, let context) {
+                Swift.print("could not find type \(type) in JSON: \(context.debugDescription)")
+            } catch DecodingError.typeMismatch(let type, let context) {
+                Swift.print("type mismatch for type \(type) in JSON: \(context.debugDescription)")
+            } catch DecodingError.dataCorrupted(let context) {
+                Swift.print("data found to be corrupted in JSON: \(context.debugDescription)")
+            } catch let error as NSError {
+                NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
+            }
+        }
+        task.resume()
+    }// end getRegion
 }// end view
 
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
-        MapView(areaName: "Davis", columnName: "area_name", organismName: "Besc-113_")
+        MapView(areaName: "Davis", columnName: "area_name", organismName: "Besc-112")
     }
 }

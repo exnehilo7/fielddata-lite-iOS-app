@@ -6,6 +6,7 @@
 
 import Foundation
 import CoreLocation
+import MapKit
 //import UIkit // Needed for MapAnnotationItem's color. Apparently I need to change some swiftc options
                 // to build the project against proper sdk and target?
 
@@ -20,7 +21,7 @@ class SelectLocationModel: Codable, Identifiable {
 }
 
 
-// temp llist for display and insertion into MapAnnotationItem
+// temp list for display and insertion into MapAnnotationItem
 class TempMapPointModel: Codable, Identifiable { //}, Hashable {
     let id = UUID() // DO NOT SET TO MUTABLE
     var siteId = ""
@@ -29,6 +30,8 @@ class TempMapPointModel: Codable, Identifiable { //}, Hashable {
     var long = ""
     
 }
+
+
 
 // Model for map annotations
 struct MapAnnotationItem: Identifiable { //, Sequence, IteratorProtocol {
@@ -48,6 +51,38 @@ struct MapAnnotationItem: Identifiable { //, Sequence, IteratorProtocol {
     
 
 }
+
+// For a starting region in a map
+class StartingRegionModel: Codable, Identifiable {
+    let id = UUID() // DO NOT SET TO MUTABLE
+    var lat = ""
+    var long = ""
+    var zoom = ""
+}
+
+//// Model for starting region annotation
+//struct RegionAnnotationItem: Identifiable {
+//    let id = UUID()
+//
+//    var latitude: Double
+//    var longitude: Double
+//    var zoom: Double
+//
+//    var center: CLLocationCoordinate2D {
+//        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+//    }
+//
+//    var span: MKCoordinateSpan {
+//        MKCoordinateSpan(latitudeDelta: zoom, longitudeDelta: zoom)
+//    }
+//
+//    var region: MKCoordinateRegion {
+//        MKCoordinateRegion (
+//            center: center,
+//            span: span
+//        )
+//    }
+//}
 
 // MAY NEVER USE OBSERVABLE IDENTIFIABLE DECODABLE OBJECT??
 class Temp_MapPointModel_ObsvObj: ObservableObject, Identifiable {  // Identifiable,
