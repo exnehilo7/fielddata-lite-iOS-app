@@ -15,14 +15,13 @@ struct SearchByNameView: View {
     
     var areaName: String // THIS is how variables are passed view-to-view. @EnvironmentObject method has issues(?). See https://medium.com/swlh/swiftui-and-the-missing-environment-object-1a4bf8913ba7 for more info.
     var columnName: String
+    @State var organismName = ""
+    @State var hasResults = false
+    
     @StateObject var searchOrganismName = SearchOrganismName()
     @State var searchResults: [TempMapPointModel] = []
 //    @ObservedObject var test_ObsvObj = Temp_MapPointModel_ObsvObj()
-    
-    @State var organismName = ""
-    let htmlRoot = HtmlRootModel()
-    
-    @State var hasResults = false
+
     
     var body: some View {
         
@@ -34,7 +33,7 @@ struct SearchByNameView: View {
                 // Keep auto correction off
                 TextField("Enter Organism Name", text: $organismName, onCommit: {
                     // Call function after user is done entering text. Pass env obj prop and TextField text
-                    getMapPoints(areaName, organismName)
+                    getMapPoints()
                 }).textFieldStyle(.roundedBorder).disableAutocorrection(true)
             }
             // VStack for Results
@@ -44,8 +43,8 @@ struct SearchByNameView: View {
                     // Show NavLink only if there's results
                     if hasResults {
                         VStack{
-                            NavigationLink("Test Observeable Object") {
-                                MapView().navigationTitle("Map")
+                            NavigationLink("Show On Map") {
+                                MapView(areaName: areaName, columnName: columnName, organismName: organismName).navigationTitle(areaName)
                             }}.animation(.easeIn(duration: 3), value: 1.0) // has to apply section-wide??
                     }
                     List (searchResults) { (result) in
@@ -63,7 +62,10 @@ struct SearchByNameView: View {
     } //end body
     
     // call PHP POST and get query results. Pass area/plot name, org name
-    func getMapPoints (_ areaName: String, _ organismName: String) {
+    func getMapPoints () {
+        
+        // get root
+        let htmlRoot = HtmlRootModel()
         
 //        do{
 //        // try with URLsession extension

@@ -20,42 +20,33 @@ class SelectLocationModel: Codable, Identifiable {
 }
 
 
-//class MapPointModel: Identifiable, ObservableObject{
-//
-//    var annotationItems = [MapAnnotationItem]()
-//
-//    var siteId = ""
-//    var organismName = ""
-//    var coordinate: CLLocationCoordinate2D
-//    let id = UUID()
-//
-//    init(siteId: String = "", organismName: String = "", coordinate: CLLocationCoordinate2D) {
-//        self.siteId = siteId
-//        self.organismName = organismName
-//        self.coordinate = coordinate
-//
-//        annotationItems.append(MapAnnotationItem(coordinate: coordinate, siteId: siteId, organismName: organismName))
-//
-//    }
-//}
-
 // temp llist for display and insertion into MapAnnotationItem
-class TempMapPointModel: Codable, Identifiable {
+class TempMapPointModel: Codable, Identifiable { //}, Hashable {
+    let id = UUID() // DO NOT SET TO MUTABLE
     var siteId = ""
     var organismName = ""
     var lat = ""
     var long = ""
+    
 }
 
 // Model for map annotations
-struct MapAnnotationItem: Identifiable {
-    
-    var coordinate: CLLocationCoordinate2D
+struct MapAnnotationItem: Identifiable { //, Sequence, IteratorProtocol {
+
     let id = UUID()
+
+    var latitude: Double
+    var longitude: Double
     
+    var coordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+   
     // try more vars
     var siteId = ""
     var organismName = ""
+    
+
 }
 
 // MAY NEVER USE OBSERVABLE IDENTIFIABLE DECODABLE OBJECT??
@@ -93,6 +84,8 @@ extension Temp_MapPointModel_ObsvObj: Codable {
 class Temp_MapPointModel_ObsvObj_Container: ObservableObject {
     @Published var objects = [Temp_MapPointModel_ObsvObj]()
 }
+
+
 
 // Teeeest
 class ResponseModel: Codable, Identifiable {

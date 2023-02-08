@@ -23,6 +23,7 @@ struct StatefulPreviewWrapper<Value, Content: View>: View {
     }
 }
 
+// Can it work?
 //// call PHP POST and get query results. Pass area/plot name, org name
 //func getMapPoints (_ areaName: String, _ columnName: String, _ organismName: String) ->
 //(hasResults: Bool, searchResults: [TempMapPointModel] ){
