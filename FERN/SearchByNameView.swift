@@ -16,8 +16,8 @@ struct SearchByNameView: View {
     var areaName: String // THIS is how variables are passed view-to-view. @EnvironmentObject method has issues(?). See https://medium.com/swlh/swiftui-and-the-missing-environment-object-1a4bf8913ba7 for more info.
     var columnName: String
     @StateObject var searchOrganismName = SearchOrganismName()
-    @State var searchResults: [Temp_MapPointModel] = []
-    @ObservedObject var test_ObsvObj = Temp_MapPointModel_ObsvObj()
+    @State var searchResults: [TempMapPointModel] = []
+//    @ObservedObject var test_ObsvObj = Temp_MapPointModel_ObsvObj()
     
     @State var organismName = ""
     let htmlRoot = HtmlRootModel()
@@ -25,8 +25,6 @@ struct SearchByNameView: View {
     @State var hasResults = false
     
     var body: some View {
-        
-//        var arrayOfObsvObjs = [Temp_MapPointModel_ObsvObj] = []
         
         // VStack for All
         VStack {
@@ -36,7 +34,7 @@ struct SearchByNameView: View {
                 // Keep auto correction off
                 TextField("Enter Organism Name", text: $organismName, onCommit: {
                     // Call function after user is done entering text. Pass env obj prop and TextField text
-                    getMapPoints(areaName, organismName)//areaName.areaName, organismName)
+                    getMapPoints(areaName, organismName)
                 }).textFieldStyle(.roundedBorder).disableAutocorrection(true)
             }
             // VStack for Results
@@ -45,19 +43,18 @@ struct SearchByNameView: View {
                 NavigationStack {
                     // Show NavLink only if there's results
                     if hasResults {
-                        NavigationLink("Test Observeable Object") {
-//                            MapView().navigationTitle("Map")
-                            Test_OvsvObj(willItWork: test_ObsvObj).navigationTitle("Test")
-                        }
+                        VStack{
+                            NavigationLink("Test Observeable Object") {
+                                MapView().navigationTitle("Map")
+                            }}.animation(.easeIn(duration: 3), value: 1.0) // has to apply section-wide??
                     }
                     List (searchResults) { (result) in
                         HStack {
-                            //Text(result.siteId ?? 0)
                             Text(result.organismName)
-                            Text(result.geoPoint)
-                            
-                            // try placing in an obsv obj?
-                            
+//                            Text(result.lat)
+//                            Text(result.long)
+                        
+                    
                         }
                     }
                 } // end navstack
@@ -102,15 +99,19 @@ struct SearchByNameView: View {
                 decoder.dataDecodingStrategy = .deferredToData
                 decoder.dateDecodingStrategy = .deferredToDate
                 
-                _ = try decoder.decode([Temp_MapPointModel_ObsvObj].self, from: data!)
+//                _ = try decoder.decode([Temp_MapPointModel_ObsvObj].self, from: data!)
                 
                 
                 
                 // convert JSON response into class model as an array
-                self.searchResults = try decoder.decode([Temp_MapPointModel].self, from: data!)
+                self.searchResults = try decoder.decode([TempMapPointModel].self, from: data!)
                 
-                hasResults.toggle()
-                
+                // dont show link if result is empty
+                if !searchResults.isEmpty {
+                    if hasResults == false {
+                        hasResults.toggle()
+                    }
+                }
 //                // try obsv obj
 //                _ = try JSONDecoder().decode(Temp_MapPointModel_ObsvObj.self, from: data!)
 //                // Result: type mismatch for type Dictionary<String, Any> in JSON: Expected to decode Dictionary<String, Any> but found an array instead.

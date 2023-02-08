@@ -39,12 +39,26 @@ class SelectLocationModel: Codable, Identifiable {
 //    }
 //}
 
-class Temp_MapPointModel: Codable, Identifiable {
+// temp llist for display and insertion into MapAnnotationItem
+class TempMapPointModel: Codable, Identifiable {
     var siteId = ""
     var organismName = ""
-    var geoPoint = ""
+    var lat = ""
+    var long = ""
 }
 
+// Model for map annotations
+struct MapAnnotationItem: Identifiable {
+    
+    var coordinate: CLLocationCoordinate2D
+    let id = UUID()
+    
+    // try more vars
+    var siteId = ""
+    var organismName = ""
+}
+
+// MAY NEVER USE OBSERVABLE IDENTIFIABLE DECODABLE OBJECT??
 class Temp_MapPointModel_ObsvObj: ObservableObject, Identifiable {  // Identifiable,
     
     let id = UUID()
@@ -78,18 +92,6 @@ extension Temp_MapPointModel_ObsvObj: Codable {
 }
 class Temp_MapPointModel_ObsvObj_Container: ObservableObject {
     @Published var objects = [Temp_MapPointModel_ObsvObj]()
-}
-
-// Model for map annotations
-struct MapAnnotationItem: Identifiable {
-    var coordinate: CLLocationCoordinate2D
-    let id = UUID()
-//    var color: Color?
-//    var tint: Color { color ?? .red }
-    
-    // try more vars
-    var siteId = ""
-    var organismName = ""
 }
 
 // Teeeest

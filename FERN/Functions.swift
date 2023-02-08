@@ -23,6 +23,63 @@ struct StatefulPreviewWrapper<Value, Content: View>: View {
     }
 }
 
+//// call PHP POST and get query results. Pass area/plot name, org name
+//func getMapPoints (_ areaName: String, _ columnName: String, _ organismName: String) ->
+//(hasResults: Bool, searchResults: [TempMapPointModel] ){
+//    
+//    let htmlRoot = HtmlRootModel()
+//    var hasResults = false
+//    var searchResults: [TempMapPointModel] = []
+//    
+//    
+//    // pass name of search column to use
+//    let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/searchOrgNameByArea.php")! as URL)
+//    request.httpMethod = "POST"
+//    let postString = "_column_name=\(columnName)&_column_value=\(areaName)&_org_name=\(organismName)"
+//    request.httpBody = postString.data (using: String.Encoding.utf8)
+//    
+//    let task = URLSession.shared.dataTask(with: request as URLRequest) {
+//               data, response, error in
+//
+//       if error != nil {
+//           print("error=\(String(describing: error))")
+//           return
+//       }
+//
+//        
+//        do {
+//            
+//            let decoder = JSONDecoder()
+//            decoder.keyDecodingStrategy = .useDefaultKeys
+//            decoder.dataDecodingStrategy = .deferredToData
+//            decoder.dateDecodingStrategy = .deferredToDate
+// 
+//            // convert JSON response into class model as an array
+//            searchResults = try decoder.decode([TempMapPointModel].self, from: data!)
+//            
+//            if !searchResults.isEmpty {
+//                if hasResults == false {
+//                    hasResults.toggle()
+//                }
+//            }
+//            
+//            // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
+//        } catch DecodingError.keyNotFound(let key, let context) {
+//            Swift.print("could not find key \(key) in JSON: \(context.debugDescription)")
+//        } catch DecodingError.valueNotFound(let type, let context) {
+//            Swift.print("could not find type \(type) in JSON: \(context.debugDescription)")
+//        } catch DecodingError.typeMismatch(let type, let context) {
+//            Swift.print("type mismatch for type \(type) in JSON: \(context.debugDescription)")
+//        } catch DecodingError.dataCorrupted(let context) {
+//            Swift.print("data found to be corrupted in JSON: \(context.debugDescription)")
+//        } catch let error as NSError {
+//            NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
+//        }
+//    }
+//    task.resume()
+//    return (hasResults, searchResults)
+//}// end getMapPoints
+
 //func getPhpResponse<T> (model: T.Type, urlString: String) where T : ResponseModel {
 //    
 //    var emptyModel = [model] = []
