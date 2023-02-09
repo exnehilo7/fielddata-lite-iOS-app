@@ -23,6 +23,20 @@ struct StatefulPreviewWrapper<Value, Content: View>: View {
     }
 }
 
+// View extension for alignment by ratios. Help from https://www.swiftbysundell.com/articles/swiftui-layout-system-guide-part-3/
+// May need to add an adjusting value depending which device is being used
+extension View {
+    func alignByRatio(horizRatio: Double, vertRatio: Double,
+                      alignment: Alignment = .center) -> some View {
+        alignmentGuide(HorizontalAlignment.center) {
+            $0.width * horizRatio
+        }
+        .alignmentGuide(VerticalAlignment.center) {
+            $0.height * vertRatio
+        }
+    }
+}
+
 // Can it work?
 //// call PHP POST and get query results. Pass area/plot name, org name
 //func getMapPoints (_ areaName: String, _ columnName: String, _ organismName: String) ->

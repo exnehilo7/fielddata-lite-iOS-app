@@ -15,6 +15,10 @@ class HtmlRootModel: Codable {
     var htmlRoot = "http://covid-samples01.ornl.gov/fielddata-lite"
 }
 
+class MapPointSize {
+    let size: CGFloat = 35
+}
+
 // Model object for SelectAreaView
 class SelectLocationModel: Codable, Identifiable {
     var name = ""
@@ -38,17 +42,17 @@ struct MapAnnotationItem: Identifiable { //, Sequence, IteratorProtocol {
 
     let id = UUID()
 
-    var latitude: Double
-    var longitude: Double
+    var latitude: CGFloat
+    var longitude: CGFloat
     
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
    
-    // try more vars
     var siteId = ""
     var organismName = ""
-    
+    var systemName = ""
+    var size: CGFloat = MapPointSize().size
 
 }
 
