@@ -8,8 +8,17 @@
 import SwiftUI
 import MapKit
 
-// Within the database funcion, divide general region's zoom level by 125,000 to
-// adjust for the table's CesiumJS value.
+/* Within the database funcion, divide general region's zoom level by 125,000 to
+ adjust for the table's CesiumJS value.
+ The geocoordinates, organism name, and PK from the database are inserted into
+ a MapAnnotationItem which each in trun are added to an array. Cycling through
+ the array is done by simple inetger variables. (Apparently Swift doesn't have
+ .next() and .previous() for arrays?)
+ The starting center and zoom level of the area or plot being queried is
+ calculated in the database and passed into a MKCoordinateRegion variable.
+ 
+ 
+*/
 struct MapView: View {
     
     // From calling view
@@ -17,7 +26,7 @@ struct MapView: View {
     var columnName: String
     var organismName: String
     
-    @State var currentAnnoItem = 1
+    @State var currentAnnoItem = 0 // starting index is 0, so the first "next" will be 1
     @State var totalAnnoItems = 0
     
     // For map points PHP response
@@ -30,6 +39,9 @@ struct MapView: View {
     
     // To hold Annotated Map Point Models
     @State var annotationItems = [MapAnnotationItem]()
+    
+    // To hold the starting region's coordinates and zoom level
+    @State private var region: MKCoordinateRegion = MKCoordinateRegion()
     
 //    // To hold Annotated starting region
 //    @State var regionItem = [RegionAnnotationItem]()
@@ -62,7 +74,6 @@ struct MapView: View {
 //        center: CLLocationCoordinate2D(latitude: MapDefaults.latitude, longitude: MapDefaults.longitude),
 //        span: MKCoordinateSpan(latitudeDelta: MapDefaults.zoom, longitudeDelta: MapDefaults.zoom))
     
-    @State private var region: MKCoordinateRegion = MKCoordinateRegion()
     
     
     var body: some View {
@@ -92,33 +103,62 @@ struct MapView: View {
                 .padding()
             // Don't display if no results
             if hasResults {
-                Button("< Previous"){
-                    print(annotationItems[currentAnnoItem].siteId)
-                    currentAnnoItem -= 1
-                }.buttonStyle(.borderless)
-                    .offset(y: 325).offset(x: -50)
-                    .font(.title3)
-                    .fontWeight(.bold)
+                Button { // arrowshape.backward.fill
+                    cycleAnnotations(forward: false)
+                    print(annotationItems[currentAnnoItem].organismName)
+//                    print("current: " + String(currentAnnoItem) + ", ID: " + annotationItems[currentAnnoItem].siteId)
+                    
+                } label: {
+                    Image(systemName: "arrowshape.backward.fill")
+                        .font(.system(size: 50))
+//                        .foregroundColor(.gray)
+                        .grayscale(0.85)
+                }.offset(y: 275).offset(x: -75)
+        
+                Button { // arrowshape.forward.fill
+                    cycleAnnotations(forward: true)
+                    print(annotationItems[currentAnnoItem].organismName)
+//                    print("current: " + String(currentAnnoItem) + ", ID: " + annotationItems[currentAnnoItem].siteId)
+                    
+                } label: {
+                    Image(systemName: "arrowshape.forward.fill")
+                        .font(.system(size: 50))
+//                        .foregroundColor(.gray)
+                        .grayscale(0.85)
+                }.offset(y: 275).offset(x: 75)
                 
-                Button("Next >"){
-                    print(annotationItems[currentAnnoItem].siteId)
-                    currentAnnoItem += 1
-                }.buttonStyle(.borderless)
-                    .offset(y: 325).offset(x: 50)
-                    .font(.title3)
-                    .fontWeight(.bold)
                 // Button images demo:
                 Button {
-                    print("pressed")
+                    // Test to make sure points remain in order:
+                    for item in annotationItems {
+                        print(item)
+                    }
                 } label: {
-                    Image(systemName: "leaf.circle.fill")
-                        .font(.system(size: 50))
-                }
+                    Image(systemName: "info.circle.fill")
+                        .font(.system(size: 60))
+                        .grayscale(0.95)
+                }.offset(y: 275)
+                
             }
         }.onAppear(perform: getMapPoints).onAppear(perform: getRegion)
     }
     
-    // Function to make sure forward and backward stay within annotation's item count
+    // Make sure forward and backward cycling will stay within the annotation's item count
+    func cycleAnnotations (forward: Bool ){
+        
+        if forward {
+            if currentAnnoItem < totalAnnoItems{
+                currentAnnoItem += 1
+//                print("after increase: " + String(currentAnnoItem))
+            }
+        }
+        else {
+            if currentAnnoItem > 0 {
+                currentAnnoItem -= 1
+//                print("after decrease: " + String(currentAnnoItem))
+            }
+        }
+    }
     
     func getMapPoints () {
         
@@ -152,7 +192,7 @@ struct MapView: View {
                 // dont insert if result is empty
                 if !searchResults.isEmpty {
                     
-                    totalAnnoItems = searchResults.count
+                    totalAnnoItems = (searchResults.count - 1) // adjust for array 0-indexing
                     
                     // Don't show items if no data
                     if hasResults == false {

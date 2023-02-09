@@ -44,7 +44,7 @@ struct SearchByNameView: View {
                     if hasResults {
                         VStack{
                             NavigationLink("Show On Map") {
-                                MapView(areaName: areaName, columnName: columnName, organismName: organismName).navigationTitle(areaName)
+                                MapView(areaName: areaName, columnName: columnName, organismName: organismName)
                             }}.animation(.easeIn(duration: 3), value: 1.0) // has to apply section-wide??
                     }
                     List (searchResults) { (result) in
