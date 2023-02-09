@@ -108,7 +108,7 @@ struct MapView: View {
             // Don't display if no results
             if hasResults {
                 // Show organism name of the selected point
-                Text(annotationItems[currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold).offset(y: 540)
+                Text(annotationItems[currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold).offset(y: 520)
                     .onAppear(perform: {
                     // Mark first point on map
                     annotationItems[currentAnnoItem].size = 60
@@ -125,7 +125,7 @@ struct MapView: View {
                         .font(.system(size: 50))
 //                        .foregroundColor(.gray)
                         .grayscale(0.85)
-                }.offset(y: 600).offset(x: -75)
+                }.offset(y: 580).offset(x: -75)
         
                 Button { // arrowshape.forward.fill
                     cycleAnnotations(forward: true)
@@ -141,26 +141,26 @@ struct MapView: View {
                         .font(.system(size: 50))
 //                        .foregroundColor(.gray)
                         .grayscale(0.85)
-                }.offset(y: 600).offset(x: 75)
+                }.offset(y: 580).offset(x: 75)
                 
                 // Button images demo:
-                Button {
-                    // Test to make sure points remain in order:
-                    for item in annotationItems {
-                        print(item)
-                    }
-                } label: {
-                    Image(systemName: "info.circle.fill")
-                        .font(.system(size: 60))
-                        .grayscale(0.95)
-                }
-                .offset(y: 600)
+//                Button {
+//                    // Test to make sure points remain in order:
+//                    for item in annotationItems {
+//                        print(item)
+//                    }
+//                } label: {
+//                    Image(systemName: "info.circle.fill")
+//                        .font(.system(size: 60))
+//                        .grayscale(0.95)
+//                }
+//                .offset(y: 600)
                 
             }
-        }.onAppear(perform: getMapPoints).onAppear(perform: getRegion)
+            // For async acticity, use .task instead of .onAppear
+        }.task { await getMapPoints()}.task { await getRegion()}
     }
     
-
     
     // Make sure forward and backward cycling will stay within the annotation's item count
     func cycleAnnotations (forward: Bool ){
@@ -179,7 +179,7 @@ struct MapView: View {
         }
     }
     
-    func getMapPoints () {
+    func getMapPoints () async {
         
         // get root
         let htmlRoot = HtmlRootModel()
@@ -246,7 +246,7 @@ struct MapView: View {
         task.resume()
     }// end getMapPoints
     
-    func getRegion () {
+    func getRegion () async {
         
         // get root
         let htmlRoot = HtmlRootModel()
