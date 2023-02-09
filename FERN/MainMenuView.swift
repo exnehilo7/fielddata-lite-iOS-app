@@ -28,7 +28,7 @@ struct MainMenuView: View {
                             .navigationTitle("Create Custom Route")
                     }
                     NavigationLink("Test Map") {
-                        MapView(areaName: "Davis", columnName: "area_name", organismName: "Besc-113")
+                        MapView(areaName: "Davis", columnName: "area_name", organismName: "Besc-112")
                     }
                 }.bold()
             }
