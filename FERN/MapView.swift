@@ -16,9 +16,10 @@ import MapKit
  .next() and .previous() for arrays?)
  The starting center and zoom level of the area or plot being queried is
  calculated in the database and passed into a MKCoordinateRegion variable.
- 
+
  
 */
+
 struct MapView: View {
     
     // From calling view
@@ -33,6 +34,8 @@ struct MapView: View {
     @State var searchResults: [TempMapPointModel] = []
     @State var hasResults = false
     
+    // For showing info when a map point is pressed?
+    @State private var selectedPoint: MapAnnotationItem?
     
     // For starting region and zooom level PHP response
     @State var startingRegion: [StartingRegionModel] = []
@@ -79,7 +82,7 @@ struct MapView: View {
     var body: some View {
         
         
-        ZStack {
+        ZStack(alignment: .center) {
             Map(coordinateRegion: $region,
                 interactionModes: .all,
                 showsUserLocation: true,
@@ -89,22 +92,31 @@ struct MapView: View {
 //                 MapMarker(coordinate: item.coordinate)
                 
                 // Use for custom images and colors:
-                MapAnnotation(coordinate: item.coordinate) {
-                    Image(systemName: "tree.circle") //leaf.circle
+                MapAnnotation(coordinate: item.coordinate, content: {
+                    Image(systemName: item.systemName) //leaf.circle
                         .symbolRenderingMode(.palette)
-                        .foregroundStyle(.green, .red).font(.system(size: 35))
-                }
+                        .foregroundStyle(.green, .red).font(.system(size: item.size))
+                })
             } // end add points
             Text("lat: \(region.center.latitude), long: \(region.center.longitude). Zoom: \(region.span.latitudeDelta)")
                 .font(.caption)
                 .fontWeight(.semibold)
 //                .foregroundColor(.red)
-                .offset(y: -350)
+//                .alignByRatio(horizRatio: 0.5, vertRatio: 45)
+                .offset(y: -640)
                 .padding()
             // Don't display if no results
             if hasResults {
+                // Show organism name of the selected point
+                Text(annotationItems[currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold).offset(y: 540)
+                    .onAppear(perform: {
+                    // Mark first point on map
+                    annotationItems[currentAnnoItem].size = 60
+                })
                 Button { // arrowshape.backward.fill
                     cycleAnnotations(forward: false)
+                    annotationItems[currentAnnoItem].size = 60
+                    annotationItems[currentAnnoItem + 1].size = MapPointSize().size
                     print(annotationItems[currentAnnoItem].organismName)
 //                    print("current: " + String(currentAnnoItem) + ", ID: " + annotationItems[currentAnnoItem].siteId)
                     
@@ -113,10 +125,14 @@ struct MapView: View {
                         .font(.system(size: 50))
 //                        .foregroundColor(.gray)
                         .grayscale(0.85)
-                }.offset(y: 275).offset(x: -75)
+                }.offset(y: 600).offset(x: -75)
         
                 Button { // arrowshape.forward.fill
                     cycleAnnotations(forward: true)
+                    // Draw attention to selected point
+                    annotationItems[currentAnnoItem].size = 60
+                    // Put previous' point back to its original state
+                    annotationItems[currentAnnoItem - 1].size = MapPointSize().size
                     print(annotationItems[currentAnnoItem].organismName)
 //                    print("current: " + String(currentAnnoItem) + ", ID: " + annotationItems[currentAnnoItem].siteId)
                     
@@ -125,7 +141,7 @@ struct MapView: View {
                         .font(.system(size: 50))
 //                        .foregroundColor(.gray)
                         .grayscale(0.85)
-                }.offset(y: 275).offset(x: 75)
+                }.offset(y: 600).offset(x: 75)
                 
                 // Button images demo:
                 Button {
@@ -137,11 +153,14 @@ struct MapView: View {
                     Image(systemName: "info.circle.fill")
                         .font(.system(size: 60))
                         .grayscale(0.95)
-                }.offset(y: 275)
+                }
+                .offset(y: 600)
                 
             }
         }.onAppear(perform: getMapPoints).onAppear(perform: getRegion)
     }
+    
+
     
     // Make sure forward and backward cycling will stay within the annotation's item count
     func cycleAnnotations (forward: Bool ){
@@ -203,10 +222,11 @@ struct MapView: View {
                         for result in searchResults {
                             annotationItems.append(MapAnnotationItem(
                                 latitude: Double(result.lat) ?? 0,
-                            longitude: Double(result.long) ?? 0,
-                                          siteId: result.siteId,
-                                          organismName: result.organismName
-                                          ))
+                                longitude: Double(result.long) ?? 0,
+                                siteId: result.siteId,
+                                organismName: result.organismName,
+                                systemName: "tree.circle"
+                                ))
                         }
                 }
                 
