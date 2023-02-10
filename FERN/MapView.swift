@@ -14,8 +14,8 @@ import MapKit
  a MapAnnotationItem which each in trun are added to an array. Cycling through
  the array is done by simple inetger variables. (Apparently Swift doesn't have
  .next() and .previous() for arrays?)
- The starting center and zoom level of the area or plot being queried is
- calculated in the database and passed into a MKCoordinateRegion variable.
+ The starting center is the first MapAnnotationItem item. The zoom level is set
+ in the getMapPoints function.
 
  
 */
@@ -26,6 +26,7 @@ struct MapView: View {
     var areaName: String
     var columnName: String
     var organismName: String
+    var queryName: String
     
     @State var currentAnnoItem = 0 // starting index is 0, so the first "next" will be 1
     @State var totalAnnoItems = 0
@@ -158,7 +159,7 @@ struct MapView: View {
                 
             }
             // For async acticity, use .task instead of .onAppear
-        }.task { await getMapPoints()}.task { await getRegion()}
+        }.task { await getMapPoints()}//.task { await getRegion()}
     }
     
     
@@ -185,9 +186,17 @@ struct MapView: View {
         let htmlRoot = HtmlRootModel()
         
         // pass name of search column to use
-        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/searchOrgNameBySite.php")! as URL)
+        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/getMapItemsForApp.php")! as URL)
         request.httpMethod = "POST"
-        let postString = "_column_name=\(columnName)&_column_value=\(areaName)&_org_name=\(organismName)"
+        var postString = ""
+        // Set pass variables
+        if columnName == "" {
+            postString = "_column_value=\(areaName)&_query_name=\(queryName)"
+        }
+        else {
+            postString = "_column_name=\(columnName)&_column_value=\(areaName)&_org_name=\(organismName)&_query_name=\(queryName)"
+        }
+        
         request.httpBody = postString.data (using: String.Encoding.utf8)
         
         let task = URLSession.shared.dataTask(with: request as URLRequest) {
@@ -219,15 +228,19 @@ struct MapView: View {
                     }
                     
                     // Put results in an array
-                        for result in searchResults {
-                            annotationItems.append(MapAnnotationItem(
-                                latitude: Double(result.lat) ?? 0,
-                                longitude: Double(result.long) ?? 0,
-                                siteId: result.siteId,
-                                organismName: result.organismName,
-                                systemName: "tree.circle"
-                                ))
-                        }
+                    for result in searchResults {
+                        annotationItems.append(MapAnnotationItem(
+                            latitude: Double(result.lat) ?? 0,
+                            longitude: Double(result.long) ?? 0,
+                            siteId: result.siteId,
+                            organismName: result.organismName,
+                            systemName: "tree.circle"
+                            ))
+                    }
+                    // Set staring regoin to the first point in the list
+                    self.region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: Double(searchResults[0].lat) ?? 0, longitude: Double(searchResults[0].long) ?? 0),
+                        // zoom level:
+                        span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
                 }
                 
             // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
@@ -246,60 +259,61 @@ struct MapView: View {
         task.resume()
     }// end getMapPoints
     
-    func getRegion () async {
-        
-        // get root
-        let htmlRoot = HtmlRootModel()
-        
-        // pass name of search column to use
-        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/siteCenterPointAndZoom.php")! as URL)
-        request.httpMethod = "POST"
-        let postString = "_site_name=\(areaName)"
-        request.httpBody = postString.data (using: String.Encoding.utf8)
-        
-        let task = URLSession.shared.dataTask(with: request as URLRequest) {
-            data, response, error in
-            
-            if error != nil {
-                print("error=\(String(describing: error))")
-                return
-            }
-            
-            do {
-                
-                let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .useDefaultKeys
-                decoder.dataDecodingStrategy = .deferredToData
-                decoder.dateDecodingStrategy = .deferredToDate
-                
-                // Get list of points
-                self.startingRegion = try decoder.decode([StartingRegionModel].self, from: data!)
-                
-                // dont assign result is empty
-                if !startingRegion.isEmpty {
-                    self.region = MKCoordinateRegion( center: CLLocationCoordinate2D(latitude: Double(startingRegion[0].lat) ?? 0, longitude: Double(startingRegion[0].long) ?? 0),
-                          span: MKCoordinateSpan(latitudeDelta: Double(startingRegion[0].zoom) ?? 0, longitudeDelta: Double(startingRegion[0].zoom) ?? 0))
-                }
-                
-            // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
-            } catch DecodingError.keyNotFound(let key, let context) {
-                Swift.print("could not find key \(key) in JSON: \(context.debugDescription)")
-            } catch DecodingError.valueNotFound(let type, let context) {
-                Swift.print("could not find type \(type) in JSON: \(context.debugDescription)")
-            } catch DecodingError.typeMismatch(let type, let context) {
-                Swift.print("type mismatch for type \(type) in JSON: \(context.debugDescription)")
-            } catch DecodingError.dataCorrupted(let context) {
-                Swift.print("data found to be corrupted in JSON: \(context.debugDescription)")
-            } catch let error as NSError {
-                NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
-            }
-        }
-        task.resume()
-    }// end getRegion
+//    func getRegion () async {
+//
+//        // get root
+//        let htmlRoot = HtmlRootModel()
+//
+//        // pass name of search column to use
+//        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/siteCenterPointAndZoom.php")! as URL)
+//        request.httpMethod = "POST"
+//        let postString = "_site_name=\(areaName)"
+//        request.httpBody = postString.data (using: String.Encoding.utf8)
+//
+//        let task = URLSession.shared.dataTask(with: request as URLRequest) {
+//            data, response, error in
+//
+//            if error != nil {
+//                print("error=\(String(describing: error))")
+//                return
+//            }
+//
+//            do {
+//
+//                let decoder = JSONDecoder()
+//                decoder.keyDecodingStrategy = .useDefaultKeys
+//                decoder.dataDecodingStrategy = .deferredToData
+//                decoder.dateDecodingStrategy = .deferredToDate
+//
+//                // Get list of points
+//                self.startingRegion = try decoder.decode([StartingRegionModel].self, from: data!)
+//
+//                // dont assign result is empty
+//                if !startingRegion.isEmpty {
+//                    self.region = MKCoordinateRegion( center: CLLocationCoordinate2D(latitude: Double(startingRegion[0].lat) ?? 0, longitude: Double(startingRegion[0].long) ?? 0),
+//                          span: MKCoordinateSpan(latitudeDelta: Double(startingRegion[0].zoom) ?? 0, longitudeDelta: Double(startingRegion[0].zoom) ?? 0))
+//                }
+//
+//            // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
+//            } catch DecodingError.keyNotFound(let key, let context) {
+//                Swift.print("could not find key \(key) in JSON: \(context.debugDescription)")
+//            } catch DecodingError.valueNotFound(let type, let context) {
+//                Swift.print("could not find type \(type) in JSON: \(context.debugDescription)")
+//            } catch DecodingError.typeMismatch(let type, let context) {
+//                Swift.print("type mismatch for type \(type) in JSON: \(context.debugDescription)")
+//            } catch DecodingError.dataCorrupted(let context) {
+//                Swift.print("data found to be corrupted in JSON: \(context.debugDescription)")
+//            } catch let error as NSError {
+//                NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
+//            }
+//        }
+//        task.resume()
+//    }// end getRegion
 }// end view
 
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
-        MapView(areaName: "Davis", columnName: "area_name", organismName: "Besc-112")
+        MapView(areaName: "Davis", columnName: "area_name", organismName: "Besc-112",
+                queryName: "query_search_org_name_by_site")
     }
 }

@@ -44,8 +44,10 @@ struct SearchByNameView: View {
                     if hasResults {
                         VStack{
                             NavigationLink("Show On Map") {
-                                MapView(areaName: areaName, columnName: columnName, organismName: organismName)
+                                MapView(areaName: areaName, columnName: columnName, organismName: organismName,
+                                        queryName: "query_search_org_name_by_site")
                             }}.animation(.easeIn(duration: 3), value: 1.0) // has to apply section-wide??
+                        Text("(Results will not be in a particular order)")
                     }
                     List (searchResults) { (result) in
                         HStack {
@@ -77,9 +79,9 @@ struct SearchByNameView: View {
 //        }
         
         // pass name of search column to use
-        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/searchOrgNameBySite.php")! as URL)
+        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/getMapItemsForApp.php")! as URL)
         request.httpMethod = "POST"
-        let postString = "_column_name=\(columnName)&_column_value=\(areaName)&_org_name=\(organismName)"
+        let postString = "_column_name=\(columnName)&_column_value=\(areaName)&_org_name=\(organismName)&_query_name=query_search_org_name_by_site"
         request.httpBody = postString.data (using: String.Encoding.utf8)
         
         let task = URLSession.shared.dataTask(with: request as URLRequest) {
