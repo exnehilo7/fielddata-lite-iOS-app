@@ -11,6 +11,10 @@ struct MainMenuView: View {
     var body: some View {
         NavigationStack{
             List {
+                    NavigationLink("Load Saved Route") {
+                       LoadSavedRouteView()
+                            .navigationTitle("Load Saved Route")
+                    }
                     NavigationLink("Select Area") {
                         SelectAreaView(phpFile: "menuSelectAreaView.php", columnName: "area_name")
                             .navigationTitle("Select Area")
@@ -19,10 +23,7 @@ struct MainMenuView: View {
                         SelectAreaView(phpFile: "menuSelectPlotView.php",  columnName: "plot_name")
                             .navigationTitle("Select Plot")
                     }
-                    NavigationLink("Load Saved Route") {
-                       LoadSavedRouteView()
-                            .navigationTitle("Load Saved Route")
-                    }
+
 //                    NavigationLink("Create Custom Route") {
 //                        CreateCustomRouteView()
 //                            .navigationTitle("Create Custom Route")

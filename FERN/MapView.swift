@@ -8,7 +8,8 @@
 import SwiftUI
 import MapKit
 
-/*
+/* Within the database funcion, divide general region's zoom level by 125,000 to
+ adjust for the table's CesiumJS value.
  The geocoordinates, organism name, and PK from the database are inserted into
  a MapAnnotationItem which each in trun are added to an array. Cycling through
  the array is done by simple inetger variables. (Apparently Swift doesn't have
@@ -27,30 +28,24 @@ struct MapView: View {
     var organismName: String
     var queryName: String
     
-    @State var currentAnnoItem = 0
+    @State var currentAnnoItem = 0 // starting index is 0, so the first "next" will be 1
     @State var totalAnnoItems = 0
     
     // For map points PHP response
     @State var searchResults: [TempMapPointModel] = []
-//    @ObservedObject var searchResults = TempMapPointModel_Container()
     @State var hasResults = false
     
-    // To fix "Modifying state during view update, this will cause undefined behavior" messages
-    @State var selectedOrgName = ""
-    
     // For showing info when a map point is pressed?
-//    @State private var selectedPoint: MapAnnotationItem?
+    @State private var selectedPoint: MapAnnotationItem?
     
     // For starting region and zooom level PHP response
 //    @State var startingRegion: [StartingRegionModel] = []
     
     // To hold Annotated Map Point Models
-    @State var annotationItems = MapAnnotationItem_Container()
+    @State var annotationItems = [MapAnnotationItem]()
     
     // To hold the starting region's coordinates and zoom level
     @State private var region: MKCoordinateRegion = MKCoordinateRegion()
-    
-    
     
 //    // To hold Annotated starting region
 //    @State var regionItem = [RegionAnnotationItem]()
@@ -92,7 +87,7 @@ struct MapView: View {
             Map(coordinateRegion: $region,
                 interactionModes: .all,
                 showsUserLocation: true,
-                annotationItems: annotationItems.MapAnnotationItemArray
+                annotationItems: annotationItems
             ) { item in // add points
                 // A vanilla point:
 //                 MapMarker(coordinate: item.coordinate)
@@ -114,16 +109,16 @@ struct MapView: View {
             // Don't display if no results
             if hasResults {
                 // Show organism name of the selected point
-                Text(annotationItems.MapAnnotationItemArray[currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold).offset(y: 520)
+                Text(annotationItems[currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold).offset(y: 520)
                     .onAppear(perform: {
                     // Mark first point on map
-                        annotationItems.MapAnnotationItemArray[currentAnnoItem].size = 60
+                    annotationItems[currentAnnoItem].size = 60
                 })
                 Button { // arrowshape.backward.fill
                     cycleAnnotations(forward: false)
-                    annotationItems.MapAnnotationItemArray[currentAnnoItem].size = 60
-                    annotationItems.MapAnnotationItemArray[currentAnnoItem + 1].size = MapPointSize().size
-//                    print(annotationItems[currentAnnoItem].organismName)
+                    annotationItems[currentAnnoItem].size = 60
+                    annotationItems[currentAnnoItem + 1].size = MapPointSize().size
+                    print(annotationItems[currentAnnoItem].organismName)
 //                    print("current: " + String(currentAnnoItem) + ", ID: " + annotationItems[currentAnnoItem].siteId)
                     
                 } label: {
@@ -136,10 +131,10 @@ struct MapView: View {
                 Button { // arrowshape.forward.fill
                     cycleAnnotations(forward: true)
                     // Draw attention to selected point
-                    annotationItems.MapAnnotationItemArray[currentAnnoItem].size = 60
+                    annotationItems[currentAnnoItem].size = 60
                     // Put previous' point back to its original state
-                    annotationItems.MapAnnotationItemArray[currentAnnoItem - 1].size = MapPointSize().size
-//                    print(annotationItems[currentAnnoItem].organismName)
+                    annotationItems[currentAnnoItem - 1].size = MapPointSize().size
+                    print(annotationItems[currentAnnoItem].organismName)
 //                    print("current: " + String(currentAnnoItem) + ", ID: " + annotationItems[currentAnnoItem].siteId)
                     
                 } label: {
@@ -195,7 +190,7 @@ struct MapView: View {
         request.httpMethod = "POST"
         var postString = ""
         // Set pass variables
-        if columnName == "" {
+        if columnName != "" {
             postString = "_column_value=\(areaName)&_query_name=\(queryName)"
         }
         else {
@@ -223,55 +218,28 @@ struct MapView: View {
                 self.searchResults = try decoder.decode([TempMapPointModel].self, from: data!)
                 
                 // dont insert if result is empty
-//                if !annotationItems.MapAnnotationItemArray.isEmpty {
-//                    totalAnnoItems = (annotationItems.MapAnnotationItemArray.count - 1) // adjust for array 0-indexing
-//
-//                    // Don't show items if no data
-//                    if hasResults == false {
-//                        hasResults.toggle()
-//                    }
-//
-//                    // Put results in an array
-//                    for var result in annotationItems.MapAnnotationItemArray {
-//                        result.systemName = "tree.circle"
-//                    }
-//                    // Set staring regoin to the first point in the list
-//                    self.region = MKCoordinateRegion(center: CLLocationCoordinate2D(
-//                        latitude: Double(annotationItems.MapAnnotationItemArray[0].latitude),
-//                        longitude: Double(annotationItems.MapAnnotationItemArray[0].longitude)),
-//                        // zoom level:
-//                        span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
-              if !searchResults.isEmpty {
-                  totalAnnoItems = (searchResults.count - 1) // adjust for array 0-indexing
-                  
-                  // Don't show items if no data
-                  if hasResults == false {
-                      hasResults.toggle()
-                  }
-                  
-                  // Put results in an array
-                  for (index, result) in searchResults.enumerated() {
-                      annotationItems.MapAnnotationItemArray.append(
-                        MapAnnotationItem())
-                      annotationItems.MapAnnotationItemArray[index].latitude = Double(result.lat) ?? 0
-                      annotationItems.MapAnnotationItemArray[index].longitude = Double(result.long) ?? 0
-                      annotationItems.MapAnnotationItemArray[index].siteId = result.siteId
-                      annotationItems.MapAnnotationItemArray[index].organismName = result.organismName
-                      annotationItems.MapAnnotationItemArray[index].systemName = "tree.circle"
-//                      append(MapAnnotationItem(
-//                          latitude: Double(result.lat) ?? 0,
-//                          longitude: Double(result.long) ?? 0,
-//                          siteId: result.siteId,
-//                          organismName: result.organismName,
-//                          systemName: "tree.circle"
-//                          ))
-                  }
-
-                  // Set staring regoin to the first point in the list
-                  self.region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: Double(searchResults[0].lat) ?? 0, longitude: Double(searchResults[0].long) ?? 0),
-                      // zoom level:
-                      span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
-
+                if !searchResults.isEmpty {
+                    
+                    totalAnnoItems = (searchResults.count - 1) // adjust for array 0-indexing
+                    
+                    // Don't show items if no data
+                    if hasResults == false {
+                        hasResults.toggle()
+                    }
+                    
+                    // Put results in an array
+                    for result in searchResults {
+                        annotationItems.append(MapAnnotationItem(
+                            latitude: Double(result.lat) ?? 0,
+                            longitude: Double(result.long) ?? 0,
+                            siteId: result.siteId,
+                            organismName: result.organismName,
+                            systemName: "tree.circle"
+                            ))
+                    }
+                    // Set staring regoin to the first point in the list
+                    self.region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: Double(searchResults[0].lat) ?? 0, longitude: Double(searchResults[0].long) ?? 0),
+                        span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
                 }
                 
             // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
