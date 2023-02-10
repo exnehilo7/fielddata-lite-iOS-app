@@ -10,7 +10,7 @@ import Foundation
 import CoreLocation
 
 class SearchOrganismName : ObservableObject {
-    @Published var organismName = ""
+    var organismName = ""
 }
 
 // Core location functionality from https://www.mongodb.com/developer/products/realm/realm-swiftui-maps-location/

@@ -19,8 +19,8 @@ class MapPointSize {
     let size: CGFloat = 35
 }
 
-// Model object for SelectAreaView
-class SelectLocationModel: Codable, Identifiable {
+// Model object for SelectAreaView.
+class SelectNameModel: Codable, Identifiable {
     var name = ""
 }
 
@@ -49,6 +49,9 @@ struct MapAnnotationItem: Identifiable { //, Sequence, IteratorProtocol {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
    
+    /* When displaying Area or Plot points, the siteId will be the unique
+     ID from the database's table. Otherwise, this variable will be the
+     Routing points' order number. */
     var siteId = ""
     var organismName = ""
     var systemName = ""
@@ -89,40 +92,40 @@ class StartingRegionModel: Codable, Identifiable {
 //}
 
 // MAY NEVER USE OBSERVABLE IDENTIFIABLE DECODABLE OBJECT??
-class Temp_MapPointModel_ObsvObj: ObservableObject, Identifiable {  // Identifiable,
-    
-    let id = UUID()
-    
-    var siteId = ""
-    var organismName = ""
-    var geoPoint = ""
-    
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-
-        try container.encode(siteId, forKey: .siteId)
-        try container.encode(organismName, forKey: .organismName)
-        try container.encode(geoPoint, forKey: .geoPoint)
-    }
-    
-    init() { }
-    
-    required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        
-        siteId = try container.decode(String.self, forKey: .siteId)
-        organismName = try container.decode(String.self, forKey: .organismName)
-        geoPoint = try container.decode(String.self, forKey: .geoPoint)
-    }
-}
-extension Temp_MapPointModel_ObsvObj: Codable {
-    enum CodingKeys: CodingKey {
-        case siteId, organismName, geoPoint
-    }
-}
-class Temp_MapPointModel_ObsvObj_Container: ObservableObject {
-    @Published var objects = [Temp_MapPointModel_ObsvObj]()
-}
+//class Temp_MapPointModel_ObsvObj: ObservableObject, Identifiable {  // Identifiable,
+//    
+//    let id = UUID()
+//    
+//    var siteId = ""
+//    var organismName = ""
+//    var geoPoint = ""
+//    
+//    func encode(to encoder: Encoder) throws {
+//        var container = encoder.container(keyedBy: CodingKeys.self)
+//
+//        try container.encode(siteId, forKey: .siteId)
+//        try container.encode(organismName, forKey: .organismName)
+//        try container.encode(geoPoint, forKey: .geoPoint)
+//    }
+//    
+//    init() { }
+//    
+//    required init(from decoder: Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        
+//        siteId = try container.decode(String.self, forKey: .siteId)
+//        organismName = try container.decode(String.self, forKey: .organismName)
+//        geoPoint = try container.decode(String.self, forKey: .geoPoint)
+//    }
+//}
+//extension Temp_MapPointModel_ObsvObj: Codable {
+//    enum CodingKeys: CodingKey {
+//        case siteId, organismName, geoPoint
+//    }
+//}
+//class Temp_MapPointModel_ObsvObj_Container: ObservableObject {
+//    @Published var objects = [Temp_MapPointModel_ObsvObj]()
+//}
 
 
 
