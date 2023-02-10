@@ -7,8 +7,15 @@
 
 import SwiftUI
 
-@main
+@main //SearchByNameView?
 struct FERNApp: App {
+    
+//    @StateObject var wtf : MapAnnotationItem_Container
+//    
+//    init() {
+//        _wtf = StateObject(wrappedValue: MapAnnotationItem_Container())
+//    }
+    
     var body: some Scene {
         WindowGroup {
             NavigationStack {

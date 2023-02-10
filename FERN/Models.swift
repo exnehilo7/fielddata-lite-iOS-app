@@ -26,15 +26,42 @@ class SelectNameModel: Codable, Identifiable {
 
 
 // temp list for display and insertion into MapAnnotationItem
-class TempMapPointModel: Codable, Identifiable { //}, Hashable {
+struct TempMapPointModel: Identifiable { //}, Hashable {
     let id = UUID() // DO NOT SET TO MUTABLE
     var siteId = ""
     var organismName = ""
     var lat = ""
     var long = ""
     
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+    
+            try container.encode(siteId, forKey: .siteId)
+            try container.encode(organismName, forKey: .organismName)
+            try container.encode(lat, forKey: .lat)
+            try container.encode(long, forKey: .long)
+        }
+    
+        init() { }
+    
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+    
+            siteId = try container.decode(String.self, forKey: .siteId)
+            organismName = try container.decode(String.self, forKey: .organismName)
+            lat = try container.decode(String.self, forKey: .lat)
+            long = try container.decode(String.self, forKey: .long)
+        }
+    
 }
-
+extension TempMapPointModel: Codable {
+    enum CodingKeys: CodingKey {
+        case siteId, organismName, lat, long
+    }
+}
+class TempMapPointModel_Container: ObservableObject {
+    @Published var TempMapPointModelArray:[TempMapPointModel] = [TempMapPointModel]()
+}
 
 
 // Model for map annotations
@@ -42,13 +69,9 @@ struct MapAnnotationItem: Identifiable { //, Sequence, IteratorProtocol {
 
     let id = UUID()
 
-    var latitude: CGFloat
-    var longitude: CGFloat
+    var latitude: CGFloat = 0
+    var longitude: CGFloat = 0
     
-    var coordinate: CLLocationCoordinate2D {
-        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-    }
-   
     /* When displaying Area or Plot points, the siteId will be the unique
      ID from the database's table. Otherwise, this variable will be the
      Routing points' order number. */
@@ -56,16 +79,72 @@ struct MapAnnotationItem: Identifiable { //, Sequence, IteratorProtocol {
     var organismName = ""
     var systemName = ""
     var size: CGFloat = MapPointSize().size
+    
+    var coordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+   
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(latitude, forKey: .latitude)
+        try container.encode(longitude, forKey: .longitude)
+        try container.encode(siteId, forKey: .siteId)
+        try container.encode(organismName, forKey: .organismName)
+//        try container.encode(systemName, forKey: .systemName)
+//        try container.encode(size, forKey: .size)
+
+    }
+
+    init() { }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        latitude = try container.decode(CGFloat.self, forKey: .latitude)
+        longitude = try container.decode(CGFloat.self, forKey: .longitude)
+        siteId = try container.decode(String.self, forKey: .siteId)
+        organismName = try container.decode(String.self, forKey: .organismName)
+//        systemName = try container.decode(String.self, forKey: .systemName)
+//        size = try container.decode(CGFloat.self, forKey: .size)
+    }
 
 }
+extension MapAnnotationItem: Codable {
+    enum CodingKeys: String, CodingKey {
+        case latitude = "lat"
+        case longitude = "long"
+        case siteId, organismName//, systemName//, size
+    }
+}
+class MapAnnotationItem_Container: ObservableObject, Codable {
+    var MapAnnotationItemArray:[MapAnnotationItem] = [MapAnnotationItem]()
+    
+    enum CodingKeys: CodingKey {
+        case MapAnnotationItemArray
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(MapAnnotationItemArray, forKey: .MapAnnotationItemArray)
+    }
+
+    init() { }
+
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        MapAnnotationItemArray = try container.decode([MapAnnotationItem].self, forKey: .MapAnnotationItemArray)
+    }
+}
+
 
 // For a starting region in a map
-class StartingRegionModel: Codable, Identifiable {
-    let id = UUID() // DO NOT SET TO MUTABLE
-    var lat = ""
-    var long = ""
-    var zoom = ""
-}
+//class StartingRegionModel: Codable, Identifiable {
+//    let id = UUID() // DO NOT SET TO MUTABLE
+//    var lat = ""
+//    var long = ""
+//    var zoom = ""
+//}
 
 //// Model for starting region annotation
 //struct RegionAnnotationItem: Identifiable {
