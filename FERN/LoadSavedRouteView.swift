@@ -13,8 +13,7 @@ struct LoadSavedRouteView: View {
     
     // Get html root
     let htmlRoot = HtmlRootModel()
-    
-    @StateObject var double_wtf = MapAnnotationItem_Container()
+
     
     var body: some View {
         
@@ -23,7 +22,7 @@ struct LoadSavedRouteView: View {
                 List (self.areaList) { (area) in
                     NavigationLink(area.name) {
                         // Pass var to view. Query for route does not need a column or organism name.
-                        MapView(areaName: area.name, columnName: "", organismName: "", queryName: "query_get_route_for_app")//.environmentObject(double_wtf)
+                        MapView(areaName: area.name, columnName: "", organismName: "", queryName: "query_get_route_for_app")
                     }
                     .bold()
                 }

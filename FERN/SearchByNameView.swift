@@ -22,7 +22,6 @@ struct SearchByNameView: View {
     @State var searchResults: [TempMapPointModel] = []
 //    @ObservedObject var test_ObsvObj = Temp_MapPointModel_ObsvObj()
 
-    @StateObject var double_wtf = MapAnnotationItem_Container()
     
     var body: some View {
         
@@ -46,7 +45,7 @@ struct SearchByNameView: View {
                         VStack{
                             NavigationLink("Show On Map") {
                                 MapView(areaName: areaName, columnName: columnName, organismName: organismName,
-                                        queryName: "query_search_org_name_by_site")//.environmentObject(double_wtf)
+                                        queryName: "query_search_org_name_by_site")
                             }}.animation(.easeIn(duration: 3), value: 1.0) // has to apply section-wide??
                         Text("(Results will not be in a particular order)")
                     }
