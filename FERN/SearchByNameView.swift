@@ -47,7 +47,7 @@ struct SearchByNameView: View {
                                 MapView(areaName: areaName, columnName: columnName, organismName: organismName,
                                         queryName: "query_search_org_name_by_site")
                             }}.animation(.easeIn(duration: 3), value: 1.0) // has to apply section-wide??
-                        Text("(Results will not be in a particular order)")
+                        Text("(Results will not be in any particular order)")
                     }
                     List (searchResults) { (result) in
                         HStack {
