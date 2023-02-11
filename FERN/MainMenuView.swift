@@ -11,18 +11,22 @@ struct MainMenuView: View {
     var body: some View {
         NavigationStack{
             List {
-                    NavigationLink("Load Saved Route") {
-                       LoadSavedRouteView()
-                            .navigationTitle("Load Saved Route")
-                    }
-                    NavigationLink("Select Area") {
-                        SelectAreaView(phpFile: "menuSelectAreaView.php", columnName: "area_name")
-                            .navigationTitle("Select Area")
-                    }
-                    NavigationLink("Select Plot") {
-                        SelectAreaView(phpFile: "menuSelectPlotView.php",  columnName: "plot_name")
-                            .navigationTitle("Select Plot")
-                    }
+                NavigationLink("Load Saved Route") {
+                   LoadSavedRouteView()
+                        .navigationTitle("Load Saved Route")
+                }
+                NavigationLink("Select Area") {
+                    SelectAreaView(phpFile: "menuSelectAreaView.php", columnName: "area_name")
+                        .navigationTitle("Select Area")
+                }
+                NavigationLink("Select Plot") {
+                    SelectAreaView(phpFile: "menuSelectPlotView.php",  columnName: "plot_name")
+                        .navigationTitle("Select Plot")
+                }
+                NavigationLink("Notes") {
+                    SelectNotesView(phpFile: "menuSelectNotesView.php")
+                        .navigationTitle("Notes")
+                }
 
 //                    NavigationLink("Create Custom Route") {
 //                        CreateCustomRouteView()
