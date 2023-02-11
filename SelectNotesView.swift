@@ -4,6 +4,7 @@
 //
 //  Created by Hopp, Dan on 2/10/23.
 //
+// Quick fix to disable the default action on the Return key from https://stackoverflow.com/questions/72194262/swiftui-texteditor-disable-return-key
 
 import SwiftUI
 
@@ -15,6 +16,9 @@ struct SelectNotesView: View {
     @State private var newNote = ""
     @State private var selectedNote = ""
     @State private var showUpdateButton = false
+    @State private var showCancelButton = false
+    @State private var showAddButton = true
+    @FocusState private var testFieldIsFocused: Bool
 
     // Get html root
     let htmlRoot = HtmlRootModel()
@@ -23,16 +27,60 @@ struct SelectNotesView: View {
         
         VStack {
             HStack {
-                TextField("Add new note. Tap on an existing note to edit it.", text: $selectedNote, onCommit: {
-                    // Call function after user is done entering text. Pass env obj prop and TextField text
-//                    getMapPoints()
-                    showUpdateButton.toggle()
-                }).textFieldStyle(.roundedBorder)
+                /* If an onCommit action via the keyboard is preferred, use the Bools to
+                 determine Add or Update action */
+                TextField("Add a new note. Tap on an existing note to edit it.", text:
+                    // Don't do a default "go"
+                    Binding(
+                        get: {
+                            return selectedNote
+                        },
+                        set: { value in
+                            var newValue = value
+                            if value.contains("\n") {
+                                newValue = value.replacingOccurrences(of: "\n", with: "")
+                            }
+                            selectedNote = newValue
+                        }
+                    ))
+//                onCommit: {
+//                    // Call function after user is done entering text. Pass env obj prop and TextField text
+////                    getMapPoints()
+//
+////                    showUpdateButton.toggle()
+//                    selectedNote = ""
+//                }
+                //)
+                .textFieldStyle(.roundedBorder).focused($testFieldIsFocused)
                 Spacer()
-                if showUpdateButton {
-                    Button("Update"){
-                        // add text from above to table
+                if showAddButton {
+                    Button("Add"){
+                        // add new text table. Function will need to be async
+                        // if text is not blank!
+                        
+                        // clear the textfield
+                        selectedNote = ""
+                        // hide the keyboard
+                        testFieldIsFocused = false
                     }.buttonStyle(.borderedProminent).padding(.trailing, 30)
+                }
+                if showUpdateButton {
+                    
+                    Button("Cancel"){
+                        // clear out the text field
+                        toggleUpdateAndClear()
+                    }.buttonStyle(.borderedProminent).padding(.trailing, 5)
+
+                    Button("Update"){
+                        // update text. async
+                        // Make sure it's not blank
+                        
+                        toggleUpdateAndClear()
+                        
+                        // Call func to refresh list? How will the list know when to refresh?
+                        // Reload page? If so, are toggles needed?
+                    }.buttonStyle(.borderedProminent).padding(.trailing, 30)
+
                 }
             }
             
@@ -40,8 +88,18 @@ struct SelectNotesView: View {
                 List {
                     ForEach(notesList, id: \.self) { note in
                         Text(note.note).onTapGesture {
+                            // Show selected note
                             selectedNote = note.note
-                            showUpdateButton.toggle()
+                            // Toggle add and update buttons
+                            // If no Update, show it and the Clear button
+                            if !showUpdateButton {
+                                showUpdateButton.toggle()
+                                showCancelButton.toggle()
+                            }
+                            // If add is showing, hide it
+                            if showAddButton {
+                                showAddButton.toggle()
+                            }
                         }
                     }
                     .onDelete(perform: {_ in tempvartomakecompilerhappy = true})
@@ -49,7 +107,7 @@ struct SelectNotesView: View {
                     EditButton()
                 }
             }
-        // query notes. Call PHP GET
+        // query notes. Call PHP GET. MOVE TO ITS OWN FUNCTION
         }.onAppear(perform: {
                 // send request to server
             guard let url: URL = URL(string: htmlRoot.htmlRoot + "/php/" + phpFile) else {
@@ -83,7 +141,18 @@ struct SelectNotesView: View {
                 }).resume()
             })
         }
+    
+    // Hide the update & cancel buttons, clear out the text field, hide keyboard
+    func toggleUpdateAndClear() {
+        showUpdateButton.toggle()
+        showCancelButton.toggle()
+        selectedNote = ""
+        testFieldIsFocused = false
+        showAddButton.toggle()
     }
+    
+    }
+
 
 struct SelectNotesView_Previews: PreviewProvider {
     static var previews: some View {
