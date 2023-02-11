@@ -16,6 +16,7 @@
 		D16A6C7629901A4700835B5E /* LoadSavedRouteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7529901A4700835B5E /* LoadSavedRouteView.swift */; };
 		D16A6C7829901A5D00835B5E /* CreateCustomRouteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7729901A5D00835B5E /* CreateCustomRouteView.swift */; };
 		D16A6C7C2995D18100835B5E /* StartScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7B2995D18100835B5E /* StartScreenView.swift */; };
+		D16A6C7E29970E0900835B5E /* SelectNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7D29970E0900835B5E /* SelectNotesView.swift */; };
 		D1766C9B298DB922002F594D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766C9A298DB922002F594D /* LoginView.swift */; };
 		D1766C9D298DB978002F594D /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766C9C298DB978002F594D /* MainMenuView.swift */; };
 		D1766C9F298DB9B2002F594D /* SearchByNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766C9E298DB9B2002F594D /* SearchByNameView.swift */; };
@@ -36,6 +37,7 @@
 		D16A6C7529901A4700835B5E /* LoadSavedRouteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadSavedRouteView.swift; sourceTree = "<group>"; };
 		D16A6C7729901A5D00835B5E /* CreateCustomRouteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCustomRouteView.swift; sourceTree = "<group>"; };
 		D16A6C7B2995D18100835B5E /* StartScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreenView.swift; sourceTree = "<group>"; };
+		D16A6C7D29970E0900835B5E /* SelectNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectNotesView.swift; sourceTree = "<group>"; };
 		D1766C9A298DB922002F594D /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		D1766C9C298DB978002F594D /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuView.swift; sourceTree = "<group>"; };
 		D1766C9E298DB9B2002F594D /* SearchByNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchByNameView.swift; sourceTree = "<group>"; };
@@ -58,6 +60,7 @@
 		D10BB30F298ADAA400667E86 = {
 			isa = PBXGroup;
 			children = (
+				D16A6C7D29970E0900835B5E /* SelectNotesView.swift */,
 				D10BB31A298ADAA400667E86 /* FERN */,
 				D10BB319298ADAA400667E86 /* Products */,
 			);
@@ -74,22 +77,22 @@
 		D10BB31A298ADAA400667E86 /* FERN */ = {
 			isa = PBXGroup;
 			children = (
-				D10BB32B298AF42000667E86 /* Info.plist */,
-				D10BB31B298ADAA400667E86 /* FERNApp.swift */,
-				D16A6C7B2995D18100835B5E /* StartScreenView.swift */,
-				D16A6C7529901A4700835B5E /* LoadSavedRouteView.swift */,
-				D1766CA2298DBAA3002F594D /* Functions.swift */,
-				D16A6C7729901A5D00835B5E /* CreateCustomRouteView.swift */,
-				D1766C9C298DB978002F594D /* MainMenuView.swift */,
-				D16A6C7129901A2000835B5E /* SelectAreaView.swift */,
-				D1766CA0298DB9C6002F594D /* MapView.swift */,
-				D1766C9E298DB9B2002F594D /* SearchByNameView.swift */,
-				D1766C9A298DB922002F594D /* LoginView.swift */,
-				D10BB329298ADAD600667E86 /* Models.swift */,
+				D10BB31F298ADAA500667E86 /* Assets.xcassets */,
 				D1766CA4298E0B3E002F594D /* Classes.swift */,
 				D10BB31D298ADAA400667E86 /* ContentView.swift */,
-				D10BB31F298ADAA500667E86 /* Assets.xcassets */,
+				D16A6C7729901A5D00835B5E /* CreateCustomRouteView.swift */,
+				D10BB31B298ADAA400667E86 /* FERNApp.swift */,
+				D1766CA2298DBAA3002F594D /* Functions.swift */,
+				D10BB32B298AF42000667E86 /* Info.plist */,
+				D16A6C7529901A4700835B5E /* LoadSavedRouteView.swift */,
+				D1766C9A298DB922002F594D /* LoginView.swift */,
+				D1766C9C298DB978002F594D /* MainMenuView.swift */,
+				D1766CA0298DB9C6002F594D /* MapView.swift */,
+				D10BB329298ADAD600667E86 /* Models.swift */,
 				D10BB321298ADAA500667E86 /* Preview Content */,
+				D1766C9E298DB9B2002F594D /* SearchByNameView.swift */,
+				D16A6C7129901A2000835B5E /* SelectAreaView.swift */,
+				D16A6C7B2995D18100835B5E /* StartScreenView.swift */,
 			);
 			path = FERN;
 			sourceTree = "<group>";
@@ -184,6 +187,7 @@
 				D16A6C7C2995D18100835B5E /* StartScreenView.swift in Sources */,
 				D1766C9B298DB922002F594D /* LoginView.swift in Sources */,
 				D10BB31C298ADAA400667E86 /* FERNApp.swift in Sources */,
+				D16A6C7E29970E0900835B5E /* SelectNotesView.swift in Sources */,
 				D1766CA5298E0B3E002F594D /* Classes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
