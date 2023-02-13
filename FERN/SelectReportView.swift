@@ -11,18 +11,22 @@ struct SelectReportView: View {
     
     @State private var reportList: [SelectNameModel] = []
     var phpFile: String
+    
+//    let dtFormat = DateFormatter()
+//    let date = Date.now
 
     // Get html root
     let htmlRoot = HtmlRootModel()
     
     var body: some View {
         
+//        dtFormat.dateStyle = .long
+        
         VStack {
             NavigationStack {
                 List (self.reportList) { (area) in
                     NavigationLink(area.name) {
-                        // Pass vars to view
-                        //                        SearchByNameView(areaName: area.name, columnName: columnName).navigationTitle(area.name)
+                        ReportRoutes().navigationTitle(area.name + " as of: " + Date.now.formatted(date: .long, time: .shortened))
                     }
                     .bold()
                 }
