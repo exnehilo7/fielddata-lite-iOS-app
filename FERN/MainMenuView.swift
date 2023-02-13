@@ -12,7 +12,7 @@ struct MainMenuView: View {
         NavigationStack{
             List {
                 NavigationLink {
-                   LoadSavedRouteView()
+                   SelectSavedRouteView()
                         .navigationTitle("Load Saved Route")
                 } label: {
                     HStack {
