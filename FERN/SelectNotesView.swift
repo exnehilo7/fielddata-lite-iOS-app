@@ -203,6 +203,7 @@ struct SelectNotesView: View {
             showCancelButton.toggle()
             textFieldNote = ""
             testFieldIsFocused = false
+            showAddButton.toggle()
         }
     }
     
