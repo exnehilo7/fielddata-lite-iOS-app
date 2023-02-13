@@ -190,12 +190,12 @@ struct MapView: View {
         request.httpMethod = "POST"
         var postString = ""
         // Set pass variables
-        if columnName != "" {
-            postString = "_column_value=\(areaName)&_query_name=\(queryName)"
-        }
-        else {
+//        if columnName == "" {
+//            postString = "_column_value=\(areaName)&_query_name=\(queryName)"
+//        }
+//        else {
             postString = "_column_name=\(columnName)&_column_value=\(areaName)&_org_name=\(organismName)&_query_name=\(queryName)"
-        }
+//        }
         
         request.httpBody = postString.data (using: String.Encoding.utf8)
         
