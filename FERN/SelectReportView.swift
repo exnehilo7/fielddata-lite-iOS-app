@@ -1,18 +1,17 @@
 //
-//  SelectAreaView.swift
+//  SelectReportView.swift
 //  FERN
 //
-//  Created by Hopp, Dan on 2/5/23.
+//  Created by Hopp, Dan on 2/13/23.
 //
 
 import SwiftUI
 
-struct SelectAreaView: View {
+struct SelectReportView: View {
     
-    @State private var areaList: [SelectNameModel] = []
+    @State private var reportList: [SelectNameModel] = []
     var phpFile: String
-    var columnName: String
-    
+
     // Get html root
     let htmlRoot = HtmlRootModel()
     
@@ -20,21 +19,20 @@ struct SelectAreaView: View {
         
         VStack {
             NavigationStack {
-                List (self.areaList) { (area) in
+                List (self.reportList) { (area) in
                     NavigationLink(area.name) {
                         // Pass vars to view
-                        SearchByNameView(areaName: area.name, columnName: columnName).navigationTitle(area.name)
+                        //                        SearchByNameView(areaName: area.name, columnName: columnName).navigationTitle(area.name)
                     }
                     .bold()
                 }
-                // place areaName in an env obj
+            }.task { await qryReports()
             }
-            // query areas. Call PHP GET
-        }.task {await qryAreas()}
+        }
     }
     
     // Process DML and get reports
-    func qryAreas() async {
+    func qryReports() async {
         
         // get root
         let htmlRoot = HtmlRootModel()
@@ -43,7 +41,7 @@ struct SelectAreaView: View {
         let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/" + phpFile)! as URL)
         request.httpMethod = "POST"
         
-        let postString = "_query_name=\(columnName)"
+        let postString = "_query_name=report_view"
        
         
         request.httpBody = postString.data (using: String.Encoding.utf8)
@@ -65,7 +63,7 @@ struct SelectAreaView: View {
                 
                 
                 // convert JSON response into class model as an array
-                self.areaList = try decoder.decode([SelectNameModel].self, from: data!)
+                self.reportList = try decoder.decode([SelectNameModel].self, from: data!)
                 
                 // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
             } catch DecodingError.keyNotFound(let key, let context) {
@@ -84,8 +82,8 @@ struct SelectAreaView: View {
     }// end qryReports
 }
 
-struct SelectAreaView_Previews: PreviewProvider {
+struct SelectReportView_Previews: PreviewProvider {
     static var previews: some View {
-        SelectAreaView(phpFile: "menuSelectAreaView.php", columnName: "area_name")
+        SelectReportView(phpFile: "menuItemLists.php")
     }
 }

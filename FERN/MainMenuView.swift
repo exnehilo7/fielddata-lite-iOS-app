@@ -11,23 +11,51 @@ struct MainMenuView: View {
     var body: some View {
         NavigationStack{
             List {
-                NavigationLink("Load Saved Route") {
+                NavigationLink {
                    LoadSavedRouteView()
                         .navigationTitle("Load Saved Route")
+                } label: {
+                    HStack {
+                        Image(systemName: "map").bold(false).foregroundColor(.gray)
+                        Text("Load Saved Route")
+                    }
                 }
-                NavigationLink("Select Area") {
-                    SelectAreaView(phpFile: "menuSelectAreaView.php", columnName: "area_name")
+                NavigationLink {
+                    SelectAreaView(phpFile: "menuItemLists.php", columnName: "area_name")
                         .navigationTitle("Select Area")
+                } label: {
+                    HStack {
+                        Image(systemName: "rectangle.dashed").bold(false).foregroundColor(.gray)
+                        Text("Select Area")
+                    }
                 }
-                NavigationLink("Select Plot") {
-                    SelectAreaView(phpFile: "menuSelectPlotView.php",  columnName: "plot_name")
+                NavigationLink {
+                    SelectAreaView(phpFile: "menuItemLists.php",  columnName: "plot_name")
                         .navigationTitle("Select Plot")
+                } label: {
+                    HStack {
+                        Image(systemName: "rectangle.center.inset.fill").bold(false).foregroundColor(.gray)
+                        Text("Select Plot")
+                    }
                 }
-                NavigationLink("Notes") {
+                NavigationLink {
+                    SelectReportView(phpFile: "menuItemLists.php")
+                        .navigationTitle("Select Report")
+                } label: {
+                    HStack {
+                        Image(systemName: "newspaper").bold(false).foregroundColor(.gray)
+                        Text("Reports")
+                    }
+                }
+                NavigationLink {
                     SelectNotesView(phpFile: "menuSelectNotesView.php")
                         .navigationTitle("Notes")
+                } label: {
+                    HStack {
+                        Image(systemName: "pencil.line").bold(false).foregroundColor(.gray)
+                        Text("Notes")
+                    }
                 }
-
 //                    NavigationLink("Create Custom Route") {
 //                        CreateCustomRouteView()
 //                            .navigationTitle("Create Custom Route")
