@@ -66,6 +66,6 @@ struct SelectSavedRouteView: View {
 
 struct SelectSavedRouteView_Previews: PreviewProvider {
     static var previews: some View {
-        LoadSavedRouteView()
+        SelectSavedRouteView()
     }
 }
