@@ -212,6 +212,6 @@ struct SelectNotesView: View {
 
 struct SelectNotesView_Previews: PreviewProvider {
     static var previews: some View {
-        SelectNotesView(phpFile: "menuSelectNotesView.php")
+        SelectNotesView(phpFile: "notes.php")
     }
 }

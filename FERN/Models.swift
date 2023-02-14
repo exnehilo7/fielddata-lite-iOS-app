@@ -52,10 +52,38 @@ struct SelectNoteModel: Codable, Identifiable, Hashable {
     
 }
 
-//// Region???
-//class Region {
-//     var region = MKCoordinateRegion()
-//}
+// Model for route total distance report
+struct RouteTotalDistanceModel: Identifiable {
+    let id = UUID()
+    var routeName = ""
+    var totalDistanceKm = ""
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(routeName, forKey: .routeName)
+        try container.encode(totalDistanceKm, forKey: .totalDistanceKm)
+
+    }
+
+    init() { }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        routeName = try container.decode(String.self, forKey: .routeName)
+        totalDistanceKm = try container.decode(String.self, forKey: .totalDistanceKm)
+
+    }
+    
+}
+extension RouteTotalDistanceModel: Codable {
+    enum CodingKeys: String, CodingKey {
+        case routeName = "route_name"
+        case totalDistanceKm = "total_distance_km"
+    }
+}
+
 
 // temp list for display and insertion into MapAnnotationItem
 struct TempMapPointModel: Identifiable { //}, Hashable {

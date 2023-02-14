@@ -21,7 +21,7 @@ struct MainMenuView: View {
                     }
                 }
                 NavigationLink {
-                    SelectAreaView(phpFile: "menuItemLists.php", columnName: "area_name")
+                    SelectAreaView(phpFile: "menusAndReports.php", columnName: "area_name")
                         .navigationTitle("Select Area")
                 } label: {
                     HStack {
@@ -30,7 +30,7 @@ struct MainMenuView: View {
                     }
                 }
                 NavigationLink {
-                    SelectAreaView(phpFile: "menuItemLists.php",  columnName: "plot_name")
+                    SelectAreaView(phpFile: "menusAndReports.php",  columnName: "plot_name")
                         .navigationTitle("Select Plot")
                 } label: {
                     HStack {
@@ -39,7 +39,7 @@ struct MainMenuView: View {
                     }
                 }
                 NavigationLink {
-                    SelectReportView(phpFile: "menuItemLists.php")
+                    SelectReportView(phpFile: "menusAndReports.php")
                         .navigationTitle("Select Report")
                 } label: {
                     HStack {
@@ -48,7 +48,7 @@ struct MainMenuView: View {
                     }
                 }
                 NavigationLink {
-                    SelectNotesView(phpFile: "menuSelectNotesView.php")
+                    SelectNotesView(phpFile: "notes.php")
                         .navigationTitle("Notes")
                 } label: {
                     HStack {
