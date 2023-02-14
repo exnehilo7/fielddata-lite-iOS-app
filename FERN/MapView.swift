@@ -45,7 +45,7 @@ struct MapView: View {
     @State var annotationItems = [MapAnnotationItem]()
     
     // To hold the starting region's coordinates and zoom level
-    @State private var region: MKCoordinateRegion = MKCoordinateRegion()
+//    @State private var region: MKCoordinateRegion = MKCoordinateRegion()
     
 //    // To hold Annotated starting region
 //    @State var regionItem = [RegionAnnotationItem]()
@@ -78,10 +78,18 @@ struct MapView: View {
 //        center: CLLocationCoordinate2D(latitude: MapDefaults.latitude, longitude: MapDefaults.longitude),
 //        span: MKCoordinateSpan(latitudeDelta: MapDefaults.zoom, longitudeDelta: MapDefaults.zoom))
     
+//    let location = LocationHelper.currentLocation
     
+    // Show user's region
+    @State private var region: MKCoordinateRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: LocationHelper.currentLocation.latitude, longitude: LocationHelper.currentLocation.longitude), span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
     
     var body: some View {
         
+//        let location = LocationHelper.currentLocation
+        
+//        region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude), span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
+            
+//    span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
         
         ZStack(alignment: .center) {
             Map(coordinateRegion: $region,
@@ -238,8 +246,8 @@ struct MapView: View {
                             ))
                     }
                     // Set staring regoin to the first point in the list
-                    self.region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: Double(searchResults[0].lat) ?? 0, longitude: Double(searchResults[0].long) ?? 0),
-                        span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
+//                    self.region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: Double(searchResults[0].lat) ?? 0, longitude: Double(searchResults[0].long) ?? 0),
+//                        span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
                 }
                 
             // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024

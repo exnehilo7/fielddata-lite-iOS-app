@@ -4,6 +4,7 @@
 //
 //  Created by Hopp, Dan on 2/9/23.
 //
+// Splash screen help from https://mobiraft.com/ios/swiftui/how-to-add-splash-screen-in-swiftui/
 
 import SwiftUI
 
