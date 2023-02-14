@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import MapKit
 
 class SearchOrganismName : ObservableObject {
     var organismName = ""
@@ -20,20 +21,20 @@ class LocationHelper: NSObject, ObservableObject {
     static let DefaultLocation = CLLocationCoordinate2D(latitude: 35.93212, longitude: -84.31022)
 
     static var currentLocation: CLLocationCoordinate2D {
-        guard let location = shared.locationManager.location else {
+        guard let location = shared.manager.location else {
             return DefaultLocation
         }
         return location.coordinate
     }
 
-    private let locationManager = CLLocationManager()
+    private let manager = CLLocationManager()
 
     private override init() {
         super.init()
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingLocation()
+        manager.delegate = self
+        manager.desiredAccuracy = kCLLocationAccuracyBest
+        manager.requestWhenInUseAuthorization()
+        manager.startUpdatingLocation()
     }
 }
 
