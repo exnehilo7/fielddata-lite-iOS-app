@@ -19,7 +19,7 @@ struct FERNApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                StartScreenView().navigationTitle("Start Screen")
+                StartScreenView()
            }
         }
     }
