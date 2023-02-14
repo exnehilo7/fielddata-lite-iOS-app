@@ -26,7 +26,7 @@ struct SelectReportView: View {
             NavigationStack {
                 List (self.reportList) { (area) in
                     NavigationLink(area.name) {
-                        ReportRoutes().navigationTitle(area.name + " as of: " + Date.now.formatted(date: .long, time: .shortened))
+                        ReportRoutes(phpFile: "menusAndReports.php").navigationTitle(area.name + " as of: " + Date.now.formatted(date: .long, time: .shortened))
                     }
                     .bold()
                 }
@@ -88,6 +88,6 @@ struct SelectReportView: View {
 
 struct SelectReportView_Previews: PreviewProvider {
     static var previews: some View {
-        SelectReportView(phpFile: "menuItemLists.php")
+        SelectReportView(phpFile: "menusAndReports.php")
     }
 }

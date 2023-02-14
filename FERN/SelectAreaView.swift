@@ -86,6 +86,6 @@ struct SelectAreaView: View {
 
 struct SelectAreaView_Previews: PreviewProvider {
     static var previews: some View {
-        SelectAreaView(phpFile: "menuItemLists.php", columnName: "area_name")
+        SelectAreaView(phpFile: "menusAndReports.php", columnName: "area_name")
     }
 }
