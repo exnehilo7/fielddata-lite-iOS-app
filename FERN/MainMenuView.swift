@@ -56,14 +56,6 @@ struct MainMenuView: View {
                         Text("Notes")
                     }
                 }
-//                    NavigationLink("Create Custom Route") {
-//                        CreateCustomRouteView()
-//                            .navigationTitle("Create Custom Route")
-//                    }
-//                    NavigationLink("Test Map") {
-//                        MapView(areaName: "Davis", columnName: "area_name", organismName: "Besc-112",
-//                                queryName: "query_search_org_name_by_site")
-//                    }
                 }.bold()
             }
         }

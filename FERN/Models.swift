@@ -7,8 +7,7 @@
 import Foundation
 import CoreLocation
 import MapKit
-//import UIkit // Needed for MapAnnotationItem's color. Apparently I need to change some swiftc options
-                // to build the project against proper sdk and target?
+
 
 // Model object for html root
 class HtmlRootModel: Codable {
@@ -86,8 +85,8 @@ extension RouteTotalDistanceModel: Codable {
 
 
 // temp list for display and insertion into MapAnnotationItem
-struct TempMapPointModel: Identifiable { //}, Hashable {
-    let id = UUID() // DO NOT SET TO MUTABLE
+struct TempMapPointModel: Identifiable {
+    let id = UUID() // if changed to class, DO NOT SET TO MUTABLE
     var siteId = ""
     var organismName = ""
     var lat = ""
@@ -124,7 +123,7 @@ class TempMapPointModel_Container: ObservableObject {
 }
 
 // Model for map annotations
-struct MapAnnotationItem: Identifiable { //, Sequence, IteratorProtocol {
+struct MapAnnotationItem: Identifiable {
     let id = UUID()
     var latitude: CGFloat
     var longitude: CGFloat
@@ -144,7 +143,7 @@ struct MapAnnotationItem: Identifiable { //, Sequence, IteratorProtocol {
 
 
 // ATTEMPTED STRUCT AND CLASS REBUILD:
-//// Model for map annotations
+// Model for map annotations
 //struct MapAnnotationItem: Identifiable { //, Sequence, IteratorProtocol {
 //
 //    let id = UUID()
@@ -171,8 +170,6 @@ struct MapAnnotationItem: Identifiable { //, Sequence, IteratorProtocol {
 //        try container.encode(longitude, forKey: .longitude)
 //        try container.encode(siteId, forKey: .siteId)
 //        try container.encode(organismName, forKey: .organismName)
-////        try container.encode(systemName, forKey: .systemName)
-////        try container.encode(size, forKey: .size)
 //
 //    }
 //
@@ -185,8 +182,6 @@ struct MapAnnotationItem: Identifiable { //, Sequence, IteratorProtocol {
 //        longitude = try container.decode(CGFloat.self, forKey: .longitude)
 //        siteId = try container.decode(String.self, forKey: .siteId)
 //        organismName = try container.decode(String.self, forKey: .organismName)
-////        systemName = try container.decode(String.self, forKey: .systemName)
-////        size = try container.decode(CGFloat.self, forKey: .size)
 //    }
 //
 //}
@@ -226,7 +221,7 @@ struct MapAnnotationItem: Identifiable { //, Sequence, IteratorProtocol {
 //    var zoom = ""
 //}
 
-//// Model for starting region annotation
+// Model for starting region annotation
 //struct RegionAnnotationItem: Identifiable {
 //    let id = UUID()
 //
@@ -250,47 +245,11 @@ struct MapAnnotationItem: Identifiable { //, Sequence, IteratorProtocol {
 //    }
 //}
 
-// MAY NEVER USE OBSERVABLE IDENTIFIABLE DECODABLE OBJECT??
-//class Temp_MapPointModel_ObsvObj: ObservableObject, Identifiable {  // Identifiable,
-//    
-//    let id = UUID()
-//    
-//    var siteId = ""
-//    var organismName = ""
-//    var geoPoint = ""
-//    
-//    func encode(to encoder: Encoder) throws {
-//        var container = encoder.container(keyedBy: CodingKeys.self)
-//
-//        try container.encode(siteId, forKey: .siteId)
-//        try container.encode(organismName, forKey: .organismName)
-//        try container.encode(geoPoint, forKey: .geoPoint)
-//    }
-//    
-//    init() { }
-//    
-//    required init(from decoder: Decoder) throws {
-//        let container = try decoder.container(keyedBy: CodingKeys.self)
-//        
-//        siteId = try container.decode(String.self, forKey: .siteId)
-//        organismName = try container.decode(String.self, forKey: .organismName)
-//        geoPoint = try container.decode(String.self, forKey: .geoPoint)
-//    }
-//}
-//extension Temp_MapPointModel_ObsvObj: Codable {
-//    enum CodingKeys: CodingKey {
-//        case siteId, organismName, geoPoint
-//    }
-//}
-//class Temp_MapPointModel_ObsvObj_Container: ObservableObject {
-//    @Published var objects = [Temp_MapPointModel_ObsvObj]()
-//}
 
 
 
 // Teeeest
-class ResponseModel: Codable, Identifiable {
-    var id: String? = ""
-    var type: String? = ""
-//    var isSelected: String? = ""
-}
+//class ResponseModel: Codable, Identifiable {
+//    var id: String? = ""
+//    var type: String? = ""
+//}
