@@ -60,46 +60,46 @@ struct MapView: View {
                         .foregroundStyle(.green, item.highlightColor).font(.system(size: item.size))
                 })
             } // end add points
-            
-            // Show map's current position
-            Text("lat: \(region.center.latitude), long: \(region.center.longitude). Zoom: \(region.span.latitudeDelta)")
-                .font(.caption)
-                .fontWeight(.semibold)
-                .offset(y: -640)
-                .padding()
-            // Don't display if no results
-            if hasResults {
-                // Show organism name of the selected point
-                Text(annotationItems[currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold).offset(y: 520)
-                    .onAppear(perform: {
-                    // Mark first point on map
-                    annotationItems[currentAnnoItem].size = 60
-                        annotationItems[currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
-                })
-                Button { // backward
-                    cycleAnnotations(forward: false, 1)
-//                    annotationItems[currentAnnoItem].size = 60
-//                    // Put next's point back to its original state
-//                    annotationItems[currentAnnoItem + 1].size = MapPointSize().size
-                } label: {
-                    Image(systemName: "arrowshape.backward.fill")
-                        .font(.system(size: 50))
-                        .grayscale(0.85)
-                }.offset(y: 580).offset(x: -75)
-        
-                Button { // forward
-                    cycleAnnotations(forward: true, -1)
-//                    // Draw attention to selected point
-//                    annotationItems[currentAnnoItem].size = 60
-//                    // Put previous' point back to its original state
-//                    annotationItems[currentAnnoItem - 1].size = MapPointSize().size
-                } label: {
-                    Image(systemName: "arrowshape.forward.fill")
-                        .font(.system(size: 50))
-                        .grayscale(0.85)
-                }.offset(y: 580).offset(x: 75)
-                
-                
+            VStack{
+                // Show map's current position
+                Text("lat: \(region.center.latitude), long: \(region.center.longitude). Zoom: \(region.span.latitudeDelta)")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    //.offset(y: -640)
+                Spacer()
+                // Don't display if no results
+                if hasResults {
+                    VStack {
+                        // Show organism name of the selected point
+                        Text(annotationItems[currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold).background(.white)
+                            .onAppear(perform: {
+                                // Mark first point on map
+                                annotationItems[currentAnnoItem].size = 60
+                                annotationItems[currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
+                            }).padding(.bottom, 30)
+                        HStack {
+                            Button { // backward
+                                cycleAnnotations(forward: false, 1)
+                            } label: {
+                                VStack {
+                                    Image(systemName: "arrowshape.backward.fill")
+                                        .font(.system(size: 50))
+                                    Text("Previous")
+                                }
+                            }.padding(.trailing, 20)
+                            
+                            Button { // forward
+                                cycleAnnotations(forward: true, -1)
+                            } label: {
+                                VStack {
+                                    Image(systemName: "arrowshape.forward.fill")
+                                        .font(.system(size: 50))
+                                    Text("Next")
+                                }
+                            }.padding(.leading, 20)
+                        }.padding(.bottom, 40)
+                    }
+                }
             }
             // For async acticity, use .task instead of .onAppear
         }.task { await getMapPoints()}//.task { await getRegion()}
