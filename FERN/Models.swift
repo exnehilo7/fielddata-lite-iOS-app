@@ -7,6 +7,8 @@
 import Foundation
 import CoreLocation
 import MapKit
+//import UIKit
+import SwiftUI
 
 
 // Model object for html root
@@ -139,6 +141,11 @@ struct MapAnnotationItem: Identifiable {
     var organismName = ""
     var systemName = ""
     var size: CGFloat = MapPointSize().size
+    var highlightColor = Color(white: 0.4745)
+//
+//    var img = Image(systemName: item.systemName)
+//        .symbolRenderingMode(.palette)
+//        .foregroundStyle(.green, .gray).font(.system(size: item.size))
 }
 
 

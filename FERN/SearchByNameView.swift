@@ -17,6 +17,7 @@ struct SearchByNameView: View {
     var columnName: String
     @State private var organismName = ""
     @State private var hasResults = false
+    @State private var resultsCount = 0
     
     @ObservedObject private var searchOrganismName = SearchOrganismName()
     @State private var searchResults: [TempMapPointModel] = []
@@ -28,7 +29,7 @@ struct SearchByNameView: View {
         VStack {
             // HStack for Search field
             HStack {
-                TextField("Enter Organism Name (Leave Blank for All)", text: $organismName, onCommit: {
+                TextField("Enter Organism Name", text: $organismName, onCommit: {
                     // Call function after user is done entering text.
                     getMapPoints()
                 }).textFieldStyle(.roundedBorder).disableAutocorrection(true) // Keep auto correction off
@@ -38,22 +39,28 @@ struct SearchByNameView: View {
                 // To the map screen!
                 NavigationStack {
                     
-                    // Show NavLink only if there's results
-                    if hasResults {
+                    // Show NavLink only if there's less than 100 results
+                    if hasResults && (resultsCount < 100){
                         VStack{
-                            NavigationLink("Show On Map") {
+                            NavigationLink {
                                 MapView(areaName: areaName, columnName: columnName, organismName: organismName,
                                         queryName: "query_search_org_name_by_site")
-                            }
+                            } label: {
+                                HStack {
+                                    Image(systemName: "globe.americas.fill").bold(false).foregroundColor(.green)
+                                    Text("Show On Map")
+                                    Image(systemName: "globe.americas.fill").bold(false).foregroundColor(.green)
+                                }
+                            }.padding(.top, 20)
                         }
-                        Text("(Results will not be in any particular order)")
+                        Text("(Results are in alphabetical order)")
+                        
+                        Table(searchResults) {
+                                                TableColumn("Results", value: \.organismName)
+                                            }
                     }
                     
-                    List (searchResults) { (result) in
-                        HStack {
-                            Text(result.organismName)
-                        }
-                    }
+                    
                 } // end navstack
             } //end Vstack
         }
@@ -93,6 +100,8 @@ struct SearchByNameView: View {
                 
                 // dont show link if result is empty
                 if !searchResults.isEmpty {
+                    // Get # of items
+                    resultsCount = searchResults.count
                     if hasResults == false {
                         hasResults.toggle()
                     }
