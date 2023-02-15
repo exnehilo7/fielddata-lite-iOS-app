@@ -12,16 +12,9 @@ struct SelectReportView: View {
     @State private var reportList: [SelectNameModel] = []
     var phpFile: String
     
-//    let dtFormat = DateFormatter()
-//    let date = Date.now
-
-    // Get html root
-    let htmlRoot = HtmlRootModel()
-    
     var body: some View {
         
-//        dtFormat.dateStyle = .long
-        
+        // List the reports
         VStack {
             NavigationStack {
                 List (self.reportList) { (area) in
@@ -41,7 +34,6 @@ struct SelectReportView: View {
         // get root
         let htmlRoot = HtmlRootModel()
         
-        // pass name of search column to use
         let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/" + phpFile)! as URL)
         request.httpMethod = "POST"
         

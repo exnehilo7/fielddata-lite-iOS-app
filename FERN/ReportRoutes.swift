@@ -13,11 +13,12 @@ struct ReportRoutes: View {
     @State private var totalDistances: [RouteTotalDistanceModel] = []
         
     var body: some View {
+        // Route total distances table
         Table(totalDistances) {
             TableColumn("Route", value: \.routeName)
             TableColumn("Kilometers") { distance in
                 Text(distance.totalDistanceKm)
-            } //, value: \.totalDistanceMeters)
+            }
         }.task { await qryTotalDistanceReport() }
     }
     
@@ -27,7 +28,6 @@ struct ReportRoutes: View {
         // get root
         let htmlRoot = HtmlRootModel()
         
-        // pass name of search column to use
         let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/" + phpFile)! as URL)
         request.httpMethod = "POST"
         

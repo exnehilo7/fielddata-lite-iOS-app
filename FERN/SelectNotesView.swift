@@ -4,16 +4,12 @@
 //
 //  Created by Hopp, Dan on 2/10/23.
 //
-// Quick fix to disable the default action on the Return key from https://stackoverflow.com/questions/72194262/swiftui-texteditor-disable-return-key
 
 import SwiftUI
 
 struct SelectNotesView: View {
-//    @State private var navLinkText = ""
     @State private var notesList: [SelectNoteModel] = []
-    @State private var tempvartomakecompilerhappy = false
     var phpFile: String
-//    @State private var newNote = ""
     @State private var noteId = "0"
     @State private var textFieldNote = ""
     @State private var showUpdateButton = false
@@ -29,30 +25,17 @@ struct SelectNotesView: View {
     var body: some View {
         
         VStack {
+            // Add, edit, and delete note buttons and field
             HStack {
-                /* If an onCommit action via the keyboard is preferred, use the Bools to
+                /* If an onCommit action via the keyboard is preferred, add Bools to
                  determine Add or Update action */
                 TextField("Add a new note. Tap on an existing note to edit it.", text: $textFieldNote
-//                            // Don't do a default "go"
-//                          Binding(
-//                            get: {
-//                                return textFieldNote ?? ""
-//                            },
-//                            set: { value in
-//                                var newValue = value
-//                                if value.contains("\n") {
-//                                    newValue = value.replacingOccurrences(of: "\n", with: "")
-//                                }
-//                                textFieldNote = newValue
-//                            }
-//                          )
                 ).textFieldStyle(.roundedBorder).focused($testFieldIsFocused)
                 Spacer()
                 if showAddButton {
                     Button{
                         queryName = "add_note"
                         // Add new text table. Need to wrap in Task for async call
-                        
                         Task {
                             // If text is not blank!
                             if !textFieldNote.isEmpty {
@@ -104,8 +87,9 @@ struct SelectNotesView: View {
                         Text("Update")
                     }.buttonStyle(.borderedProminent).padding(.trailing, 30).transition(.scale)
                 }
-            }//.contentShape(Rectangle()).transition(.scale)
+            }
             
+            // List the notes
             NavigationStack {
                 List {
                     ForEach(notesList, id: \.self) { note in
@@ -143,7 +127,6 @@ struct SelectNotesView: View {
         // get root
         let htmlRoot = HtmlRootModel()
         
-        // pass name of search column to use
         let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/" + phpFile)! as URL)
         request.httpMethod = "POST"
         

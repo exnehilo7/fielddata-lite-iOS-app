@@ -13,9 +13,6 @@ struct SelectAreaView: View {
     var phpFile: String
     var columnName: String
     
-    // Get html root
-    let htmlRoot = HtmlRootModel()
-    
     var body: some View {
         
         VStack {
@@ -27,9 +24,8 @@ struct SelectAreaView: View {
                     }
                     .bold()
                 }
-                // place areaName in an env obj
             }
-            // query areas. Call PHP GET
+            // Call PHP GET
         }.task {await qryAreas()}
     }
     
@@ -39,10 +35,10 @@ struct SelectAreaView: View {
         // get root
         let htmlRoot = HtmlRootModel()
         
-        // pass name of search column to use
         let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/" + phpFile)! as URL)
         request.httpMethod = "POST"
         
+        // pass name of search column to use
         let postString = "_query_name=\(columnName)"
        
         

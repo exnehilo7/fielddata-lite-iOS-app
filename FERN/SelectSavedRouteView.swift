@@ -26,7 +26,6 @@ struct SelectSavedRouteView: View {
                     }
                     .bold()
                 }
-                // place areaName in an env obj
             }
         // query areas. Call PHP GET
         }.onAppear(perform: {
