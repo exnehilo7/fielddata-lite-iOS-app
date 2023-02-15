@@ -57,7 +57,7 @@ struct MapView: View {
                 MapAnnotation(coordinate: item.coordinate, content: {
                     Image(systemName: item.systemName)
                         .symbolRenderingMode(.palette)
-                        .foregroundStyle(.green, .red).font(.system(size: item.size))
+                        .foregroundStyle(.green, item.highlightColor).font(.system(size: item.size))
                 })
             } // end add points
             
@@ -74,12 +74,13 @@ struct MapView: View {
                     .onAppear(perform: {
                     // Mark first point on map
                     annotationItems[currentAnnoItem].size = 60
+                        annotationItems[currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
                 })
                 Button { // backward
-                    cycleAnnotations(forward: false)
-                    annotationItems[currentAnnoItem].size = 60
-                    annotationItems[currentAnnoItem + 1].size = MapPointSize().size
-                    print(annotationItems[currentAnnoItem].organismName)
+                    cycleAnnotations(forward: false, 1)
+//                    annotationItems[currentAnnoItem].size = 60
+//                    // Put next's point back to its original state
+//                    annotationItems[currentAnnoItem + 1].size = MapPointSize().size
                 } label: {
                     Image(systemName: "arrowshape.backward.fill")
                         .font(.system(size: 50))
@@ -87,14 +88,11 @@ struct MapView: View {
                 }.offset(y: 580).offset(x: -75)
         
                 Button { // forward
-                    cycleAnnotations(forward: true)
-                    // Draw attention to selected point
-                    annotationItems[currentAnnoItem].size = 60
-                    // Put previous' point back to its original state
-                    annotationItems[currentAnnoItem - 1].size = MapPointSize().size
-                    print(annotationItems[currentAnnoItem].organismName)
-
-                    
+                    cycleAnnotations(forward: true, -1)
+//                    // Draw attention to selected point
+//                    annotationItems[currentAnnoItem].size = 60
+//                    // Put previous' point back to its original state
+//                    annotationItems[currentAnnoItem - 1].size = MapPointSize().size
                 } label: {
                     Image(systemName: "arrowshape.forward.fill")
                         .font(.system(size: 50))
@@ -108,21 +106,32 @@ struct MapView: View {
     }
     
     
-    // Make sure forward and backward cycling will stay within the annotation's item count
-    func cycleAnnotations (forward: Bool ){
+    // Make sure forward and backward cycling will stay within the annotation's item count.
+    func cycleAnnotations (forward: Bool, _ offset: Int ){
         
         if forward {
             if currentAnnoItem < totalAnnoItems{
                 currentAnnoItem += 1
+                highlightAnnotation(offset)
             }
         }
         else {
             if currentAnnoItem > 0 {
                 currentAnnoItem -= 1
+                highlightAnnotation(offset)
             }
         }
     }
     
+    // Draw attention to selected point. Put previous or next point back to its original state
+    func highlightAnnotation (_ offset: Int){
+        annotationItems[currentAnnoItem].size = 60
+        annotationItems[currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
+        annotationItems[currentAnnoItem + offset].size = MapPointSize().size
+        annotationItems[currentAnnoItem + offset].highlightColor = Color(white: 0.4745)
+    }
+    
+    // Get points from database
     func getMapPoints () async {
         
         // get root
