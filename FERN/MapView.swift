@@ -164,11 +164,7 @@ struct MapView: View {
                     
                     totalAnnoItems = (searchResults.count - 1) // adjust for array 0-indexing
                     
-                    // Don't show items if no data
-                    if hasResults == false {
-                        hasResults.toggle()
-                    }
-                    
+
                     // Put results in an array
                     for result in searchResults {
                         annotationItems.append(MapAnnotationItem(
@@ -182,6 +178,11 @@ struct MapView: View {
                     // Set staring regoin to the first point in the list
                     self.region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: Double(searchResults[0].lat) ?? 0, longitude: Double(searchResults[0].long) ?? 0),
                         span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
+                    
+                    // Don't show items if no data
+                    if hasResults == false {
+                        hasResults.toggle()
+                    }                          
                 }
                 
             // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024

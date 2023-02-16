@@ -55,15 +55,14 @@ struct SearchByNameView: View {
                         }
                         Text("(Results are in alphabetical order)")
                         
-                        Table(searchResults) {
-                                                TableColumn("Results", value: \.organismName)
-                                            }
                     }
-                    
-                    
+                    Table(searchResults) {
+                        TableColumn("Results", value: \.organismName)
+                    }
                 } // end navstack
             } //end Vstack
         }
+        Spacer()
     } //end view body
     
     // call PHP POST and get query results. Pass area/plot name, org name
