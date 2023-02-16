@@ -2,7 +2,7 @@
 Traveling Salesman iOS App for the WGU Bachelor's Capstone. Working Title: FERN (Field Expedition Routing and Navigation)
 
 ## iOS App and XCode Settings
-The Apple Developer account that was used to develop this app was part of a group that is only used for internal organization applications. As a result, this app is not currently available on the App Store. It can, however, be run in a simulator with Xcode on MacOS or on a device attached to a MacOS machine. If run on a device, you may need to be apart of an Apple Development Group and enable Developer Mode under the device’s Privacy and Security setting.
+The Apple Developer account that was used to develop this app was part of a group that is only used for internal organization applications. As a result, this app is not currently available on the App Store. It can, however, be run in a simulator with Xcode on MacOS or on a device attached to a MacOS machine. If run on a device, you may need to be a part of and set the project’s signing & Capabilities to an Apple Development Group, and enable Developer Mode under the device’s Privacy and Security setting.
 
 When using XCode 14.2’s simulator, be sure **Allow Location Simulation** is checked and a **Default Location** is selected under **Product** -> **Scheme** -> **Edit Scheme** -> **Options** tab.
 1. Clone the repo to a non-iCloud folder.
