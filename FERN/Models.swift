@@ -120,9 +120,9 @@ extension TempMapPointModel: Codable {
         case siteId, organismName, lat, long
     }
 }
-class TempMapPointModel_Container: ObservableObject {
-     var TempMapPointModelArray:[TempMapPointModel] = [TempMapPointModel]()
-}
+//class TempMapPointModel_Container: ObservableObject {
+//     var TempMapPointModelArray:[TempMapPointModel] = [TempMapPointModel]()
+//}
 
 // Model for map annotations
 struct MapAnnotationItem: Identifiable {
@@ -142,10 +142,6 @@ struct MapAnnotationItem: Identifiable {
     var systemName = ""
     var size: CGFloat = MapPointSize().size
     var highlightColor = Color(white: 0.4745)
-//
-//    var img = Image(systemName: item.systemName)
-//        .symbolRenderingMode(.palette)
-//        .foregroundStyle(.green, .gray).font(.system(size: item.size))
 }
 
 

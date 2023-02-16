@@ -35,9 +35,6 @@ struct MapView: View {
     @State private var searchResults: [TempMapPointModel] = []
     @State private var hasResults = false
     
-    // For showing info when a map point is pressed?
-    @State private var selectedPoint: MapAnnotationItem?
-    
     // To hold Annotated Map Point Models
     @State private var annotationItems = [MapAnnotationItem]()
     
@@ -107,7 +104,7 @@ struct MapView: View {
     
     
     // Make sure forward and backward cycling will stay within the annotation's item count.
-    func cycleAnnotations (forward: Bool, _ offset: Int ){
+    private func cycleAnnotations (forward: Bool, _ offset: Int ){
         
         if forward {
             if currentAnnoItem < totalAnnoItems{
@@ -124,7 +121,7 @@ struct MapView: View {
     }
     
     // Draw attention to selected point. Put previous or next point back to its original state
-    func highlightAnnotation (_ offset: Int){
+    private func highlightAnnotation (_ offset: Int){
         annotationItems[currentAnnoItem].size = 60
         annotationItems[currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
         annotationItems[currentAnnoItem + offset].size = MapPointSize().size
@@ -132,13 +129,13 @@ struct MapView: View {
     }
     
     // Get points from database
-    func getMapPoints () async {
+    private func getMapPoints () async {
         
         // get root
-        let htmlRoot = HtmlRootModel()
+        let htmlRoot = HtmlRootModel().htmlRoot
         
         // pass name of search column to use
-        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/getMapItemsForApp.php")! as URL)
+        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot + "/php/getMapItemsForApp.php")! as URL)
         request.httpMethod = "POST"
         let postString = "_column_name=\(columnName)&_column_value=\(areaName)&_org_name=\(organismName)&_query_name=\(queryName)"
         
