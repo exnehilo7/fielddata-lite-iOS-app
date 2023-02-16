@@ -1,5 +1,10 @@
-# fielddata-lite-iOS-app
-Traveling Salesman iOS App for the WGU Bachelor's Capstone. Working Title: FERN (Field Expedition Routing and Navigation)
+# FERN
+FERN (Field Expedition Routing and Navigation) is an application designed to solve the Traveling Salesman problem for field data scientists. The Application has two major components: The iPad iOS 16.1 application itself and a PostgreSQL database backend on a Linux server with Apache and PHP. The database and the PHP files can be viewed at https://github.com/exnehilo7/fielddata-lite.
+
+Apple Map performance declines if there are more than 100 displayed annotations. Later versions of the application will hopefully use clustering to allow for more annotations. Until then, the number of items in a saved route or area and plot searches are limited.
+
+This application is currently built for a school project.
+
 
 ## iOS App and XCode Settings
 The Apple Developer account that was used to develop this app was part of a group that is only used for internal organization applications. As a result, this app is not currently available on the App Store. It can, however, be run in a simulator with Xcode on MacOS or on a device attached to a MacOS machine. If run on a device, you may need to be a part of an Apple Development Group, set the project’s Signing & Capabilities accordingly, and enable Developer Mode under the device’s Privacy and Security setting.
