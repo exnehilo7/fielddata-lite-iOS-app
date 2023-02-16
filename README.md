@@ -8,7 +8,7 @@ When using XCode 14.2’s simulator, be sure **Allow Location Simulation** is ch
 1. Clone the repo to a non-iCloud folder.
 2. Open XCode and open the project in the folder that the repo was cloned to.
 3. Select **iPad Pro (12.9-inch) (6th generation)** as the device.
-4. If you are using your own backend, the URL of the server will first need to be added/updated in the project’s **Info.plist** file, under the **Includes Subdomains** key, and the **htmlRoot** variable under the **HTMLRootModel** class in the **Models.swift** file.
+4. If you are using your own backend, the URL of the server will first need to be added/updated in the project’s **Info.plist** file, under **NSAppTransportSecurity** -> **NSExceptionDomains**, and added/updated in the **htmlRoot** variable under the **HTMLRootModel** class in the **Models.swift** file.
 5. Click the **Play** button.
 
 
