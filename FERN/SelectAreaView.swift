@@ -30,12 +30,12 @@ struct SelectAreaView: View {
     }
     
     // Process DML and get reports
-    func qryAreas() async {
+    private func qryAreas() async {
         
         // get root
-        let htmlRoot = HtmlRootModel()
+        let htmlRoot = HtmlRootModel().htmlRoot
         
-        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/" + phpFile)! as URL)
+        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot + "/php/" + phpFile)! as URL)
         request.httpMethod = "POST"
         
         // pass name of search column to use

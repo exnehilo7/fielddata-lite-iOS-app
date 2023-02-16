@@ -67,12 +67,12 @@ struct SearchByNameView: View {
     } //end view body
     
     // call PHP POST and get query results. Pass area/plot name, org name
-    func getMapPoints () {
+    private func getMapPoints () {
         
         // get root
-        let htmlRoot = HtmlRootModel()
+        let htmlRoot = HtmlRootModel().htmlRoot
         
-        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/getMapItemsForApp.php")! as URL)
+        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot + "/php/getMapItemsForApp.php")! as URL)
         
         request.httpMethod = "POST"
         

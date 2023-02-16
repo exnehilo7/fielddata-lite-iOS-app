@@ -17,10 +17,7 @@ struct SelectNotesView: View {
     @State private var showAddButton = true
     @State private var queryName = "no_DML_query"
     @State private var showDeleteConfirm = false
-    @FocusState private var testFieldIsFocused: Bool
-
-    // Get html root
-    let htmlRoot = HtmlRootModel()
+    @FocusState private var textFieldIsFocused: Bool
     
     var body: some View {
         
@@ -30,7 +27,7 @@ struct SelectNotesView: View {
                 /* If an onCommit action via the keyboard is preferred, add Bools to
                  determine Add or Update action */
                 TextField("Add a new note. Tap on an existing note to edit it.", text: $textFieldNote
-                ).textFieldStyle(.roundedBorder).focused($testFieldIsFocused)
+                ).textFieldStyle(.roundedBorder).focused($textFieldIsFocused)
                 Spacer()
                 if showAddButton {
                     Button{
@@ -43,7 +40,7 @@ struct SelectNotesView: View {
                                 // clear the textfield
                                 textFieldNote = ""
                                 // hide the keyboard
-                                testFieldIsFocused = false
+                                textFieldIsFocused = false
                             }
                         }
                     } label: {
@@ -122,12 +119,12 @@ struct SelectNotesView: View {
     }
     
     // Process DML and get notes
-    func qryNotes() async {
+    private func qryNotes() async {
         
         // get root
-        let htmlRoot = HtmlRootModel()
+        let htmlRoot = HtmlRootModel().htmlRoot
         
-        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/" + phpFile)! as URL)
+        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot + "/php/" + phpFile)! as URL)
         request.httpMethod = "POST"
         
         var postString = ""
@@ -180,12 +177,12 @@ struct SelectNotesView: View {
     }// end qryNotes
     
     // Hide the update & cancel buttons, clear out the text field, hide keyboard
-    func toggleUpdateAndClear() {
+    private func toggleUpdateAndClear() {
         withAnimation {
             showUpdateButton.toggle()
             showCancelButton.toggle()
             textFieldNote = ""
-            testFieldIsFocused = false
+            textFieldIsFocused = false
             showAddButton.toggle()
         }
     }

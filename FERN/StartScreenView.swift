@@ -10,7 +10,7 @@ import SwiftUI
 
 struct StartScreenView: View {
         
-    @State var active: Bool = false
+    @State private var active: Bool = false
     
     var body: some View {
         // Toggle splash screen and Main Menu View

@@ -29,12 +29,12 @@ struct SelectReportView: View {
     }
     
     // Process DML and get reports
-    func qryReports() async {
+    private func qryReports() async {
         
         // get root
-        let htmlRoot = HtmlRootModel()
+        let htmlRoot = HtmlRootModel().htmlRoot
         
-        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot.htmlRoot + "/php/" + phpFile)! as URL)
+        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot + "/php/" + phpFile)! as URL)
         request.httpMethod = "POST"
         
         let postString = "_query_name=report_view"

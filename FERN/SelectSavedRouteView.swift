@@ -12,7 +12,7 @@ struct SelectSavedRouteView: View {
     @State private var areaList: [SelectNameModel] = []
     
     // Get html root
-    let htmlRoot = HtmlRootModel()
+    private let htmlRoot = HtmlRootModel().htmlRoot
 
     
     var body: some View {
@@ -30,7 +30,7 @@ struct SelectSavedRouteView: View {
         // query areas. Call PHP GET
         }.onAppear(perform: {
                 // send request to server
-            guard let url: URL = URL(string: htmlRoot.htmlRoot + "/php/" + "menuLoadSavedRouteView.php") else {
+            guard let url: URL = URL(string: htmlRoot + "/php/" + "menuLoadSavedRouteView.php") else {
                     Swift.print("invalid URL")
                     return
                 }
