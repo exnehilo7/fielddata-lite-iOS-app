@@ -13,7 +13,7 @@ import SwiftUI
 
 // Model object for html root
 class HtmlRootModel: Codable {
-//    var htmlRoot = "http://   /fielddata-lite"
+//    var htmlRoot = "http://covid-samples01.ornl.gov/fielddata-lite"
     var htmlRoot = "http://103.72.77.233/ORNL/fielddata-lite"
 }
 

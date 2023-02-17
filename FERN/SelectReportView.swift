@@ -23,9 +23,8 @@ struct SelectReportView: View {
                     }
                     .bold()
                 }
-            }.task { await qryReports()
-            }
-        }
+            } //.task was here
+        }.task { await qryReports()}
     }
     
     // Process DML and get reports
@@ -34,15 +33,37 @@ struct SelectReportView: View {
         // get root
         let htmlRoot = HtmlRootModel().htmlRoot
         
-        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot + "/php/" + phpFile)! as URL)
-        request.httpMethod = "POST"
+        //        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot + "/php/" + phpFile)! as URL)
+        //        request.httpMethod = "POST"
+        //
+        //        let postString = "_query_name=report_view"
+        //
+        //
+        //        request.httpBody = postString.data (using: String.Encoding.utf8)
+        //
+        //        let task = URLSession.shared.dataTask(with: request as URLRequest) {
+        //            data, response, error in
+        //
+        //            if error != nil {
+        //                print("error=\(String(describing: error))")
+        //                return
+        //            }
+        
+        guard let url: URL = URL(string: htmlRoot + "/php/" + phpFile) else {
+            Swift.print("invalid URL")
+            return
+        }
+        
+        //        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot + "/php/" + phpFile)! as URL)
+        var urlRequest: URLRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "POST"
         
         let postString = "_query_name=report_view"
-       
         
-        request.httpBody = postString.data (using: String.Encoding.utf8)
         
-        let task = URLSession.shared.dataTask(with: request as URLRequest) {
+        urlRequest.httpBody = postString.data (using: String.Encoding.utf8)
+        
+        let task = URLSession.shared.dataTask(with: urlRequest as URLRequest) {
             data, response, error in
             
             if error != nil {
@@ -51,6 +72,7 @@ struct SelectReportView: View {
             }
             
             do {
+                //                let (data, _) = try await URLSession.shared.data(from: url)
                 
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .useDefaultKeys
@@ -72,10 +94,13 @@ struct SelectReportView: View {
                 Swift.print("data found to be corrupted in JSON: \(context.debugDescription)")
             } catch let error as NSError {
                 NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
+            } catch {
+                reportList = []
             }
         }
         task.resume()
     }// end qryReports
+    
 }
 
 struct SelectReportView_Previews: PreviewProvider {
