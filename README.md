@@ -13,6 +13,7 @@ When using XCode 14.2’s simulator, be sure **Allow Location Simulation** is ch
 
 If a physical device is used, in the Debug area you may see this message:
 > “Publishing changes from within view updates is not allowed, this will cause undefined behavior.”
+
 It appears that this message is a bug: https://developer.apple.com/forums/thread/717478. Memory usage also remained level when tested with a device.
 
 ### Setting up the Project in XCode
