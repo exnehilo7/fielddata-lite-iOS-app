@@ -124,7 +124,13 @@ struct SelectNotesView: View {
         // get root
         let htmlRoot = HtmlRootModel().htmlRoot
         
-        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot + "/php/" + phpFile)! as URL)
+//        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot + "/php/" + phpFile)! as URL)
+        guard let url: URL = URL(string: htmlRoot + "/php/" + phpFile) else {
+            Swift.print("invalid URL")
+            return
+        }
+        
+        var request: URLRequest = URLRequest(url: url)
         request.httpMethod = "POST"
         
         var postString = ""
@@ -139,18 +145,20 @@ struct SelectNotesView: View {
             postString = "_query_name=\(queryName)&_id=\(noteId)"
         }
         
-        request.httpBody = postString.data (using: String.Encoding.utf8)
+//        request.httpBody = postString.data (using: String.Encoding.utf8)
+        let postData = postString.data(using: .utf8)
         
-        let task = URLSession.shared.dataTask(with: request as URLRequest) {
-                   data, response, error in
-
-           if error != nil {
-               print("error=\(String(describing: error))")
-               return
-           }
+//        let task = URLSession.shared.dataTask(with: request as URLRequest) {
+//                   data, response, error in
+//
+//           if error != nil {
+//               print("error=\(String(describing: error))")
+//               return
+//           }
             
             do {
-
+                let (data, _) = try await URLSession.shared.upload(for: request, from: postData!, delegate: nil)
+                
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .useDefaultKeys
                 decoder.dataDecodingStrategy = .deferredToData
@@ -158,7 +166,7 @@ struct SelectNotesView: View {
                 
                 
                 // convert JSON response into class model as an array
-                self.notesList = try decoder.decode([SelectNoteModel].self, from: data!)
+                self.notesList = try decoder.decode([SelectNoteModel].self, from: data)
                 
                 // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
             } catch DecodingError.keyNotFound(let key, let context) {
@@ -171,9 +179,10 @@ struct SelectNotesView: View {
                 Swift.print("data found to be corrupted in JSON: \(context.debugDescription)")
             } catch let error as NSError {
                 NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
+            } catch {
+                notesList = []
             }
-        }
-        task.resume()
+        //task.resume()
     }// end qryNotes
     
     // Hide the update & cancel buttons, clear out the text field, hide keyboard
@@ -186,8 +195,7 @@ struct SelectNotesView: View {
             showAddButton.toggle()
         }
     }
-    
-}
+} // end view
 
 
 struct SelectNotesView_Previews: PreviewProvider {

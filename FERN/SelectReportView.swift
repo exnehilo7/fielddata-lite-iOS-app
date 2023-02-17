@@ -55,25 +55,27 @@ struct SelectReportView: View {
         }
         
         //        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot + "/php/" + phpFile)! as URL)
-        var urlRequest: URLRequest = URLRequest(url: url)
-        urlRequest.httpMethod = "POST"
+        var request: URLRequest = URLRequest(url: url)
+        request.httpMethod = "POST"
         
         let postString = "_query_name=report_view"
         
         
-        urlRequest.httpBody = postString.data (using: String.Encoding.utf8)
+//        urlRequest.httpBody = postString.data (using: String.Encoding.utf8)
+        let postData = postString.data(using: .utf8)
         
-        let task = URLSession.shared.dataTask(with: urlRequest as URLRequest) {
-            data, response, error in
-            
-            if error != nil {
-                print("error=\(String(describing: error))")
-                return
-            }
+//        let task = URLSession.shared.dataTask(with: urlRequest as URLRequest) {
+//            data, response, error in
+//
+//            if error != nil {
+//                print("error=\(String(describing: error))")
+//                return
+//            }
             
             do {
-                //                let (data, _) = try await URLSession.shared.data(from: url)
+                let (data, _) = try await URLSession.shared.upload(for: request, from: postData!, delegate: nil)
                 
+                // Necessary?
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .useDefaultKeys
                 decoder.dataDecodingStrategy = .deferredToData
@@ -81,7 +83,7 @@ struct SelectReportView: View {
                 
                 
                 // convert JSON response into class model as an array
-                self.reportList = try decoder.decode([SelectNameModel].self, from: data!)
+                self.reportList = try decoder.decode([SelectNameModel].self, from: data)
                 
                 // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
             } catch DecodingError.keyNotFound(let key, let context) {
@@ -97,8 +99,7 @@ struct SelectReportView: View {
             } catch {
                 reportList = []
             }
-        }
-        task.resume()
+        //task.resume()
     }// end qryReports
     
 }

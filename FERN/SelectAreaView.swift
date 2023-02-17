@@ -25,7 +25,7 @@ struct SelectAreaView: View {
                     .bold()
                 }
             }
-            // Call PHP GET
+        // Call PHP POST
         }.task {await qryAreas()}
     }
     
@@ -35,24 +35,33 @@ struct SelectAreaView: View {
         // get root
         let htmlRoot = HtmlRootModel().htmlRoot
         
-        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot + "/php/" + phpFile)! as URL)
+//        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot + "/php/" + phpFile)! as URL)
+        
+        guard let url: URL = URL(string: htmlRoot + "/php/" + phpFile) else {
+            Swift.print("invalid URL")
+            return
+        }
+        
+        var request: URLRequest = URLRequest(url: url)
         request.httpMethod = "POST"
         
         // pass name of search column to use
         let postString = "_query_name=\(columnName)"
        
         
-        request.httpBody = postString.data (using: String.Encoding.utf8)
+//        request.httpBody = postString.data (using: String.Encoding.utf8)
+        let postData = postString.data(using: .utf8)
         
-        let task = URLSession.shared.dataTask(with: request as URLRequest) {
-            data, response, error in
-            
-            if error != nil {
-                print("error=\(String(describing: error))")
-                return
-            }
+//        let task = URLSession.shared.dataTask(with: request as URLRequest) {
+//            data, response, error in
+//
+//            if error != nil {
+//                print("error=\(String(describing: error))")
+//                return
+//            }
             
             do {
+                let (data, _) = try await URLSession.shared.upload(for: request, from: postData!, delegate: nil)
                 
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .useDefaultKeys
@@ -61,7 +70,7 @@ struct SelectAreaView: View {
                 
                 
                 // convert JSON response into class model as an array
-                self.areaList = try decoder.decode([SelectNameModel].self, from: data!)
+                self.areaList = try decoder.decode([SelectNameModel].self, from: data)
                 
                 // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
             } catch DecodingError.keyNotFound(let key, let context) {
@@ -74,11 +83,12 @@ struct SelectAreaView: View {
                 Swift.print("data found to be corrupted in JSON: \(context.debugDescription)")
             } catch let error as NSError {
                 NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
+            } catch {
+                areaList = []
             }
-        }
-        task.resume()
+        //task.resume()
     }// end qryReports
-}
+} //end view
 
 struct SelectAreaView_Previews: PreviewProvider {
     static var previews: some View {

@@ -8,9 +8,7 @@
 
 import SwiftUI
 
-/**
-  Test DocC
- */
+
 struct SearchByNameView: View {
     
     var areaName: String // THIS is how variables are passed view-to-view. @EnvironmentObject method has issues(?). See https://medium.com/swlh/swiftui-and-the-missing-environment-object-1a4bf8913ba7 for more info.
@@ -31,7 +29,9 @@ struct SearchByNameView: View {
             HStack {
                 TextField("Enter Organism Name", text: $organismName, onCommit: {
                     // Call function after user is done entering text.
-                    getMapPoints()
+                    Task {
+                        await getMapPoints()
+                    }
                 }).textFieldStyle(.roundedBorder).disableAutocorrection(true) // Keep auto correction off
             }
             // VStack for Results
@@ -66,28 +66,36 @@ struct SearchByNameView: View {
     } //end view body
     
     // call PHP POST and get query results. Pass area/plot name, org name
-    private func getMapPoints () {
+    private func getMapPoints () async {
         
         // get root
         let htmlRoot = HtmlRootModel().htmlRoot
         
-        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot + "/php/getMapItemsForApp.php")! as URL)
+//        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot + "/php/getMapItemsForApp.php")! as URL)
         
+        guard let url: URL = URL(string: htmlRoot + "/php/getMapItemsForApp.php") else {
+            Swift.print("invalid URL")
+            return
+        }
+        
+        var request: URLRequest = URLRequest(url: url)
         request.httpMethod = "POST"
         
         // pass name of search column to use
         let postString = "_column_name=\(columnName)&_column_value=\(areaName)&_org_name=\(organismName)&_query_name=query_search_org_name_by_site"
-        request.httpBody = postString.data (using: String.Encoding.utf8)
+//        request.httpBody = postString.data (using: String.Encoding.utf8)
+        let postData = postString.data(using: .utf8)
         
-        let task = URLSession.shared.dataTask(with: request as URLRequest) {
-                   data, response, error in
-
-           if error != nil {
-               print("error=\(String(describing: error))")
-               return
-           }
+//        let task = URLSession.shared.dataTask(with: request as URLRequest) {
+//                   data, response, error in
+//
+//           if error != nil {
+//               print("error=\(String(describing: error))")
+//               return
+//           }
             
             do {
+                let (data, _) = try await URLSession.shared.upload(for: request, from: postData!, delegate: nil)
                 
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .useDefaultKeys
@@ -95,7 +103,7 @@ struct SearchByNameView: View {
                 decoder.dateDecodingStrategy = .deferredToDate
                      
                 // convert JSON response into class model as an array
-                self.searchResults = try decoder.decode([TempMapPointModel].self, from: data!)
+                self.searchResults = try decoder.decode([TempMapPointModel].self, from: data)
                 
                 // dont show link if result is empty
                 if !searchResults.isEmpty {
@@ -117,14 +125,17 @@ struct SearchByNameView: View {
                 Swift.print("data found to be corrupted in JSON: \(context.debugDescription)")
             } catch let error as NSError {
                 NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
+            } catch {
+                searchResults = []
             }
-        }
-        task.resume()
+        //task.resume()
     }// end getMapPoints
     
-    struct SearchByNameView_Previews: PreviewProvider {
-        static var previews: some View {
-            SearchByNameView(areaName: "Davis", columnName: "area_name")
-        }
-    }
-}//end View
+ 
+}//end SearchByNameView View
+
+struct SearchByNameView_Previews: PreviewProvider {
+     static var previews: some View {
+         SearchByNameView(areaName: "Davis", columnName: "area_name")
+     }
+ }
