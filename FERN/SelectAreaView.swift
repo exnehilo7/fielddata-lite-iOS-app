@@ -16,23 +16,23 @@ struct SelectAreaView: View {
     var body: some View {
         
         VStack {
-            HStack{
-                Spacer()
-                Button ("Refresh"){
-                    Task {
-                        await qryAreas()
-                    }
-                }.padding(.trailing, 25)
-            }
-            NavigationStack {
-                List (self.areaList) { (area) in
-                    NavigationLink(area.name) {
-                        // Pass vars to view
-                        SearchByNameView(areaName: area.name, columnName: columnName).navigationTitle(area.name)
-                    }
-                    .bold()
-                }
-            }
+//            HStack{
+//                Spacer()
+//                Button ("Refresh"){
+//                    Task {
+//                        await qryAreas()
+//                    }
+//                }.padding(.trailing, 25)
+//            }
+//            NavigationStack {
+//                List (self.areaList) { (area) in
+//                    NavigationLink(area.name) {
+//                        // Pass vars to view
+//                        SearchByNameView(areaName: area.name, columnName: columnName).navigationTitle(area.name)
+//                    }
+//                    .bold()
+//                }
+//            }
         // Call PHP POST
         }.task {await qryAreas()}
     }
