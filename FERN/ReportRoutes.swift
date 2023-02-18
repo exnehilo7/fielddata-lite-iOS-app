@@ -13,14 +13,25 @@ struct ReportRoutes: View {
     @State private var totalDistances: [RouteTotalDistanceModel] = []
         
     var body: some View {
-        // Route total distances table
-        Table(totalDistances) {
-            TableColumn("Route", value: \.routeName)
-            TableColumn("Kilometers") { distance in
-                Text(distance.totalDistanceKm)
+        VStack {
+            HStack {
+                Spacer()
+                Button ("Refresh"){
+                    Task {
+                        await qryTotalDistanceReport()
+                    }
+                }.padding(.trailing, 25)
             }
-        }.task { await qryTotalDistanceReport() }
+            // Route total distances table
+            Table(totalDistances) {
+                TableColumn("Route", value: \.routeName)
+                TableColumn("Kilometers") { distance in
+                    Text(distance.totalDistanceKm)
+                }
+            }.task { await qryTotalDistanceReport() }
+        }
     }
+    
     
     // Process DML and get reports
     private func qryTotalDistanceReport() async {

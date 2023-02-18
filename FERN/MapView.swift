@@ -58,6 +58,14 @@ struct MapView: View {
 //                })
 //            } // end add points
             VStack{
+                HStack {
+                    Spacer()
+                    Button ("Refresh"){
+                        Task {
+                            await getMapPoints()
+                        }
+                    }.padding(.trailing, 25)
+                }
                 // Show map's current position
                 Text("lat: \(region.center.latitude), long: \(region.center.longitude). Zoom: \(region.span.latitudeDelta)")
                     .font(.caption)
@@ -211,7 +219,7 @@ struct MapView: View {
                     
                     // Set staring regoin to the first point in the list
                     self.region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: Double(searchResults[0].lat) ?? 0, longitude: Double(searchResults[0].long) ?? 0),
-                        span: MKCoordinateSpan(latitudeDelta: 0.02, longitudeDelta: 0.02))
+                        span: MKCoordinateSpan(latitudeDelta: 0.015, longitudeDelta: 0.015))
                     
                     // Don't show items if no data
                     if hasResults == false {
