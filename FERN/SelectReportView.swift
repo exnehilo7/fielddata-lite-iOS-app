@@ -16,6 +16,14 @@ struct SelectReportView: View {
         
         // List the reports
         VStack {
+            HStack{
+                Spacer()
+                Button ("Refresh"){
+                    Task {
+                        await qryReports()
+                    }
+                }.padding(.trailing, 25)
+            }
             NavigationStack {
                 List (self.reportList) { (area) in
                     NavigationLink(area.name) {

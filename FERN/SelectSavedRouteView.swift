@@ -18,6 +18,14 @@ struct SelectSavedRouteView: View {
     var body: some View {
         
         VStack {
+            HStack{
+                Spacer()
+                Button ("Refresh"){
+                    Task {
+                        await getSavedRoutes()
+                    }
+                }.padding(.trailing, 25)
+            }
             NavigationStack {
                 List (self.areaList) { (area) in
                     NavigationLink(area.name) {

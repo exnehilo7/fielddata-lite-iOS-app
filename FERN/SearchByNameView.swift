@@ -25,6 +25,14 @@ struct SearchByNameView: View {
         
         // VStack for All
         VStack {
+            HStack{
+                Spacer()
+                Button ("Refresh"){
+                    Task {
+                        await getMapPoints()
+                    }
+                }.padding(.trailing, 25)
+            }
             // HStack for Search field
             HStack {
                 TextField("Enter Organism Name", text: $organismName, onCommit: {

@@ -22,6 +22,14 @@ struct SelectNotesView: View {
     var body: some View {
         
         VStack {
+            HStack{
+                Spacer()
+                Button ("Refresh"){
+                    Task {
+                        await qryNotes()
+                    }
+                }.padding(.trailing, 100)
+            }
             // Add, edit, and delete note buttons and field
             HStack {
                 /* If an onCommit action via the keyboard is preferred, add Bools to
