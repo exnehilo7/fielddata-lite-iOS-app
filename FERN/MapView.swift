@@ -62,6 +62,10 @@ struct MapView: View {
                     Spacer()
                     Button ("Refresh"){
                         Task {
+                            hasResults = false
+                            currentAnnoItem = 0
+                            totalAnnoItems = 0
+                            annotationItems.removeAll(keepingCapacity: true)
                             await getMapPoints()
                         }
                     }.padding(.trailing, 25)
@@ -74,6 +78,7 @@ struct MapView: View {
                 Spacer()
                 
                 VStack {
+                    /* Supposed to supress "Publishing changes from within view updates is not allowed, this will cause undefined behavior." messages in debug */
                     let binding = Binding(
                         get: {self.region},
                         set: { newValue in
