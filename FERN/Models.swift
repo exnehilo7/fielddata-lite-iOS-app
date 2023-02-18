@@ -145,7 +145,7 @@ struct MapAnnotationItem: Identifiable {
 }
 
 
-// ATTEMPTED STRUCT AND CLASS REBUILD:
+// NEEDED FOR STRUCT AND CLASS REBUILD?:
 // Model for map annotations
 //struct MapAnnotationItem: Identifiable { //, Sequence, IteratorProtocol {
 //
@@ -213,46 +213,4 @@ struct MapAnnotationItem: Identifiable {
 //        let container = try decoder.container(keyedBy: CodingKeys.self)
 //        MapAnnotationItemArray = try container.decode([MapAnnotationItem].self, forKey: .MapAnnotationItemArray)
 //    }
-//}
-
-
-// For a starting region in a map
-//class StartingRegionModel: Codable, Identifiable {
-//    let id = UUID() // DO NOT SET TO MUTABLE
-//    var lat = ""
-//    var long = ""
-//    var zoom = ""
-//}
-
-// Model for starting region annotation
-//struct RegionAnnotationItem: Identifiable {
-//    let id = UUID()
-//
-//    var latitude: Double
-//    var longitude: Double
-//    var zoom: Double
-//
-//    var center: CLLocationCoordinate2D {
-//        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-//    }
-//
-//    var span: MKCoordinateSpan {
-//        MKCoordinateSpan(latitudeDelta: zoom, longitudeDelta: zoom)
-//    }
-//
-//    var region: MKCoordinateRegion {
-//        MKCoordinateRegion (
-//            center: center,
-//            span: span
-//        )
-//    }
-//}
-
-
-
-
-// Teeeest
-//class ResponseModel: Codable, Identifiable {
-//    var id: String? = ""
-//    var type: String? = ""
 //}

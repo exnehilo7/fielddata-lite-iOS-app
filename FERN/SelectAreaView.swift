@@ -16,23 +16,23 @@ struct SelectAreaView: View {
     var body: some View {
         
         VStack {
-//            HStack{
-//                Spacer()
-//                Button ("Refresh"){
-//                    Task {
-//                        await qryAreas()
-//                    }
-//                }.padding(.trailing, 25)
-//            }
-//            NavigationStack {
-//                List (self.areaList) { (area) in
-//                    NavigationLink(area.name) {
-//                        // Pass vars to view
-//                        SearchByNameView(areaName: area.name, columnName: columnName).navigationTitle(area.name)
-//                    }
-//                    .bold()
-//                }
-//            }
+            HStack{
+                Spacer()
+                Button ("Refresh"){
+                    Task {
+                        await qryAreas()
+                    }
+                }.padding(.trailing, 25)
+            }
+            NavigationStack {
+                List (self.areaList) { (area) in
+                    NavigationLink(area.name) {
+                        // Pass vars to view
+                        SearchByNameView(areaName: area.name, columnName: columnName).navigationTitle(area.name)
+                    }
+                    .bold()
+                }
+            }
         // Call PHP POST
         }.task {await qryAreas()}
     }
@@ -42,8 +42,6 @@ struct SelectAreaView: View {
         
         // get root
         let htmlRoot = HtmlRootModel().htmlRoot
-        
-//        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot + "/php/" + phpFile)! as URL)
         
         guard let url: URL = URL(string: htmlRoot + "/php/" + phpFile) else {
             Swift.print("invalid URL")
@@ -56,17 +54,7 @@ struct SelectAreaView: View {
         // pass name of search column to use
         let postString = "_query_name=\(columnName)"
        
-        
-//        request.httpBody = postString.data (using: String.Encoding.utf8)
         let postData = postString.data(using: .utf8)
-        
-//        let task = URLSession.shared.dataTask(with: request as URLRequest) {
-//            data, response, error in
-//
-//            if error != nil {
-//                print("error=\(String(describing: error))")
-//                return
-//            }
             
             do {
                 let (data, _) = try await URLSession.shared.upload(for: request, from: postData!, delegate: nil)
@@ -94,7 +82,6 @@ struct SelectAreaView: View {
             } catch {
                 areaList = []
             }
-        //task.resume()
     }// end qryReports
 } //end view
 

@@ -41,44 +41,17 @@ struct SelectReportView: View {
         // get root
         let htmlRoot = HtmlRootModel().htmlRoot
         
-        //        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot + "/php/" + phpFile)! as URL)
-        //        request.httpMethod = "POST"
-        //
-        //        let postString = "_query_name=report_view"
-        //
-        //
-        //        request.httpBody = postString.data (using: String.Encoding.utf8)
-        //
-        //        let task = URLSession.shared.dataTask(with: request as URLRequest) {
-        //            data, response, error in
-        //
-        //            if error != nil {
-        //                print("error=\(String(describing: error))")
-        //                return
-        //            }
-        
         guard let url: URL = URL(string: htmlRoot + "/php/" + phpFile) else {
             Swift.print("invalid URL")
             return
         }
         
-        //        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot + "/php/" + phpFile)! as URL)
         var request: URLRequest = URLRequest(url: url)
         request.httpMethod = "POST"
         
         let postString = "_query_name=report_view"
         
-        
-//        urlRequest.httpBody = postString.data (using: String.Encoding.utf8)
         let postData = postString.data(using: .utf8)
-        
-//        let task = URLSession.shared.dataTask(with: urlRequest as URLRequest) {
-//            data, response, error in
-//
-//            if error != nil {
-//                print("error=\(String(describing: error))")
-//                return
-//            }
             
             do {
                 let (data, _) = try await URLSession.shared.upload(for: request, from: postData!, delegate: nil)
@@ -107,7 +80,6 @@ struct SelectReportView: View {
             } catch {
                 reportList = []
             }
-        //task.resume()
     }// end qryReports
     
 }

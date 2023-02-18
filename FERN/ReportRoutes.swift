@@ -39,8 +39,6 @@ struct ReportRoutes: View {
         // get root
         let htmlRoot = HtmlRootModel().htmlRoot
         
-//        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot + "/php/" + phpFile)! as URL)
-        
         guard let url: URL = URL(string: htmlRoot + "/php/" + phpFile) else {
             Swift.print("invalid URL")
             return
@@ -51,17 +49,7 @@ struct ReportRoutes: View {
         
         let postString = "_query_name=report_route_total_distance"
        
-        
-//        request.httpBody = postString.data (using: String.Encoding.utf8)
         let postData = postString.data(using: .utf8)
-        
-//        let task = URLSession.shared.dataTask(with: request as URLRequest) {
-//            data, response, error in
-//
-//            if error != nil {
-//                print("error=\(String(describing: error))")
-//                return
-//            }
             
             do {
                 let (data, _) = try await URLSession.shared.upload(for: request, from: postData!, delegate: nil)
@@ -89,7 +77,6 @@ struct ReportRoutes: View {
             } catch {
                 totalDistances = []
             }
-        //task.resume()
     }// end qryTotalDistanceReport
 }
 

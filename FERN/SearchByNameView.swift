@@ -79,8 +79,6 @@ struct SearchByNameView: View {
         // get root
         let htmlRoot = HtmlRootModel().htmlRoot
         
-//        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot + "/php/getMapItemsForApp.php")! as URL)
-        
         guard let url: URL = URL(string: htmlRoot + "/php/getMapItemsForApp.php") else {
             Swift.print("invalid URL")
             return
@@ -91,16 +89,8 @@ struct SearchByNameView: View {
         
         // pass name of search column to use
         let postString = "_column_name=\(columnName)&_column_value=\(areaName)&_org_name=\(organismName)&_query_name=query_search_org_name_by_site"
-//        request.httpBody = postString.data (using: String.Encoding.utf8)
+
         let postData = postString.data(using: .utf8)
-        
-//        let task = URLSession.shared.dataTask(with: request as URLRequest) {
-//                   data, response, error in
-//
-//           if error != nil {
-//               print("error=\(String(describing: error))")
-//               return
-//           }
             
             do {
                 let (data, _) = try await URLSession.shared.upload(for: request, from: postData!, delegate: nil)
@@ -136,7 +126,6 @@ struct SearchByNameView: View {
             } catch {
                 searchResults = []
             }
-        //task.resume()
     }// end getMapPoints
     
  
