@@ -8,15 +8,13 @@
 import SwiftUI
 import MapKit
 
-/* Within the database funcion, divide general region's zoom level by 125,000 to
- adjust for the table's CesiumJS value.
+/*
  The geocoordinates, organism name, and PK from the database are inserted into
  a MapAnnotationItem which each in trun are added to an array. Cycling through
  the array is done by simple inetger variables. (Apparently Swift doesn't have
  .next() and .previous() for arrays?)
  The starting center is the first MapAnnotationItem item. The zoom level is set
  in the getMapPoints function.
-
  
 */
 
@@ -44,19 +42,6 @@ struct MapView: View {
     var body: some View {
         
        // ZStack(alignment: .center) {
-//            Map(coordinateRegion: $region,
-//                interactionModes: .all,
-//                showsUserLocation: true,
-//                annotationItems: annotationItems
-//            ) { item in // add points
-//
-//                // Use for custom images and colors:
-//                MapAnnotation(coordinate: item.coordinate, content: {
-//                    Image(systemName: item.systemName)
-//                        .symbolRenderingMode(.palette)
-//                        .foregroundStyle(.green, item.highlightColor).font(.system(size: item.size))
-//                })
-//            } // end add points
             VStack{
                 HStack {
                     Spacer()
@@ -74,20 +59,19 @@ struct MapView: View {
                 Text("lat: \(region.center.latitude), long: \(region.center.longitude). Zoom: \(region.span.latitudeDelta)")
                     .font(.caption)
                     .fontWeight(.semibold)
-                //.offset(y: -640)
                 Spacer()
                 
                 VStack {
-                    /* Supposed to supress "Publishing changes from within view updates is not allowed, this will cause undefined behavior." messages in debug */
-                    let binding = Binding(
-                        get: {self.region},
-                        set: { newValue in
-                            DispatchQueue.main.async {
-                                self.region = newValue
-                            }
-                        }
-                    )
-                    Map(coordinateRegion: binding,
+                    /* Supposed to supress "Publishing changes from within view updates is not allowed, this will cause undefined behavior." messages in debug, only doubled the messages. Messages could be XCode bug? */
+//                    let binding = Binding(
+//                        get: {self.region},
+//                        set: { newValue in
+//                            DispatchQueue.main.async {
+//                                self.region = newValue
+//                            }
+//                        }
+//                    )
+                    Map(coordinateRegion: $region,
                     interactionModes: .all,
                     showsUserLocation: true,
                     annotationItems: annotationItems
@@ -135,8 +119,6 @@ struct MapView: View {
                } // end vstack
            } // end if hasResults
         }
-            // For async acticity, use .task instead of .onAppear
-      //  }//.task { await getMapPoints()}//.task { await getRegion()}
     } //end body view
     
     
@@ -170,9 +152,7 @@ struct MapView: View {
         
         // get root
         let htmlRoot = HtmlRootModel().htmlRoot
-        
-        // pass name of search column to use
-//        let request = NSMutableURLRequest(url: NSURL(string: htmlRoot + "/php/getMapItemsForApp.php")! as URL)
+
         guard let url: URL = URL(string: htmlRoot + "/php/getMapItemsForApp.php") else {
             Swift.print("invalid URL")
             return
@@ -183,18 +163,8 @@ struct MapView: View {
         
         let postString = "_column_name=\(columnName)&_column_value=\(areaName)&_org_name=\(organismName)&_query_name=\(queryName)"
         
-        
-//        request.httpBody = postString.data (using: String.Encoding.utf8)
         let postData = postString.data(using: .utf8)
         
-//        let task = URLSession.shared.dataTask(with: request as URLRequest) {
-//            data, response, error in
-//
-//            if error != nil {
-//                print("error=\(String(describing: error))")
-//                return
-//            }
-//
             do {
                 let (data, _) = try await URLSession.shared.upload(for: request, from: postData!, delegate: nil)
                 
@@ -246,7 +216,6 @@ struct MapView: View {
             } catch {
                 searchResults = []
             }
-        //task.resume()
     }// end getMapPoints
     
 }// end MapView view

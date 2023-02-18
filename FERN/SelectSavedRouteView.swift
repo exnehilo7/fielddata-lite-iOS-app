@@ -46,15 +46,6 @@ struct SelectSavedRouteView: View {
             return
         }
         
-//        var urlRequest: URLRequest = URLRequest(url: url)
-//        urlRequest.httpMethod = "GET"
-        
-        //        URLSession.shared.dataTask(with: urlRequest, completionHandler: { (data, response, error) in
-        //            // check if response is okay
-        //            guard let data = data else {
-        //                print("invalid response")
-        //                return
-        //            }
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
 
@@ -74,7 +65,7 @@ struct SelectSavedRouteView: View {
         } catch {
             areaList = []
         }
-    } // end getSavedRoutes   //).resume()
+    } // end getSavedRoutes
 }
 
 struct SelectSavedRouteView_Previews: PreviewProvider {
