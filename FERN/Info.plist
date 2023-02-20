@@ -14,8 +14,6 @@
 			<true/>
 			<key>Includes Subdomains</key>
 			<true/>
-			<key>covid-samples01.ornl.gov</key>
-			<string></string>
 		</dict>
 	</dict>
 	<key>UIApplicationSceneManifest</key>

@@ -12,6 +12,7 @@
 		D10BB320298ADAA500667E86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D10BB31F298ADAA500667E86 /* Assets.xcassets */; };
 		D10BB323298ADAA500667E86 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D10BB322298ADAA500667E86 /* Preview Assets.xcassets */; };
 		D10BB32A298ADAD600667E86 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10BB329298ADAD600667E86 /* Models.swift */; };
+		D147C56829A3EC2900D948AB /* FERNTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D147C56729A3EC2900D948AB /* FERNTests.swift */; };
 		D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7129901A2000835B5E /* SelectAreaView.swift */; };
 		D16A6C7829901A5D00835B5E /* CreateCustomRouteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7729901A5D00835B5E /* CreateCustomRouteView.swift */; };
 		D16A6C7C2995D18100835B5E /* StartScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7B2995D18100835B5E /* StartScreenView.swift */; };
@@ -27,6 +28,16 @@
 		D1766CA5298E0B3E002F594D /* Classes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766CA4298E0B3E002F594D /* Classes.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		D147C56929A3EC2900D948AB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D10BB310298ADAA400667E86 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D10BB317298ADAA400667E86;
+			remoteInfo = FERN;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		D10BB318298ADAA400667E86 /* FERN.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FERN.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D10BB31B298ADAA400667E86 /* FERNApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FERNApp.swift; sourceTree = "<group>"; };
@@ -35,6 +46,8 @@
 		D10BB322298ADAA500667E86 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		D10BB329298ADAD600667E86 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		D10BB32B298AF42000667E86 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		D147C56529A3EC2900D948AB /* FERNTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FERNTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D147C56729A3EC2900D948AB /* FERNTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FERNTests.swift; sourceTree = "<group>"; };
 		D16A6C7129901A2000835B5E /* SelectAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAreaView.swift; sourceTree = "<group>"; };
 		D16A6C7729901A5D00835B5E /* CreateCustomRouteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCustomRouteView.swift; sourceTree = "<group>"; };
 		D16A6C7B2995D18100835B5E /* StartScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreenView.swift; sourceTree = "<group>"; };
@@ -58,6 +71,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D147C56229A3EC2900D948AB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -65,6 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				D10BB31A298ADAA400667E86 /* FERN */,
+				D147C56629A3EC2900D948AB /* FERNTests */,
 				D10BB319298ADAA400667E86 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -73,6 +94,7 @@
 			isa = PBXGroup;
 			children = (
 				D10BB318298ADAA400667E86 /* FERN.app */,
+				D147C56529A3EC2900D948AB /* FERNTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -111,6 +133,14 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		D147C56629A3EC2900D948AB /* FERNTests */ = {
+			isa = PBXGroup;
+			children = (
+				D147C56729A3EC2900D948AB /* FERNTests.swift */,
+			);
+			path = FERNTests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -131,6 +161,24 @@
 			productReference = D10BB318298ADAA400667E86 /* FERN.app */;
 			productType = "com.apple.product-type.application";
 		};
+		D147C56429A3EC2900D948AB /* FERNTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D147C56B29A3EC2900D948AB /* Build configuration list for PBXNativeTarget "FERNTests" */;
+			buildPhases = (
+				D147C56129A3EC2900D948AB /* Sources */,
+				D147C56229A3EC2900D948AB /* Frameworks */,
+				D147C56329A3EC2900D948AB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D147C56A29A3EC2900D948AB /* PBXTargetDependency */,
+			);
+			name = FERNTests;
+			productName = FERNTests;
+			productReference = D147C56529A3EC2900D948AB /* FERNTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -143,6 +191,10 @@
 				TargetAttributes = {
 					D10BB317298ADAA400667E86 = {
 						CreatedOnToolsVersion = 14.2;
+					};
+					D147C56429A3EC2900D948AB = {
+						CreatedOnToolsVersion = 14.2;
+						TestTargetID = D10BB317298ADAA400667E86;
 					};
 				};
 			};
@@ -160,6 +212,7 @@
 			projectRoot = "";
 			targets = (
 				D10BB317298ADAA400667E86 /* FERN */,
+				D147C56429A3EC2900D948AB /* FERNTests */,
 			);
 		};
 /* End PBXProject section */
@@ -171,6 +224,13 @@
 			files = (
 				D10BB323298ADAA500667E86 /* Preview Assets.xcassets in Resources */,
 				D10BB320298ADAA500667E86 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D147C56329A3EC2900D948AB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -200,7 +260,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D147C56129A3EC2900D948AB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D147C56829A3EC2900D948AB /* FERNTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D147C56A29A3EC2900D948AB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D10BB317298ADAA400667E86 /* FERN */;
+			targetProxy = D147C56929A3EC2900D948AB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		D10BB324298ADAA500667E86 /* Debug */ = {
@@ -379,6 +455,42 @@
 			};
 			name = Release;
 		};
+		D147C56C29A3EC2900D948AB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2DBHJL4HWE;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ORNL.FERNTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FERN.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FERN";
+			};
+			name = Debug;
+		};
+		D147C56D29A3EC2900D948AB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2DBHJL4HWE;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ORNL.FERNTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FERN.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FERN";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -396,6 +508,15 @@
 			buildConfigurations = (
 				D10BB327298ADAA500667E86 /* Debug */,
 				D10BB328298ADAA500667E86 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D147C56B29A3EC2900D948AB /* Build configuration list for PBXNativeTarget "FERNTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D147C56C29A3EC2900D948AB /* Debug */,
+				D147C56D29A3EC2900D948AB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
