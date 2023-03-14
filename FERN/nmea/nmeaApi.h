@@ -5,8 +5,8 @@
 //  Added by Hopp, Dan on 3/9/23.
 //  From EosEADataEnt development kit.
 
-#ifndef nmeaApi_h // added from file creation
-#define nmeaApi_h // added from file creation
+//#ifndef nmeaApi_h // added from file creation
+//#define nmeaApi_h // added from file creation
 
 #ifndef nmea_nmeaApi_h
 #define nmea_nmeaApi_h
