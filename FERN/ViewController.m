@@ -12,6 +12,8 @@
 #import "NSData+hexa.h"
 #import "nmeaApi.h"
 
+#import "FERN-Bridging-Header.h"
+
 static NSString * const kComThreadRunloop = @"kComThreadRunloop";
 static NSString * const kRequestLocation = @"kRequestLocation";
 

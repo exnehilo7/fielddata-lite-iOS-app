@@ -12,6 +12,7 @@
 		D10281A729BA5D01003CF948 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D10281A629BA5D01003CF948 /* AppDelegate.m */; };
 		D10281AE29BA6C2B003CF948 /* GPSFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10281AD29BA6C2B003CF948 /* GPSFeedView.swift */; };
 		D10281B529C0E1DB003CF948 /* libnmea-universal.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D10281B429C0E1DB003CF948 /* libnmea-universal.a */; };
+		D10281B729C10628003CF948 /* FERN-EoS-Bridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10281B629C10628003CF948 /* FERN-EoS-Bridge.swift */; };
 		D10BB31C298ADAA400667E86 /* FERNApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10BB31B298ADAA400667E86 /* FERNApp.swift */; };
 		D10BB31E298ADAA400667E86 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10BB31D298ADAA400667E86 /* ContentView.swift */; };
 		D10BB320298ADAA500667E86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D10BB31F298ADAA500667E86 /* Assets.xcassets */; };
@@ -55,6 +56,7 @@
 		D10281AD29BA6C2B003CF948 /* GPSFeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPSFeedView.swift; sourceTree = "<group>"; };
 		D10281B329C0E1DB003CF948 /* nmeaApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nmeaApi.h; path = nmea/nmeaApi.h; sourceTree = "<group>"; };
 		D10281B429C0E1DB003CF948 /* libnmea-universal.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libnmea-universal.a"; path = "nmea/libnmea-universal.a"; sourceTree = "<group>"; };
+		D10281B629C10628003CF948 /* FERN-EoS-Bridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FERN-EoS-Bridge.swift"; sourceTree = "<group>"; };
 		D10BB318298ADAA400667E86 /* FERN.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FERN.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D10BB31B298ADAA400667E86 /* FERNApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FERNApp.swift; sourceTree = "<group>"; };
 		D10BB31D298ADAA400667E86 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -167,6 +169,7 @@
 				D10BB31D298ADAA400667E86 /* ContentView.swift */,
 				D102819929BA594E003CF948 /* EosEADataEnt */,
 				D10BB31B298ADAA400667E86 /* FERNApp.swift */,
+				D10281B629C10628003CF948 /* FERN-EoS-Bridge.swift */,
 				D102819529BA57C2003CF948 /* FERN-Bridging-Header.h */,
 				D1766CA2298DBAA3002F594D /* Functions.swift */,
 				D10BB32B298AF42000667E86 /* Info.plist */,
@@ -297,6 +300,7 @@
 				D10281A729BA5D01003CF948 /* AppDelegate.m in Sources */,
 				D16A6C7829901A5D00835B5E /* CreateCustomRouteView.swift in Sources */,
 				D16A6C86299AE2DF00835B5E /* SelectSavedRouteView.swift in Sources */,
+				D10281B729C10628003CF948 /* FERN-EoS-Bridge.swift in Sources */,
 				D1766CA1298DB9C6002F594D /* MapView.swift in Sources */,
 				D1766C9D298DB978002F594D /* MainMenuView.swift in Sources */,
 				D10281A529BA5CC0003CF948 /* NSData+hexa.m in Sources */,
