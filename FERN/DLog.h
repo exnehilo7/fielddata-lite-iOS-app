@@ -8,8 +8,8 @@
 #ifndef DLog_h // added from file creation
 #define DLog_h // added from file creation
 
-#ifndef GPS_Demo_DLog_h
-#define GPS_Demo_DLog_h
+//#ifndef GPS_Demo_DLog_h
+//#define GPS_Demo_DLog_h
 
 #ifdef DEBUG
     #warning Log enabled !
