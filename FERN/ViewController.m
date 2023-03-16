@@ -11,16 +11,21 @@
 #import "DLog.h"
 #import "NSData+hexa.h"
 #import "nmeaApi.h"
-
 #import "FERN-Bridging-Header.h"
+//#import "FERN-EoS-Bridge.swift"
 
 static NSString * const kComThreadRunloop = @"kComThreadRunloop";
 static NSString * const kRequestLocation = @"kRequestLocation";
+
 
 @interface ViewController () <UITextViewDelegate, NSStreamDelegate> {
     nmeaINFO info;
     nmeaPARSER parser;
 }
+
+// Connect to SwiftUI bridge
+//UIViewController *gpsFeedViewController = [[GPSFeedViewFactory new] bridgeGPSFeedUI:@"Sarita"];
+//[self ViewController:gpsFeedViewController animated:YES];
 
 @property (nonatomic, assign) BOOL rxInPause;
 @property (nonatomic, strong) EASession *accessorySession;
