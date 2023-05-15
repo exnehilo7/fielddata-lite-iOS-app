@@ -19,6 +19,7 @@ class LocationHelper: NSObject, ObservableObject {
 
     static let shared = LocationHelper()
     static let DefaultLocation = CLLocationCoordinate2D(latitude: 35.93212, longitude: -84.31022)
+    @Published var lastLocation: CLLocation?
 
     static var currentLocation: CLLocationCoordinate2D {
         guard let location = shared.manager.location else {
@@ -29,7 +30,7 @@ class LocationHelper: NSObject, ObservableObject {
 
     private let manager = CLLocationManager()
 
-    private override init() {
+    override init() {
         super.init()
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyBest
@@ -39,7 +40,10 @@ class LocationHelper: NSObject, ObservableObject {
 }
 
 extension LocationHelper: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) { }
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.last else {return}
+        lastLocation = location
+    }
 
     public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("Location manager failed with error: \(error.localizedDescription)")
