@@ -57,12 +57,12 @@ struct MainMenuView: View {
                     }
                 }
                 NavigationLink {
-                    GPSFeedView(latitude: "-00.00000000", longitude: "-00.00000000", altitude: "-00.00 M", xyAccuracy: "-00.00000000", gpsUsed: "00")
-                        .navigationTitle("GPS Feed")
+                    NMEADataView()
+                        .navigationTitle("Arrow Gold Stream")
                 } label: {
                     HStack {
-                        Image(systemName: "location").bold(false).foregroundColor(.gray)
-                        Text("GPS Feed")
+                        Image(systemName: "antenna.radiowaves.left.and.right").bold(false).foregroundColor(.gray)
+                        Text("Arrow Gold Test")
                     }
                 }
                 }.bold()

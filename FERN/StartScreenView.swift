@@ -13,7 +13,7 @@ struct StartScreenView: View {
     @State private var active: Bool = false
     
     var body: some View {
-        // Toggle splash screen and Main Menu View
+        // Toggle splash screen and Main Menu View. After XCode update, no longer working?
         if active {
             MainMenuView()
         }
@@ -42,14 +42,11 @@ struct StartScreenView: View {
                     }.padding(.top, -70)
                 }.padding(.leading, 50).padding(.top, 4)
                 Spacer()
-                
-                Button {
-                    
-                } label: {
-                    Image(systemName: "leaf.circle.fill").bold(false).foregroundColor(.green).font(.system(size: 450))
-                }
+                    Button {
+                    } label: {
+                        Image(systemName: "leaf.circle.fill").bold(false).foregroundColor(.green).font(.system(size: 450))
+                    }
                 Spacer()
-                
             }.onAppear {
                 // Set timer for splashscreen fadeout
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
@@ -57,6 +54,8 @@ struct StartScreenView: View {
                         active = true
                     }
                 }
+            }.fullScreenCover(isPresented: $active) {
+                MainMenuView()
             }
         }// end else
     }
