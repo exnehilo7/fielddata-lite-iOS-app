@@ -40,7 +40,7 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
     @Published var altitude:String?
     @Published var accuracy:String?
     @Published var gpsUsed:String?
-    @Published var protocolText:NSString?
+    @Published var protocolText:NSString = "No Protocol"
     @Published var stringGPGST:String?
     
 //    var latitude:String?
@@ -127,6 +127,10 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
     }
+    
+    func stopUpdatingArrowCoreLocation(){
+        locationManager.stopUpdatingLocation()
+    }
     // end Core location
     
     // EA notifications
@@ -163,7 +167,7 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
             }
             
             print("Using protocol \(theProtocol ?? noValueFoundMsg)")
-            self.protocolText = theProtocol
+            self.protocolText = theProtocol ?? "No Protocol"
             
             // Start accessory sesion?
             self.accessorySession = EASession(accessory: (accessory)!, forProtocol: theProtocol! as String)
@@ -200,7 +204,7 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
             endStreaming()
             self.accessorySession = nil
             
-            self.protocolText = "Protocol"
+            self.protocolText = "No Protocol"
         }
         
     }
@@ -397,8 +401,8 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
         DispatchQueue.main.async { [self] in
             self.latitude = String(format: "%0.8f", latdeg)
             self.longitude = String(format: "%0.8f", londeg)
-            self.altitude = String(format: "%0.2f", infoTestInitialized.elv)
-            self.accuracy = String(format: "%0.2f", infoTestInitialized.dev_xy)
+            self.altitude = String(format: "%0.2f (m)", infoTestInitialized.elv)
+            self.accuracy = String(format: "%0.2f (m)", infoTestInitialized.dev_xy)
             self.gpsUsed = String(format: "%2i", infoTestInitialized.GPSsatinfo.inuse)
         }
                 

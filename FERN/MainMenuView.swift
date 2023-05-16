@@ -58,11 +58,11 @@ struct MainMenuView: View {
                 }
                 NavigationLink {
                     NMEADataView()
-                        .navigationTitle("Arrow Gold Stream")
+                        .navigationTitle("GPS Stream")
                 } label: {
                     HStack {
                         Image(systemName: "antenna.radiowaves.left.and.right").bold(false).foregroundColor(.gray)
-                        Text("Arrow Gold Test")
+                        Text("GPS Stream")
                     }
                 }
                 }.bold()

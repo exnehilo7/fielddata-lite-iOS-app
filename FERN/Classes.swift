@@ -37,6 +37,14 @@ class LocationHelper: NSObject, ObservableObject {
         manager.requestWhenInUseAuthorization()
         manager.startUpdatingLocation()
     }
+    
+    func stopUpdatingDefaultCoreLocation(){
+        manager.stopUpdatingLocation()
+    }
+    
+    func startUpdatingDefaultCoreLocation(){
+        manager.startUpdatingLocation()
+    }
 }
 
 extension LocationHelper: CLLocationManagerDelegate {
