@@ -24,15 +24,8 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
     
     // Original code has them as instance variables (which are private implementation details of Obj-C's class?), and to to make Objective-C compatible with C?
     // Will need to "defer {info.deallocate()}" and "defer {parser.deallocate()}" when finished? (Where to place?)
-//    private var info: UnsafeMutablePointer<nmeaINFO> = .init(bitPattern: 0xfeedabba)!
-//    private var info: UnsafeMutablePointer<nmeaINFO> = UnsafeMutablePointer<nmeaINFO>.allocate(capacity: 0)
-//    private var parser: UnsafeMutablePointer<nmeaPARSER> = .init(bitPattern: 0xcafedeaf)!
-//    private let originalInfoPointer = info
-//    private let originalParserPointer = parser
-//    private var parserTest: nmeaPARSER?
-    private var parserTestInitialized = nmeaPARSER()
-//    private var infoTest: nmeaINFO?
-    private var infoTestInitialized = nmeaINFO()
+    private var parserInitialized = nmeaPARSER()
+    private var infoInitialized = nmeaINFO()
 
     
     @Published var latitude:String?
@@ -43,18 +36,8 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
     @Published var protocolText:NSString = "No Protocol"
     @Published var stringGPGST:String?
     
-//    var latitude:String?
-//    var longitude:String?
-//    var altitude:String?
-//    var accuracy:String?
-//    var gpsUsed:String?
-//    var protocolText:NSString?
-//    var stringGPGST:String?
     
-//    override init(){
-//
-//    }
-    
+    // MARK: - Main Function
     // Main(?) function from ViewController @implementation
     func viewDidLoad() {
         
@@ -117,7 +100,7 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
 //        defaultCenter.removeObserver(self, forKeyPath: "what goes here?")
 //    }
     
-    // Core location
+    // MARK: - Core location
     func registerCoreLocation(){
         
         // Original code checks for toggled switches on the UI before proceeding
@@ -133,7 +116,7 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
     }
     // end Core location
     
-    // EA notifications
+    // MARK: - EA notifications
     @objc func didConnectNotif(notification: NSNotification){
         // [O] Accessory just get connected
         let accessory = notification.userInfo?[EAAccessoryKey] as? EAAccessory
@@ -179,17 +162,14 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
             
             // [O] link stream to the com thread
             self.accessorySession?.inputStream?.delegate = self
-//            let comThreadRunloop = RunLoop() // Original code:
-            /*
-             NSRunLoop *comThreadRunloop = [[self.comThread threadDictionary] objectForKey:kComThreadRunloop]; // Grabbing the runloop based on the dict key value of "kComThreadRunloop". (Could grabbing the app's current RunLoop work?)
-             */
-            self.accessorySession?.inputStream?.schedule(in: runLoop!, forMode: .default) /* 1st error: "This app has attempted to access privacy-sensitive data without a usage description. The app's Info.plist must contain an “NSLocationWhenInUseUsageDescription” key with a string value explaining to the user how the app uses this data." Key was added and error hit a 2nd time with no info. The "allow use of your location" popup was on the ipad. Pressed Allow while using app, set breakpoint on this line, and launched app again. 3rd error: .inputStream or .schedule is nil? "in: comThreadRunloop" needs to use an existing runloop and not create a new one? */
+//            let comThreadRunloop = RunLoop() /* Swift-translated line. Original code: "NSRunLoop *comThreadRunloop = [[self.comThread threadDictionary] objectForKey:kComThreadRunloop];"  It's grabbing the runloop based on the dict key value of "kComThreadRunloop". (Could grabbing the app's current active RunLoop work?) */
+            self.accessorySession?.inputStream?.schedule(in: runLoop!, forMode: .default)
             
             // [O] start our stream, this will launch callbacks
             self.accessorySession?.inputStream?.open() // Should trigger the stream function
         }
         
-        if (selectedBTAccessory != nil) { // 4th run: var was nil
+        if (selectedBTAccessory != nil) {
             print("selectedBTAccessory accessory: \(selectedBTAccessory?.description ?? "No selectedBTAccessory found")")
         }
     }
@@ -210,19 +190,17 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
     }
     // end EA notifications
     
-    // Buttons
+    // MARK: - Buttons
     // Assign show the system bluetooth accessory discovery view, user can disable CoreLocation, and pause the receive screen actions to buttons.
         // [Original Obj-C code]
     // end Buttons
     
-    // RX Text
+    // MARK: - RX Text
     // ascii-translate the accessory's streaming data for display in a text field
-    func updateRxTextWith(){
         // [Original Obj-C code]
-    }
     // end RX Text
     
-    // Com thread
+    // MARK: - Com Thread
     func createComThread(){
         // [O] create a com thread dedicated to accessory I/O
         print("Creating a com thread dedicated to accessory I/O")
@@ -246,7 +224,7 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
 //        let runLoop = RunLoop.current  // Original line
         
         // [O] add exitNow bool in thread dictionnary
-        // commented out for class-wide runLoop attempt
+        // Swift-translated code was commented out for class-wide runLoop attempt:
 //        let threadDict:NSMutableDictionary = Thread.current.threadDictionary
 //        threadDict.setValue(exitNow, forKey: "ThreadShouldExitNow") // If the original code commented out this key's call, is this dict necesssary?
 //        threadDict.setObject(runLoop, forKey: kComThreadRunloop! as NSCopying)
@@ -267,17 +245,14 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
     }
     
     // What calls this function? If declared verbatum like in the apple documentation (minus the 'optional') the func will be auto-called. Per docs: "It is a delegate that recieves this message when a given event has occured in a given stream."
-    
-    // When class was changed to @MainActor, this receives warning "Main actor-isolated instance method 'stream(_:handle:)' cannot be used to satisfy nonisolated protocol requirement". Using the suggested fix reslts in multiple "Main actor-isolated property 'accessorySession' can not be referenced from a non-isolated context" below
-    func stream(_ aStream: Stream, handle eventCode:Stream.Event){ //Stream.Event needs a "handleEvent"?
-        // Original method signature was: "- (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode {" It is a delegate that recieves the handleEvent message when a given event has occured in a given stream.
-        // Swift's handleEvent equiv is stream(_:handle:)
+    func stream(_ aStream: Stream, handle eventCode:Stream.Event){
+        // Original method signature was: "- (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode {" It is a delegate that recieves the handleEvent message when a given event has occured in a given stream. Swift's handleEvent equiv is stream(_:handle:)
         
         // [O] Main io stream event manager
         print("\(Thread.current.name ?? "No thread name") enter with \(aStream == self.accessorySession?.inputStream ? "input" : "output") stream and event \(eventCode)")
         if ((self.accessorySession?.inputStream) != nil){
             // [O] input stream
-            var buf = [UInt8](repeating: 0, count: 1024)// original line: uint8_t buf[1024];
+            var buf = [UInt8](repeating: 0, count: 1024)// original Obj-c line: uint8_t buf[1024];
             var dataLength:Int? // original type was NSUInteger
             
             switch (eventCode) {
@@ -297,16 +272,13 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
                     let res:Int32 = parseNMEA(data: theData)
                     if (res > 0) {
                         // [O] found some NMEA sentences !
-//                        self.performSelector(onMainThread: #selector(updateNMEAUI), with: nil, waitUntilDone: false)
-                        // 1st attempted translated code: "self.performSelector(onMainThread: NSSelectorFromString("updateNMEAUI"), with: nil, waitUntilDone: false)"
-                        // may need to switch call to #selector?
+//                        self.performSelector(onMainThread: #selector(updateNMEAUI), with: nil, waitUntilDone: false)  // Original Obj-c code
+                        // 1st attempt at swift-translated code: "self.performSelector(onMainThread: NSSelectorFromString("updateNMEAUI"), with: nil, waitUntilDone: false)". May need to switch call to #selector?
                         
+                        // Try a basic function call instead:
                         updateNMEAUI()
                     }
-                    else {
-                        print("res is <= 0")
-                    }
-                } // Lost connection to the debugger on “iPad” hits here on the 2nd or 3rd stream run loop. Happened on 1st loop when smask was > 0.
+                }
                 else {
                     print("Nothing to read...")
                 }
@@ -341,7 +313,7 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
     }
     // end Com thread
     
-    // NMEA
+    // MARK: - NMEA
     @objc func initNMEAParser(){
         /* UnsafeMutablePointer puzzlemets:
          
@@ -355,20 +327,17 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
             var unsafeMutaPointer: UnsafeMutablePointer<nmeaPARSER> = UnsafeMutablePointer(parserTest)
          
          !!! Need to set them as UnsafeMutablePointer AND also be able to access their properties! If we can't access their properties there's no(?) way we can get lat, long, accuracy, etc...
+         
+         *** Answer: Instantiate the classes
          */
         
         print("initNMEAParser")
-        nmea_zero_INFO(&infoTestInitialized) // [O] reset info for results
-        // Make sure the pointer is set
-//        precondition(info != .init(bitPattern: 0xfeedabba), "nmeaINFO pointer failed")
-//        precondition(info != originalInfoPointer, "nmeaINFO pointer failed")
+        nmea_zero_INFO(&infoInitialized) // [O] reset info for results
         
-        if (parserTestInitialized.buffer != nil) {
-            nmea_parser_destroy(&parserTestInitialized) // [O] destroy previously created parser
+        if (parserInitialized.buffer != nil) {
+            nmea_parser_destroy(&parserInitialized) // [O] destroy previously created parser
         }
-        nmea_parser_init(&parserTestInitialized) // [O] init parser
-//        precondition(parser != .init(bitPattern: 0xcafedeaf), "nmeaPARSER pointer failed")
-//        precondition(parser != originalParserPointer, "nmeaPARSER pointer failed")
+        nmea_parser_init(&parserInitialized) // [O] init parser
     }
     
     func parseNMEA(data: NSData) -> Int32{
@@ -378,14 +347,14 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
         let buff:String = String(decoding: data, as: UTF8.self)
         // Original line was char *buff = (char *)[data bytes]; (converting the bytes into an array of characters (string))
         
-        let res:Int32 = nmea_parse(&parserTestInitialized, buff, Int32(data.length), &infoTestInitialized) // [O]  updates info
+        let res:Int32 = nmea_parse(&parserInitialized, buff, Int32(data.length), &infoInitialized) // [O]  updates info
         
         // [O] small resumé
         print("Analysed \(res) sentences");
-        print("Mask is 0x\(infoTestInitialized.smask)");
-        print("sig is \(infoTestInitialized.sig), fix is \(infoTestInitialized.fix)");
-        print("GPS satellites in view \(infoTestInitialized.GPSsatinfo.inview), in use \(infoTestInitialized.GPSsatinfo.inuse)");
-        print("GLONASS satellites in view \(infoTestInitialized.GLONASSsatinfo.inview), in use \(infoTestInitialized.GLONASSsatinfo.inuse)");
+        print("Mask is 0x\(infoInitialized.smask)");
+        print("sig is \(infoInitialized.sig), fix is \(infoInitialized.fix)");
+        print("GPS satellites in view \(infoInitialized.GPSsatinfo.inview), in use \(infoInitialized.GPSsatinfo.inuse)");
+        print("GLONASS satellites in view \(infoInitialized.GLONASSsatinfo.inview), in use \(infoInitialized.GLONASSsatinfo.inuse)");
         
         return res
     }
@@ -394,29 +363,28 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
         // [Original code to update the view's fields with alt, lat, long, accuracy, etc]
         // May need to create properties in this class and assign values to them. @State (or @ObjectiveState) should allow view to auto-update.
 
-        let latdeg:Double = nmea_ndeg2degree(infoTestInitialized.lat)
-        let londeg:Double = nmea_ndeg2degree(infoTestInitialized.lon)
+        let latdeg:Double = nmea_ndeg2degree(infoInitialized.lat)
+        let londeg:Double = nmea_ndeg2degree(infoInitialized.lon)
         
         // Wrapped in DispatchQueue for purple warning "Publishing changes from background threads is not allowed; make sure to publish values from the main thread (via operators like receive(on:)) on model updates."
         DispatchQueue.main.async { [self] in
             self.latitude = String(format: "%0.8f", latdeg)
             self.longitude = String(format: "%0.8f", londeg)
-            self.altitude = String(format: "%0.2f (m)", infoTestInitialized.elv)
-            self.accuracy = String(format: "%0.2f (m)", infoTestInitialized.dev_xy)
-            self.gpsUsed = String(format: "%2i", infoTestInitialized.GPSsatinfo.inuse)
+            self.altitude = String(format: "%0.2f (m)", infoInitialized.elv)
+            // Origial Obj-C code for accuracy:
+            //        if (infoInitialized.smask & GPGST) {  // C-supported bitwise operator. (may need to prefix GPGST?) "Cannot convert value of type '_nmeaPACKTYPE' to expected argument type 'Int32'"
+            //            self.accuracy = String(format: "%0.2f M", infoInitialized.dev_xy)
+            //        }
+            self.accuracy = String(format: "%0.2f (m)", infoInitialized.dev_xy)
+            self.gpsUsed = String(format: "%2i", infoInitialized.GPSsatinfo.inuse)
         }
                 
         // (dev) See what smask's values are.
-//        var smask = infoTestInitialized.smask // Int32
-//        var testGPSsatinfo = infoTestInitialized.GPSsatinfo.inuse // Int32
-//        var testAccuracy = infoTestInitialized.dev_xy // Double
+//        var smask = infoInitialized.smask // Int32
+//        var testGPSsatinfo = infoInitialized.GPSsatinfo.inuse // Int32
+//        var testAccuracy = infoInitialized.dev_xy // Double
 //        self.stringGPGST = String(GPGST) // _nmeaPACKTYPE
-        
-//        if (infoTestInitialized.smask & GPGST) {  // C-supported bitwise operator. (may need to prefix GPGST?) "Cannot convert value of type '_nmeaPACKTYPE' to expected argument type 'Int32'"
-//            self.accuracy = String(format: "%0.2f M", infoTestInitialized.dev_xy)
-//        }
-        
-        
+
     }
     // end NMEA
     

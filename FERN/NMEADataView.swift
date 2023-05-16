@@ -29,49 +29,47 @@ struct NMEADataView: View {
     }
     
     var body: some View {
-        // Toggle for GPS modes
-//        Toggle("Toggle off iOS Location services (recommended when Arrow Gold is in use)", isOn: $toggleArrowGold)
         Spacer()
-//        if toggleArrowGold {
-            VStack {
-                // Arrow Gold
-                Image(systemName: "antenna.radiowaves.left.and.right")
-                    .imageScale(.large)
-                    .foregroundColor(.accentColor)
-                Label("Arrow Gold GPS",  systemImage: "bolt.fill").labelStyle(.titleOnly)
-                Button("Start the Arrow Gold stream") {
-                    nmea.viewDidLoad() // nmea on
-                    clLocationHelper.stopUpdatingDefaultCoreLocation() // basic core off
+    
+        VStack {
+            // Arrow Gold
+            Image(systemName: "antenna.radiowaves.left.and.right")
+                .imageScale(.large)
+                .foregroundColor(.accentColor)
+            Label("Arrow Gold GPS",  systemImage: "bolt.fill").labelStyle(.titleOnly)
+            Button("Start the Arrow Gold stream") {
+                nmea.viewDidLoad() // nmea on
+                clLocationHelper.stopUpdatingDefaultCoreLocation() // basic core off
 //                    clLat = "0.0000"  // computed properties are a get-only property??
-                }.buttonStyle(.borderedProminent)
-                Text("Protocol: ") + Text(nmea.protocolText as String)
-                Text("Latitude: ") + Text(nmea.latitude ?? "0.0000")
-                Text("Longitude: ") + Text(nmea.longitude ?? "0.0000")
-                Text("Altitude: ") + Text(nmea.altitude ?? "0.00")
-                Text("Horizontal Accuracy: ") + Text(nmea.accuracy ?? "0.00")
-                Text("GPS Used: ") + Text(nmea.gpsUsed ?? "No GPS")
-            }.font(.system(size: 20))//.onAppear(perform: {})
-//        }
-//        else {
-            Divider()
-            VStack {
-                // Default Core Location
-                Image(systemName: "location.fill")
-                    .imageScale(.large)
-                    .foregroundColor(.accentColor)
-                Label("iOS Core Location",  systemImage: "bolt.fill").labelStyle(.titleOnly)
-                Button("Start the iOS Location Services stream") {
-                    nmea.stopUpdatingArrowCoreLocation() // nmea off
-                    clLocationHelper.startUpdatingDefaultCoreLocation() // basic core on
-                }.buttonStyle(.borderedProminent)
-                Text("\(clLat)")
-                Text("\(clLong)")
-                Text("\(clAltitude)")
-                Text("\(clHorzAccuracy)")
-                Text("\(clVertAccuracy)")
-            }.font(.system(size: 20))
-                .padding()//.onAppear(perform: {})
-//        }
+            }.buttonStyle(.borderedProminent)
+            Text("Protocol: ") + Text(nmea.protocolText as String)
+            Text("Latitude: ") + Text(nmea.latitude ?? "0.0000")
+            Text("Longitude: ") + Text(nmea.longitude ?? "0.0000")
+            Text("Altitude: ") + Text(nmea.altitude ?? "0.00")
+            Text("Horizontal Accuracy: ") + Text(nmea.accuracy ?? "0.00")
+            Text("GPS Used: ") + Text(nmea.gpsUsed ?? "No GPS")
+        }.font(.system(size: 20))
+    
+        Divider()
+    
+        VStack {
+            // Default Core Location
+            Image(systemName: "location.fill")
+                .imageScale(.large)
+                .foregroundColor(.accentColor)
+            Label("iOS Core Location",  systemImage: "bolt.fill").labelStyle(.titleOnly)
+            Button("Start the iOS Location Services stream") {
+                nmea.stopUpdatingArrowCoreLocation() // nmea off
+                clLocationHelper.startUpdatingDefaultCoreLocation() // basic core on
+            }.buttonStyle(.borderedProminent)
+            Text("\(clLat)")
+            Text("\(clLong)")
+            Text("\(clAltitude)")
+            Text("\(clHorzAccuracy)")
+            Text("\(clVertAccuracy)")
+        }.font(.system(size: 20))
+            .padding()
+
         Spacer()
     }
 }
