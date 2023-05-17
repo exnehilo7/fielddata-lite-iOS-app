@@ -25,7 +25,7 @@ public struct Photo: Identifiable, Equatable {
     }
 }
 
-extension Photo {  // ????
+extension Photo {
     public var compressedData: Data? {
         ImageResizer(targetWidth: 800).resize(data: originalData)?.jpegData(compressionQuality: 0.5)
     }
@@ -213,7 +213,8 @@ public class CameraService : NSObject, ObservableObject {
         if session.canAddOutput(photoOutput) {
             session.addOutput(photoOutput)
             
-            photoOutput.isHighResolutionCaptureEnabled = true
+            // May need to set to set max photo dimensions?
+//            photoOutput.isHighResolutionCaptureEnabled = true // 'isHighResolutionCaptureEnabled' was deprecated in iOS 16.0: Use maxPhotoDimensions instead.
             photoOutput.maxPhotoQualityPrioritization = .quality
             
         } else {
@@ -324,7 +325,8 @@ public class CameraService : NSObject, ObservableObject {
                     photoSettings.flashMode = self.flashMode
                 }
                 
-                photoSettings.isHighResolutionPhotoEnabled = true
+                // May need to set to set max photo dimensions?
+//                photoSettings.isHighResolutionPhotoEnabled = true
                 
                 // Sets the preview thumbnail pixel format
                 if !photoSettings.__availablePreviewPhotoPixelFormatTypes.isEmpty {
