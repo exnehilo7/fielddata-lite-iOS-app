@@ -16,6 +16,9 @@
 		D127B37B2A12ECF000F6287A /* nmeaToolKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D127B3782A12EC1400F6287A /* nmeaToolKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D127B37E2A12ED3D00F6287A /* NMEADataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B37D2A12ED3D00F6287A /* NMEADataClass.swift */; };
 		D127B3802A12EDF600F6287A /* NMEADataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B37F2A12EDF600F6287A /* NMEADataView.swift */; };
+		D127B3832A1528AD00F6287A /* CameraClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B3822A1528AD00F6287A /* CameraClass.swift */; };
+		D127B3892A15454400F6287A /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B3882A15454400F6287A /* CameraViewModel.swift */; };
+		D127B38B2A15493000F6287A /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B38A2A15493000F6287A /* CameraView.swift */; };
 		D147C56829A3EC2900D948AB /* FERNTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D147C56729A3EC2900D948AB /* FERNTests.swift */; };
 		D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7129901A2000835B5E /* SelectAreaView.swift */; };
 		D16A6C7829901A5D00835B5E /* CreateCustomRouteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7729901A5D00835B5E /* CreateCustomRouteView.swift */; };
@@ -67,6 +70,9 @@
 		D127B3782A12EC1400F6287A /* nmeaToolKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = nmeaToolKit.framework; path = FERN/nmeaToolKit.framework; sourceTree = SOURCE_ROOT; };
 		D127B37D2A12ED3D00F6287A /* NMEADataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NMEADataClass.swift; sourceTree = "<group>"; };
 		D127B37F2A12EDF600F6287A /* NMEADataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NMEADataView.swift; sourceTree = "<group>"; };
+		D127B3822A1528AD00F6287A /* CameraClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraClass.swift; sourceTree = "<group>"; };
+		D127B3882A15454400F6287A /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
+		D127B38A2A15493000F6287A /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		D147C56529A3EC2900D948AB /* FERNTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FERNTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D147C56729A3EC2900D948AB /* FERNTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FERNTests.swift; sourceTree = "<group>"; };
 		D16A6C7129901A2000835B5E /* SelectAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAreaView.swift; sourceTree = "<group>"; };
@@ -124,6 +130,7 @@
 		D10BB31A298ADAA400667E86 /* FERN */ = {
 			isa = PBXGroup;
 			children = (
+				D127B3812A1524C800F6287A /* Camera */,
 				D127B3772A12EBB400F6287A /* NMEA */,
 				D10BB31F298ADAA500667E86 /* Assets.xcassets */,
 				D1766CA4298E0B3E002F594D /* Classes.swift */,
@@ -164,6 +171,16 @@
 				D127B3782A12EC1400F6287A /* nmeaToolKit.framework */,
 			);
 			path = NMEA;
+			sourceTree = "<group>";
+		};
+		D127B3812A1524C800F6287A /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				D127B3822A1528AD00F6287A /* CameraClass.swift */,
+				D127B3882A15454400F6287A /* CameraViewModel.swift */,
+				D127B38A2A15493000F6287A /* CameraView.swift */,
+			);
+			path = Camera;
 			sourceTree = "<group>";
 		};
 		D147C56629A3EC2900D948AB /* FERNTests */ = {
@@ -281,16 +298,19 @@
 				D1766C9D298DB978002F594D /* MainMenuView.swift in Sources */,
 				D10BB32A298ADAD600667E86 /* Models.swift in Sources */,
 				D127B3802A12EDF600F6287A /* NMEADataView.swift in Sources */,
+				D127B38B2A15493000F6287A /* CameraView.swift in Sources */,
 				D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */,
 				D1766CA3298DBAA3002F594D /* Functions.swift in Sources */,
 				D127B37E2A12ED3D00F6287A /* NMEADataClass.swift in Sources */,
 				D1766C9F298DB9B2002F594D /* SearchByNameView.swift in Sources */,
+				D127B3892A15454400F6287A /* CameraViewModel.swift in Sources */,
 				D10BB31E298ADAA400667E86 /* ContentView.swift in Sources */,
 				D16A6C7C2995D18100835B5E /* StartScreenView.swift in Sources */,
 				D1766C9B298DB922002F594D /* LoginView.swift in Sources */,
 				D16A6C88299AF32600835B5E /* ReportRoutes.swift in Sources */,
 				D16A6C80299AC65600835B5E /* SelectReportView.swift in Sources */,
 				D10BB31C298ADAA400667E86 /* FERNApp.swift in Sources */,
+				D127B3832A1528AD00F6287A /* CameraClass.swift in Sources */,
 				D16A6C7E29970E0900835B5E /* SelectNotesView.swift in Sources */,
 				D1766CA5298E0B3E002F594D /* Classes.swift in Sources */,
 			);
@@ -445,7 +465,9 @@
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FERN/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app uses your camera";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app uses your location to display it on the screen";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app saves photos to your device";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -481,7 +503,9 @@
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FERN/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app uses your camera";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app uses your location to display it on the screen";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app saves photos to your device";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
