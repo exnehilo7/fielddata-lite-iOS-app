@@ -83,7 +83,7 @@ struct CameraView: View {
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 60, height: 60)
                     .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                    .animation(.spring())
+                    .animation(.spring(), value: true)
                 
             } else {
                 RoundedRectangle(cornerRadius: 10)
@@ -153,7 +153,7 @@ struct CameraView: View {
                                 }
                             }
                         )
-                        .animation(.easeInOut)
+                        .animation(.easeInOut, value: true)
                     
                     
                     HStack {
