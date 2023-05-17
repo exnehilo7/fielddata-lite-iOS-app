@@ -65,6 +65,15 @@ struct MainMenuView: View {
                         Text("GPS Stream")
                     }
                 }
+                NavigationLink {
+                    CameraView()
+                        .navigationTitle("Camera Test")
+                } label: {
+                    HStack {
+                        Image(systemName: "camera").bold(false).foregroundColor(.gray)
+                        Text("Camera Test")
+                    }
+                }
                 }.bold()
             }
         }
