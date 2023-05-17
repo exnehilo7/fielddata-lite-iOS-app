@@ -3,7 +3,7 @@ FERN (Field Expedition Routing and Navigation) is an application designed to sol
 
 Apple Map performance declines if there are more than 100 displayed annotations. Later versions of the application will hopefully use clustering to allow for more annotations. Until then, the number of items in a saved route or area and plot searches are limited.
 
-This application is currently built for a school project.
+This application was initially built for a school project. Additional functions currently in progress: Connectivity to an EOS Arrow Gold GPS device. Use of the camera and insertion of custom Exif data.
 
 
 ## iOS App and XCode Settings
