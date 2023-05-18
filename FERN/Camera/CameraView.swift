@@ -2,8 +2,16 @@
 //  CameraView.swift
 //  FERN
 //
-//  Created by Hopp, Dan on 5/17/23. Code from https://betterprogramming.pub/effortless-swiftui-camera-d7a74abde37e
+//  Created by Hopp, Dan on 5/17/23. Code from https://betterprogramming.pub/effortless-swiftui-camera-d7a74abde37e.
+//  GPS and data entry fields added by Dan Hopp.
 //
+//  The GPS feed defaults to the iPhone/Pad's GPS, unless the EOS device is chosen instead.
+//
+//  The lat, long, horizontal accuracy, and description tags are overwritten on the picture's Exif.
+//
+//  Only allow ASCII characters for the text fields.
+//
+//  Photo Group must not be null when the shutter button is pressed.
 
 import SwiftUI
 import AVFoundation
@@ -56,9 +64,39 @@ struct CameraPreview: UIViewRepresentable {
 }
 
 struct CameraView: View {
-    @StateObject var model = CameraViewModel()
     
+    // Camera
+    @StateObject var model = CameraViewModel()
     @State var currentZoomFactor: CGFloat = 1.0
+
+    // GPS
+    @ObservedObject var nmea:NMEA = NMEA()
+    @ObservedObject var clLocationHelper = LocationHelper()
+    var clLat:String {
+        return "Latitude: \(clLocationHelper.lastLocation?.coordinate.latitude ?? 0.0000)"
+    }
+    var clLong:String {
+        return "Longitude: \(clLocationHelper.lastLocation?.coordinate.longitude ?? 0.0000)"
+    }
+    var clHorzAccuracy:String {
+        return "Horizontal Accuracy (m): \(clLocationHelper.lastLocation?.horizontalAccuracy ?? 0.00)"
+    }
+    var clVertAccuracy:String {
+        return "Vertical Accuracy (m): \(clLocationHelper.lastLocation?.verticalAccuracy ?? 0.00)"
+    }
+    var clAltitude:String {
+        return "Altitude (m): \(clLocationHelper.lastLocation?.altitude ?? 0.0000)"
+    }
+    
+    // Select GPS and display toggles
+    @State var gpsModeIsSelected = false
+    @State var showArrowGold = false
+
+    // User info for Exif Description tag
+    @State private var textPhotoGroup = "A Photo Group (A dropdown? Preselected from a previous screen?)"
+    @State private var textOrganismName = ""
+    @State private var textGenotype = ""
+    @State private var textNotes = ""
     
     var captureButton: some View {
         Button(action: {
@@ -105,6 +143,74 @@ struct CameraView: View {
 //                        .foregroundColor(.white))
 //        })
 //    }
+    
+    var arrowGpsData: some View {
+        VStack {
+            // Arrow Gold
+            Label("EOS Arrow Gold", systemImage: "antenna.radiowaves.left.and.right")
+            Text("Protocol: ") + Text(nmea.protocolText as String)
+            Text("Latitude: ") + Text(nmea.latitude ?? "0.0000")
+            Text("Longitude: ") + Text(nmea.longitude ?? "0.0000")
+            Text("Altitude: ") + Text(nmea.altitude ?? "0.00")
+            Text("Horizontal Accuracy: ") + Text(nmea.accuracy ?? "0.00")
+            Text("GPS Used: ") + Text(nmea.gpsUsed ?? "No GPS")
+        }.font(.system(size: 20)).foregroundColor(.white)
+    }
+    
+    var coreLocationGpsData: some View {
+        VStack {
+            // Default Core Location
+            Label("Standard GPS",  systemImage: "location.fill").underline()
+            Text("\(clLat)")
+            Text("\(clLong)")
+            Text("\(clAltitude)")
+            Text("\(clHorzAccuracy)")
+            Text("\(clVertAccuracy)")
+        }.font(.system(size: 20)).foregroundColor(.white)
+            .padding()
+    }
+    
+    var selectGpsMode: some View {
+        HStack {
+            Button{
+                gpsModeIsSelected = true
+            } label: {
+                Label("Use Standard GPS", systemImage: "location.fill")
+            }.buttonStyle(.borderedProminent)
+            Button{
+                clLocationHelper.stopUpdatingDefaultCoreLocation() // basic core off
+                nmea.viewDidLoad()
+                gpsModeIsSelected = true
+            } label: {
+                Label("Use Arrow Gold Device", systemImage: "antenna.radiowaves.left.and.right")
+            }.buttonStyle(.borderedProminent)
+        }
+    }
+    
+    var userData: some View {
+        VStack {
+            HStack {
+                Text("Photo Group: ").foregroundColor(.white)
+                TextField("", text: $textPhotoGroup
+                ).textFieldStyle(.roundedBorder)
+            }
+            HStack {
+                Text("Organism Name: ").foregroundColor(.white)
+                TextField("", text: $textOrganismName
+                ).textFieldStyle(.roundedBorder)
+            }
+            HStack {
+                Text("Genotype: ").foregroundColor(.white)
+                TextField("", text: $textGenotype
+                ).textFieldStyle(.roundedBorder)
+            }
+            HStack {
+                Text("Notes: ").foregroundColor(.white)
+                TextField("", text: $textNotes
+                ).textFieldStyle(.roundedBorder)
+            }
+        }
+    }
     
     var body: some View {
         GeometryReader { reader in
@@ -155,20 +261,40 @@ struct CameraView: View {
                         )
                         .animation(.easeInOut, value: true)
                     
+                    Spacer()
                     
-                    HStack {
-                        capturedPhotoThumbnail
-                        
-                        Spacer()
-                        
-                        captureButton
-                        
-                        Spacer()
-                        
-//                        flipCameraButton
-                        
-                    }
-                    .padding(.horizontal, 20)
+                    VStack {
+                        if gpsModeIsSelected {
+                            if showArrowGold {
+                                arrowGpsData
+                            }
+                            else {
+                                coreLocationGpsData
+                            }
+                            
+                            Spacer()
+                            
+                            userData
+                            Spacer()
+                            
+                            HStack {
+                                
+                                capturedPhotoThumbnail
+                                
+                                Spacer()
+                                
+                                captureButton
+                                
+                                Spacer()
+                                
+        //                        flipCameraButton
+                            }//.padding(.horizontal, 20)
+                        }
+                        else {
+                            selectGpsMode
+                        }
+                    }.animation(.easeInOut, value: true)
+                    
                 }
             }
         }
