@@ -56,15 +56,15 @@ struct MainMenuView: View {
                         Text("Notes")
                     }
                 }
-                NavigationLink {
-                    NMEADataView()
-                        .navigationTitle("GPS Stream")
-                } label: {
-                    HStack {
-                        Image(systemName: "antenna.radiowaves.left.and.right").bold(false).foregroundColor(.gray)
-                        Text("GPS Stream")
-                    }
-                }
+//                NavigationLink {
+//                    NMEADataView()
+//                        .navigationTitle("GPS Stream")
+//                } label: {
+//                    HStack {
+//                        Image(systemName: "antenna.radiowaves.left.and.right").bold(false).foregroundColor(.gray)
+//                        Text("GPS Stream")
+//                    }
+//                }
                 NavigationLink {
                     CameraView()
                         .navigationTitle("Camera Test")
