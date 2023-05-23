@@ -88,6 +88,9 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
     }
     
     // Not used in original code?
+    /* didReceiveMemoryWarning() is for UIViewController subclasses. For other types, use UIApplicationDidReceiveMemoryWarningNotification.
+     This funciton is automatically used when the system determines that the memory is low. iPhone 4 and greater usually don't have memory
+     space issues.*/
 //    func didReceiveMemoryWarning() {
 //        super.didReceiveMemoryWarning
 //        // [O] Dispose of any resources that can be recreated.

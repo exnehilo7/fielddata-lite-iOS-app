@@ -389,6 +389,8 @@ class PhotoCaptureProcessor: NSObject {
     
     private let photoProcessingHandler: (Bool) -> Void
     
+    private let uploadImage = UploadImage()
+    
 //    The actual captured photo's data
     var photoData: Data?
     
@@ -448,6 +450,7 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
     }
     
     //        MARK: Saves capture to photo library
+    // Can this call a function to upload via PHP as well?
     func saveToPhotoLibrary(_ photoData: Data) {
         
         PHPhotoLibrary.requestAuthorization { status in
@@ -494,6 +497,10 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
             }
             
             self.saveToPhotoLibrary(data)
+            
+            // Save to server?
+//            uploadImage.myImageUploadRequest(theImage: data as UIImage)
+            
         }
     }
 }

@@ -98,6 +98,9 @@ struct CameraView: View {
     @State private var textGenotype = ""
     @State private var textNotes = ""
     
+    // For the camera's current image?
+    @State private var image = UIImage()
+    
     var captureButton: some View {
         Button(action: {
             model.capturePhoto()
@@ -147,8 +150,8 @@ struct CameraView: View {
     var arrowGpsData: some View {
         VStack {
             // Arrow Gold
-            Label("EOS Arrow Gold", systemImage: "antenna.radiowaves.left.and.right")
-            Text("Protocol: ") + Text(nmea.protocolText as String)
+            Label("EOS Arrow Gold", systemImage: "antenna.radiowaves.left.and.right").underline()
+//            Text("Protocol: ") + Text(nmea.protocolText as String)
             Text("Latitude: ") + Text(nmea.latitude ?? "0.0000")
             Text("Longitude: ") + Text(nmea.longitude ?? "0.0000")
             Text("Altitude: ") + Text(nmea.altitude ?? "0.00")
@@ -178,6 +181,7 @@ struct CameraView: View {
                 Label("Use Standard GPS", systemImage: "location.fill")
             }.buttonStyle(.borderedProminent)
             Button{
+                showArrowGold = true
                 clLocationHelper.stopUpdatingDefaultCoreLocation() // basic core off
                 nmea.viewDidLoad()
                 gpsModeIsSelected = true
@@ -278,8 +282,9 @@ struct CameraView: View {
                             Spacer()
                             
                             HStack {
-                                
-                                capturedPhotoThumbnail
+                                NavigationLink(destination: Text("Detail photo")) {
+                                    capturedPhotoThumbnail
+                                }
                                 
                                 Spacer()
                                 
@@ -295,6 +300,8 @@ struct CameraView: View {
                         }
                     }.animation(.easeInOut, value: true)
                     
+                }.sheet(isPresented: $gpsModeIsSelected) {
+                    ImagePicker(sourceType: .camera, selectedImage: self.$image)
                 }
             }
         }
