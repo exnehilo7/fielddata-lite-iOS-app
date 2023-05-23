@@ -22,7 +22,7 @@ class UploadImage: NSObject, UINavigationControllerDelegate {
     func myImageUploadRequest(theImage: UIImage)
         {
       
-            let myUrl = NSURL(string: "https://www.swiftdeveloperblog.com/http-post-example-script/") // http://covid-samples01.ornl.gov/uploadtest.html
+            let myUrl = NSURL(string: "http://covid-samples01.ornl.gov/upload.php") // http://covid-samples01.ornl.gov/upload.php
             //let myUrl = NSURL(string: "http://www.boredwear.com/utils/postImage.php");
             
             let request = NSMutableURLRequest(url:myUrl! as URL)
@@ -31,7 +31,7 @@ class UploadImage: NSObject, UINavigationControllerDelegate {
             let param = [
                 "firstName"  : "FERN",
                 "lastName"    : "Demo",
-                "userId"    : "9"
+                "userId"    : "0"
             ]
             
             let boundary = generateBoundaryString()

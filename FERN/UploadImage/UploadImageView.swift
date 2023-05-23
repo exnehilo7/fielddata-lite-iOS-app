@@ -21,9 +21,9 @@ struct UploadImageView: View {
          
             Image(uiImage: self.image)
                 .resizable()
-                .scaledToFill()
-                .frame(minWidth: 0, maxWidth: .infinity)
-                .edgesIgnoringSafeArea(.all)
+                .scaledToFit()
+//                .frame(minWidth: 0, maxWidth: .infinity)  // Deprecated
+//                .edgesIgnoringSafeArea(.all)              // Deprecated
  
             HStack {
                 Button(action: {
@@ -33,7 +33,7 @@ struct UploadImageView: View {
                         Image(systemName: "photo")
                             .font(.system(size: 20))
                         
-                        Text("Photos")
+                        Text("Photo")
                             .font(.headline)
                     }
                     .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
@@ -42,11 +42,29 @@ struct UploadImageView: View {
                     .cornerRadius(20)
                     .padding(.horizontal)
                 }
+                Button(action: {
+//                    uploadImage.myImageUploadRequestTEST()
+                    uploadImage.myImageUploadRequest(theImage: self.image)
+                }) {
+                    HStack {
+                        Image(systemName: "arrow.up")
+                            .font(.system(size: 20))
+                        
+                        Text("Upload Image")
+                            .font(.headline)
+                    }
+                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(20)
+                    .padding(.horizontal)
+                }
+//                Button("Upload Image") {
+//    //                uploadImage.myImageUploadRequest(theImage: self.image)
+//                    uploadImage.myImageUploadRequestTEST()
+//                }
             }
-            Button("Upload Image") {
-//                uploadImage.myImageUploadRequest(theImage: self.image)
-                uploadImage.myImageUploadRequestTEST()
-            }
+
         }.sheet(isPresented: $isShowPhotoLibrary) {
             ImagePicker(sourceType: .camera, selectedImage: self.$image)
         }
