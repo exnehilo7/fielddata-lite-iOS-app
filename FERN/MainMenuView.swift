@@ -74,6 +74,15 @@ struct MainMenuView: View {
                         Text("Camera Test")
                     }
                 }
+                NavigationLink {
+                    UploadImageView()
+                        .navigationTitle("Upload Image")
+                } label: {
+                    HStack {
+                        Image(systemName: "arrow.up.and.person.rectangle.portrait").bold(false).foregroundColor(.gray)
+                        Text("Upload Image")
+                    }
+                }
                 }.bold()
             }
         }
