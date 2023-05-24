@@ -99,7 +99,10 @@ struct CameraView: View {
     @State private var textNotes = ""
     
     // For the camera's current image?
-    @State private var image = UIImage()
+//    @State private var image = UIImage()
+    
+    let uploadPhoto = UploadPhoto()
+    @State private var isShowUploadButton = false
     
     var captureButton: some View {
         Button(action: {
@@ -119,19 +122,55 @@ struct CameraView: View {
     var capturedPhotoThumbnail: some View {
         Group {
             if model.photo != nil {
+                // Original code had a thumbnail pop up
                 Image(uiImage: (model.photo?.image!)!)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 60, height: 60)
                     .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                     .animation(.spring(), value: true)
-                
+                // Try button popup
+                    .onAppear(perform: {isShowUploadButton = true})
             } else {
                 RoundedRectangle(cornerRadius: 10)
                     .frame(width: 60, height: 60, alignment: .center)
                     .foregroundColor(.black)
             }
         }
+    }
+    
+    var uploadButton: some View {
+        Button(action: {
+            if model.photo != nil {
+                // uploadPhoto.myImageUploadRequestTEST()
+                uploadPhoto.myPhotoUploadRequest(thePhoto: model.photo)
+           
+            // NEED TO TELL IF UPLOAD WAS SUCESSFUL OR NOT
+            // Present response to user
+            // isResponseReceived = uploadPhoto.isResponseReceived
+
+//                // Clear displayed image
+//                self.image = UIImage()
+            
+                // Hide upload button
+                isShowUploadButton = false
+            }
+        })
+        {
+            HStack {
+                Image(systemName: "arrow.up")
+                    .font(.system(size: 20))
+                
+                Text("Upload Image")
+                    .font(.headline)
+            }
+            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+            .background(Color.orange)
+            .foregroundColor(.white)
+            .cornerRadius(20)
+            .padding(.horizontal)
+        }
+
     }
     
 //    var flipCameraButton: some View {
@@ -282,15 +321,19 @@ struct CameraView: View {
                             Spacer()
                             
                             HStack {
-                                NavigationLink(destination: Text("Detail photo")) {
-                                    capturedPhotoThumbnail
-                                }
+//                                NavigationLink(destination: Text("Detail photo")) {
+//                                    capturedPhotoThumbnail
+//                                }
                                 
                                 Spacer()
                                 
                                 captureButton
                                 
                                 Spacer()
+                                if isShowUploadButton {
+                                    uploadButton
+                                }
+                                // Spacer()
                                 
         //                        flipCameraButton
                             }//.padding(.horizontal, 20)
@@ -300,9 +343,9 @@ struct CameraView: View {
                         }
                     }.animation(.easeInOut, value: true)
                     
-                }.sheet(isPresented: $gpsModeIsSelected) {
-                    ImagePicker(sourceType: .camera, selectedImage: self.$image)
-                }
+                }//.sheet(isPresented: $gpsModeIsSelected) {
+//                    ImagePicker(sourceType: .camera, selectedImage: self.$image) // May need a 3rd param for button-show toggle
+//                }
             }
         }
     }
