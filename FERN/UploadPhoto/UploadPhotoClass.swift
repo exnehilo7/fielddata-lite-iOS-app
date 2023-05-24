@@ -1,19 +1,19 @@
 //
-//  UploadImageClass.swift
+//  UploadPhotoClass.swift
 //  FERN
 //
-//  Created by Hopp, Dan on 5/23/23. Code from https://swiftdeveloperblog.com/image-upload-example/. Adjusted for
-//  Swift 5.8.
+//  Created by Hopp, Dan on 5/24/23. Code from https://swiftdeveloperblog.com/image-upload-example/. Adjusted for
+//  Swift 5.8. Tweaked to use Photo instead of Image
 //
 
 import Foundation
 import UIKit
 
 
-class UploadImage: NSObject, UINavigationControllerDelegate {
+class UploadPhoto: NSObject, UINavigationControllerDelegate {
     
 //    var myActivityIndicator: UIActivityIndicatorView!
-//    var myImageView: UIImageView!
+//    var myPhotoView: UIPhotoView!
     
 //    var uploadResponseMessage = UIAlertController()
     
@@ -21,11 +21,11 @@ class UploadImage: NSObject, UINavigationControllerDelegate {
     var isResponseReceived: Bool!
     
     
-    func myImageUploadRequestTEST(){
-        print ("Upload the image!")
+    func myPhotoUploadRequestTEST(){
+        print ("Upload the Photo!")
     }
     
-    func myImageUploadRequest(theImage: UIImage)
+    func myPhotoUploadRequest(thePhoto: Photo)
         {
       
             let myUrl = NSURL(string: "http://covid-samples01.ornl.gov/upload.php") // http://covid-samples01.ornl.gov/upload.php
@@ -47,11 +47,11 @@ class UploadImage: NSObject, UINavigationControllerDelegate {
      
             // Need to get image from SwiftUI's view/ImagePicker class? Pass a PhotoData var?
 //            let imageData = myImageView.image!.jpegData(compressionQuality: 1)
-            let imageData = theImage.jpegData(compressionQuality: 1)
+            let photoData = thePhoto.originalData  // or .image?
             
-            if(imageData==nil)  { return }
+//            if(thePhoto==nil)  { return }
             
-            request.httpBody = createBodyWithParameters(parameters: param, filePathKey: "file", imageDataKey: imageData! as NSData, boundary: boundary)
+            request.httpBody = createBodyWithParameters(parameters: param, filePathKey: "file", photoDataKey: photoData as NSData, boundary: boundary)
             
             
 //            myActivityIndicator.startAnimating();
@@ -108,7 +108,7 @@ class UploadImage: NSObject, UINavigationControllerDelegate {
     }
     
     
-    func createBodyWithParameters(parameters: [String: String]?, filePathKey: String?, imageDataKey: NSData, boundary: String) -> Data {
+    func createBodyWithParameters(parameters: [String: String]?, filePathKey: String?, photoDataKey: NSData, boundary: String) -> Data {
 //        let body = NSMutableData() // A dynamic byte buffer that bridges to Data; use NSMutableData when you need reference semantics or other Foundation-specific behavior. (Now recomended to use the new Data struct?)
         
         var body = Data()
@@ -122,14 +122,15 @@ class UploadImage: NSObject, UINavigationControllerDelegate {
         }
        
 //                let filename = "user-profile.jpg"
-                var filename = UUID().uuidString
+//                var filename = UUID().uuidString
+                var filename = "testEXIF"
                 filename.append(".jpg")
                 let mimetype = "image/jpg"
                 
                 body.append(Data("--\(boundary)\r\n".utf8))
                 body.append(Data("Content-Disposition: form-data; name=\"\(filePathKey!)\"; filename=\"\(filename)\"\r\n".utf8))
                 body.append(Data("Content-Type: \(mimetype)\r\n\r\n".utf8))
-                body.append(imageDataKey as Data)
+                body.append(photoDataKey as Data)
                 body.append(Data("\r\n".utf8))
         
     

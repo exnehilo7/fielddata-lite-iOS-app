@@ -10,7 +10,9 @@ import UIKit
 
 struct UploadImageView: View {
     
-    @State private var isShowPhotoLibrary = false
+    @State private var isShowCamera = false
+    @State private var isResponseReceived = false
+    @State private var isShowUploadButton = false
     @State private var image = UIImage()
     
     let uploadImage = UploadImage()
@@ -27,7 +29,7 @@ struct UploadImageView: View {
  
             HStack {
                 Button(action: {
-                    self.isShowPhotoLibrary = true
+                    self.isShowCamera = true
                 }) {
                     HStack {
                         Image(systemName: "photo")
@@ -42,32 +44,43 @@ struct UploadImageView: View {
                     .cornerRadius(20)
                     .padding(.horizontal)
                 }
-                Button(action: {
-//                    uploadImage.myImageUploadRequestTEST()
-                    uploadImage.myImageUploadRequest(theImage: self.image)
-                }) {
-                    HStack {
-                        Image(systemName: "arrow.up")
-                            .font(.system(size: 20))
+                if isShowUploadButton {
+                    Button(action: {
+                        //                    uploadImage.myImageUploadRequestTEST()
+                        uploadImage.myImageUploadRequest(theImage: self.image)
+
+                        // NEED TO TELL IF UPLOAD WAS SUCESSFUL OR NOT
+                        // Present response to user
+                        // isResponseReceived = uploadImage.isResponseReceived
+
+                        // Clear displayed image
+                        self.image = UIImage()
                         
-                        Text("Upload Image")
-                            .font(.headline)
+                        // Hide upload button
+                        isShowUploadButton = false
+                    })
+                    {
+                        HStack {
+                            Image(systemName: "arrow.up")
+                                .font(.system(size: 20))
+                            
+                            Text("Upload Image")
+                                .font(.headline)
+                        }
+                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+                        .background(Color.orange)
+                        .foregroundColor(.white)
+                        .cornerRadius(20)
+                        .padding(.horizontal)
+                    }.alert(uploadImage.responseString as? String ?? "No response", isPresented: $isResponseReceived) {
+                        Button("OK", role: .cancel) { isResponseReceived = false }
                     }
-                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(20)
-                    .padding(.horizontal)
                 }
-//                Button("Upload Image") {
-//    //                uploadImage.myImageUploadRequest(theImage: self.image)
-//                    uploadImage.myImageUploadRequestTEST()
-//                }
             }
 
-        }.sheet(isPresented: $isShowPhotoLibrary) {
-            ImagePicker(sourceType: .camera, selectedImage: self.$image)
-        }
+        }.sheet(isPresented: $isShowCamera) {
+            ImagePicker(sourceType: .camera, selectedImage: self.$image, imageIsSelected: self.$isShowUploadButton)
+        }.animation(.easeInOut, value: true)
         
 //        HStack {
 //            Button("Select Photos") {
