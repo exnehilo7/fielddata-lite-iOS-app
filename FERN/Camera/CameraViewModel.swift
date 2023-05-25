@@ -29,6 +29,8 @@ final class CameraViewModel: ObservableObject {
     
     @Published var willCapturePhoto = false
     
+    @Published var isUploadButtonDisabled = true
+    
     var alertError: AlertError!
     
     var session: AVCaptureSession
@@ -57,6 +59,11 @@ final class CameraViewModel: ObservableObject {
         
         service.$willCapturePhoto.sink { [weak self] (val) in
             self?.willCapturePhoto = val
+        }
+        .store(in: &self.subscriptions)
+        
+        service.$isUploadButtonDisabled.sink { [weak self] (val) in
+            self?.isUploadButtonDisabled = val
         }
         .store(in: &self.subscriptions)
         

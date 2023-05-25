@@ -97,6 +97,9 @@ public class CameraService : NSObject, ObservableObject {
     //    17 Stores delegates that will handle the photo capture process's stages.
     private var inProgressPhotoCaptureDelegates = [Int64: PhotoCaptureProcessor]()
     
+    // 18. To toggle the upload button on a view
+    @Published public var isUploadButtonDisabled = true
+    
     // MARK: KVO and Notifications Properties
     
     private var keyValueObservations = [NSKeyValueObservation]()
@@ -154,6 +157,7 @@ public class CameraService : NSObject, ObservableObject {
                 self.shouldShowAlertView = true
                 self.isCameraUnavailable = true
                 self.isCameraButtonDisabled = true
+                self.isUploadButtonDisabled = true
             }
         }
     }
@@ -276,6 +280,7 @@ public class CameraService : NSObject, ObservableObject {
                         self.alertError = AlertError(title: "Camera Error", message: "Camera configuration failed. Either your device camera is not available or its missing permissions", primaryButtonTitle: "Accept", secondaryButtonTitle: nil, primaryAction: nil, secondaryAction: nil)
                         self.shouldShowAlertView = true
                         self.isCameraButtonDisabled = true
+                        self.isUploadButtonDisabled = true
                         self.isCameraUnavailable = true
                     }
                 }
@@ -294,6 +299,7 @@ public class CameraService : NSObject, ObservableObject {
                     if !self.session.isRunning {
                         DispatchQueue.main.async {
                             self.isCameraButtonDisabled = true
+                            self.isUploadButtonDisabled = true
                             self.isCameraUnavailable = true
                             completion?()
                         }
@@ -308,6 +314,7 @@ public class CameraService : NSObject, ObservableObject {
     public func capturePhoto() {
         if self.setupResult != .configurationFailed {
             self.isCameraButtonDisabled = true
+            self.isUploadButtonDisabled = true
             
             sessionQueue.async {
                 if let photoOutputConnection = self.photoOutput.connection(with: .video) {
@@ -355,6 +362,7 @@ public class CameraService : NSObject, ObservableObject {
                     }
                     
                     self?.isCameraButtonDisabled = false
+                    self?.isUploadButtonDisabled = false
                     
                     self?.sessionQueue.async {
                         self?.inProgressPhotoCaptureDelegates[photoCaptureProcessor.requestedPhotoSettings.uniqueID] = nil

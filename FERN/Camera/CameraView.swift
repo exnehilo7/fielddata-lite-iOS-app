@@ -107,6 +107,7 @@ struct CameraView: View {
     var captureButton: some View {
         Button(action: {
             model.capturePhoto()
+            isShowUploadButton = true // try to toggle show upload button
         }, label: {
             Circle()
                 .foregroundColor(.white)
@@ -129,8 +130,8 @@ struct CameraView: View {
                     .frame(width: 60, height: 60)
                     .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                     .animation(.spring(), value: true)
-                // Try button popup
-                    .onAppear(perform: {isShowUploadButton = true})
+//                // Try button popup
+//                    .onAppear(perform: {isShowUploadButton = true})
             } else {
                 RoundedRectangle(cornerRadius: 10)
                     .frame(width: 60, height: 60, alignment: .center)
@@ -140,37 +141,51 @@ struct CameraView: View {
     }
     
     var uploadButton: some View {
-        Button(action: {
-            if model.photo != nil {
-                // uploadPhoto.myImageUploadRequestTEST()
-                uploadPhoto.myPhotoUploadRequest(thePhoto: model.photo)
-           
-            // NEED TO TELL IF UPLOAD WAS SUCESSFUL OR NOT
-            // Present response to user
-            // isResponseReceived = uploadPhoto.isResponseReceived
+        Group {
+            if model.photo != nil  {
+                Button(action: {
+                    var lat: String!
+                    var long: String!
+                    if showArrowGold {
+                        lat = nmea.latitude ?? "0.0000"
+                        long = nmea.longitude ?? "0.0000"
+                    }
+                    else {
+                        lat = clLat
+                        long = clLong
+                    }
+                    
+                    // uploadPhoto.myImageUploadRequestTEST()
+                    uploadPhoto.myPhotoUploadRequest(thePhoto: model.photo, lat: lat, long: long)
 
-//                // Clear displayed image
-//                self.image = UIImage()
-            
-                // Hide upload button
-                isShowUploadButton = false
+                    // NEED TO TELL IF UPLOAD WAS SUCESSFUL OR NOT
+                    // Present response to user
+                    // isResponseReceived = uploadPhoto.isResponseReceived
+
+
+                    // Hide upload button
+                    isShowUploadButton = false // try to toggle show upload button
+                })
+                {
+                    HStack {
+                        Image(systemName: "arrow.up")
+                            .font(.system(size: 20))
+
+                        Text("Upload Image")
+                            .font(.headline)
+                    }
+                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+                    .background(Color.orange)
+                    .foregroundColor(.white)
+                    .cornerRadius(20)
+                    .padding(.horizontal)
+                }
+            } else {
+                RoundedRectangle(cornerRadius: 20)
+                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+                    .foregroundColor(.black)
             }
-        })
-        {
-            HStack {
-                Image(systemName: "arrow.up")
-                    .font(.system(size: 20))
-                
-                Text("Upload Image")
-                    .font(.headline)
-            }
-            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
-            .background(Color.orange)
-            .foregroundColor(.white)
-            .cornerRadius(20)
-            .padding(.horizontal)
         }
-
     }
     
 //    var flipCameraButton: some View {
@@ -317,8 +332,9 @@ struct CameraView: View {
                             
                             Spacer()
                             
-                            userData
-                            Spacer()
+                            // Disable user data for now
+//                            userData
+//                            Spacer()
                             
                             HStack {
 //                                NavigationLink(destination: Text("Detail photo")) {
@@ -329,14 +345,15 @@ struct CameraView: View {
                                 
                                 captureButton
                                 
-                                Spacer()
-                                if isShowUploadButton {
-                                    uploadButton
-                                }
                                 // Spacer()
                                 
         //                        flipCameraButton
                             }//.padding(.horizontal, 20)
+                            
+                            Spacer()
+                            if isShowUploadButton { // try to toggle show upload button
+                                uploadButton
+                            }
                         }
                         else {
                             selectGpsMode
