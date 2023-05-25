@@ -20,12 +20,14 @@ class UploadPhoto: NSObject, UINavigationControllerDelegate {
     var responseString: NSString!
     var isResponseReceived: Bool!
     
+    private var fileNameCounter = 0
+    
     
     func myPhotoUploadRequestTEST(){
         print ("Upload the Photo!")
     }
     
-    func myPhotoUploadRequest(thePhoto: Photo)
+    func myPhotoUploadRequest(thePhoto: Photo, lat: String, long: String)
         {
       
             let myUrl = NSURL(string: "http://covid-samples01.ornl.gov/upload.php") // http://covid-samples01.ornl.gov/upload.php
@@ -35,9 +37,11 @@ class UploadPhoto: NSObject, UINavigationControllerDelegate {
             request.httpMethod = "POST"
             
             let param = [
-                "firstName"  : "FERN",
-                "lastName"    : "Demo",
-                "userId"    : "0"
+                "firstName"     : "FERN",
+                "lastName"      : "Demo",
+                "userId"        : "0",
+                "lat"           : lat,
+                "long"          : long
             ]
             
             let boundary = generateBoundaryString()
@@ -121,17 +125,20 @@ class UploadPhoto: NSObject, UINavigationControllerDelegate {
             }
         }
        
-//                let filename = "user-profile.jpg"
-//                var filename = UUID().uuidString
-                var filename = "testEXIF"
-                filename.append(".jpg")
-                let mimetype = "image/jpg"
-                
-                body.append(Data("--\(boundary)\r\n".utf8))
-                body.append(Data("Content-Disposition: form-data; name=\"\(filePathKey!)\"; filename=\"\(filename)\"\r\n".utf8))
-                body.append(Data("Content-Type: \(mimetype)\r\n\r\n".utf8))
-                body.append(photoDataKey as Data)
-                body.append(Data("\r\n".utf8))
+        var filename = String(fileNameCounter)
+        filename.append("_")
+//                filename.append(UUID().uuidString)
+        filename.append("CBI2-Demo-Photo")
+        filename.append(".jpg")
+        let mimetype = "image/jpg"  // exiftool says type is heic?
+
+        fileNameCounter += 1
+        
+        body.append(Data("--\(boundary)\r\n".utf8))
+        body.append(Data("Content-Disposition: form-data; name=\"\(filePathKey!)\"; filename=\"\(filename)\"\r\n".utf8))
+        body.append(Data("Content-Type: \(mimetype)\r\n\r\n".utf8))
+        body.append(photoDataKey as Data)
+        body.append(Data("\r\n".utf8))
         
     
         

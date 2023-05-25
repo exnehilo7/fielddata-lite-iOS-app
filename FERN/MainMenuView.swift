@@ -67,20 +67,20 @@ struct MainMenuView: View {
 //                }
                 NavigationLink {
                     CameraView()
-                        .navigationTitle("Camera Test")
+                        .navigationTitle("Save and Upload Photo")
                 } label: {
                     HStack {
                         Image(systemName: "camera").bold(false).foregroundColor(.gray)
-                        Text("Camera Test")
+                        Text("Save and Upload Photo")
                     }
                 }
                 NavigationLink {
                     UploadImageView()
-                        .navigationTitle("Upload Image")
+                        .navigationTitle("Upload Image Only")
                 } label: {
                     HStack {
                         Image(systemName: "arrow.up.and.person.rectangle.portrait").bold(false).foregroundColor(.gray)
-                        Text("Upload Image")
+                        Text("Upload Image Only")
                     }
                 }
                 }.bold()

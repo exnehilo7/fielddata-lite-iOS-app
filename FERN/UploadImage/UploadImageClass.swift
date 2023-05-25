@@ -20,12 +20,13 @@ class UploadImage: NSObject, UINavigationControllerDelegate {
     var responseString: NSString!
     var isResponseReceived: Bool!
     
+    private var fileNameCounter = 0
     
     func myImageUploadRequestTEST(){
         print ("Upload the image!")
     }
     
-    func myImageUploadRequest(theImage: UIImage)
+    func myImageUploadRequest(theImage: UIImage, lat: String, long: String)
         {
       
             let myUrl = NSURL(string: "http://covid-samples01.ornl.gov/upload.php") // http://covid-samples01.ornl.gov/upload.php
@@ -35,9 +36,11 @@ class UploadImage: NSObject, UINavigationControllerDelegate {
             request.httpMethod = "POST"
             
             let param = [
-                "firstName"  : "FERN",
-                "lastName"    : "Demo",
-                "userId"    : "0"
+                "firstName"     : "FERN",
+                "lastName"      : "Demo",
+                "userId"        : "0",
+                "lat"           : lat,
+                "long"          : long
             ]
             
             let boundary = generateBoundaryString()
@@ -121,16 +124,18 @@ class UploadImage: NSObject, UINavigationControllerDelegate {
             }
         }
        
-//                let filename = "user-profile.jpg"
-                var filename = UUID().uuidString
-                filename.append(".jpg")
-                let mimetype = "image/jpg"
+        var filename = String(fileNameCounter)
+        filename.append("_")
+//      filename.append(UUID().uuidString)
+        filename.append("CBI2-Demo-Image")
+        filename.append(".jpg")
+        let mimetype = "image/jpg"
                 
-                body.append(Data("--\(boundary)\r\n".utf8))
-                body.append(Data("Content-Disposition: form-data; name=\"\(filePathKey!)\"; filename=\"\(filename)\"\r\n".utf8))
-                body.append(Data("Content-Type: \(mimetype)\r\n\r\n".utf8))
-                body.append(imageDataKey as Data)
-                body.append(Data("\r\n".utf8))
+        body.append(Data("--\(boundary)\r\n".utf8))
+        body.append(Data("Content-Disposition: form-data; name=\"\(filePathKey!)\"; filename=\"\(filename)\"\r\n".utf8))
+        body.append(Data("Content-Type: \(mimetype)\r\n\r\n".utf8))
+        body.append(imageDataKey as Data)
+        body.append(Data("\r\n".utf8))
         
     
         
