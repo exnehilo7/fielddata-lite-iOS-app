@@ -78,9 +78,9 @@ final class CameraViewModel: ObservableObject {
         service.capturePhoto()
     }
     
-//    func flipCamera() {
-//        service.changeCamera()
-//    }
+    //    func flipCamera() {
+    //        service.changeCamera()
+    //    }
     
     func zoom(with factor: CGFloat) {
         service.setZoom(zoom: factor)
@@ -89,6 +89,30 @@ final class CameraViewModel: ObservableObject {
     func switchFlash() {
         service.flashMode = service.flashMode == .on ? .off : .on
     }
+    
 }
+
+//// Include alerts from UploadPhotoClass
+//final class UploadPhotoModel: ObservableObject {
+//    
+//    var session: AVCaptureSession
+//    
+//    private var uploadPhotoSubs = Set<AnyCancellable>()
+//        
+//    private let uploadPhotoService = UploadPhoto()
+//    @Published var showPhotoUploadAlert = false
+//    var uploadPhotoAlert: AlertError!
+//    
+//    init() {
+//
+//        self.session = uploadPhotoService
+//        
+//        uploadPhotoService.$shouldShowPhotoUploadAlert.sink { [weak self] (val) in
+//            self?.uploadPhotoAlert = self?.uploadPhotoService.uploadPhotoAlert
+//            self?.showPhotoUploadAlert = val
+//        }
+//        .store(in: &self.uploadPhotoSubs)
+//    }
+//}
 
 

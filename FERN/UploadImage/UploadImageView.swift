@@ -14,19 +14,19 @@ struct UploadImageView: View {
     @ObservedObject var nmea:NMEA = NMEA()
     @ObservedObject var clLocationHelper = LocationHelper()
     var clLat:String {
-        return "Latitude: \(clLocationHelper.lastLocation?.coordinate.latitude ?? 0.0000)"
+        return "\(clLocationHelper.lastLocation?.coordinate.latitude ?? 0.0000)"
     }
     var clLong:String {
-        return "Longitude: \(clLocationHelper.lastLocation?.coordinate.longitude ?? 0.0000)"
+        return "\(clLocationHelper.lastLocation?.coordinate.longitude ?? 0.0000)"
     }
     var clHorzAccuracy:String {
-        return "Horizontal Accuracy (m): \(clLocationHelper.lastLocation?.horizontalAccuracy ?? 0.00)"
+        return "\(clLocationHelper.lastLocation?.horizontalAccuracy ?? 0.00)"
     }
     var clVertAccuracy:String {
-        return "Vertical Accuracy (m): \(clLocationHelper.lastLocation?.verticalAccuracy ?? 0.00)"
+        return "\(clLocationHelper.lastLocation?.verticalAccuracy ?? 0.00)"
     }
     var clAltitude:String {
-        return "Altitude (m): \(clLocationHelper.lastLocation?.altitude ?? 0.0000)"
+        return "\(clLocationHelper.lastLocation?.altitude ?? 0.0000)"
     }
     
     // Select GPS and display toggles
@@ -34,11 +34,11 @@ struct UploadImageView: View {
     @State var showArrowGold = false
     
     @State private var isShowCamera = false
-    @State private var isResponseReceived = false
+//    @State private var isResponseReceived = false
     @State private var isShowUploadButton = false
     @State private var image = UIImage()
     
-    let uploadImage = UploadImage()
+    @ObservedObject var uploadImage = UploadImage()
     let myPickerController = UIImagePickerController()
     
     var arrowGpsData: some View {
@@ -58,11 +58,11 @@ struct UploadImageView: View {
         VStack {
             // Default Core Location
             Label("Standard GPS",  systemImage: "location.fill").underline()
-            Text("\(clLat)")
-            Text("\(clLong)")
-            Text("\(clAltitude)")
-            Text("\(clHorzAccuracy)")
-            Text("\(clVertAccuracy)")
+            Text("Latitude: ") + Text("\(clLat)")
+            Text("Longitude: ") + Text("\(clLong)")
+            Text("Altitude (m): ") + Text("\(clAltitude)")
+            Text("Horizontal Accuracy (m): ") + Text("\(clHorzAccuracy)")
+            Text("Vertical Accuracy (m): ") + Text("\(clVertAccuracy)")
         }.font(.system(size: 20))
             .padding()
     }
@@ -85,6 +85,14 @@ struct UploadImageView: View {
         }
     }
     
+    // Get a message from Upload Image
+    var responseMessage: some View {
+        VStack {
+            Text("PHP Response: \(uploadImage.responseString ?? "None")")
+        }.font(.system(size: 20))
+            .padding()
+    }
+    
     var body: some View {
         VStack {
          
@@ -105,9 +113,14 @@ struct UploadImageView: View {
                     
                     Spacer()
                     
+                    responseMessage
+                    
+                    Spacer()
+                    
                     HStack {
                         Button(action: {
                             self.isShowCamera = true
+                            uploadImage.setResponseMsgToBlank()
                         }) {
                             HStack {
                                 Image(systemName: "photo")
@@ -162,8 +175,6 @@ struct UploadImageView: View {
                                 .foregroundColor(.white)
                                 .cornerRadius(20)
                                 .padding(.horizontal)
-                            }.alert(uploadImage.responseString as? String ?? "No response", isPresented: $isResponseReceived) {
-                                Button("OK", role: .cancel) { isResponseReceived = false }
                             }
                         }
                     }

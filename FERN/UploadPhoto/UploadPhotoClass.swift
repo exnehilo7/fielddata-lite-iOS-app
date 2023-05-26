@@ -10,18 +10,21 @@ import Foundation
 import UIKit
 
 
-class UploadPhoto: NSObject, UINavigationControllerDelegate {
+class UploadPhoto: NSObject, UINavigationControllerDelegate, ObservableObject {
     
 //    var myActivityIndicator: UIActivityIndicatorView!
 //    var myPhotoView: UIPhotoView!
     
 //    var uploadResponseMessage = UIAlertController()
     
-    var responseString: NSString!
+    @Published var responseString: NSString?
     var isResponseReceived: Bool!
     
     private var fileNameCounter = 0
     
+    // Can an alert model be used?
+//    public var uploadPhotoAlert: AlertError = AlertError()
+//    @Published public var shouldShowPhotoUploadAlert = false
     
     func myPhotoUploadRequestTEST(){
         print ("Upload the Photo!")
@@ -65,6 +68,7 @@ class UploadPhoto: NSObject, UINavigationControllerDelegate {
                 
                 if error != nil {
                     print("error=\(String(describing: error))")
+//                    self.shouldShowPhotoUploadAlert = false
                     return
                 }
                 
@@ -72,18 +76,16 @@ class UploadPhoto: NSObject, UINavigationControllerDelegate {
                 print("******* response = \(String(describing: response))")
                 
                 // Print out reponse body
-                self.responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
-                print("****** response data = \(self.responseString!)")
-                self.isResponseReceived = true
+                DispatchQueue.main.async { [self] in
+                    self.responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+                    print("****** response data = \(self.responseString!)")
+                    self.isResponseReceived = true
+                }
                 
-//                // Display response to user
-//                self.uploadResponseMessage = UIAlertController(title: "Response", message: responseString! as String, preferredStyle: .alert)
-//                // Create OK button with action handler
-//                let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
-//                    print("Response Ok button tapped")
-//                 })
-//                //Add OK button to a dialog message
-//                self.uploadResponseMessage.addAction(ok)
+                // Display response to user
+                // Can an alert model be used?
+//                self.uploadPhotoAlert = AlertError(title: "PHP Response", message: "\(self.responseString!)", primaryButtonTitle: "OK", secondaryButtonTitle: nil, primaryAction: nil, secondaryAction: nil)
+//                self.shouldShowPhotoUploadAlert = true
                 
                 do {
                     let json = try JSONSerialization.jsonObject(with: data!, options: []) as? NSDictionary
@@ -104,6 +106,7 @@ class UploadPhoto: NSObject, UINavigationControllerDelegate {
                 }catch
                 {
                     print(error)
+//                    self.shouldShowPhotoUploadAlert = false
                 }
                 
             }
@@ -153,6 +156,11 @@ class UploadPhoto: NSObject, UINavigationControllerDelegate {
         return "Boundary-\(NSUUID().uuidString)"
     }
  
+    func setResponseMsgToBlank() {
+        DispatchQueue.main.async { [self] in
+            self.responseString = "None"
+        }
+    }
  
 }
 

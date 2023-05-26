@@ -10,14 +10,14 @@ import Foundation
 import UIKit
 
 
-class UploadImage: NSObject, UINavigationControllerDelegate {
+class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
     
 //    var myActivityIndicator: UIActivityIndicatorView!
 //    var myImageView: UIImageView!
     
 //    var uploadResponseMessage = UIAlertController()
     
-    var responseString: NSString!
+    @Published var responseString: NSString?
     var isResponseReceived: Bool!
     
     private var fileNameCounter = 0
@@ -71,9 +71,11 @@ class UploadImage: NSObject, UINavigationControllerDelegate {
                 print("******* response = \(String(describing: response))")
                 
                 // Print out reponse body
-                self.responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
-                print("****** response data = \(self.responseString!)")
-                self.isResponseReceived = true
+                DispatchQueue.main.async { [self] in
+                    self.responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+                    print("****** response data = \(self.responseString!)")
+                    self.isResponseReceived = true
+                }
                 
 //                // Display response to user
 //                self.uploadResponseMessage = UIAlertController(title: "Response", message: responseString! as String, preferredStyle: .alert)
@@ -130,6 +132,8 @@ class UploadImage: NSObject, UINavigationControllerDelegate {
         filename.append("CBI2-Demo-Image")
         filename.append(".jpg")
         let mimetype = "image/jpg"
+        
+        fileNameCounter += 1
                 
         body.append(Data("--\(boundary)\r\n".utf8))
         body.append(Data("Content-Disposition: form-data; name=\"\(filePathKey!)\"; filename=\"\(filename)\"\r\n".utf8))
@@ -150,7 +154,12 @@ class UploadImage: NSObject, UINavigationControllerDelegate {
         return "Boundary-\(NSUUID().uuidString)"
     }
  
- 
+    func setResponseMsgToBlank() {
+        DispatchQueue.main.async { [self] in
+            self.responseString = "None"
+        }
+    }
+    
 }
 
 // Not needed for current version of Swift
