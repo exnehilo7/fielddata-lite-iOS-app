@@ -73,19 +73,19 @@ struct CameraView: View {
     @ObservedObject var nmea:NMEA = NMEA()
     @ObservedObject var clLocationHelper = LocationHelper()
     var clLat:String {
-        return "Latitude: \(clLocationHelper.lastLocation?.coordinate.latitude ?? 0.0000)"
+        return "\(clLocationHelper.lastLocation?.coordinate.latitude ?? 0.0000)"
     }
     var clLong:String {
-        return "Longitude: \(clLocationHelper.lastLocation?.coordinate.longitude ?? 0.0000)"
+        return "\(clLocationHelper.lastLocation?.coordinate.longitude ?? 0.0000)"
     }
     var clHorzAccuracy:String {
-        return "Horizontal Accuracy (m): \(clLocationHelper.lastLocation?.horizontalAccuracy ?? 0.00)"
+        return "\(clLocationHelper.lastLocation?.horizontalAccuracy ?? 0.00)"
     }
     var clVertAccuracy:String {
-        return "Vertical Accuracy (m): \(clLocationHelper.lastLocation?.verticalAccuracy ?? 0.00)"
+        return "\(clLocationHelper.lastLocation?.verticalAccuracy ?? 0.00)"
     }
     var clAltitude:String {
-        return "Altitude (m): \(clLocationHelper.lastLocation?.altitude ?? 0.0000)"
+        return "\(clLocationHelper.lastLocation?.altitude ?? 0.0000)"
     }
     
     // Select GPS and display toggles
@@ -101,13 +101,23 @@ struct CameraView: View {
     // For the camera's current image?
 //    @State private var image = UIImage()
     
-    let uploadPhoto = UploadPhoto()
+    // Upload the photo
+    @ObservedObject var uploadPhoto = UploadPhoto()
     @State private var isShowUploadButton = false
+    
+    // Get a message from Upload Photo
+    var responseMessage: some View {
+        VStack {
+            Text("PHP Response: \(uploadPhoto.responseString ?? "None")")
+        }.font(.system(size: 20)).foregroundColor(.white)
+            .padding()
+    }
     
     var captureButton: some View {
         Button(action: {
             model.capturePhoto()
             isShowUploadButton = true // try to toggle show upload button
+            uploadPhoto.setResponseMsgToBlank() // Clear out response message
         }, label: {
             Circle()
                 .foregroundColor(.white)
@@ -157,11 +167,6 @@ struct CameraView: View {
                     
                     // uploadPhoto.myImageUploadRequestTEST()
                     uploadPhoto.myPhotoUploadRequest(thePhoto: model.photo, lat: lat, long: long)
-
-                    // NEED TO TELL IF UPLOAD WAS SUCESSFUL OR NOT
-                    // Present response to user
-                    // isResponseReceived = uploadPhoto.isResponseReceived
-
 
                     // Hide upload button
                     isShowUploadButton = false // try to toggle show upload button
@@ -218,11 +223,11 @@ struct CameraView: View {
         VStack {
             // Default Core Location
             Label("Standard GPS",  systemImage: "location.fill").underline()
-            Text("\(clLat)")
-            Text("\(clLong)")
-            Text("\(clAltitude)")
-            Text("\(clHorzAccuracy)")
-            Text("\(clVertAccuracy)")
+            Text("Latitude: ") + Text("\(clLat)")
+            Text("Longitude: ") + Text("\(clLong)")
+            Text("Altitude (m): ") + Text("\(clAltitude)")
+            Text("Horizontal Accuracy (m): ") + Text("\(clHorzAccuracy)")
+            Text("Vertical Accuracy (m): ") + Text("\(clVertAccuracy)")
         }.font(.system(size: 20)).foregroundColor(.white)
             .padding()
     }
@@ -329,6 +334,10 @@ struct CameraView: View {
                             else {
                                 coreLocationGpsData
                             }
+                            
+                            Spacer()
+                            
+                            responseMessage
                             
                             Spacer()
                             
