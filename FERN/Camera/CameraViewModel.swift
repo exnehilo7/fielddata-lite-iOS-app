@@ -92,7 +92,7 @@ final class CameraViewModel: ObservableObject {
     
 }
 
-//// Include alerts from UploadPhotoClass
+// Attempt to Include alerts from UploadPhotoClass
 //final class UploadPhotoModel: ObservableObject {
 //    
 //    var session: AVCaptureSession
