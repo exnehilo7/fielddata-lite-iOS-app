@@ -81,3 +81,40 @@ public struct AlertError {
         self.secondaryAction = secondaryAction
     }
 }
+
+
+// File create and append from https://stackoverflow.com/questions/27327067/append-text-or-data-to-text-file-in-swift
+class FieldWorkGPSFile {
+
+    static var gpsFile: URL? {
+        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd-MM-yyyy"
+        let dateString = formatter.string(from: Date())
+        let fileName = "\(dateString).txt"
+        return documentsDirectory.appendingPathComponent(fileName)
+    }
+
+    static func log(_ message: String) throws -> Bool {
+        guard let gpsFile = gpsFile else {
+            return false
+        }
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm:ss"
+        let timestamp = formatter.string(from: Date())
+        guard let data = (timestamp + ": " + message + "\n").data(using: String.Encoding.utf8) else { return false}
+
+        if FileManager.default.fileExists(atPath: gpsFile.path) {
+            if let fileHandle = try? FileHandle(forWritingTo: gpsFile) {
+                fileHandle.seekToEndOfFile()
+                fileHandle.write(data)
+                fileHandle.closeFile()
+            }
+        } else {
+            try? data.write(to: gpsFile, options: .atomicWrite)
+        }
+        
+        return true
+    }
+}

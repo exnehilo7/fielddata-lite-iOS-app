@@ -509,6 +509,7 @@
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FERN/Info.plist;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app uses your camera";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app uses your location to display it on the screen";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app saves photos to your device";
@@ -547,6 +548,7 @@
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FERN/Info.plist;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app uses your camera";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app uses your location to display it on the screen";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app saves photos to your device";
