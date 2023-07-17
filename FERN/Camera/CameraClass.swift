@@ -467,8 +467,24 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
                     let options = PHAssetResourceCreationOptions()
                     let creationRequest = PHAssetCreationRequest.forAsset()
                     options.uniformTypeIdentifier = self.requestedPhotoSettings.processedFileType.map { $0.rawValue }
-                    creationRequest.addResource(with: .photo, data: photoData, options: options)
                     
+                    // Try creating a custom filename
+                    let fileNameUUID = UUID().uuidString
+                    options.originalFilename = fileNameUUID
+                    
+                    creationRequest.addResource(with: .photo, data: photoData, options: options)
+
+                    // Write to a .txt file?
+                    let str = "Super long string here"
+                    let filename = self.getDocumentsDirectory().appendingPathComponent("FERNoutput.txt")
+                    do {
+                        try FieldWorkGPSFile.log(fileNameUUID)
+                        //fileNameUUID.write(to: filename, atomically: true, encoding: String.Encoding.utf8)
+                    } catch {
+                        // failed to write file – bad permissions, bad filename, missing permissions, or more likely it can't be converted to the encoding
+                        print(error.localizedDescription)
+                    }
+                    // END write to a .txt file?
                     
                 }, completionHandler: { _, error in
                     if let error = error {
@@ -486,6 +502,11 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
                 }
             }
         }
+    }
+    
+    func getDocumentsDirectory() -> URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0]
     }
     
     // - MARK: DidFinishCapture
