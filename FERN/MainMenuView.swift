@@ -56,6 +56,7 @@ struct MainMenuView: View {
                         Text("Notes")
                     }
                 }
+                // Simple view to see NMEA Arrow Gold Data stream
 //                NavigationLink {
 //                    NMEADataView()
 //                        .navigationTitle("GPS Stream")
@@ -67,22 +68,23 @@ struct MainMenuView: View {
 //                }
                 NavigationLink {
                     CameraView()
-                        .navigationTitle("Save to Library and Upload Photo")
+                        .navigationTitle("JUL-AUG 2023 Stress Gradients Trip")
                 } label: {
                     HStack {
                         Image(systemName: "camera").bold(false).foregroundColor(.gray)
-                        Text("Save to Library and Upload Photo")
+                        Text("JUL-AUG 2023 Stress Gradients Trip")
                     }
                 }
-                NavigationLink {
-                    UploadImageView()
-                        .navigationTitle("Upload Image Only")
-                } label: {
-                    HStack {
-                        Image(systemName: "arrow.up.and.person.rectangle.portrait").bold(false).foregroundColor(.gray)
-                        Text("Upload Image Only")
-                    }
-                }
+                // Disabled for Chris' JUL-AUG 2023 trip
+//                NavigationLink {
+//                    UploadImageView()
+//                        .navigationTitle("Upload Image Only")
+//                } label: {
+//                    HStack {
+//                        Image(systemName: "arrow.up.and.person.rectangle.portrait").bold(false).foregroundColor(.gray)
+//                        Text("Upload Image Only")
+//                    }
+//                }
                 }.bold()
             }
         }

@@ -4,6 +4,7 @@
 //
 //  Created by Hopp, Dan on 5/17/23. Code from https://betterprogramming.pub/effortless-swiftui-camera-d7a74abde37e
 //
+// 18-JUL-2023: Model skipped to get class's GPS variables working
 
 /*
  Before entering into UI design with SwiftUI, we need a critical component to make this app composable
@@ -30,6 +31,13 @@ final class CameraViewModel: ObservableObject {
     @Published var willCapturePhoto = false
     
     @Published var isUploadButtonDisabled = true
+    
+    // GPS info
+//    @Published var gps = "middleman"
+//    @Published var hdop = ""
+//    @Published var longitude = ""
+//    @Published var latitude = ""
+//    @Published var altitude = ""
     
     var alertError: AlertError!
     
@@ -62,10 +70,37 @@ final class CameraViewModel: ObservableObject {
         }
         .store(in: &self.subscriptions)
         
+        // For uploads
         service.$isUploadButtonDisabled.sink { [weak self] (val) in
             self?.isUploadButtonDisabled = val
         }
         .store(in: &self.subscriptions)
+        
+//        // GPS vars
+//        service.$gps.sink { [weak self] (val) in
+//            self?.gps = val
+//        }
+//        .store(in: &self.subscriptions)
+//
+//        service.$hdop.sink { [weak self] (val) in
+//            self?.hdop = val
+//        }
+//        .store(in: &self.subscriptions)
+//
+//        service.$longitude.sink { [weak self] (val) in
+//            self?.longitude = val
+//        }
+//        .store(in: &self.subscriptions)
+//
+//        service.$latitude.sink { [weak self] (val) in
+//            self?.latitude = val
+//        }
+//        .store(in: &self.subscriptions)
+//
+//        service.$altitude.sink { [weak self] (val) in
+//            self?.altitude = val
+//        }
+//        .store(in: &self.subscriptions)
         
     }
     
@@ -74,8 +109,12 @@ final class CameraViewModel: ObservableObject {
         service.configure()
     }
     
-    func capturePhoto() {
-        service.capturePhoto()
+    func capturePhoto(
+        //gps: String, hdop: String, longitude: String, latitude: String, altitude: String
+        ) {
+        service.capturePhoto(
+            //gps: gps, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude
+        )
     }
     
     //    func flipCamera() {

@@ -40,11 +40,11 @@ struct StartScreenView: View {
                         Text("avigation").padding(.leading, -8).padding(.top, 20).font(.system(size: 70))
                         Spacer()
                     }.padding(.top, -70)
-                }.padding(.leading, 50).padding(.top, 4)
+                }.padding(.leading, 50).padding(.top, 4).dynamicTypeSize(...DynamicTypeSize.xxLarge)
                 Spacer()
                     Button {
                     } label: {
-                        Image(systemName: "leaf.circle.fill").bold(false).foregroundColor(.green).font(.system(size: 450))
+                        Image(systemName: "leaf.circle.fill").bold(false).foregroundColor(.green).font(.system(size: 450)).dynamicTypeSize(...DynamicTypeSize.xxLarge)
                     }
                 Spacer()
             }.onAppear {
