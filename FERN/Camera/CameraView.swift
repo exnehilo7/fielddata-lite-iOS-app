@@ -66,7 +66,7 @@ struct CameraPreview: UIViewRepresentable {
 struct CameraView: View {
     
     // Camera
-    @StateObject var model = CameraViewModel()
+    @StateObject var model = CameraService() // Try skipping middleman CameraViewModel()
     @State var currentZoomFactor: CGFloat = 1.0
 
     // GPS
@@ -101,23 +101,39 @@ struct CameraView: View {
     // For the camera's current image?
 //    @State private var image = UIImage()
     
-    // Upload the photo
-    @ObservedObject var uploadPhoto = UploadPhoto()
-    @State private var isShowUploadButton = false
+    // Upload the photo  // No need to upload the photo for now
+//    @ObservedObject var uploadPhoto = UploadPhoto()
+//    @State private var isShowUploadButton = false
     
     // Get a message from Upload Photo
-    var responseMessage: some View {
-        VStack {
-            Text("PHP Response: \(uploadPhoto.responseString ?? "None")")
-        }.font(.system(size: 20)).foregroundColor(.white)
-            .padding()
-    }
+//    var responseMessage: some View {
+//        VStack {
+//            Text("PHP Response: \(uploadPhoto.responseString ?? "None")")
+//        }.font(.system(size: 20)).foregroundColor(.white)
+//            .padding()
+//    }
     
     var captureButton: some View {
         Button(action: {
+            if showArrowGold {
+                // Pass GPS data
+                model.gps = "ArrowGold"
+                model.hdop = nmea.accuracy ?? "0.00"
+                model.longitude = nmea.longitude ?? "0.0000"
+                model.latitude = nmea.latitude ?? "0.0000"
+                model.altitude = nmea.altitude ?? "0.00"
+//                model.capturePhoto()
+            } else {
+                model.gps = "iOS"
+                model.hdop = clHorzAccuracy
+                model.longitude = clLong
+                model.latitude = clLat
+                model.altitude = clAltitude
+//                model.capturePhoto()
+            }
             model.capturePhoto()
-            isShowUploadButton = true // try to toggle show upload button
-            uploadPhoto.setResponseMsgToBlank() // Clear out response message
+//            isShowUploadButton = true // try to toggle show upload button
+//            uploadPhoto.setResponseMsgToBlank() // Clear out response message
         }, label: {
             Circle()
                 .foregroundColor(.white)
@@ -150,48 +166,48 @@ struct CameraView: View {
         }
     }
     
-    var uploadButton: some View {
-        Group {
-            if model.photo != nil  {
-                Button(action: {
-                    var lat: String!
-                    var long: String!
-                    if showArrowGold {
-                        lat = nmea.latitude ?? "0.0000"
-                        long = nmea.longitude ?? "0.0000"
-                    }
-                    else {
-                        lat = clLat
-                        long = clLong
-                    }
-                    
-                    // uploadPhoto.myImageUploadRequestTEST()
-                    uploadPhoto.myPhotoUploadRequest(thePhoto: model.photo, lat: lat, long: long)
-
-                    // Hide upload button
-                    isShowUploadButton = false // try to toggle show upload button
-                })
-                {
-                    HStack {
-                        Image(systemName: "arrow.up")
-                            .font(.system(size: 20))
-
-                        Text("Upload Image")
-                            .font(.headline)
-                    }
-                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
-                    .background(Color.orange)
-                    .foregroundColor(.white)
-                    .cornerRadius(20)
-                    .padding(.horizontal)
-                }
-            } else {
-                RoundedRectangle(cornerRadius: 20)
-                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
-                    .foregroundColor(.black)
-            }
-        }
-    }
+//    var uploadButton: some View {
+//        Group {
+//            if model.photo != nil  {
+//                Button(action: {
+//                    var lat: String!
+//                    var long: String!
+//                    if showArrowGold {
+//                        lat = nmea.latitude ?? "0.0000"
+//                        long = nmea.longitude ?? "0.0000"
+//                    }
+//                    else {
+//                        lat = clLat
+//                        long = clLong
+//                    }
+//
+//                    // uploadPhoto.myImageUploadRequestTEST()
+//                    uploadPhoto.myPhotoUploadRequest(thePhoto: model.photo, lat: lat, long: long)
+//
+//                    // Hide upload button
+//                    isShowUploadButton = false // try to toggle show upload button
+//                })
+//                {
+//                    HStack {
+//                        Image(systemName: "arrow.up")
+//                            .font(.system(size: 20))
+//
+//                        Text("Upload Image")
+//                            .font(.headline)
+//                    }
+//                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+//                    .background(Color.orange)
+//                    .foregroundColor(.white)
+//                    .cornerRadius(20)
+//                    .padding(.horizontal)
+//                }
+//            } else {
+//                RoundedRectangle(cornerRadius: 20)
+//                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+//                    .foregroundColor(.black)
+//            }
+//        }
+//    }
     
 //    var flipCameraButton: some View {
 //        Button(action: {
@@ -222,7 +238,7 @@ struct CameraView: View {
     var coreLocationGpsData: some View {
         VStack {
             // Default Core Location
-            Label("Standard GPS",  systemImage: "location.fill").underline()
+            Label("Standard GPS (May need time to start feed)",  systemImage: "location.fill").underline()
             Text("Latitude: ") + Text("\(clLat)")
             Text("Longitude: ") + Text("\(clLong)")
             Text("Altitude (m): ") + Text("\(clAltitude)")
@@ -236,6 +252,7 @@ struct CameraView: View {
         HStack {
             Button{
                 gpsModeIsSelected = true
+                createTxtFileForTheDay()
             } label: {
                 Label("Use Standard GPS", systemImage: "location.fill")
             }.buttonStyle(.borderedProminent)
@@ -244,9 +261,20 @@ struct CameraView: View {
                 clLocationHelper.stopUpdatingDefaultCoreLocation() // basic core off
                 nmea.viewDidLoad()
                 gpsModeIsSelected = true
+                createTxtFileForTheDay()
             } label: {
                 Label("Use Arrow Gold Device", systemImage: "antenna.radiowaves.left.and.right")
             }.buttonStyle(.borderedProminent)
+        }
+    }
+    
+    private func createTxtFileForTheDay() {
+        do{
+            // create new txt file for the day for GPS data. Note that for now, within the static function, the user's name is hard coded to the filename
+            _ = try FieldWorkGPSFile.log(uuid: "", gps: "", hdop: "", longitude: "", latitude: "", altitude: "")
+        } catch {
+            // failed to write file – bad permissions, bad filename, missing permissions, or more likely it can't be converted to the encoding
+            print(error.localizedDescription)
         }
     }
     
@@ -281,13 +309,13 @@ struct CameraView: View {
                 Color.black.edgesIgnoringSafeArea(.all)
                 
                 VStack {
-                    Button(action: {
-                        model.switchFlash()
-                    }, label: {
-                        Image(systemName: model.isFlashOn ? "bolt.fill" : "bolt.slash.fill")
-                            .font(.system(size: 20, weight: .medium, design: .default))
-                    })
-                    .accentColor(model.isFlashOn ? .yellow : .white)
+//                    Button(action: {
+//                        model.switchFlash()
+//                    }, label: {
+//                        Image(systemName: model.isFlashOn ? "bolt.fill" : "bolt.slash.fill")
+//                            .font(.system(size: 20, weight: .medium, design: .default))
+//                    })
+//                    .accentColor(model.isFlashOn ? .yellow : .white)
                     
                     CameraPreview(session: model.session)
                         .gesture(
@@ -303,14 +331,15 @@ struct CameraView: View {
                                     //  Store the newly calculated zoom factor
                                     currentZoomFactor = zoomFactor
                                     //  Sets the zoom factor to the capture device session
-                                    model.zoom(with: zoomFactor)
+//                                    model.zoom(with: zoomFactor) // Commented out to skip middleman CameraViewModel
+                                    model.setZoom( zoom: zoomFactor)
                                 }
                             })
                         )
                         .onAppear {
                             model.configure()
                         }
-                        .alert(isPresented: $model.showAlertError, content: {
+                        .alert(isPresented: $model.showAlertError, content: { // When removing the middleman CameraViewModel(), showAlertError was added to the CameraService class. Unknown if its Bool will toggle.
                             Alert(title: Text(model.alertError.title), message: Text(model.alertError.message), dismissButton: .default(Text(model.alertError.primaryButtonTitle), action: {
                                 model.alertError.primaryAction?()
                             }))
@@ -324,9 +353,9 @@ struct CameraView: View {
                         )
                         .animation(.easeInOut, value: true)
                     
-                    Spacer()
-                    
-                    VStack {
+//                    Spacer()
+//                    
+//                    VStack {
                         if gpsModeIsSelected {
                             if showArrowGold {
                                 arrowGpsData
@@ -335,9 +364,9 @@ struct CameraView: View {
                                 coreLocationGpsData
                             }
                             
-                            Spacer()
-                            
-                            responseMessage
+                            // Disable photo upload response message for now
+//                            Spacer()
+//                            responseMessage
                             
                             Spacer()
                             
@@ -346,28 +375,28 @@ struct CameraView: View {
 //                            Spacer()
                             
                             HStack {
-//                                NavigationLink(destination: Text("Detail photo")) {
-//                                    capturedPhotoThumbnail
-//                                }
+                                // Disable photo thumbnail popup?
+                                NavigationLink(destination: Text("Detail photo")) {
+                                    capturedPhotoThumbnail
+                                }
                                 
                                 Spacer()
-                                
                                 captureButton
-                                
-                                // Spacer()
+                                Spacer()
                                 
         //                        flipCameraButton
                             }//.padding(.horizontal, 20)
                             
-                            Spacer()
-                            if isShowUploadButton { // try to toggle show upload button
-                                uploadButton
-                            }
+                            // Disable photo upload for now
+//                            Spacer()
+//                            if isShowUploadButton { // try to toggle show upload button
+//                                uploadButton
+//                            }
                         }
                         else {
                             selectGpsMode
                         }
-                    }.animation(.easeInOut, value: true)
+//                    }.animation(.easeInOut, value: true)  // Vstack ender
                     
                 }//.sheet(isPresented: $gpsModeIsSelected) {
 //                    ImagePicker(sourceType: .camera, selectedImage: self.$image) // May need a 3rd param for button-show toggle

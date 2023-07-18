@@ -46,6 +46,13 @@ extension Photo {
 public class CameraService : NSObject, ObservableObject {
     typealias PhotoCaptureSessionID = String
     
+    // MARK: Observed GPS variables from the CameraView via CameraViewModel
+    public var gps = "none"
+    public var hdop = "0.00"
+    public var longitude = "0.0000"
+    public var latitude = "0.0000"
+    public var altitude = "0.0000"
+    
     //    MARK: Observed Properties UI must react to
     
     //    1. Tells observers whether the flash is turned ON or OFF.
@@ -65,6 +72,7 @@ public class CameraService : NSObject, ObservableObject {
     
     // MARK: Alert properties
     public var alertError: AlertError = AlertError()
+    @Published var showAlertError = false
         
     // MARK: Session Management Properties
         
@@ -311,7 +319,9 @@ public class CameraService : NSObject, ObservableObject {
     
     //    MARK: Capture Photo
     // - MARK: CapturePhoto
-    public func capturePhoto() {
+    public func capturePhoto(
+        //gps: String, hdop: String, longitude: String, latitude: String, altitude: String
+        ) {
         if self.setupResult != .configurationFailed {
             self.isCameraButtonDisabled = true
             self.isUploadButtonDisabled = true
@@ -342,7 +352,15 @@ public class CameraService : NSObject, ObservableObject {
                 
                 photoSettings.photoQualityPrioritization = .quality
                 
-                let photoCaptureProcessor = PhotoCaptureProcessor(with: photoSettings, willCapturePhotoAnimation: { [weak self] in
+                let photoCaptureProcessor = PhotoCaptureProcessor(with: photoSettings,
+                                                                  // Pass GPS vars to class
+                                                                  gps: self.gps,
+                                                                  hdop: self.hdop,
+                                                                  longitude: self.longitude,
+                                                                  latitude: self.latitude,
+                                                                  altitude: self.altitude,
+                                                                  
+                                                                  willCapturePhotoAnimation: { [weak self] in
                     // Tells the UI to flash the screen to signal that SwiftCamera took a photo.
                     DispatchQueue.main.async {
                         self?.willCapturePhoto.toggle()
@@ -388,6 +406,12 @@ public class CameraService : NSObject, ObservableObject {
 class PhotoCaptureProcessor: NSObject {
     
     lazy var context = CIContext()
+    
+    private let gps: String
+    private let hdop: String
+    private let longitude: String
+    private let latitude: String
+    private let altitude: String
 
     private(set) var requestedPhotoSettings: AVCapturePhotoSettings
     
@@ -397,7 +421,7 @@ class PhotoCaptureProcessor: NSObject {
     
     private let photoProcessingHandler: (Bool) -> Void
     
-    private let uploadImage = UploadImage()
+//    private let uploadImage = UploadImage() // No uploading image for now
     
 //    The actual captured photo's data
     var photoData: Data?
@@ -406,7 +430,22 @@ class PhotoCaptureProcessor: NSObject {
     private var maxPhotoProcessingTime: CMTime?
         
 //    Init takes multiple closures to be called in each step of the photco capture process
-    init(with requestedPhotoSettings: AVCapturePhotoSettings, willCapturePhotoAnimation: @escaping () -> Void, completionHandler: @escaping (PhotoCaptureProcessor) -> Void, photoProcessingHandler: @escaping (Bool) -> Void) {
+    init(with requestedPhotoSettings: AVCapturePhotoSettings,
+         // GPS vars from CameraService's published vars. Data is from CameraView vars.
+         gps: String,
+         hdop: String,
+         longitude: String,
+         latitude: String,
+         altitude: String,
+         
+         willCapturePhotoAnimation: @escaping () -> Void, completionHandler: @escaping (PhotoCaptureProcessor) -> Void, photoProcessingHandler: @escaping (Bool) -> Void)
+    {
+        // Get them strings
+        self.gps = gps
+        self.hdop = hdop
+        self.longitude = longitude
+        self.latitude = latitude
+        self.altitude = altitude
         
         self.requestedPhotoSettings = requestedPhotoSettings
         self.willCapturePhotoAnimation = willCapturePhotoAnimation
@@ -459,7 +498,8 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
     
     //        MARK: Saves capture to photo library
     // Can this call a function to upload via PHP as well?
-    func saveToPhotoLibrary(_ photoData: Data) {
+    func saveToPhotoLibrary(_ photoData: Data, gps: String, hdop: String, longitude: String, latitude: String, altitude: String
+    ) {
         
         PHPhotoLibrary.requestAuthorization { status in
             if status == .authorized {
@@ -474,12 +514,10 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
                     
                     creationRequest.addResource(with: .photo, data: photoData, options: options)
 
-                    // Write to a .txt file?
-                    let str = "Super long string here"
-                    let filename = self.getDocumentsDirectory().appendingPathComponent("FERNoutput.txt")
+                    // Write to a .txt file
                     do {
-                        try FieldWorkGPSFile.log(fileNameUUID)
-                        //fileNameUUID.write(to: filename, atomically: true, encoding: String.Encoding.utf8)
+                        // .txt file header order is uuid, gps, hdop, longitude, latitude, altitude.
+                        try _ = FieldWorkGPSFile.log(uuid: fileNameUUID, gps: gps, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude)
                     } catch {
                         // failed to write file – bad permissions, bad filename, missing permissions, or more likely it can't be converted to the encoding
                         print(error.localizedDescription)
@@ -510,7 +548,9 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
     }
     
     // - MARK: DidFinishCapture
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings, error: Error?) {
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings, error: Error? //,
+                     //gps: String, hdop: String, longitude: String, latitude: String, altitude: String
+    ) {
         if let error = error {
             print("Error capturing photo: \(error)")
             DispatchQueue.main.async {
@@ -525,7 +565,7 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
                 return
             }
             
-            self.saveToPhotoLibrary(data)
+            self.saveToPhotoLibrary(data, gps: gps, hdop: self.hdop, longitude: longitude, latitude: latitude, altitude: altitude)
             
             // Save to server?
 //            uploadImage.myImageUploadRequest(theImage: data as UIImage)

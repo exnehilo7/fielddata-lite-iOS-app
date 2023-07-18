@@ -89,32 +89,40 @@ class FieldWorkGPSFile {
     static var gpsFile: URL? {
         guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
         let formatter = DateFormatter()
-        formatter.dateFormat = "dd-MM-yyyy"
+        formatter.dateFormat = "yyyy-MM-dd"
         let dateString = formatter.string(from: Date())
-        let fileName = "\(dateString).txt"
+        // For now, hard code device user's name
+        let fileName = "\(dateString)_Schadt.txt"
         return documentsDirectory.appendingPathComponent(fileName)
     }
 
-    static func log(_ message: String) throws -> Bool {
+    static func log(uuid: String, gps: String, hdop: String, longitude: String, latitude: String, altitude: String) throws -> Bool {
         guard let gpsFile = gpsFile else {
             return false
         }
 
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm:ss"
-        let timestamp = formatter.string(from: Date())
-        guard let data = (timestamp + ": " + message + "\n").data(using: String.Encoding.utf8) else { return false}
-
-        if FileManager.default.fileExists(atPath: gpsFile.path) {
-            if let fileHandle = try? FileHandle(forWritingTo: gpsFile) {
-                fileHandle.seekToEndOfFile()
-                fileHandle.write(data)
-                fileHandle.closeFile()
-            }
-        } else {
-            try? data.write(to: gpsFile, options: .atomicWrite)
-        }
         
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd HH:mm:ssx"
+            let timestamp = formatter.string(from: Date())
+            let message = "\(uuid),\(gps),\(hdop),\(longitude),\(latitude),\(altitude),\(timestamp)"
+            guard let data = (message + "\n").data(using: String.Encoding.utf8) else { return false}
+            
+            if FileManager.default.fileExists(atPath: gpsFile.path) {
+                if uuid.count > 0 {
+                    if let fileHandle = try? FileHandle(forWritingTo: gpsFile) {
+                        fileHandle.seekToEndOfFile()
+                        fileHandle.write(data)
+                        fileHandle.closeFile()
+                    }
+                }
+            } else {
+                if uuid.count < 1 {
+                    // Create header
+                    guard let headerData = ("uuid, gps, hdop, longitude, latitude, altitude, line_written_on\n").data(using: String.Encoding.utf8) else { return false}
+                    try? headerData.write(to: gpsFile, options: .atomicWrite)
+                }
+            }
         return true
     }
 }
