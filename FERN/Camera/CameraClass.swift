@@ -510,7 +510,7 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
                     
                     // Try creating a custom filename
                     let fileNameUUID = UUID().uuidString
-                    options.originalFilename = fileNameUUID
+                    options.originalFilename = fileNameUUID.uppercased()
                     
                     creationRequest.addResource(with: .photo, data: photoData, options: options)
 

@@ -68,11 +68,11 @@ struct MainMenuView: View {
 //                }
                 NavigationLink {
                     CameraView()
-                        .navigationTitle("JUL-AUG 2023 Stress Gradients Trip")
+                        .navigationTitle("SEP 2023 Stress Gradients Trip")
                 } label: {
                     HStack {
                         Image(systemName: "camera").bold(false).foregroundColor(.gray)
-                        Text("JUL-AUG 2023 Stress Gradients Trip")
+                        Text("SEP 2023 Stress Gradients Trip")
                     }
                 }
                 // Disabled for Chris' JUL-AUG 2023 trip

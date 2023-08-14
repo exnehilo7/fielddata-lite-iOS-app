@@ -16,6 +16,12 @@
 import SwiftUI
 import AVFoundation
 
+struct Article: Identifiable {
+    var id: String {title}
+    let title: String
+    let description: String
+}
+
 struct CameraPreview: UIViewRepresentable {
     /* 1.
      We create a UIView subclass that overrides the UIView’s layer type and sets it to
@@ -65,28 +71,33 @@ struct CameraPreview: UIViewRepresentable {
 
 struct CameraView: View {
     
+    @State private var showAlert = false
+    @State private var article = Article(title: "No Feed", description: "Device feed error. No photo was taken.")
+    
     // Camera
-    @StateObject var model = CameraService() // Try skipping middleman CameraViewModel()
+    @StateObject var model = CameraService() // Try skipping middleman CameraViewModel() to get the GPS feed-to-variables to work
     @State var currentZoomFactor: CGFloat = 1.0
 
     // GPS
     @ObservedObject var nmea:NMEA = NMEA()
-    @ObservedObject var clLocationHelper = LocationHelper()
-    var clLat:String {
-        return "\(clLocationHelper.lastLocation?.coordinate.latitude ?? 0.0000)"
-    }
-    var clLong:String {
-        return "\(clLocationHelper.lastLocation?.coordinate.longitude ?? 0.0000)"
-    }
-    var clHorzAccuracy:String {
-        return "\(clLocationHelper.lastLocation?.horizontalAccuracy ?? 0.00)"
-    }
-    var clVertAccuracy:String {
-        return "\(clLocationHelper.lastLocation?.verticalAccuracy ?? 0.00)"
-    }
-    var clAltitude:String {
-        return "\(clLocationHelper.lastLocation?.altitude ?? 0.0000)"
-    }
+    
+    // 14-AUG-2023: To prevent accidental iOS GPS usage, disable the option to select it.
+//    @ObservedObject var clLocationHelper = LocationHelper()
+//    var clLat:String {
+//        return "\(clLocationHelper.lastLocation?.coordinate.latitude ?? 0.0000)"
+//    }
+//    var clLong:String {
+//        return "\(clLocationHelper.lastLocation?.coordinate.longitude ?? 0.0000)"
+//    }
+//    var clHorzAccuracy:String {
+//        return "\(clLocationHelper.lastLocation?.horizontalAccuracy ?? 0.00)"
+//    }
+//    var clVertAccuracy:String {
+//        return "\(clLocationHelper.lastLocation?.verticalAccuracy ?? 0.00)"
+//    }
+//    var clAltitude:String {
+//        return "\(clLocationHelper.lastLocation?.altitude ?? 0.0000)"
+//    }
     
     // Select GPS and display toggles
     @State var gpsModeIsSelected = false
@@ -123,15 +134,24 @@ struct CameraView: View {
                 model.latitude = nmea.latitude ?? "0.0000"
                 model.altitude = nmea.altitude ?? "0.00"
 //                model.capturePhoto()
-            } else {
-                model.gps = "iOS"
-                model.hdop = clHorzAccuracy
-                model.longitude = clLong
-                model.latitude = clLat
-                model.altitude = clAltitude
-//                model.capturePhoto()
+            // 14-AUG-2023: To prevent accidental iOS GPS usage, disable the option to select it.
+//            } else {
+//                model.gps = "iOS"
+//                model.hdop = clHorzAccuracy
+//                model.longitude = clLong
+//                model.latitude = clLat
+//                model.altitude = clAltitude
+////                model.capturePhoto()
             }
-            model.capturePhoto()
+            // If there's no feed, don't capture the photo
+            if (model.hdop == "0.00" || model.longitude == "0.0000" || model.latitude == "0.0000" || model.altitude == "0.00") {
+                
+                model.photo = nil
+                showAlert = true
+                
+            } else {
+                model.capturePhoto()
+            }
 //            isShowUploadButton = true // try to toggle show upload button
 //            uploadPhoto.setResponseMsgToBlank() // Clear out response message
         }, label: {
@@ -143,21 +163,24 @@ struct CameraView: View {
                         .stroke(Color.black.opacity(0.8), lineWidth: 2)
                         .frame(width: 65, height: 65, alignment: .center)
                 )
-        })
+        }).alert(article.title, isPresented: $showAlert, presenting: article) {article in Button("OK"){showAlert = false}} message: {article in Text(article.description)}
     }
     
     var capturedPhotoThumbnail: some View {
         Group {
             if model.photo != nil {
-                // Original code had a thumbnail pop up
-                Image(uiImage: (model.photo?.image!)!)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 60, height: 60)
-                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                    .animation(.spring(), value: true)
-//                // Try button popup
-//                    .onAppear(perform: {isShowUploadButton = true})
+                VStack {
+                    // Original code had a thumbnail pop up
+                    Image(uiImage: (model.photo?.image!)!)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 60, height: 60)
+                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .animation(.spring(), value: true)
+                    //                // Try button popup
+                    //                    .onAppear(perform: {isShowUploadButton = true})
+                    Text("Pic taken!")
+                }
             } else {
                 RoundedRectangle(cornerRadius: 10)
                     .frame(width: 60, height: 60, alignment: .center)
@@ -235,33 +258,38 @@ struct CameraView: View {
         }.font(.system(size: 20)).foregroundColor(.white)
     }
     
-    var coreLocationGpsData: some View {
-        VStack {
-            // Default Core Location
-            Label("Standard GPS (May need time to start feed)",  systemImage: "location.fill").underline()
-            Text("Latitude: ") + Text("\(clLat)")
-            Text("Longitude: ") + Text("\(clLong)")
-            Text("Altitude (m): ") + Text("\(clAltitude)")
-            Text("Horizontal Accuracy (m): ") + Text("\(clHorzAccuracy)")
-            Text("Vertical Accuracy (m): ") + Text("\(clVertAccuracy)")
-        }.font(.system(size: 20)).foregroundColor(.white)
-            .padding()
-    }
+    // 14-AUG-2023: To prevent accidental iOS GPS usage, disable the option to select it.
+//    var coreLocationGpsData: some View {
+//        VStack {
+//            // Default Core Location
+//            Label("Standard GPS (May need time to start feed)",  systemImage: "location.fill").underline()
+//            Text("Latitude: ") + Text("\(clLat)")
+//            Text("Longitude: ") + Text("\(clLong)")
+//            Text("Altitude (m): ") + Text("\(clAltitude)")
+//            Text("Horizontal Accuracy (m): ") + Text("\(clHorzAccuracy)")
+//            Text("Vertical Accuracy (m): ") + Text("\(clVertAccuracy)")
+//        }.font(.system(size: 20)).foregroundColor(.white)
+//            .padding()
+//    }
     
     var selectGpsMode: some View {
         HStack {
-            Button{
-                gpsModeIsSelected = true
-                createTxtFileForTheDay()
-            } label: {
-                Label("Use Standard GPS", systemImage: "location.fill")
-            }.buttonStyle(.borderedProminent)
+            // 14-AUG-2023: To prevent accidental iOS GPS usage, disable the option to select it.
+//            Button{
+//                gpsModeIsSelected = true
+//                createTxtFileForTheDay()
+//            } label: {
+//                Label("Use Standard GPS", systemImage: "location.fill")
+//            }.buttonStyle(.borderedProminent)
             Button{
                 showArrowGold = true
-                clLocationHelper.stopUpdatingDefaultCoreLocation() // basic core off
+                // 14-AUG-2023: To prevent accidental iOS GPS usage, disable the option to select it.
+//                clLocationHelper.stopUpdatingDefaultCoreLocation() // basic core off
                 nmea.viewDidLoad()
                 gpsModeIsSelected = true
                 createTxtFileForTheDay()
+                // To prevent the device feed from being interruped, disable autosleep
+                UIApplication.shared.isIdleTimerDisabled = true
             } label: {
                 Label("Use Arrow Gold Device", systemImage: "antenna.radiowaves.left.and.right")
             }.buttonStyle(.borderedProminent)
@@ -360,9 +388,10 @@ struct CameraView: View {
                             if showArrowGold {
                                 arrowGpsData
                             }
-                            else {
-                                coreLocationGpsData
-                            }
+                            // 14-AUG-2023: To prevent accidental iOS GPS usage, disable the option to select it.
+//                            else {
+//                                coreLocationGpsData
+//                            }
                             
                             // Disable photo upload response message for now
 //                            Spacer()
@@ -376,9 +405,9 @@ struct CameraView: View {
                             
                             HStack {
                                 // Disable photo thumbnail popup?
-                                NavigationLink(destination: Text("Detail photo")) {
-                                    capturedPhotoThumbnail
-                                }
+//                                NavigationLink(destination: Text("Detail photo")) {
+                                capturedPhotoThumbnail
+//                                }
                                 
                                 Spacer()
                                 captureButton
