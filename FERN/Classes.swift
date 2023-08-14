@@ -9,6 +9,7 @@
 import Foundation
 import CoreLocation
 import MapKit
+import UIKit
 
 class SearchOrganismName : ObservableObject {
     var organismName = ""
@@ -91,9 +92,16 @@ class FieldWorkGPSFile {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         let dateString = formatter.string(from: Date())
-        // For now, hard code device user's name
-        let fileName = "\(dateString)_Schadt.txt"
-        return documentsDirectory.appendingPathComponent(fileName)
+        // Use the unique device ID for the file name
+        if let uuid = UIDevice.current.identifierForVendor?.uuidString
+        {
+            let fileName = "\(dateString)_\(uuid).txt"
+            return documentsDirectory.appendingPathComponent(fileName)
+        } else {
+            let fileName = "\(dateString)_No_Unique_Name.txt"
+            return documentsDirectory.appendingPathComponent(fileName)
+        }
+//        return documentsDirectory.appendingPathComponent(fileName)
     }
 
     static func log(uuid: String, gps: String, hdop: String, longitude: String, latitude: String, altitude: String) throws -> Bool {
@@ -119,7 +127,7 @@ class FieldWorkGPSFile {
             } else {
                 if uuid.count < 1 {
                     // Create header
-                    guard let headerData = ("uuid, gps, hdop, longitude, latitude, altitude, line_written_on\n").data(using: String.Encoding.utf8) else { return false}
+                    guard let headerData = ("pic_uuid,gps,hdop,longitude,latitude,altitude,line_written_on\n").data(using: String.Encoding.utf8) else { return false}
                     try? headerData.write(to: gpsFile, options: .atomicWrite)
                 }
             }

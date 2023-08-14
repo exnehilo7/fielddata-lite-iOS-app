@@ -373,12 +373,12 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
         DispatchQueue.main.async { [self] in
             self.latitude = String(format: "%0.8f", latdeg)
             self.longitude = String(format: "%0.8f", londeg)
-            self.altitude = String(format: "%0.2f (m)", infoInitialized.elv)
+            self.altitude = String(format: "%0.2f", infoInitialized.elv)
             // Origial Obj-C code for accuracy:
             //        if (infoInitialized.smask & GPGST) {  // C-supported bitwise operator. (may need to prefix GPGST?) "Cannot convert value of type '_nmeaPACKTYPE' to expected argument type 'Int32'"
             //            self.accuracy = String(format: "%0.2f M", infoInitialized.dev_xy)
             //        }
-            self.accuracy = String(format: "%0.2f (m)", infoInitialized.dev_xy)
+            self.accuracy = String(format: "%0.2f", infoInitialized.dev_xy)
             self.gpsUsed = String(format: "%2i", infoInitialized.GPSsatinfo.inuse)
         }
                 
