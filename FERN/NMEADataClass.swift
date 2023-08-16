@@ -283,13 +283,13 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
                         
                         // Try a basic function call instead:
                         updateNMEAUI()
-                        
-                        hasNMEAStreamStopped = false
+                    } else {
+                        setHasNMEAStreamStoppedToTrue()
                     }
                 }
                 else {
                     print("Nothing to read...")
-                    hasNMEAStreamStopped = true
+                    setHasNMEAStreamStoppedToTrue()
                 }
                 break;
             case Stream.Event.errorOccurred:
@@ -312,7 +312,7 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
     
     func endStreaming(){
         print("endStreaming")
-        hasNMEAStreamStopped = true
+        setHasNMEAStreamStoppedToTrue()
         
         // [O] kill stream
         self.accessorySession?.inputStream?.close()
@@ -388,6 +388,7 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
             //        }
             self.accuracy = String(format: "%0.2f", infoInitialized.dev_xy)
             self.gpsUsed = String(format: "%2i", infoInitialized.GPSsatinfo.inuse)
+            self.hasNMEAStreamStopped = false
         }
                 
         // (dev) See what smask's values are.
@@ -399,4 +400,9 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
     }
     // end NMEA
     
+    func setHasNMEAStreamStoppedToTrue(){
+        DispatchQueue.main.async { [self] in
+            self.hasNMEAStreamStopped = true
+        }
+    }
 }

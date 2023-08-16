@@ -85,8 +85,8 @@ struct MainMenuView: View {
 //                        Text("Upload Image Only")
 //                    }
 //                }
-                }.bold()
-            }
+            }.bold().onAppear(perform:{ UIApplication.shared.isIdleTimerDisabled = false})
+            }.preferredColorScheme(.dark)
         }
     }
 
