@@ -72,7 +72,7 @@ struct CameraPreview: UIViewRepresentable {
 struct CameraView: View {
     
     @State private var showAlert = false
-    @State private var article = Article(title: "No Feed", description: "Device feed error. No photo was taken.")
+    @State private var article = Article(title: "Device Feed Error", description: "Check the Bluetooth connection or the satellite feed. No photo was taken.")
     
     // Camera
     @StateObject var model = CameraService() // Try skipping middleman CameraViewModel() to get the GPS feed-to-variables to work
@@ -144,14 +144,27 @@ struct CameraView: View {
 ////                model.capturePhoto()
             }
             // If there's no feed, don't capture the photo
-            if (model.hdop == "0.00" || model.longitude == "0.0000" || model.latitude == "0.0000" || model.altitude == "0.00") {
-                
+            if nmea.hasNMEAStreamStopped ||
+                (model.hdop == "0.00" || model.longitude == "0.0000" ||
+                 model.latitude == "0.0000" || model.altitude == "0.00")
+            {
                 model.photo = nil
                 showAlert = true
-                
             } else {
                 model.capturePhoto()
             }
+            
+            // OLD CODE
+//            if (model.hdop == "0.00" || model.longitude == "0.0000" || model.latitude == "0.0000" || model.altitude == "0.00") {
+//
+//                model.photo = nil
+//                showAlert = true
+//
+//            } else {
+//                model.capturePhoto()
+//            }
+            
+            
 //            isShowUploadButton = true // try to toggle show upload button
 //            uploadPhoto.setResponseMsgToBlank() // Clear out response message
         }, label: {
@@ -334,7 +347,7 @@ struct CameraView: View {
     var body: some View {
         GeometryReader { reader in
             ZStack {
-                Color.black.edgesIgnoringSafeArea(.all)
+                Color.black.ignoresSafeArea(.all)
                 
                 VStack {
 //                    Button(action: {
@@ -430,7 +443,7 @@ struct CameraView: View {
                 }//.sheet(isPresented: $gpsModeIsSelected) {
 //                    ImagePicker(sourceType: .camera, selectedImage: self.$image) // May need a 3rd param for button-show toggle
 //                }
-            }
+            }.preferredColorScheme(.dark) // Make the status bar show on black background
         }
     }
 }

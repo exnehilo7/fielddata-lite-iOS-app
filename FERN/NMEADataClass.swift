@@ -36,6 +36,9 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
     @Published var protocolText:NSString = "No Protocol"
     @Published var stringGPGST:String?
     
+    // To alert the view if the stream has stopped
+    @Published var hasNMEAStreamStopped = false
+    
     
     // MARK: - Main Function
     // Main(?) function from ViewController @implementation
@@ -280,10 +283,13 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
                         
                         // Try a basic function call instead:
                         updateNMEAUI()
+                        
+                        hasNMEAStreamStopped = false
                     }
                 }
                 else {
                     print("Nothing to read...")
+                    hasNMEAStreamStopped = true
                 }
                 break;
             case Stream.Event.errorOccurred:
@@ -306,6 +312,8 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
     
     func endStreaming(){
         print("endStreaming")
+        hasNMEAStreamStopped = true
+        
         // [O] kill stream
         self.accessorySession?.inputStream?.close()
         self.accessorySession?.inputStream?.remove(from: .current, forMode: .default)
