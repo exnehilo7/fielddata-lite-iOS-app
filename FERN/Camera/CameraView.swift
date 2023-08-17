@@ -72,7 +72,7 @@ struct CameraPreview: UIViewRepresentable {
 struct CameraView: View {
     
     @State private var showAlert = false
-    @State private var article = Article(title: "Device Feed Error", description: "Check the Bluetooth connection or the satellite feed. No photo was taken.")
+    @State private var article = Article(title: "Device Feed Error", description: "No photo was taken. Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app.")
     
     // Camera
     @StateObject var model = CameraService() // Try skipping middleman CameraViewModel() to get the GPS feed-to-variables to work
@@ -192,7 +192,7 @@ struct CameraView: View {
                         .animation(.spring(), value: true)
                     //                // Try button popup
                     //                    .onAppear(perform: {isShowUploadButton = true})
-                    Text("Pic taken!")
+                    Text("Pic taken!").foregroundColor(.white)
                 }
             } else {
                 RoundedRectangle(cornerRadius: 10)
@@ -443,7 +443,7 @@ struct CameraView: View {
                 }//.sheet(isPresented: $gpsModeIsSelected) {
 //                    ImagePicker(sourceType: .camera, selectedImage: self.$image) // May need a 3rd param for button-show toggle
 //                }
-            }.preferredColorScheme(.dark) // Make the status bar show on black background
+            }//.preferredColorScheme(.dark) // Make the status bar show on black background
         }
     }
 }

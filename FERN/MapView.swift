@@ -81,7 +81,7 @@ struct MapView: View {
                         MapAnnotation(coordinate: item.coordinate, content: {
                             Image(systemName: item.systemName)
                             .symbolRenderingMode(.palette)
-                            .foregroundStyle(.green, item.highlightColor).font(.system(size: item.size))
+                            .foregroundStyle(.white, item.highlightColor).font(.system(size: item.size))
                         })
                     } // end add points
                 }.task { await getMapPoints()}
@@ -89,7 +89,7 @@ struct MapView: View {
             if hasResults {
                VStack {
                    // Show organism name of the selected point
-                   Text(annotationItems[currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold).background(.white)
+                   Text(annotationItems[currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold) //.background(.white)
                        .onAppear(perform: {
                            // Mark first point on map
                            annotationItems[currentAnnoItem].size = 60
@@ -188,7 +188,7 @@ struct MapView: View {
                             longitude: Double(result.long) ?? 0,
                             siteId: result.siteId,
                             organismName: result.organismName,
-                            systemName: "tree.circle"
+                            systemName: "xmark.diamond.fill"
                         ))
                     }
                     
