@@ -19,7 +19,7 @@ class SearchOrganismName : ObservableObject {
 class LocationHelper: NSObject, ObservableObject {
 
     static let shared = LocationHelper()
-    static let DefaultLocation = CLLocationCoordinate2D(latitude: 35.93212, longitude: -84.31022)
+    static let DefaultLocation = CLLocationCoordinate2D(latitude: 1.1, longitude: 1.1)
     @Published var lastLocation: CLLocation?
 
     static var currentLocation: CLLocationCoordinate2D {
