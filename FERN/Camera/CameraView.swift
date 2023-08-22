@@ -278,27 +278,29 @@ struct CameraView: View {
     
     var selectGpsMode: some View {
         HStack {
+            HStack{
+                Button{
+                    // (22-AUG-2023: Need to initiate the camera class(?) and CoreLocation on button press, not on view load?)
+                    gpsModeIsSelected = true
+                    createTxtFileForTheDay()
+                } label: {
+                    Label("Use Standard GPS", systemImage: "location.fill")
+                }.buttonStyle(.borderedProminent)
+            }.padding(.leading, 20)
             Spacer()
-            Button{
-                // (22-AUG-2023: Need to initiate the camera class(?) and CoreLocation on button press, not on view load?)
-                gpsModeIsSelected = true
-                createTxtFileForTheDay()
-            } label: {
-                Label("Use Standard GPS", systemImage: "location.fill")
-            }.buttonStyle(.borderedProminent)
-            Spacer()
-            Button{
-                showArrowGold = true
-                clLocationHelper.stopUpdatingDefaultCoreLocation() // basic core off
-                nmea.viewDidLoad()
-                gpsModeIsSelected = true
-                createTxtFileForTheDay()
-                // To prevent the device feed from being interruped, disable autosleep
-                UIApplication.shared.isIdleTimerDisabled = true
-            } label: {
-                Label("Use Arrow Gold Device", systemImage: "antenna.radiowaves.left.and.right").foregroundColor(.black)
-            }.buttonStyle(.borderedProminent).tint(.yellow)
-            Spacer()
+            HStack{
+                Button{
+                    showArrowGold = true
+                    clLocationHelper.stopUpdatingDefaultCoreLocation() // basic core off
+                    nmea.viewDidLoad()
+                    gpsModeIsSelected = true
+                    createTxtFileForTheDay()
+                    // To prevent the device feed from being interruped, disable autosleep
+                    UIApplication.shared.isIdleTimerDisabled = true
+                } label: {
+                    Label("Use Arrow Gold Device", systemImage: "antenna.radiowaves.left.and.right").foregroundColor(.black)
+                }.buttonStyle(.borderedProminent).tint(.yellow)
+            }.padding(.trailing, 20)
         }
     }
     
