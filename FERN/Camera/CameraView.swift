@@ -79,25 +79,26 @@ struct CameraView: View {
     @State var currentZoomFactor: CGFloat = 1.0
 
     // GPS
+    // Arrow Gold
     @ObservedObject var nmea:NMEA = NMEA()
     
-    // 14-AUG-2023: To prevent accidental iOS GPS usage, disable the option to select it.
-//    @ObservedObject var clLocationHelper = LocationHelper()
-//    var clLat:String {
-//        return "\(clLocationHelper.lastLocation?.coordinate.latitude ?? 0.0000)"
-//    }
-//    var clLong:String {
-//        return "\(clLocationHelper.lastLocation?.coordinate.longitude ?? 0.0000)"
-//    }
-//    var clHorzAccuracy:String {
-//        return "\(clLocationHelper.lastLocation?.horizontalAccuracy ?? 0.00)"
-//    }
-//    var clVertAccuracy:String {
-//        return "\(clLocationHelper.lastLocation?.verticalAccuracy ?? 0.00)"
-//    }
-//    var clAltitude:String {
-//        return "\(clLocationHelper.lastLocation?.altitude ?? 0.0000)"
-//    }
+    // Default iOS
+    @ObservedObject var clLocationHelper = LocationHelper()
+    var clLat:String {
+        return "\(clLocationHelper.lastLocation?.coordinate.latitude ?? 0.0000)"
+    }
+    var clLong:String {
+        return "\(clLocationHelper.lastLocation?.coordinate.longitude ?? 0.0000)"
+    }
+    var clHorzAccuracy:String {
+        return "\(clLocationHelper.lastLocation?.horizontalAccuracy ?? 0.00)"
+    }
+    var clVertAccuracy:String {
+        return "\(clLocationHelper.lastLocation?.verticalAccuracy ?? 0.00)"
+    }
+    var clAltitude:String {
+        return "\(clLocationHelper.lastLocation?.altitude ?? 0.0000)"
+    }
     
     // Select GPS and display toggles
     @State var gpsModeIsSelected = false
@@ -133,37 +134,25 @@ struct CameraView: View {
                 model.longitude = nmea.longitude ?? "0.0000"
                 model.latitude = nmea.latitude ?? "0.0000"
                 model.altitude = nmea.altitude ?? "0.00"
-//                model.capturePhoto()
-            // 14-AUG-2023: To prevent accidental iOS GPS usage, disable the option to select it.
-//            } else {
-//                model.gps = "iOS"
-//                model.hdop = clHorzAccuracy
-//                model.longitude = clLong
-//                model.latitude = clLat
-//                model.altitude = clAltitude
-////                model.capturePhoto()
-            }
-            // If there's no feed, don't capture the photo
-            if nmea.hasNMEAStreamStopped ||
-                (model.hdop == "0.00" || model.longitude == "0.0000" ||
-                 model.latitude == "0.0000" || model.altitude == "0.00")
-            {
-                model.photo = nil
-                showAlert = true
+                
+                // If there's no feed, don't capture the photo
+                if nmea.hasNMEAStreamStopped ||
+                    (model.hdop == "0.00" || model.longitude == "0.0000" ||
+                     model.latitude == "0.0000" || model.altitude == "0.00")
+                {
+                    model.photo = nil
+                    showAlert = true
+                } else {
+                    model.capturePhoto()
+                }
             } else {
+                model.gps = "iOS"
+                model.hdop = clHorzAccuracy
+                model.longitude = clLong
+                model.latitude = clLat
+                model.altitude = clAltitude
                 model.capturePhoto()
             }
-            
-            // OLD CODE
-//            if (model.hdop == "0.00" || model.longitude == "0.0000" || model.latitude == "0.0000" || model.altitude == "0.00") {
-//
-//                model.photo = nil
-//                showAlert = true
-//
-//            } else {
-//                model.capturePhoto()
-//            }
-            
             
 //            isShowUploadButton = true // try to toggle show upload button
 //            uploadPhoto.setResponseMsgToBlank() // Clear out response message
@@ -258,9 +247,10 @@ struct CameraView: View {
 //        })
 //    }
     
+    // Arrow Gold
     var arrowGpsData: some View {
         VStack {
-            // Arrow Gold
+            
             Label("EOS Arrow Gold", systemImage: "antenna.radiowaves.left.and.right").underline()
 //            Text("Protocol: ") + Text(nmea.protocolText as String)
             Text("Latitude: ") + Text(nmea.latitude ?? "0.0000")
@@ -271,41 +261,44 @@ struct CameraView: View {
         }.font(.system(size: 20)).foregroundColor(.white)
     }
     
-    // 14-AUG-2023: To prevent accidental iOS GPS usage, disable the option to select it.
-//    var coreLocationGpsData: some View {
-//        VStack {
-//            // Default Core Location
-//            Label("Standard GPS (May need time to start feed)",  systemImage: "location.fill").underline()
-//            Text("Latitude: ") + Text("\(clLat)")
-//            Text("Longitude: ") + Text("\(clLong)")
-//            Text("Altitude (m): ") + Text("\(clAltitude)")
-//            Text("Horizontal Accuracy (m): ") + Text("\(clHorzAccuracy)")
-//            Text("Vertical Accuracy (m): ") + Text("\(clVertAccuracy)")
-//        }.font(.system(size: 20)).foregroundColor(.white)
-//            .padding()
-//    }
+
+    // iOS Core Location
+    var coreLocationGpsData: some View {
+        VStack {
+            
+            Label("Standard GPS (May need time to start feed)",  systemImage: "location.fill").underline()
+            Text("Latitude: ") + Text("\(clLat)")
+            Text("Longitude: ") + Text("\(clLong)")
+            Text("Altitude (m): ") + Text("\(clAltitude)")
+            Text("Horizontal Accuracy (m): ") + Text("\(clHorzAccuracy)")
+            Text("Vertical Accuracy (m): ") + Text("\(clVertAccuracy)")
+        }.font(.system(size: 20)).foregroundColor(.white)
+            .padding()
+    }
     
     var selectGpsMode: some View {
         HStack {
-            // 14-AUG-2023: To prevent accidental iOS GPS usage, disable the option to select it.
-//            Button{
-//                gpsModeIsSelected = true
-//                createTxtFileForTheDay()
-//            } label: {
-//                Label("Use Standard GPS", systemImage: "location.fill")
-//            }.buttonStyle(.borderedProminent)
+            Spacer()
+            Button{
+                // (22-AUG-2023: Need to initiate the camera class(?) and CoreLocation on button press, not on view load?)
+                gpsModeIsSelected = true
+                createTxtFileForTheDay()
+            } label: {
+                Label("Use Standard GPS", systemImage: "location.fill")
+            }.buttonStyle(.borderedProminent)
+            Spacer()
             Button{
                 showArrowGold = true
-                // 14-AUG-2023: To prevent accidental iOS GPS usage, disable the option to select it.
-//                clLocationHelper.stopUpdatingDefaultCoreLocation() // basic core off
+                clLocationHelper.stopUpdatingDefaultCoreLocation() // basic core off
                 nmea.viewDidLoad()
                 gpsModeIsSelected = true
                 createTxtFileForTheDay()
                 // To prevent the device feed from being interruped, disable autosleep
                 UIApplication.shared.isIdleTimerDisabled = true
             } label: {
-                Label("Use Arrow Gold Device", systemImage: "antenna.radiowaves.left.and.right")
-            }.buttonStyle(.borderedProminent)
+                Label("Use Arrow Gold Device", systemImage: "antenna.radiowaves.left.and.right").foregroundColor(.black)
+            }.buttonStyle(.borderedProminent).tint(.yellow)
+            Spacer()
         }
     }
     
@@ -401,10 +394,9 @@ struct CameraView: View {
                             if showArrowGold {
                                 arrowGpsData
                             }
-                            // 14-AUG-2023: To prevent accidental iOS GPS usage, disable the option to select it.
-//                            else {
-//                                coreLocationGpsData
-//                            }
+                            else {
+                                coreLocationGpsData
+                            }
                             
                             // Disable photo upload response message for now
 //                            Spacer()
