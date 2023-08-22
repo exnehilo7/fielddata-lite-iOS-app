@@ -283,6 +283,7 @@ struct CameraView: View {
                     // (22-AUG-2023: Need to initiate the camera class(?) and CoreLocation on button press, not on view load?)
                     gpsModeIsSelected = true
                     createTxtFileForTheDay()
+                    UIApplication.shared.isIdleTimerDisabled = true
                 } label: {
                     Label("Use Standard GPS", systemImage: "location.fill")
                 }.buttonStyle(.borderedProminent)
