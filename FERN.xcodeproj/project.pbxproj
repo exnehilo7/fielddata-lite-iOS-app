@@ -40,6 +40,9 @@
 		D1766CA1298DB9C6002F594D /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766CA0298DB9C6002F594D /* MapView.swift */; };
 		D1766CA3298DBAA3002F594D /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766CA2298DBAA3002F594D /* Functions.swift */; };
 		D1766CA5298E0B3E002F594D /* Classes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766CA4298E0B3E002F594D /* Classes.swift */; };
+		D1A56E812B051DB300AC8291 /* SelectTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E802B051DB300AC8291 /* SelectTripView.swift */; };
+		D1A56E852B05208900AC8291 /* TripPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E842B05208900AC8291 /* TripPersistence.swift */; };
+		D1A56E922B05257000AC8291 /* CoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E902B05257000AC8291 /* CoreData.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -102,6 +105,9 @@
 		D1766CA0298DB9C6002F594D /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		D1766CA2298DBAA3002F594D /* Functions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
 		D1766CA4298E0B3E002F594D /* Classes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Classes.swift; sourceTree = "<group>"; };
+		D1A56E802B051DB300AC8291 /* SelectTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripView.swift; sourceTree = "<group>"; };
+		D1A56E842B05208900AC8291 /* TripPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripPersistence.swift; sourceTree = "<group>"; };
+		D1A56E912B05257000AC8291 /* CoreData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreData.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,31 +150,19 @@
 		D10BB31A298ADAA400667E86 /* FERN */ = {
 			isa = PBXGroup;
 			children = (
+				D1A56E832B05206100AC8291 /* Persistence */,
 				D127B39A2A1EB29000F6287A /* UploadPhoto */,
 				D127B3932A1D1D9600F6287A /* UploadImage */,
 				D127B3812A1524C800F6287A /* Camera */,
+				D1A56E822B051F6000AC8291 /* ClassesAndModels */,
 				D127B3772A12EBB400F6287A /* NMEA */,
+				D1A56E7E2B051C1600AC8291 /* Views */,
 				D10BB31F298ADAA500667E86 /* Assets.xcassets */,
-				D1766CA4298E0B3E002F594D /* Classes.swift */,
-				D10BB31D298ADAA400667E86 /* ContentView.swift */,
-				D16A6C7729901A5D00835B5E /* CreateCustomRouteView.swift */,
+				D10BB32B298AF42000667E86 /* Info.plist */,
+				D1A56E902B05257000AC8291 /* CoreData.xcdatamodeld */,
 				D10BB31B298ADAA400667E86 /* FERNApp.swift */,
 				D1766CA2298DBAA3002F594D /* Functions.swift */,
-				D10BB32B298AF42000667E86 /* Info.plist */,
-				D1766C9A298DB922002F594D /* LoginView.swift */,
-				D1766C9C298DB978002F594D /* MainMenuView.swift */,
-				D1766CA0298DB9C6002F594D /* MapView.swift */,
-				D16A6C87299AF32600835B5E /* ReportRoutes.swift */,
-				D16A6C85299AE2DF00835B5E /* SelectSavedRouteView.swift */,
-				D10BB329298ADAD600667E86 /* Models.swift */,
-				D127B37F2A12EDF600F6287A /* NMEADataView.swift */,
-				D127B37D2A12ED3D00F6287A /* NMEADataClass.swift */,
 				D10BB321298ADAA500667E86 /* Preview Content */,
-				D1766C9E298DB9B2002F594D /* SearchByNameView.swift */,
-				D16A6C7129901A2000835B5E /* SelectAreaView.swift */,
-				D16A6C7F299AC65600835B5E /* SelectReportView.swift */,
-				D16A6C7D29970E0900835B5E /* SelectNotesView.swift */,
-				D16A6C7B2995D18100835B5E /* StartScreenView.swift */,
 			);
 			path = FERN;
 			sourceTree = "<group>";
@@ -194,7 +188,6 @@
 			children = (
 				D127B3822A1528AD00F6287A /* CameraClass.swift */,
 				D127B3882A15454400F6287A /* CameraViewModel.swift */,
-				D127B38A2A15493000F6287A /* CameraView.swift */,
 				D127B38C2A15675900F6287A /* CameraServiceEnums.swift */,
 				D127B38E2A15683700F6287A /* ImageResizer.swift */,
 				D127B3902A1568C800F6287A /* CameraServiceExtensions.swift */,
@@ -226,6 +219,54 @@
 				D147C56729A3EC2900D948AB /* FERNTests.swift */,
 			);
 			path = FERNTests;
+			sourceTree = "<group>";
+		};
+		D1A56E7E2B051C1600AC8291 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				D1A56E7F2B051D5300AC8291 /* Reports */,
+				D127B38A2A15493000F6287A /* CameraView.swift */,
+				D10BB31D298ADAA400667E86 /* ContentView.swift */,
+				D16A6C7729901A5D00835B5E /* CreateCustomRouteView.swift */,
+				D1766C9A298DB922002F594D /* LoginView.swift */,
+				D1766C9C298DB978002F594D /* MainMenuView.swift */,
+				D1766CA0298DB9C6002F594D /* MapView.swift */,
+				D127B37F2A12EDF600F6287A /* NMEADataView.swift */,
+				D16A6C85299AE2DF00835B5E /* SelectSavedRouteView.swift */,
+				D1766C9E298DB9B2002F594D /* SearchByNameView.swift */,
+				D16A6C7129901A2000835B5E /* SelectAreaView.swift */,
+				D16A6C7D29970E0900835B5E /* SelectNotesView.swift */,
+				D16A6C7F299AC65600835B5E /* SelectReportView.swift */,
+				D1A56E802B051DB300AC8291 /* SelectTripView.swift */,
+				D16A6C7B2995D18100835B5E /* StartScreenView.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		D1A56E7F2B051D5300AC8291 /* Reports */ = {
+			isa = PBXGroup;
+			children = (
+				D16A6C87299AF32600835B5E /* ReportRoutes.swift */,
+			);
+			name = Reports;
+			sourceTree = "<group>";
+		};
+		D1A56E822B051F6000AC8291 /* ClassesAndModels */ = {
+			isa = PBXGroup;
+			children = (
+				D1766CA4298E0B3E002F594D /* Classes.swift */,
+				D10BB329298ADAD600667E86 /* Models.swift */,
+				D127B37D2A12ED3D00F6287A /* NMEADataClass.swift */,
+			);
+			name = ClassesAndModels;
+			sourceTree = "<group>";
+		};
+		D1A56E832B05206100AC8291 /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				D1A56E842B05208900AC8291 /* TripPersistence.swift */,
+			);
+			name = Persistence;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -275,7 +316,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1420;
-				LastUpgradeCheck = 1420;
+				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					D10BB317298ADAA400667E86 = {
 						CreatedOnToolsVersion = 14.2;
@@ -344,13 +385,16 @@
 				D1766CA3298DBAA3002F594D /* Functions.swift in Sources */,
 				D127B3912A1568C800F6287A /* CameraServiceExtensions.swift in Sources */,
 				D127B37E2A12ED3D00F6287A /* NMEADataClass.swift in Sources */,
+				D1A56E852B05208900AC8291 /* TripPersistence.swift in Sources */,
 				D1766C9F298DB9B2002F594D /* SearchByNameView.swift in Sources */,
+				D1A56E922B05257000AC8291 /* CoreData.xcdatamodeld in Sources */,
 				D127B3892A15454400F6287A /* CameraViewModel.swift in Sources */,
 				D10BB31E298ADAA400667E86 /* ContentView.swift in Sources */,
 				D127B39C2A1EB51500F6287A /* UploadPhotoClass.swift in Sources */,
 				D16A6C7C2995D18100835B5E /* StartScreenView.swift in Sources */,
 				D1766C9B298DB922002F594D /* LoginView.swift in Sources */,
 				D16A6C88299AF32600835B5E /* ReportRoutes.swift in Sources */,
+				D1A56E812B051DB300AC8291 /* SelectTripView.swift in Sources */,
 				D16A6C80299AC65600835B5E /* SelectReportView.swift in Sources */,
 				D10BB31C298ADAA400667E86 /* FERNApp.swift in Sources */,
 				D127B3832A1528AD00F6287A /* CameraClass.swift in Sources */,
@@ -415,6 +459,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -475,6 +520,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -638,6 +684,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		D1A56E902B05257000AC8291 /* CoreData.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				D1A56E912B05257000AC8291 /* CoreData.xcdatamodel */,
+			);
+			currentVersion = D1A56E912B05257000AC8291 /* CoreData.xcdatamodel */;
+			path = CoreData.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = D10BB310298ADAA400667E86 /* Project object */;
 }

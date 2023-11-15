@@ -10,10 +10,12 @@ import SwiftUI
 @main //SearchByNameView?
 struct FERNApp: App {
     
+    let persistenceController = PersistenceController.shared
+    
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                StartScreenView()
+                StartScreenView().environment(\.managedObjectContext, persistenceController.container.viewContext)
            }
         }
     }

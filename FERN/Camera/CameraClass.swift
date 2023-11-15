@@ -52,6 +52,7 @@ public class CameraService : NSObject, ObservableObject {
     public var longitude = "0.0000"
     public var latitude = "0.0000"
     public var altitude = "0.0000"
+    public var tripName = "no_trip_name"
     
     //    MARK: Observed Properties UI must react to
     
@@ -359,6 +360,7 @@ public class CameraService : NSObject, ObservableObject {
                                                                   longitude: self.longitude,
                                                                   latitude: self.latitude,
                                                                   altitude: self.altitude,
+                                                                  tripName: self.tripName,
                                                                   
                                                                   willCapturePhotoAnimation: { [weak self] in
                     // Tells the UI to flash the screen to signal that SwiftCamera took a photo.
@@ -412,6 +414,7 @@ class PhotoCaptureProcessor: NSObject {
     private let longitude: String
     private let latitude: String
     private let altitude: String
+    private let tripName: String
 
     private(set) var requestedPhotoSettings: AVCapturePhotoSettings
     
@@ -437,6 +440,7 @@ class PhotoCaptureProcessor: NSObject {
          longitude: String,
          latitude: String,
          altitude: String,
+         tripName: String,
          
          willCapturePhotoAnimation: @escaping () -> Void, completionHandler: @escaping (PhotoCaptureProcessor) -> Void, photoProcessingHandler: @escaping (Bool) -> Void)
     {
@@ -446,6 +450,7 @@ class PhotoCaptureProcessor: NSObject {
         self.longitude = longitude
         self.latitude = latitude
         self.altitude = altitude
+        self.tripName = tripName
         
         self.requestedPhotoSettings = requestedPhotoSettings
         self.willCapturePhotoAnimation = willCapturePhotoAnimation
@@ -498,7 +503,7 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
     
     //        MARK: Saves capture to photo library
     // Can this call a function to upload via PHP as well?
-    func saveToPhotoLibrary(_ photoData: Data, gps: String, hdop: String, longitude: String, latitude: String, altitude: String
+    func saveToPhotoLibrary(_ photoData: Data, gps: String, hdop: String, longitude: String, latitude: String, altitude: String, tripName: String
     ) {
         
         PHPhotoLibrary.requestAuthorization { status in
@@ -517,7 +522,7 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
                     // Write to a .txt file
                     do {
                         // .txt file header order is uuid, gps, hdop, longitude, latitude, altitude.
-                        try _ = FieldWorkGPSFile.log(uuid: fileNameUUID, gps: gps, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude)
+                        try _ = FieldWorkGPSFile.log(tripName: tripName, uuid: fileNameUUID, gps: gps, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude)
                     } catch {
                         // failed to write file – bad permissions, bad filename, missing permissions, or more likely it can't be converted to the encoding
                         print(error.localizedDescription)
@@ -565,7 +570,7 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
                 return
             }
             
-            self.saveToPhotoLibrary(data, gps: gps, hdop: self.hdop, longitude: longitude, latitude: latitude, altitude: altitude)
+            self.saveToPhotoLibrary(data, gps: gps, hdop: self.hdop, longitude: longitude, latitude: latitude, altitude: altitude, tripName: tripName)
             
             // Save to server?
 //            uploadImage.myImageUploadRequest(theImage: data as UIImage)

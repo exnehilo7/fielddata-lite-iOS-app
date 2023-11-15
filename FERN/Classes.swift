@@ -86,39 +86,54 @@ public struct AlertError {
 
 // File create and append from https://stackoverflow.com/questions/27327067/append-text-or-data-to-text-file-in-swift
 class FieldWorkGPSFile {
-
+    
     static var gpsFile: URL? {
         guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        let dateString = formatter.string(from: Date())
-        // Use the unique device ID for the file name
-        if let uuid = UIDevice.current.identifierForVendor?.uuidString
-        {
-            let fileName = "\(dateString)_\(uuid).txt"
-            return documentsDirectory.appendingPathComponent(fileName)
-        } else {
-            let fileName = "\(dateString)_No_Unique_Name.txt"
-            return documentsDirectory.appendingPathComponent(fileName)
-        }
-//        return documentsDirectory.appendingPathComponent(fileName)
+        return documentsDirectory
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "yyyy-MM-dd"
+//        let dateString = formatter.string(from: Date())
+//        // Use the unique device ID for the file name
+//        if let uuid = UIDevice.current.identifierForVendor?.uuidString
+//        {
+//            let fileName = "/\(uuid)//\(dateString)_\(uuid).txt"
+//            return documentsDirectory.appendingPathComponent(fileName)
+//        } else {
+//            let fileName = "/no_device_uuid/\(dateString)_No_Unique_Name.txt"
+//            return documentsDirectory.appendingPathComponent(fileName)
+//        }
     }
-
-    static func log(uuid: String, gps: String, hdop: String, longitude: String, latitude: String, altitude: String) throws -> Bool {
+    
+    static func log(tripName: String, uuid: String, gps: String, hdop: String, longitude: String, latitude: String, altitude: String) throws -> Bool {
         guard let gpsFile = gpsFile else {
             return false
         }
 
+        var filePath: URL
         
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd HH:mm:ssx"
-            let timestamp = formatter.string(from: Date())
+        let formatterDate = DateFormatter()
+        formatterDate.dateFormat = "yyyy-MM-dd"
+        let dateString = formatterDate.string(from: Date())
+        // Use the unique device ID for the file name
+        if let uuid = UIDevice.current.identifierForVendor?.uuidString
+        {
+            let fileName = "/\(uuid)/trips/\(tripName)/\(dateString)_\(uuid).txt"
+            filePath = gpsFile.appendingPathComponent(fileName)
+        } else {
+            let fileName = "/no_device_uuid/trips/\(tripName)/\(dateString)_No_Unique_Name.txt"
+            filePath = gpsFile.appendingPathComponent(fileName)
+        }
+        
+        
+            let formatterDateTime = DateFormatter()
+            formatterDateTime.dateFormat = "yyyy-MM-dd HH:mm:ssx"
+            let timestamp = formatterDateTime.string(from: Date())
             let message = "\(uuid),\(gps),\(hdop),\(longitude),\(latitude),\(altitude),\(timestamp)"
             guard let data = (message + "\n").data(using: String.Encoding.utf8) else { return false}
             
-            if FileManager.default.fileExists(atPath: gpsFile.path) {
+            if FileManager.default.fileExists(atPath: filePath.path) {
                 if uuid.count > 0 {
-                    if let fileHandle = try? FileHandle(forWritingTo: gpsFile) {
+                    if let fileHandle = try? FileHandle(forWritingTo: filePath) {
                         fileHandle.seekToEndOfFile()
                         fileHandle.write(data)
                         fileHandle.closeFile()
@@ -128,7 +143,7 @@ class FieldWorkGPSFile {
                 if uuid.count < 1 {
                     // Create header
                     guard let headerData = ("pic_uuid,gps,hdop,longitude,latitude,altitude,line_written_on\n").data(using: String.Encoding.utf8) else { return false}
-                    try? headerData.write(to: gpsFile, options: .atomicWrite)
+                    try? headerData.write(to: filePath, options: .atomicWrite)
                 }
             }
         return true
