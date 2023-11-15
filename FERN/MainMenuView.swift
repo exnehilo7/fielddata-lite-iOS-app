@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct MainMenuView: View {
+    
+    //let persistenceController = PersistenceController.shared
+    
     var body: some View {
         NavigationStack{
             List {
@@ -67,12 +70,12 @@ struct MainMenuView: View {
 //                    }
 //                }
                 NavigationLink {
-                    CameraView()
-                        .navigationTitle("SEP 2023 Stress Gradients Trip")
+                    SelectTripView()
+                        .navigationTitle("GPS Camera")//.environment(\.managedObjectContext, persistenceController.container.viewContext)
                 } label: {
                     HStack {
                         Image(systemName: "camera").bold(false).foregroundColor(.gray)
-                        Text("SEP 2023 Stress Gradients Trip")
+                        Text("GPS Camera")
                     }
                 }
                 // Disabled for Chris' JUL-AUG 2023 trip

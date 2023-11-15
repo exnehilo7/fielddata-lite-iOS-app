@@ -71,6 +71,9 @@ struct CameraPreview: UIViewRepresentable {
 
 struct CameraView: View {
     
+    // From calling view
+    var tripName: String
+    
     @State private var showAlert = false
     @State private var article = Article(title: "Device Feed Error", description: "No photo was taken. Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app.")
     
@@ -308,7 +311,7 @@ struct CameraView: View {
     private func createTxtFileForTheDay() {
         do{
             // create new txt file for the day for GPS data. Note that for now, within the static function, the user's name is hard coded to the filename
-            _ = try FieldWorkGPSFile.log(uuid: "", gps: "", hdop: "", longitude: "", latitude: "", altitude: "")
+            _ = try FieldWorkGPSFile.log(tripName: tripName, uuid: "", gps: "", hdop: "", longitude: "", latitude: "", altitude: "")
         } catch {
             // failed to write file – bad permissions, bad filename, missing permissions, or more likely it can't be converted to the encoding
             print(error.localizedDescription)
