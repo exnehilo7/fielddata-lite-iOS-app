@@ -4,6 +4,7 @@
 //
 //  Created by Hopp, Dan on 11/15/23.
 //
+// On clicking a trip name: [API] Failed to create 0x88 image slot (alpha=1 wide=1) (client=0x77d3c009) [0x5 (os/kern) failure]  ??
 
 
 import SwiftUI

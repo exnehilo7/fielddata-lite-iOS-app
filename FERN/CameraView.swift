@@ -130,6 +130,8 @@ struct CameraView: View {
     
     var captureButton: some View {
         Button(action: {
+            // Pass trip name
+            model.tripName = tripName
             if showArrowGold {
                 // Pass GPS data
                 model.gps = "ArrowGold"
@@ -310,7 +312,7 @@ struct CameraView: View {
     
     private func createTxtFileForTheDay() {
         do{
-            // create new txt file for the day for GPS data. Note that for now, within the static function, the user's name is hard coded to the filename
+            // create new txt file for the day for GPS data.
             _ = try FieldWorkGPSFile.log(tripName: tripName, uuid: "", gps: "", hdop: "", longitude: "", latitude: "", altitude: "")
         } catch {
             // failed to write file – bad permissions, bad filename, missing permissions, or more likely it can't be converted to the encoding
