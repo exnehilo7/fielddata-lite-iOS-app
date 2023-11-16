@@ -96,10 +96,14 @@ class FieldWorkGPSFile {
 //        // Use the unique device ID for the file name
 //        if let uuid = UIDevice.current.identifierForVendor?.uuidString
 //        {
-//            let fileName = "/\(uuid)//\(dateString)_\(uuid).txt"
-//            return documentsDirectory.appendingPathComponent(fileName)
+//            let fileName = "\(dateString)_\(uuid).txt"
+//            let path = "\(uuid)/"
+////            let fileName = "\(uuid)/\(dateString)_\(uuid).txt"
+//            let temp = documentsDirectory.appendingPathComponent(path)
+//            return temp.appendingPathComponent(fileName)
 //        } else {
-//            let fileName = "/no_device_uuid/\(dateString)_No_Unique_Name.txt"
+////            let fileName = "\(dateString)_No_Unique_Name.txt"
+//            let fileName = "no_device_uuid/\(dateString)_No_Unique_Name.txt"
 //            return documentsDirectory.appendingPathComponent(fileName)
 //        }
     }
@@ -114,14 +118,22 @@ class FieldWorkGPSFile {
         let formatterDate = DateFormatter()
         formatterDate.dateFormat = "yyyy-MM-dd"
         let dateString = formatterDate.string(from: Date())
-        // Use the unique device ID for the file name
-        if let uuid = UIDevice.current.identifierForVendor?.uuidString
+        // Use the unique device ID for the text file name and the folder path.
+        if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString
         {
-            let fileName = "/\(uuid)/trips/\(tripName)/\(dateString)_\(uuid).txt"
-            filePath = gpsFile.appendingPathComponent(fileName)
+            let fileName = "\(dateString)_\(deviceUuid).txt"
+            let path = gpsFile.appendingPathComponent("\(deviceUuid)/trips/\(tripName)")
+            do {
+                try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true, attributes: nil)
+            } catch {}
+            filePath = path.appendingPathComponent(fileName)
         } else {
-            let fileName = "/no_device_uuid/trips/\(tripName)/\(dateString)_No_Unique_Name.txt"
-            filePath = gpsFile.appendingPathComponent(fileName)
+            let fileName = "\(dateString)_No_Device_UUID.txt"
+            let path = gpsFile.appendingPathComponent("no_device_uuid/trips/\(tripName)")
+            do {
+                try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true, attributes: nil)
+            } catch {}
+            filePath = path.appendingPathComponent(fileName)
         }
         
         
@@ -131,6 +143,8 @@ class FieldWorkGPSFile {
             let message = "\(uuid),\(gps),\(hdop),\(longitude),\(latitude),\(altitude),\(timestamp)"
             guard let data = (message + "\n").data(using: String.Encoding.utf8) else { return false}
             
+            print(filePath)
+        
             if FileManager.default.fileExists(atPath: filePath.path) {
                 if uuid.count > 0 {
                     if let fileHandle = try? FileHandle(forWritingTo: filePath) {
