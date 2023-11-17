@@ -150,18 +150,18 @@
 		D10BB31A298ADAA400667E86 /* FERN */ = {
 			isa = PBXGroup;
 			children = (
-				D1A56E832B05206100AC8291 /* Persistence */,
+				D1A56E962B07D0C000AC8291 /* ClassesAndModels */,
+				D1A56E942B07D05E00AC8291 /* Views */,
+				D1A56E972B07D0DE00AC8291 /* Persistence */,
 				D127B39A2A1EB29000F6287A /* UploadPhoto */,
 				D127B3932A1D1D9600F6287A /* UploadImage */,
 				D127B3812A1524C800F6287A /* Camera */,
-				D1A56E822B051F6000AC8291 /* ClassesAndModels */,
 				D127B3772A12EBB400F6287A /* NMEA */,
-				D1A56E7E2B051C1600AC8291 /* Views */,
+				D10BB31B298ADAA400667E86 /* FERNApp.swift */,
+				D1766CA2298DBAA3002F594D /* Functions.swift */,
 				D10BB31F298ADAA500667E86 /* Assets.xcassets */,
 				D10BB32B298AF42000667E86 /* Info.plist */,
 				D1A56E902B05257000AC8291 /* CoreData.xcdatamodeld */,
-				D10BB31B298ADAA400667E86 /* FERNApp.swift */,
-				D1766CA2298DBAA3002F594D /* Functions.swift */,
 				D10BB321298ADAA500667E86 /* Preview Content */,
 			);
 			path = FERN;
@@ -221,10 +221,10 @@
 			path = FERNTests;
 			sourceTree = "<group>";
 		};
-		D1A56E7E2B051C1600AC8291 /* Views */ = {
+		D1A56E942B07D05E00AC8291 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				D1A56E7F2B051D5300AC8291 /* Reports */,
+				D1A56E952B07D09D00AC8291 /* Reports */,
 				D127B38A2A15493000F6287A /* CameraView.swift */,
 				D10BB31D298ADAA400667E86 /* ContentView.swift */,
 				D16A6C7729901A5D00835B5E /* CreateCustomRouteView.swift */,
@@ -240,33 +240,33 @@
 				D1A56E802B051DB300AC8291 /* SelectTripView.swift */,
 				D16A6C7B2995D18100835B5E /* StartScreenView.swift */,
 			);
-			name = Views;
+			path = Views;
 			sourceTree = "<group>";
 		};
-		D1A56E7F2B051D5300AC8291 /* Reports */ = {
+		D1A56E952B07D09D00AC8291 /* Reports */ = {
 			isa = PBXGroup;
 			children = (
 				D16A6C87299AF32600835B5E /* ReportRoutes.swift */,
 			);
-			name = Reports;
+			path = Reports;
 			sourceTree = "<group>";
 		};
-		D1A56E822B051F6000AC8291 /* ClassesAndModels */ = {
+		D1A56E962B07D0C000AC8291 /* ClassesAndModels */ = {
 			isa = PBXGroup;
 			children = (
 				D1766CA4298E0B3E002F594D /* Classes.swift */,
 				D10BB329298ADAD600667E86 /* Models.swift */,
 				D127B37D2A12ED3D00F6287A /* NMEADataClass.swift */,
 			);
-			name = ClassesAndModels;
+			path = ClassesAndModels;
 			sourceTree = "<group>";
 		};
-		D1A56E832B05206100AC8291 /* Persistence */ = {
+		D1A56E972B07D0DE00AC8291 /* Persistence */ = {
 			isa = PBXGroup;
 			children = (
 				D1A56E842B05208900AC8291 /* TripPersistence.swift */,
 			);
-			name = Persistence;
+			path = Persistence;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
