@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct CameraImageView: View {
     
@@ -15,6 +16,10 @@ struct CameraImageView: View {
     // MARK: Vars
     // From calling view
     var tripName: String
+    
+    @State private var image = UIImage()
+    @State private var isShowCamera = false
+    @State private var isImageSelected = false
     
     // Alerts
     @State private var showAlert = false
@@ -87,6 +92,7 @@ struct CameraImageView: View {
                     gpsModeIsSelected = true
                     createTxtFileForTheDay()
                     UIApplication.shared.isIdleTimerDisabled = true
+                    isShowCamera = true
                 } label: {
                     Label("Use Standard GPS", systemImage: "location.fill")
                 }.buttonStyle(.borderedProminent)
@@ -101,6 +107,7 @@ struct CameraImageView: View {
                     createTxtFileForTheDay()
                     // To prevent the device feed from being interruped, disable autosleep
                     UIApplication.shared.isIdleTimerDisabled = true
+                    isShowCamera = true
                 } label: {
                     Label("Use Arrow Gold Device", systemImage: "antenna.radiowaves.left.and.right").foregroundColor(.black)
                 }.buttonStyle(.borderedProminent).tint(.yellow)
@@ -111,35 +118,59 @@ struct CameraImageView: View {
     // Take a pic button
     var captureButton: some View {
         Button(action: {
-            // Pass trip name
-            model.tripName = tripName
-            if showArrowGold {
-                // Pass Arrow GPS data
-                model.gps = "ArrowGold"
-                model.hdop = nmea.accuracy ?? "0.00"
-                model.longitude = nmea.longitude ?? "0.0000"
-                model.latitude = nmea.latitude ?? "0.0000"
-                model.altitude = nmea.altitude ?? "0.00"
-                
-                // If there's no feed, don't capture the photo
-                if nmea.hasNMEAStreamStopped ||
-                    (model.hdop == "0.00" || model.longitude == "0.0000" ||
-                     model.latitude == "0.0000" || model.altitude == "0.00")
-                {
-                    model.photo = nil
-                    showAlert = true
+            if isImageSelected {
+                let fileNameUUID = UUID().uuidString
+                let upperUUID = fileNameUUID.uppercased()
+                if showArrowGold {
+                    if nmea.hasNMEAStreamStopped ||
+                        (model.hdop == "0.00" || model.longitude == "0.0000" ||
+                         model.latitude == "0.0000" || model.altitude == "0.00")
+                    {
+                        showAlert = true
+                    } else {
+                        // Pass Arrow GPS data
+                        savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "ArrowGold", hdop: nmea.accuracy ?? "0.00", longitude: nmea.longitude ?? "0.0000", latitude: nmea.latitude ?? "0.0000", altitude: nmea.altitude ?? "0.00")
+                    }
                 } else {
-                    model.capturePhoto()
+                    // Pass default GPS data
+                    savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "iOS", hdop: clHorzAccuracy, longitude: clLong, latitude: clLat, altitude: clAltitude)
                 }
-            } else {
-                // Pass default GPS data
-                model.gps = "iOS"
-                model.hdop = clHorzAccuracy
-                model.longitude = clLong
-                model.latitude = clLat
-                model.altitude = clAltitude
-                model.capturePhoto()
+                
+                // Clear displayed image
+                self.image = UIImage()
+                
+                isImageSelected = false
             }
+            
+//            // Pass trip name
+//            model.tripName = tripName
+//            if showArrowGold {
+//                // Pass Arrow GPS data
+//                model.gps = "ArrowGold"
+//                model.hdop = nmea.accuracy ?? "0.00"
+//                model.longitude = nmea.longitude ?? "0.0000"
+//                model.latitude = nmea.latitude ?? "0.0000"
+//                model.altitude = nmea.altitude ?? "0.00"
+//                
+//                // If there's no feed, don't capture the photo
+//                if nmea.hasNMEAStreamStopped ||
+//                    (model.hdop == "0.00" || model.longitude == "0.0000" ||
+//                     model.latitude == "0.0000" || model.altitude == "0.00")
+//                {
+//                    model.photo = nil
+//                    showAlert = true
+//                } else {
+////                    model.capturePhoto()
+//                }
+//            } else {
+//                // Pass default GPS data
+//                model.gps = "iOS"
+//                model.hdop = clHorzAccuracy
+//                model.longitude = clLong
+//                model.latitude = clLat
+//                model.altitude = clAltitude
+////                model.capturePhoto()
+//            }
         }, label: {
             Circle()
                 .foregroundColor(.white)
@@ -155,10 +186,10 @@ struct CameraImageView: View {
     // Thumbnal for photo taken feedback
     var capturedPhotoThumbnail: some View {
         Group {
-            if model.photo != nil {
+            if image != nil {
                 VStack {
                     // Original code had a thumbnail pop up
-                    Image(uiImage: (model.photo?.image!)!)
+                    Image(uiImage: (image))
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(width: 60, height: 60)
@@ -212,18 +243,65 @@ struct CameraImageView: View {
         }
     }
     
+    private func savePicToFolder(imgFile: UIImage, tripName: String, uuid: String, gps: String, hdop: String, longitude: String, latitude: String, altitude: String) {
+        do{
+            // Save image to Trip's folder
+            _ = try FieldWorkImageFile.saveToFolder(imgFile: imgFile, tripName: tripName, uuid: uuid, gps: gps, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude)
+        } catch {
+            print(error.localizedDescription)
+        }
+        
+        // Write the pic's info to a .txt file
+        do {
+            // .txt file header order is uuid, gps, hdop, longitude, latitude, altitude.
+            try _ = FieldWorkGPSFile.log(tripName: tripName, uuid: uuid, gps: gps, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude)
+        } catch {
+            // failed to write file – bad permissions, bad filename, missing permissions, or more likely it can't be converted to the encoding
+            print(error.localizedDescription)
+        }
+    }
+    
     // MARK: Body
     var body: some View {
-        //        VStack { // Image V-stack
-        Text("Insert Image preview/iOS cam here.").foregroundStyle(.green)
-        //        Image(uiImage: self.image)
-        //            .resizable()
-        //            .scaledToFit()
-//    }.sheet(isPresented: $isShowCamera) { // Image V-stack
-//        ImagePicker(sourceType: .camera, selectedImage: self.$image, imageIsSelected: self.$isShowUploadButton) // Image V-stack
-//    }.animation(.easeInOut, value: true) // Image V-stack
-    }
-}
+        GeometryReader { reader in
+            ZStack {
+                Color.black.ignoresSafeArea(.all)
+                VStack { // Image V-stack
+                    Text("Insert Image preview/iOS cam here.").foregroundStyle(.green)
+                Image(uiImage: self.image)
+                    .resizable()
+                    .scaledToFit()
+                    
+                    if gpsModeIsSelected {
+                        if showArrowGold {
+                            arrowGpsData
+                        }
+                        else {
+                            coreLocationGpsData
+                        }
+                        
+                        Spacer()
+                               
+                        HStack {
+                            capturedPhotoThumbnail
+
+                            Spacer()
+                            captureButton
+                            Spacer()
+                            
+                        }
+                    }
+                    else {
+                        selectGpsMode
+                    }
+                }.sheet(isPresented: $isShowCamera) { // Image V-stack
+        ImagePicker(sourceType: .camera, selectedImage: self.$image, imageIsSelected: self.$isImageSelected) // Image V-stack
+    }.animation(.easeInOut, value: true) // Image V-stack
+            }
+        }//.preferredColorScheme(.dark) // Make the status bar show on black background
+    } // END BODY
+    
+} // END STRUCT
 
 //#Preview {
 //    CameraImageView()

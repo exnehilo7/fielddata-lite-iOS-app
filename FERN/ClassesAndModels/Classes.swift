@@ -163,3 +163,57 @@ class FieldWorkGPSFile {
         return true
     }
 }
+
+class FieldWorkImageFile {
+    
+    static var gpsFile: URL? {
+        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
+        return documentsDirectory
+    }
+    
+    static func saveToFolder(imgFile: UIImage, tripName: String, uuid: String, gps: String, hdop: String, longitude: String, latitude: String, altitude: String) throws -> Bool {
+        guard let gpsFile = gpsFile else {
+            return false
+        }
+
+        var filePath: URL
+        
+        let formatterDate = DateFormatter()
+        formatterDate.dateFormat = "yyyy-MM-dd"
+        let dateString = formatterDate.string(from: Date())
+        let fileName = "\(uuid).jpeg"
+        // Use the unique device ID for the text file name and the folder path.
+        if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString
+        {
+            let path = gpsFile.appendingPathComponent("\(deviceUuid)/trips/\(tripName)")
+            do {
+                try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true, attributes: nil)
+            } catch {}
+            filePath = path.appendingPathComponent(fileName)
+        } else {
+            let path = gpsFile.appendingPathComponent("no_device_uuid/trips/\(tripName)")
+            do {
+                try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true, attributes: nil)
+            } catch {}
+            filePath = path.appendingPathComponent(fileName)
+        }
+        
+        
+//            let formatterDateTime = DateFormatter()
+//            formatterDateTime.dateFormat = "yyyy-MM-dd HH:mm:ssx"
+//            let timestamp = formatterDateTime.string(from: Date())
+//            let message = "\(uuid),\(gps),\(hdop),\(longitude),\(latitude),\(altitude),\(timestamp)"
+//            guard let data = (message + "\n").data(using: String.Encoding.utf8) else { return false}
+            
+            print(filePath)
+        
+            if FileManager.default.fileExists(atPath: filePath.path) {
+                do {
+                    if let imageData = imgFile.jpegData(compressionQuality: 1) {
+                        try imageData.write(to: filePath)
+                    }
+                } catch {print (error)}
+            }
+        return true
+    }
+}

@@ -78,16 +78,16 @@ struct MainMenuView: View {
                         Text("GPS Camera")
                     }
                 }
-                // Disabled for Chris' JUL-AUG 2023 trip
-//                NavigationLink {
-//                    UploadImageView()
-//                        .navigationTitle("Upload Image Only")
-//                } label: {
-//                    HStack {
-//                        Image(systemName: "arrow.up.and.person.rectangle.portrait").bold(false).foregroundColor(.gray)
-//                        Text("Upload Image Only")
-//                    }
-//                }
+                // Try out CameraImageView
+                NavigationLink {
+                    CameraImageView(tripName: "CameraImageView")
+                        .navigationTitle("Image Format Testing")
+                } label: {
+                    HStack {
+                        Image(systemName: "arrow.up.and.person.rectangle.portrait").bold(false).foregroundColor(.gray)
+                        Text("Image Format Testing")
+                    }
+                }
             }.bold().onAppear(perform:{ UIApplication.shared.isIdleTimerDisabled = false})
             }.preferredColorScheme(.dark)
         }
