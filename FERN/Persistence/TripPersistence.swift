@@ -7,8 +7,6 @@
 // Msgs:
 // Changing the translatesAutoresizingMaskIntoConstraints property of a UICollectionViewCell that is managed by a UICollectionView is not supported, and will result in incorrect self-sizing.
 //
-// passing photo
-// 2023-11-15 15:28:40.049317-0500 FERN[753:95518] Errors found! Invalidating cache...
 
 import CoreData
 
