@@ -133,7 +133,7 @@ struct CameraView: View {
             // Pass trip name
             model.tripName = tripName
             if showArrowGold {
-                // Pass GPS data
+                // Pass Arrow GPS data
                 model.gps = "ArrowGold"
                 model.hdop = nmea.accuracy ?? "0.00"
                 model.longitude = nmea.longitude ?? "0.0000"
@@ -151,6 +151,7 @@ struct CameraView: View {
                     model.capturePhoto()
                 }
             } else {
+                // Pass default GPS data
                 model.gps = "iOS"
                 model.hdop = clHorzAccuracy
                 model.longitude = clLong

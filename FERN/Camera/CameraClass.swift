@@ -333,10 +333,10 @@ public class CameraService : NSObject, ObservableObject {
                 }
                 var photoSettings = AVCapturePhotoSettings()
                 
-                // Capture HEIF photos when supported. Enable according to user settings and high-resolution photos.
-                if  self.photoOutput.availablePhotoCodecTypes.contains(.hevc) {
-                    photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
-                }
+                // Use jpegs.
+//                if  self.photoOutput.availablePhotoCodecTypes.contains(.hevc) {
+                    photoSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
+//                }
                 
                 // Sets the flash option for this capture.
                 if self.videoDeviceInput.device.isFlashAvailable {
@@ -527,7 +527,38 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
                         // failed to write file – bad permissions, bad filename, missing permissions, or more likely it can't be converted to the encoding
                         print(error.localizedDescription)
                     }
-                    // END write to a .txt file?
+                    // END write to a .txt file
+                    
+                    // Move pic to the trip's folder
+//                    var filePath: URL
+//                    guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
+//                    // Use the unique device ID for the text file name and the folder path.
+//                    let formatterDate = DateFormatter()
+//                    formatterDate.dateFormat = "yyyy-MM-dd"
+//                    let dateString = formatterDate.string(from: Date())
+//                    var oldFilePath = ""
+//                    var newFilePath = ""
+////                    var deviceUuid: String
+//                    if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString
+//                    {
+//                        let fileName = "\(dateString)_\(deviceUuid).txt"
+//                        let path = documentsDirectory.appendingPathComponent("\(deviceUuid)/trips/\(tripName)")
+//                        filePath = path.appendingPathComponent(fileName)
+//                        newFilePath = filePath.absoluteString
+//                        newFilePath.append("/\(fileNameUUID).HEIC")
+//                        oldFilePath = "\(deviceUuid)/trips/\(tripName)/\(fileNameUUID).HEIC"
+//                    } else {
+//                        let fileName = "\(dateString)_No_Device_UUID.txt"
+//                        let path = documentsDirectory.appendingPathComponent("no_device_uuid/trips/\(tripName)")
+//                        filePath = path.appendingPathComponent(fileName)
+//                    }
+//                    
+//
+//                    do {
+//                        let fileManager = FileManager.default
+//                        try fileManager.moveItem(atPath: oldFilePath, toPath: newFilePath)
+//                    } catch { print(error.localizedDescription) }
+                    // END Move pic to the trip's folder
                     
                 }, completionHandler: { _, error in
                     if let error = error {
