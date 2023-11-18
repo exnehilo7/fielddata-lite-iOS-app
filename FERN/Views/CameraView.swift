@@ -2,12 +2,10 @@
 //  CameraView.swift
 //  FERN
 //
-//  Created by Hopp, Dan on 5/17/23. Code from https://betterprogramming.pub/effortless-swiftui-camera-d7a74abde37e.
+//  Created by Hopp, Dan on 5/17/23. Was used to try iOS' photo and MyPhotos framework. Main code from https://betterprogramming.pub/effortless-swiftui-camera-d7a74abde37e.
 //  GPS and data entry fields added by Dan Hopp.
 //
 //  The GPS feed defaults to the iPhone/Pad's GPS, unless the EOS device is chosen instead.
-//
-//  The lat, long, horizontal accuracy, and description tags are overwritten on the picture's Exif.
 //
 //  Only allow ASCII characters for the text fields.
 //

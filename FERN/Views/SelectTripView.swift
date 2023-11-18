@@ -27,7 +27,7 @@ struct SelectTripView: View {
                 ForEach(trips) { item in
                     NavigationLink {
                         // Go to CameraView with trip name as the title?
-                        CameraView(tripName: item.name!)
+                        CameraImageView(tripName: item.name!)
                             .navigationTitle("\(item.name!)")
                     } label: {
                         HStack{
@@ -59,7 +59,7 @@ struct SelectTripView: View {
                         Button("OK", action: addItem)
                         Button("Cancel", role: .cancel){name = ""}
                     } message: {
-                        Text("The name must be unique.")
+                        Text("The name must be unique, must have only alphanumeric characters (- and _ are allowed), and cannot contain any spaces.")
                     }
                 }
             }
@@ -76,6 +76,9 @@ struct SelectTripView: View {
         if trimmed.count > 0 {
             withAnimation {
                 let newItem = Trip(context: viewContext)
+                // Remove special characters
+                let pattern = "[^A-Za-z0-9_-]+"
+                name = name.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
                 newItem.name = name
                 
                 if viewContext.hasChanges{
