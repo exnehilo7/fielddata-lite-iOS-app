@@ -3,7 +3,7 @@
 //  FERN
 //
 //  Created by Hopp, Dan on 5/23/23. Image picker help from https://www.appcoda.com/swiftui-camera-photo-library/
-//
+// Was used to try uploading an image to a server.
 
 import SwiftUI
 import UIKit

@@ -90,22 +90,6 @@ class FieldWorkGPSFile {
     static var gpsFile: URL? {
         guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
         return documentsDirectory
-//        let formatter = DateFormatter()
-//        formatter.dateFormat = "yyyy-MM-dd"
-//        let dateString = formatter.string(from: Date())
-//        // Use the unique device ID for the file name
-//        if let uuid = UIDevice.current.identifierForVendor?.uuidString
-//        {
-//            let fileName = "\(dateString)_\(uuid).txt"
-//            let path = "\(uuid)/"
-////            let fileName = "\(uuid)/\(dateString)_\(uuid).txt"
-//            let temp = documentsDirectory.appendingPathComponent(path)
-//            return temp.appendingPathComponent(fileName)
-//        } else {
-////            let fileName = "\(dateString)_No_Unique_Name.txt"
-//            let fileName = "no_device_uuid/\(dateString)_No_Unique_Name.txt"
-//            return documentsDirectory.appendingPathComponent(fileName)
-//        }
     }
     
     static func log(tripName: String, uuid: String, gps: String, hdop: String, longitude: String, latitude: String, altitude: String) throws -> Bool {
@@ -115,13 +99,14 @@ class FieldWorkGPSFile {
 
         var filePath: URL
         
+        // Make the file name date_tripName_deviceUUID.txt
         let formatterDate = DateFormatter()
         formatterDate.dateFormat = "yyyy-MM-dd"
         let dateString = formatterDate.string(from: Date())
         // Use the unique device ID for the text file name and the folder path.
         if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString
         {
-            let fileName = "\(dateString)_\(deviceUuid).txt"
+            let fileName = "\(dateString)_\(tripName)_\(deviceUuid).txt"
             let path = gpsFile.appendingPathComponent("\(deviceUuid)/trips/\(tripName)")
             do {
                 try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true, attributes: nil)
