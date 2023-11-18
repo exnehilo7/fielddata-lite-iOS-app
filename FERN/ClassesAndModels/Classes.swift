@@ -179,8 +179,6 @@ class FieldWorkImageFile {
         var filePath: URL
         
         let formatterDate = DateFormatter()
-        formatterDate.dateFormat = "yyyy-MM-dd"
-        let dateString = formatterDate.string(from: Date())
         let fileName = "\(uuid).jpeg"
         // Use the unique device ID for the text file name and the folder path.
         if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString
@@ -198,22 +196,13 @@ class FieldWorkImageFile {
             filePath = path.appendingPathComponent(fileName)
         }
         
-        
-//            let formatterDateTime = DateFormatter()
-//            formatterDateTime.dateFormat = "yyyy-MM-dd HH:mm:ssx"
-//            let timestamp = formatterDateTime.string(from: Date())
-//            let message = "\(uuid),\(gps),\(hdop),\(longitude),\(latitude),\(altitude),\(timestamp)"
-//            guard let data = (message + "\n").data(using: String.Encoding.utf8) else { return false}
-            
-            print(filePath)
-        
-            if FileManager.default.fileExists(atPath: filePath.path) {
-                do {
-                    if let imageData = imgFile.jpegData(compressionQuality: 1) {
-                        try imageData.write(to: filePath)
-                    }
-                } catch {print (error)}
-            }
+        print(filePath)
+    
+            do {
+                if let imageData = imgFile.jpegData(compressionQuality: 1) {
+                    try imageData.write(to: filePath)
+                }
+            } catch {print (error)}
         return true
     }
 }

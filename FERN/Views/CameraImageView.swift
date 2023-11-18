@@ -4,9 +4,10 @@
 //
 //  Created by Hopp, Dan on 11/17/23. This is to look and function like CameraView, except use a folder-saveable .jpeg Image instead of iOS' restrictive Photo resource.
 //
+//[Camera] Attempted to change to mode Portrait with an unsupported device (BackWideDual). Auto device for both positions unsupported, returning Auto device for same position anyway (BackAuto).
 
 import SwiftUI
-import Foundation
+//import Foundation
 
 struct CameraImageView: View {
     
@@ -118,7 +119,6 @@ struct CameraImageView: View {
     // Take a pic button
     var captureButton: some View {
         Button(action: {
-            if isImageSelected {
                 let fileNameUUID = UUID().uuidString
                 let upperUUID = fileNameUUID.uppercased()
                 if showArrowGold {
@@ -140,71 +140,21 @@ struct CameraImageView: View {
                 self.image = UIImage()
                 
                 isImageSelected = false
-            }
-            
-//            // Pass trip name
-//            model.tripName = tripName
-//            if showArrowGold {
-//                // Pass Arrow GPS data
-//                model.gps = "ArrowGold"
-//                model.hdop = nmea.accuracy ?? "0.00"
-//                model.longitude = nmea.longitude ?? "0.0000"
-//                model.latitude = nmea.latitude ?? "0.0000"
-//                model.altitude = nmea.altitude ?? "0.00"
-//                
-//                // If there's no feed, don't capture the photo
-//                if nmea.hasNMEAStreamStopped ||
-//                    (model.hdop == "0.00" || model.longitude == "0.0000" ||
-//                     model.latitude == "0.0000" || model.altitude == "0.00")
-//                {
-//                    model.photo = nil
-//                    showAlert = true
-//                } else {
-////                    model.capturePhoto()
-//                }
-//            } else {
-//                // Pass default GPS data
-//                model.gps = "iOS"
-//                model.hdop = clHorzAccuracy
-//                model.longitude = clLong
-//                model.latitude = clLat
-//                model.altitude = clAltitude
-////                model.capturePhoto()
-//            }
+                isShowCamera = true
         }, label: {
-            Circle()
-                .foregroundColor(.white)
-                .frame(width: 80, height: 80, alignment: .center)
-                .overlay(
-                    Circle()
-                        .stroke(Color.black.opacity(0.8), lineWidth: 2)
-                        .frame(width: 65, height: 65, alignment: .center)
-                )
-        }).alert(article.title, isPresented: $showAlert, presenting: article) {article in Button("OK"){showAlert = false}} message: {article in Text(article.description)}
-    }
-    
-    // Thumbnal for photo taken feedback
-    var capturedPhotoThumbnail: some View {
-        Group {
-            if image != nil {
-                VStack {
-                    // Original code had a thumbnail pop up
-                    Image(uiImage: (image))
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 60, height: 60)
-                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                        .animation(.spring(), value: true)
-                    //                // Try button popup
-                    //                    .onAppear(perform: {isShowUploadButton = true})
-                    Text("Pic taken!").foregroundColor(.white)
-                }
-            } else {
-                RoundedRectangle(cornerRadius: 10)
-                    .frame(width: 60, height: 60, alignment: .center)
-                    .foregroundColor(.black)
+            HStack {
+                Image(systemName: "photo")
+                    .font(.system(size: 20))//.foregroundColor(.green)
+                
+                Text("Save Image")
+                    .font(.headline)
             }
-        }
+            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+            .background(Color.orange)
+            .foregroundColor(.white)
+            .cornerRadius(20)
+            .padding(.horizontal)
+        }).alert(article.title, isPresented: $showAlert, presenting: article) {article in Button("OK"){showAlert = false}} message: {article in Text(article.description)}
     }
     
     // Test fields for user to add custom metadata. Will need to create @State private var's
@@ -246,7 +196,7 @@ struct CameraImageView: View {
     private func savePicToFolder(imgFile: UIImage, tripName: String, uuid: String, gps: String, hdop: String, longitude: String, latitude: String, altitude: String) {
         do{
             // Save image to Trip's folder
-            _ = try FieldWorkImageFile.saveToFolder(imgFile: imgFile, tripName: tripName, uuid: uuid, gps: gps, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude)
+            try _ = FieldWorkImageFile.saveToFolder(imgFile: imgFile, tripName: tripName, uuid: uuid, gps: gps, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude)
         } catch {
             print(error.localizedDescription)
         }
@@ -263,42 +213,43 @@ struct CameraImageView: View {
     
     // MARK: Body
     var body: some View {
-        GeometryReader { reader in
-            ZStack {
-                Color.black.ignoresSafeArea(.all)
-                VStack { // Image V-stack
-                    Text("Insert Image preview/iOS cam here.").foregroundStyle(.green)
-                Image(uiImage: self.image)
-                    .resizable()
-                    .scaledToFit()
-                    
-                    if gpsModeIsSelected {
-                        if showArrowGold {
-                            arrowGpsData
-                        }
-                        else {
-                            coreLocationGpsData
-                        }
-                        
-                        Spacer()
-                               
-                        HStack {
-                            capturedPhotoThumbnail
+        VStack {
 
-                            Spacer()
-                            captureButton
-                            Spacer()
-                            
-                        }
+            // Show the pic to be saved
+            Image(uiImage: self.image)
+            .resizable()
+            .scaledToFit()
+                
+            Spacer()
+            // Show GPS feed if one was selected
+            if gpsModeIsSelected {
+                if showArrowGold {
+                    arrowGpsData
+                }
+                else {
+                    coreLocationGpsData
+                }
+                
+                Spacer()
+                
+                HStack {
+                    
+                    Spacer()
+                    // Show the image save button if ImagePicker struct has an image.
+                    if isImageSelected {
+                        captureButton
                     }
-                    else {
-                        selectGpsMode
-                    }
-                }.sheet(isPresented: $isShowCamera) { // Image V-stack
-        ImagePicker(sourceType: .camera, selectedImage: self.$image, imageIsSelected: self.$isImageSelected) // Image V-stack
-    }.animation(.easeInOut, value: true) // Image V-stack
+                    
+                    Spacer()
+                    
+                }
             }
-        }//.preferredColorScheme(.dark) // Make the status bar show on black background
+            else {
+                selectGpsMode
+            }
+        }.sheet(isPresented: $isShowCamera) {
+            ImagePicker(sourceType: .camera, selectedImage: self.$image, imageIsSelected: self.$isImageSelected)
+        }.animation(.easeInOut, value: true) // END VStack
     } // END BODY
     
 } // END STRUCT
