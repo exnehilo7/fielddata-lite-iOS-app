@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MainMenuView: View {
     
-    //let persistenceController = PersistenceController.shared
+    let persistenceController = PersistenceController.shared
     
     var body: some View {
         NavigationStack{
@@ -71,23 +71,23 @@ struct MainMenuView: View {
 //                }
                 NavigationLink {
                     SelectTripView()
-                        .navigationTitle("GPS Camera")//.environment(\.managedObjectContext, persistenceController.container.viewContext)
+                        .navigationTitle("GPS Camera").environment(\.managedObjectContext, persistenceController.container.viewContext)
                 } label: {
                     HStack {
                         Image(systemName: "camera").bold(false).foregroundColor(.gray)
                         Text("GPS Camera")
                     }
                 }
-                // Try out CameraImageView
-//                NavigationLink {
-//                    CameraImageView(tripName: "CameraImageView")
-//                        .navigationTitle("Image Format Testing")
-//                } label: {
-//                    HStack {
-//                        Image(systemName: "arrow.up.and.person.rectangle.portrait").bold(false).foregroundColor(.gray)
-//                        Text("Image Format Testing")
-//                    }
-//                }
+                // Upload checked trips
+                NavigationLink {
+                    UploadTripsView()
+                        .navigationTitle("Upload Completed Trips")
+                } label: {
+                    HStack {
+                        Image(systemName: "arrow.up.and.person.rectangle.portrait").bold(false).foregroundColor(.gray)
+                        Text("Upload Completed Trips")
+                    }
+                }
             }.bold().onAppear(perform:{ UIApplication.shared.isIdleTimerDisabled = false})
             }.preferredColorScheme(.dark)
         }
