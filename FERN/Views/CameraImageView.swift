@@ -5,6 +5,7 @@
 //  Created by Hopp, Dan on 11/17/23. This is to look and function like CameraView, except use a folder-saveable .jpeg Image instead of iOS' restrictive Photo resource.
 //
 //[Camera] Attempted to change to mode Portrait with an unsupported device (BackWideDual). Auto device for both positions unsupported, returning Auto device for same position anyway (BackAuto).
+//[Snapshotting] Snapshotting a view (0x107008200, UIKeyboardImpl) that is not in a visible window requires afterScreenUpdates:YES.
 
 import SwiftUI
 //import Foundation
@@ -63,8 +64,8 @@ struct CameraImageView: View {
 //            Text("Protocol: ") + Text(nmea.protocolText as String)
             Text("Latitude: ") + Text(nmea.latitude ?? "0.0000")
             Text("Longitude: ") + Text(nmea.longitude ?? "0.0000")
-            Text("Altitude: ") + Text(nmea.altitude ?? "0.00")
-            Text("Horizontal Accuracy: ") + Text(nmea.accuracy ?? "0.00")
+            Text("Altitude (m): ") + Text(nmea.altitude ?? "0.00")
+            Text("Horizontal Accuracy (m): ") + Text(nmea.accuracy ?? "0.00")
             Text("GPS Used: ") + Text(nmea.gpsUsed ?? "No GPS")
         }.font(.system(size: 20)).foregroundColor(.white)
     }

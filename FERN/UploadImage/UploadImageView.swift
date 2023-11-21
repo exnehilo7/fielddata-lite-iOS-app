@@ -48,8 +48,8 @@ struct UploadImageView: View {
 //            Text("Protocol: ") + Text(nmea.protocolText as String)
             Text("Latitude: ") + Text(nmea.latitude ?? "0.0000")
             Text("Longitude: ") + Text(nmea.longitude ?? "0.0000")
-            Text("Altitude: ") + Text(nmea.altitude ?? "0.00")
-            Text("Horizontal Accuracy: ") + Text(nmea.accuracy ?? "0.00")
+            Text("Altitude (m): ") + Text(nmea.altitude ?? "0.00")
+            Text("Horizontal Accuracy (m): ") + Text(nmea.accuracy ?? "0.00")
             Text("GPS Used: ") + Text(nmea.gpsUsed ?? "No GPS")
         }.font(.system(size: 20))
     }
