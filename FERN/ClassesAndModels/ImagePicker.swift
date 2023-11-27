@@ -16,7 +16,8 @@ struct ImagePicker: UIViewControllerRepresentable {
     @Binding var selectedImage: UIImage
     @Environment(\.presentationMode) private var presentationMode
     
-    @Binding var imageIsSelected: Bool // For view button toggles
+    // For view button toggles
+    @Binding var imageIsSelected: Bool
  
     func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) -> UIImagePickerController {
  
@@ -25,7 +26,7 @@ struct ImagePicker: UIViewControllerRepresentable {
         imagePicker.sourceType = sourceType
         imagePicker.delegate = context.coordinator
         imageIsSelected = false
-            
+
         return imagePicker
     }
     

@@ -26,6 +26,7 @@ struct CameraImageView: View {
     // Alerts
     @State private var showAlert = false
     @State private var article = Article(title: "Device Feed Error", description: "No photo was taken. Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app.")
+    @State private var showNoGPSAlert = false
     
     // Select GPS and display toggles
     @State var gpsModeIsSelected = false
@@ -117,31 +118,32 @@ struct CameraImageView: View {
         }
     }
     
-    // Take a pic button
-    var captureButton: some View {
+    // Save the pic button
+    var savePicButton: some View {
         Button(action: {
-                let fileNameUUID = UUID().uuidString
-                let upperUUID = fileNameUUID.uppercased()
-                if showArrowGold {
-                    if nmea.hasNMEAStreamStopped ||
-                        (model.hdop == "0.00" || model.longitude == "0.0000" ||
-                         model.latitude == "0.0000" || model.altitude == "0.00")
-                    {
-                        showAlert = true
-                    } else {
-                        // Pass Arrow GPS data
-                        savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "ArrowGold", hdop: nmea.accuracy ?? "0.00", longitude: nmea.longitude ?? "0.0000", latitude: nmea.latitude ?? "0.0000", altitude: nmea.altitude ?? "0.00")
-                    }
+            let fileNameUUID = UUID().uuidString
+            let upperUUID = fileNameUUID.uppercased()
+            if showArrowGold {
+                if nmea.hasNMEAStreamStopped ||
+                    (model.hdop == "0.00" || model.longitude == "0.0000" ||
+                     model.latitude == "0.0000" || model.altitude == "0.00")
+                {
+                    showAlert = true
                 } else {
-                    // Pass default GPS data
-                    savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "iOS", hdop: clHorzAccuracy, longitude: clLong, latitude: clLat, altitude: clAltitude)
+                    // Pass Arrow GPS data
+                    savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "ArrowGold", hdop: nmea.accuracy ?? "0.00", longitude: nmea.longitude ?? "0.0000", latitude: nmea.latitude ?? "0.0000", altitude: nmea.altitude ?? "0.00")
                 }
-                
-                // Clear displayed image
-                self.image = UIImage()
-                
-                isImageSelected = false
-                isShowCamera = true
+            } else {
+                // Pass default GPS data
+                savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "iOS", hdop: clHorzAccuracy, longitude: clLong, latitude: clLat, altitude: clAltitude)
+            }
+            
+            // Clear displayed image (if previous image feedback is needed, borrow capturedPhotoThumbnail from CameraView? 
+            self.image = UIImage()
+            
+            isImageSelected = false
+            isShowCamera = true
+
         }, label: {
             HStack {
                 Image(systemName: "photo")
@@ -156,6 +158,15 @@ struct CameraImageView: View {
             .cornerRadius(20)
             .padding(.horizontal)
         }).alert(article.title, isPresented: $showAlert, presenting: article) {article in Button("OK"){showAlert = false}} message: {article in Text(article.description)}
+    }
+    
+    // Show the camera button (for if the user cancels a photo
+    var showCameraButton: some View {
+        Button {
+            isShowCamera = true
+        } label: {
+            Label("Show Camera", systemImage: "camera").foregroundColor(.white)
+        }.buttonStyle(.borderedProminent).tint(.blue)
     }
     
     // Test fields for user to add custom metadata. Will need to create @State private var's
@@ -215,20 +226,34 @@ struct CameraImageView: View {
     // MARK: Body
     var body: some View {
         VStack {
-
             // Show the pic to be saved
             Image(uiImage: self.image)
             .resizable()
             .scaledToFit()
                 
             Spacer()
+            
+            // Give the user an option to bring back the camera if the ImagePicker was cancelled.
+            if gpsModeIsSelected {
+                // Don't show if an image is ready to save
+                if !isImageSelected {
+                    // Don't show if the camera is already showing
+                    if !isShowCamera {
+                        showCameraButton
+                    }
+                }
+            }
+            
             // Show GPS feed if one was selected
             if gpsModeIsSelected {
-                if showArrowGold {
-                    arrowGpsData
-                }
-                else {
-                    coreLocationGpsData
+                // Don't display GPS coords if sheet is displayed.
+                if !isShowCamera{
+                    if showArrowGold {
+                        arrowGpsData
+                    }
+                    else {
+                        coreLocationGpsData
+                    }
                 }
                 
                 Spacer()
@@ -238,7 +263,7 @@ struct CameraImageView: View {
                     Spacer()
                     // Show the image save button if ImagePicker struct has an image.
                     if isImageSelected {
-                        captureButton
+                        savePicButton
                     }
                     
                     Spacer()
@@ -249,7 +274,22 @@ struct CameraImageView: View {
                 selectGpsMode
             }
         }.sheet(isPresented: $isShowCamera) {
-            ImagePicker(sourceType: .camera, selectedImage: self.$image, imageIsSelected: self.$isImageSelected)
+            // Try to show the GPS data at all times on the bottom half of the screen
+            ZStack {
+                Color.black.ignoresSafeArea(.all)
+                VStack {
+                    ImagePicker(sourceType: .camera, selectedImage: self.$image, imageIsSelected: self.$isImageSelected)//.presentationDetents([.fraction(0.6)])
+                    // GPS data on sheet
+                    if gpsModeIsSelected {
+                        if showArrowGold {
+                            arrowGpsData
+                        }
+                        else {
+                            coreLocationGpsData
+                        }
+                    }
+                }
+            }
         }.animation(.easeInOut, value: true) // END VStack
     } // END BODY
     
