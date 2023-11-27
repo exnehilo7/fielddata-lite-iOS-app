@@ -68,7 +68,7 @@ struct CameraImageView: View {
             Text("Altitude (m): ") + Text(nmea.altitude ?? "0.00")
             Text("Horizontal Accuracy (m): ") + Text(nmea.accuracy ?? "0.00")
             Text("GPS Used: ") + Text(nmea.gpsUsed ?? "No GPS")
-        }.font(.system(size: 20)).foregroundColor(.white)
+        }.font(.system(size: 18)).foregroundColor(.white)
     }
     
     // iOS Core Location
@@ -81,7 +81,7 @@ struct CameraImageView: View {
             Text("Altitude (m): ") + Text("\(clAltitude)")
             Text("Horizontal Accuracy (m): ") + Text("\(clHorzAccuracy)")
             Text("Vertical Accuracy (m): ") + Text("\(clVertAccuracy)")
-        }.font(.system(size: 20)).foregroundColor(.white)
+        }.font(.system(size: 15)).foregroundColor(.white)
             .padding()
     }
     //------------------------------------------------------------------
