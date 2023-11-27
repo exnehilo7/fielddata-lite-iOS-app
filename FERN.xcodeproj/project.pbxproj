@@ -204,7 +204,6 @@
 			children = (
 				D127B3942A1D1DAF00F6287A /* UploadImageView.swift */,
 				D127B3962A1D1F0100F6287A /* UploadImageClass.swift */,
-				D127B3982A1D3C4C00F6287A /* ImagePicker.swift */,
 			);
 			path = UploadImage;
 			sourceTree = "<group>";
@@ -261,6 +260,7 @@
 			isa = PBXGroup;
 			children = (
 				D1766CA4298E0B3E002F594D /* Classes.swift */,
+				D127B3982A1D3C4C00F6287A /* ImagePicker.swift */,
 				D10BB329298ADAD600667E86 /* Models.swift */,
 				D127B37D2A12ED3D00F6287A /* NMEADataClass.swift */,
 			);
