@@ -25,8 +25,7 @@ struct CameraImageView: View {
     
     // Alerts
     @State private var showAlert = false
-    @State private var article = Article(title: "Device Feed Error", description: "No photo was taken. Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app.")
-    @State private var showNoGPSAlert = false
+    @State private var article = Article(title: "Device Feed Error", description: "Photo was not saved. Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app.")
     
     // Select GPS and display toggles
     @State var gpsModeIsSelected = false
@@ -124,25 +123,28 @@ struct CameraImageView: View {
             let fileNameUUID = UUID().uuidString
             let upperUUID = fileNameUUID.uppercased()
             if showArrowGold {
+                // Alert user if feed has stopped or values are zero
                 if nmea.hasNMEAStreamStopped ||
-                    (model.hdop == "0.00" || model.longitude == "0.0000" ||
-                     model.latitude == "0.0000" || model.altitude == "0.00")
+                    ((nmea.accuracy ?? "0.00") == "0.00" || (nmea.longitude ?? "0.0000") == "0.0000" ||
+                     (nmea.latitude ?? "0.0000") == "0.0000" || (nmea.altitude ?? "0.00") == "0.00")
                 {
                     showAlert = true
+                    isShowCamera = false
                 } else {
                     // Pass Arrow GPS data
                     savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "ArrowGold", hdop: nmea.accuracy ?? "0.00", longitude: nmea.longitude ?? "0.0000", latitude: nmea.latitude ?? "0.0000", altitude: nmea.altitude ?? "0.00")
+                    isImageSelected = false
+                    isShowCamera = true
                 }
             } else {
                 // Pass default GPS data
                 savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "iOS", hdop: clHorzAccuracy, longitude: clLong, latitude: clLat, altitude: clAltitude)
+                isImageSelected = false
+                isShowCamera = true
             }
             
             // Clear displayed image (if previous image feedback is needed, borrow capturedPhotoThumbnail from CameraView? 
             self.image = UIImage()
-            
-            isImageSelected = false
-            isShowCamera = true
 
         }, label: {
             HStack {
@@ -157,7 +159,8 @@ struct CameraImageView: View {
             .foregroundColor(.white)
             .cornerRadius(20)
             .padding(.horizontal)
-        }).alert(article.title, isPresented: $showAlert, presenting: article) {article in Button("OK"){showAlert = false}} message: {article in Text(article.description)}
+        }).alert(article.title, isPresented: $showAlert, presenting: article) {article in Button("OK"){showAlert = false; isImageSelected = false
+}} message: {article in Text(article.description)}
     }
     
     // Show the camera button (for if the user cancels a photo
