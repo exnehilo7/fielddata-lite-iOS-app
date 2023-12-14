@@ -209,20 +209,27 @@ struct CameraImageView: View {
     }
     
     private func savePicToFolder(imgFile: UIImage, tripName: String, uuid: String, gps: String, hdop: String, longitude: String, latitude: String, altitude: String) {
+        
+        let audio = playSound()
+        
         do{
             // Save image to Trip's folder
             try _ = FieldWorkImageFile.saveToFolder(imgFile: imgFile, tripName: tripName, uuid: uuid, gps: gps, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude)
         } catch {
             print(error.localizedDescription)
+            audio.playError()
         }
         
         // Write the pic's info to a .txt file
         do {
             // .txt file header order is uuid, gps, hdop, longitude, latitude, altitude.
             try _ = FieldWorkGPSFile.log(tripName: tripName, uuid: uuid, gps: gps, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude)
+            // Play a success noise
+            audio.playSuccess()
         } catch {
             // failed to write file – bad permissions, bad filename, missing permissions, or more likely it can't be converted to the encoding
             print(error.localizedDescription)
+            audio.playError()
         }
     }
     

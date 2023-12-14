@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D10925962B2B9C96005D376F /* Sounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10925952B2B9C96005D376F /* Sounds.swift */; };
 		D10BB31C298ADAA400667E86 /* FERNApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10BB31B298ADAA400667E86 /* FERNApp.swift */; };
 		D10BB31E298ADAA400667E86 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10BB31D298ADAA400667E86 /* ContentView.swift */; };
 		D10BB320298ADAA500667E86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D10BB31F298ADAA500667E86 /* Assets.xcassets */; };
@@ -72,6 +73,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D10925952B2B9C96005D376F /* Sounds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sounds.swift; sourceTree = "<group>"; };
 		D10BB318298ADAA400667E86 /* FERN.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FERN.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D10BB31B298ADAA400667E86 /* FERNApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FERNApp.swift; sourceTree = "<group>"; };
 		D10BB31D298ADAA400667E86 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -263,6 +265,7 @@
 				D127B3982A1D3C4C00F6287A /* ImagePicker.swift */,
 				D10BB329298ADAD600667E86 /* Models.swift */,
 				D127B37D2A12ED3D00F6287A /* NMEADataClass.swift */,
+				D10925952B2B9C96005D376F /* Sounds.swift */,
 			);
 			path = ClassesAndModels;
 			sourceTree = "<group>";
@@ -387,6 +390,7 @@
 				D10BB32A298ADAD600667E86 /* Models.swift in Sources */,
 				D127B3802A12EDF600F6287A /* NMEADataView.swift in Sources */,
 				D127B38B2A15493000F6287A /* CameraView.swift in Sources */,
+				D10925962B2B9C96005D376F /* Sounds.swift in Sources */,
 				D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */,
 				D1766CA3298DBAA3002F594D /* Functions.swift in Sources */,
 				D127B3912A1568C800F6287A /* CameraServiceExtensions.swift in Sources */,
