@@ -13,7 +13,9 @@ import CoreData
 struct SelectTripView: View {
     
     // For add-a-trip popup
-    @State private var showingAlert = false
+    @State private var showingTripNameAlert = false
+    @State private var showingDeleteTripAlert = false
+    @State private var showingMarkCompleteAlert = false
     @State private var name = ""
     
     @Environment(\.managedObjectContext) private var viewContext
@@ -25,24 +27,52 @@ struct SelectTripView: View {
         NavigationView {
             List {
                 ForEach(trips) { item in
+                    // Once a trip is marked complete, the user cannot toggle it back nor acces the CameraImageView
                     NavigationLink {
-                        // Go to CameraView with trip name as the title?
-                        CameraImageView(tripName: item.name!)
-                            .navigationTitle("\(item.name!)")
+                        if (item.complete == false) {
+                            // Go to CameraView with trip name as the title
+                            CameraImageView(tripName: item.name!)
+                                .navigationTitle("\(item.name!)")
+                        }
+                        else {CompletedTripView(tripName: item.name!)} // Go to an upload screen instead?
                     } label: {
                         HStack{
                             if item.complete {
                                 Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
                             }
                             Text(item.name!)
-                        }.onTapGesture{ // Toggle complete(?)
-                            if (item.complete == false) {
-                                item.complete = true
-                            } else {item.complete = false}
+                                .alert("Mark trip as complete?", isPresented: $showingMarkCompleteAlert) {
+//                                    Button("OK", action: markTripAsComplete)
+                                    Button("OK", role: .destructive){item.complete = markTripAsComplete()}
+                                    Button("Cancel", role: .cancel){}
+                                } message: {
+                                        Text("""
+                                        
+                                        Once completed, additional pictures cannot be added.
+                                        
+                                        THIS CANNOT BE REVERSED.
+                                        
+                                        Do you wish to continue?
+                                        """)
+                                }
+                        }.onTapGesture{ // Toggle complete
+//                            if (item.complete == false) {
+//                                item.complete = true
+//                            } // else {item.complete = false}
                         }
                     }
                 }
                 .onDelete(perform: deleteItems)
+                // Notify user that pics and metadata will remain in the trip folder
+                .alert("Trip Deleted!", isPresented: $showingDeleteTripAlert) {
+                    Button("OK", action: showDeleteTripAlert)
+                } message: {
+                    Text("""
+                         NOTE! If pictures were added to the trip, they will still remain within its folder. The folder can be found in: Files -> On My [Device] -> FERN -> [Unique UUID] -> trips.
+                         
+                         To undo a delete, the trip can be recreated using its original name.
+                         """)
+                }
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -50,12 +80,13 @@ struct SelectTripView: View {
                 }
                 ToolbarItem {
                     // Pop up a text field to add a Trip name
-                    Button(action: showAlert) {
+                    Button(action: showTripNameAlert) {
                         Label("Add Item", systemImage: "plus")
                     }
-                    .alert("Enter a trip name", isPresented: $showingAlert) {
-                        TextField("Trip Name", text: $name).foregroundStyle(.purple)
-                        //.textInputAutocapitalization(.never) // on black bckground theh text is white
+                    // Enter trip name alert
+                    .alert("Enter a trip name", isPresented: $showingTripNameAlert) {
+                        TextField("Trip Name", text: $name).foregroundStyle(.purple) // With a black bckground the text is default white
+                        //.textInputAutocapitalization(.never)
                         Button("OK", action: addItem)
                         Button("Cancel", role: .cancel){name = ""}
                     } message: {
@@ -65,10 +96,6 @@ struct SelectTripView: View {
             }
             Text("Select a trip. To mark a trip as complete, tap on its name.").foregroundStyle(.green) // From app example code.
         }
-    }
-
-    private func showAlert(){
-        showingAlert.toggle()
     }
     
     private func addItem() {
@@ -88,7 +115,6 @@ struct SelectTripView: View {
                         let nsError = error as NSError
                         print("private func addItem error \(nsError), \(nsError.userInfo)")
                     }
-                    // name = ""
                 }
             }
         }
@@ -96,6 +122,8 @@ struct SelectTripView: View {
     }
 
     private func deleteItems(offsets: IndexSet) {
+        // Toggle delete alert
+        showingDeleteTripAlert = true
         withAnimation {
             offsets.map { trips[$0] }.forEach(viewContext.delete)
 
@@ -108,5 +136,25 @@ struct SelectTripView: View {
                 }
             }
         }
+    }
+    
+    private func markTripAsComplete() -> Bool{
+    
+        // Hide the alert
+        showMarkCompleteAlert()
+        
+        return true
+    }
+    
+    private func showTripNameAlert(){
+        showingTripNameAlert.toggle()
+    }
+    
+    private func showDeleteTripAlert(){
+        showingDeleteTripAlert.toggle()
+    }
+    
+    private func showMarkCompleteAlert(){
+        showingMarkCompleteAlert.toggle()
     }
 }

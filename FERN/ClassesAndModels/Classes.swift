@@ -163,7 +163,7 @@ class FieldWorkImageFile {
 
         var filePath: URL
         
-        let fileName = "\(uuid).jpeg"
+        let fileName = "\(uuid).heif"
         // Use the unique device ID for the text file name and the folder path.
         if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString
         {

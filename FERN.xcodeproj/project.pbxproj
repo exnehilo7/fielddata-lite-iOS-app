@@ -46,6 +46,7 @@
 		D1A56E922B05257000AC8291 /* CoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E902B05257000AC8291 /* CoreData.xcdatamodeld */; };
 		D1A56E992B07D27700AC8291 /* CameraImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E982B07D27700AC8291 /* CameraImageView.swift */; };
 		D1A56E9B2B0BDB8800AC8291 /* UploadTripsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E9A2B0BDB8800AC8291 /* UploadTripsView.swift */; };
+		D1CEED8E2B44C43C00569520 /* CompletedTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1CEED8D2B44C43C00569520 /* CompletedTripView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -114,6 +115,7 @@
 		D1A56E912B05257000AC8291 /* CoreData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreData.xcdatamodel; sourceTree = "<group>"; };
 		D1A56E982B07D27700AC8291 /* CameraImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraImageView.swift; sourceTree = "<group>"; };
 		D1A56E9A2B0BDB8800AC8291 /* UploadTripsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadTripsView.swift; sourceTree = "<group>"; };
+		D1CEED8D2B44C43C00569520 /* CompletedTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletedTripView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -246,6 +248,7 @@
 				D1A56E802B051DB300AC8291 /* SelectTripView.swift */,
 				D16A6C7B2995D18100835B5E /* StartScreenView.swift */,
 				D1A56E9A2B0BDB8800AC8291 /* UploadTripsView.swift */,
+				D1CEED8D2B44C43C00569520 /* CompletedTripView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -404,6 +407,7 @@
 				D16A6C7C2995D18100835B5E /* StartScreenView.swift in Sources */,
 				D1766C9B298DB922002F594D /* LoginView.swift in Sources */,
 				D1A56E992B07D27700AC8291 /* CameraImageView.swift in Sources */,
+				D1CEED8E2B44C43C00569520 /* CompletedTripView.swift in Sources */,
 				D16A6C88299AF32600835B5E /* ReportRoutes.swift in Sources */,
 				D1A56E812B051DB300AC8291 /* SelectTripView.swift in Sources */,
 				D16A6C80299AC65600835B5E /* SelectReportView.swift in Sources */,
