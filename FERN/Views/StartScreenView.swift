@@ -21,30 +21,30 @@ struct StartScreenView: View {
             VStack {
                 VStack { // Title
                     HStack { // F
-                        Text("F").font(.system(size: 100)).foregroundColor(.green)
-                        Text("ield").padding(.leading, -8).padding(.top, 20).font(.system(size: 70))
+                        Text("F").font(.system(size: 70)).foregroundColor(.green)
+                        Text("ield").padding(.leading, -8).padding(.top, 20).font(.system(size: 40))
                         Spacer()
                     }
                     HStack { // E
-                        Text("E").font(.system(size: 100)).foregroundColor(.green)
-                        Text("xpedition").padding(.leading, -8).padding(.top, 20).font(.system(size: 70))
+                        Text("E").font(.system(size: 70)).foregroundColor(.green)
+                        Text("xpedition").padding(.leading, -8).padding(.top, 20).font(.system(size: 40))
                         Spacer()
                     }.padding(.top, -70)
                     HStack { // R
-                        Text("R").font(.system(size: 100)).foregroundColor(.green)
-                        Text("routing and").padding(.leading, -8).padding(.top, 20).font(.system(size: 70))
+                        Text("R").font(.system(size: 70)).foregroundColor(.green)
+                        Text("routing and").padding(.leading, -8).padding(.top, 20).font(.system(size: 40))
                         Spacer()
                     }.padding(.top, -70)
                     HStack { // N
-                        Text("N").font(.system(size: 100)).foregroundColor(.green)
-                        Text("avigation").padding(.leading, -8).padding(.top, 20).font(.system(size: 70))
+                        Text("N").font(.system(size: 70)).foregroundColor(.green)
+                        Text("avigation").padding(.leading, -8).padding(.top, 20).font(.system(size: 40))
                         Spacer()
                     }.padding(.top, -70)
                 }.padding(.leading, 50).padding(.top, 4).dynamicTypeSize(...DynamicTypeSize.xxLarge)
                 Spacer()
                     Button {
                     } label: {
-                        Image(systemName: "leaf.circle.fill").bold(false).foregroundColor(.green).font(.system(size: 450)).dynamicTypeSize(...DynamicTypeSize.xxLarge)
+                        Image(systemName: "leaf.circle.fill").bold(false).foregroundColor(.green).font(.system(size: 300)).dynamicTypeSize(...DynamicTypeSize.xxLarge)
                     }
                 Spacer()
             }.onAppear {
@@ -61,8 +61,8 @@ struct StartScreenView: View {
     }
 }
 
-struct StartScreenView_Previews: PreviewProvider {
-    static var previews: some View {
-        StartScreenView()
-    }
-}
+//struct StartScreenView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        StartScreenView()
+//    }
+//}

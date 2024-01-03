@@ -13,7 +13,11 @@ struct CompletedTripView: View {
     var tripName: String
     
     var body: some View {
-        Text("Trip \(tripName) is completed!")
+        Text("Trip \(tripName) is complete!")
+        Text("")
+        Text("The images are stored in:")
+        Text("Files -> On My [Device] -> FERN ->")
+        Text ("[Unique UUID] -> trips -> \(tripName).")
     }
 }
 

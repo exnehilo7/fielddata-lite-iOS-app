@@ -8,13 +8,9 @@
 //[Snapshotting] Snapshotting a view (0x107008200, UIKeyboardImpl) that is not in a visible window requires afterScreenUpdates:YES.
 
 import SwiftUI
-//import Foundation
 
 struct CameraImageView: View {
-    
-    // TEMP VAR TILL CAMERA IS REPLACED WITH IMAGE
-    @StateObject var model = CameraService()
-    
+     
     // MARK: Vars
     // From calling view
     var tripName: String
@@ -26,10 +22,15 @@ struct CameraImageView: View {
     // Alerts
     @State private var showAlert = false
     @State private var article = Article(title: "Device Feed Error", description: "Photo was not saved. Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app.")
+    @State private var showingCompleteAlert = false
     
     // Select GPS and display toggles
     @State var gpsModeIsSelected = false
     @State var showArrowGold = false
+    
+    // Get trips from core data
+    @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest(sortDescriptors: []) private var chikin: FetchedResults<Trip>
     
     // GPS -------------------------------------------------------------
     // Arrow Gold
@@ -160,10 +161,10 @@ struct CameraImageView: View {
             .cornerRadius(20)
             .padding(.horizontal)
         }).alert(article.title, isPresented: $showAlert, presenting: article) {article in Button("OK"){showAlert = false; isImageSelected = false
-}} message: {article in Text(article.description)}
+            }} message: {article in Text(article.description)}
     }
     
-    // Show the camera button (for if the user cancels a photo
+    // Show the camera button (for if the user cancels a photo)
     var showCameraButton: some View {
         Button {
             isShowCamera = true
@@ -232,10 +233,68 @@ struct CameraImageView: View {
             audio.playError()
         }
     }
+
+    private func showCompleteAlertToggle(){
+        showingCompleteAlert.toggle()
+    }
     
     // MARK: Body
     var body: some View {
+        
+        // Get trip from core data
+//        @FetchRequest(sortDescriptors: [],
+//                      predicate: NSPredicate(format: "name == %@", tripName))
+//        var trip: FetchedResults<Trip>
+        
         VStack {
+            if !gpsModeIsSelected {
+                // mark complete button
+                ForEach(chikin) { item in
+                    
+                    if (item.name == tripName){
+                        Button {
+                            showCompleteAlertToggle()
+                        } label: {
+                            HStack {
+                                Image(systemName: "checkmark.square")
+                                    .font(.system(size: 20))
+                                Text("Mark Trip Complete")
+                                    .font(.headline)
+                            }
+                            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+                            .background(Color.green)
+                            .foregroundColor(.white)
+                            .cornerRadius(20)
+                            .padding(.horizontal)
+                        }.alert("Mark trip as complete?", isPresented: $showingCompleteAlert) {
+                            Button("OK"){
+                                item.complete = true
+                                // Save change
+                                if viewContext.hasChanges{
+                                    do {
+                                        try viewContext.save()
+                                    } catch {
+                                        let nsError = error as NSError
+                                        print("private func addItem error \(nsError), \(nsError.userInfo)")
+                                    }
+                                }
+                                showCompleteAlertToggle()
+                            }
+                            Button("Cancel", role: .cancel){}
+                        } message: {
+                            Text("""
+                
+                Once completed, additional pictures cannot be added to the trip.
+                
+                THIS CANNOT BE REVERSED.
+                
+                Do you wish to continue?
+                """)
+                        }
+                    }
+                }
+                Spacer()
+            }
             // Show the pic to be saved
             Image(uiImage: self.image)
             .resizable()
