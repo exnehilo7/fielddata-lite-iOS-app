@@ -12,10 +12,12 @@ import CoreData
 
 struct SelectTripView: View {
     
+    // For allowing Core Data managed object context on the next view
+    let persistenceController = PersistenceController.shared
+    
     // For add-a-trip popup
     @State private var showingTripNameAlert = false
     @State private var showingDeleteTripAlert = false
-    @State private var showingMarkCompleteAlert = false
     @State private var name = ""
     
     @Environment(\.managedObjectContext) private var viewContext
@@ -29,10 +31,11 @@ struct SelectTripView: View {
                 ForEach(trips) { item in
                     // Once a trip is marked complete, the user cannot toggle it back nor acces the CameraImageView
                     NavigationLink {
-                        if (item.complete == false) {
+                        if !item.complete {
                             // Go to CameraView with trip name as the title
                             CameraImageView(tripName: item.name!)
                                 .navigationTitle("\(item.name!)")
+                                .environment(\.managedObjectContext, persistenceController.container.viewContext)
                         }
                         else {CompletedTripView(tripName: item.name!)} // Go to an upload screen instead?
                     } label: {
@@ -41,24 +44,6 @@ struct SelectTripView: View {
                                 Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
                             }
                             Text(item.name!)
-                                .alert("Mark trip as complete?", isPresented: $showingMarkCompleteAlert) {
-//                                    Button("OK", action: markTripAsComplete)
-                                    Button("OK", role: .destructive){item.complete = markTripAsComplete()}
-                                    Button("Cancel", role: .cancel){}
-                                } message: {
-                                        Text("""
-                                        
-                                        Once completed, additional pictures cannot be added.
-                                        
-                                        THIS CANNOT BE REVERSED.
-                                        
-                                        Do you wish to continue?
-                                        """)
-                                }
-                        }.onTapGesture{ // Toggle complete
-//                            if (item.complete == false) {
-//                                item.complete = true
-//                            } // else {item.complete = false}
                         }
                     }
                 }
@@ -124,6 +109,7 @@ struct SelectTripView: View {
     private func deleteItems(offsets: IndexSet) {
         // Toggle delete alert
         showingDeleteTripAlert = true
+        
         withAnimation {
             offsets.map { trips[$0] }.forEach(viewContext.delete)
 
@@ -138,13 +124,6 @@ struct SelectTripView: View {
         }
     }
     
-    private func markTripAsComplete() -> Bool{
-    
-        // Hide the alert
-        showMarkCompleteAlert()
-        
-        return true
-    }
     
     private func showTripNameAlert(){
         showingTripNameAlert.toggle()
@@ -154,7 +133,4 @@ struct SelectTripView: View {
         showingDeleteTripAlert.toggle()
     }
     
-    private func showMarkCompleteAlert(){
-        showingMarkCompleteAlert.toggle()
-    }
 }
