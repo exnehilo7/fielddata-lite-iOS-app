@@ -30,7 +30,7 @@ struct CameraImageView: View {
     
     // Get trips from core data
     @Environment(\.managedObjectContext) private var viewContext
-    @FetchRequest(sortDescriptors: []) private var chikin: FetchedResults<Trip>
+    @FetchRequest(sortDescriptors: []) private var trip: FetchedResults<Trip>
     
     // GPS -------------------------------------------------------------
     // Arrow Gold
@@ -249,8 +249,8 @@ struct CameraImageView: View {
         VStack {
             if !gpsModeIsSelected {
                 // mark complete button
-                ForEach(chikin) { item in
-                    
+                ForEach(trip) { item in
+                    // Get the previous view's selected trip
                     if (item.name == tripName){
                         Button {
                             showCompleteAlertToggle()
@@ -359,7 +359,8 @@ struct CameraImageView: View {
                     }
                 }
             }
-        }.animation(.easeInOut, value: true) // END VStack
+        }.animation(.easeInOut, value: true)
+            .preferredColorScheme(.dark)// END VStack
     } // END BODY
     
 } // END STRUCT
