@@ -84,17 +84,11 @@ struct MainMenuView: View {
                         .navigationTitle("Upload Completed Trips")
                 } label: {
                     HStack {
-                        Image(systemName: "arrow.up.and.person.rectangle.portrait").bold(false).foregroundColor(.gray)
+                        Image(systemName: "square.and.arrow.up").bold(false).foregroundColor(.gray)
                         Text("Upload Completed Trips")
                     }
                 }
             }.bold().onAppear(perform:{ UIApplication.shared.isIdleTimerDisabled = false})
-            }.preferredColorScheme(.dark)
+            }//.preferredColorScheme(.dark)
         }
     }
-
-struct MainMenuView_Previews: PreviewProvider {
-    static var previews: some View {
-        MainMenuView()
-    }
-}

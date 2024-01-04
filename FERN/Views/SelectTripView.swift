@@ -37,11 +37,17 @@ struct SelectTripView: View {
                                 .navigationTitle("\(item.name!)")
                                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                         }
-                        else {CompletedTripView(tripName: item.name!)} // Go to an upload screen instead?
+                        else {
+                            CompletedTripView(tripName: item.name!)
+                                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                        } // Go to an upload screen instead?
                     } label: {
                         HStack{
                             if item.complete {
                                 Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+                            }
+                            if item.uploaded {
+                                Image(systemName: "checkmark.circle.fill").foregroundStyle(.orange)
                             }
                             Text(item.name!)
                         }
