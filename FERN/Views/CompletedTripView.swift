@@ -18,6 +18,7 @@ struct CompletedTripView: View {
     
     var body: some View {
         Spacer()
+        Text("In development").font(.system(size: 30))
         Text("Trip \(tripName) is complete!")
         Text("")
         Text("The images are stored in:")

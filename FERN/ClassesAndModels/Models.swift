@@ -13,7 +13,10 @@ import SwiftUI
 
 // Model object for html root
 class HtmlRootModel: Codable {
-    var htmlRoot = "http://103.72.77.233/ORNL/fielddata-lite"
+    
+//    var htmlRoot = "http://nfs05cp.cades.ornl.gov/ORNL/fielddata-lite" // new labkey
+    var htmlRoot = "http://103.72.77.233/ORNL/fielddata-lite" //old Labkey?
+//    var htmlRoot = "http://covid-samples01.ornl.gov/fielddata-lite"  discontinued FEB-07-2023
 }
 
 class MapPointSize {

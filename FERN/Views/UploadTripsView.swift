@@ -8,35 +8,9 @@
 
 import SwiftUI
 
-var trySound: some View {
-    Button(action: {
-
-        let audio = playSound()
-        audio.playError()
-        
-        
-    }, label: {
-        HStack {
-            Image(systemName: "speaker.fill")
-                .font(.system(size: 20))//.foregroundColor(.green)
-            
-            Text("Noise!")
-                .font(.headline)
-        }
-        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
-        .background(Color.orange)
-        .foregroundColor(.white)
-        .cornerRadius(20)
-        .padding(.horizontal)
-    })}
 
 struct UploadTripsView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-        trySound
+        Text("In development")
     }
-}
-
-#Preview {
-    UploadTripsView()
 }
