@@ -3,6 +3,7 @@
     <entity name="Trip" representedClassName="Trip" syncable="YES" codeGenerationType="class">
         <attribute name="complete" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String" defaultValueString="Unknown Trip"/>
+        <attribute name="uploaded" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="name"/>
