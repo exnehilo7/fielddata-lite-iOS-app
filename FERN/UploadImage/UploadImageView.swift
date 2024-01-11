@@ -150,7 +150,7 @@ struct UploadImageView: View {
                                 }
                                 
                                 //                    uploadImage.myImageUploadRequestTEST()
-                                uploadImage.myImageUploadRequest(theImage: self.image, lat: lat, long: long)
+//                                uploadImage.myImageUploadRequest(theImage: self.image, lat: lat, long: long)
 
                                 // NEED TO TELL IF UPLOAD WAS SUCESSFUL OR NOT
                                 // Present response to user
