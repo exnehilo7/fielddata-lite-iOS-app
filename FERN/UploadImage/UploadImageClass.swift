@@ -5,6 +5,8 @@
 //  Created by Hopp, Dan on 5/23/23. Code from https://swiftdeveloperblog.com/image-upload-example/. Adjusted for
 //  Swift 5.8.
 //
+//  11-JAN-2024 - Set upload to:
+//  Upload a trip's folders and files. Create folders on server when req'd.
 
 import Foundation
 import UIKit
@@ -22,15 +24,56 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
     
     private var fileNameCounter = 0
     
-    func myImageUploadRequestTEST(){
-        print ("Upload the image!")
+    func myImageUploadRequestTEST(tripName: String){
+        
+        let fm = FileManager.default
+        
+        // Get app's root dir
+        var rootDir: URL? {
+            guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
+            return documentsDirectory
+        }
+    
+        var path: URL
+        var getFilePath: URL
+        var uploadFilePath: String
+        
+        // Get device ID and make path
+        if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString
+        {
+            uploadFilePath = "\(deviceUuid)/trips/\(tripName)"
+            path = (rootDir?.appendingPathComponent(uploadFilePath))!
+        } else {
+            uploadFilePath = "no_device_uuid/trips/\(tripName)"
+            path = (rootDir?.appendingPathComponent(uploadFilePath))!
+        }
+        
+        // loop through files in folder and print the path
+        do {
+            let items = try fm.contentsOfDirectory(atPath: path.path)
+
+            for item in items {
+                // Just the filename
+                print("\(item)")
+                
+                // path to save the file:
+                print("\(uploadFilePath)/\(item)")
+                
+                // path to get the file:
+                getFilePath = path.appendingPathComponent(item)
+                print(getFilePath)
+            }
+        } catch {
+            // failed to read directory – bad permissions, perhaps?
+            print("Directory loop error")
+        }
     }
     
-    func myImageUploadRequest(theImage: UIImage, lat: String, long: String)
+    func myFileUploadRequest(tripName: String)
         {
       
-            let myUrl = NSURL(string: "http://covid-samples01.ornl.gov/upload.php") // http://covid-samples01.ornl.gov/upload.php
-            //let myUrl = NSURL(string: "http://www.boredwear.com/utils/postImage.php");
+            // Set endpoint
+            let myUrl = NSURL(string: "http://103.72.77.233/ORNL/fielddata-lite/php/upload.php") // http://covid-samples01.ornl.gov/upload.php
             
             let request = NSMutableURLRequest(url:myUrl! as URL)
             request.httpMethod = "POST"
@@ -38,23 +81,70 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
             let param = [
                 "firstName"     : "FERN",
                 "lastName"      : "Demo",
-                "userId"        : "0",
-                "lat"           : lat,
-                "long"          : long
+                "userId"        : "0"
             ]
             
             let boundary = generateBoundaryString()
             
             request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
             
-     
+            // FILE LOOPS
+            let fm = FileManager.default
+            
+            // Get app's root dir
+            var rootDir: URL? {
+                guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
+                return documentsDirectory
+            }
+        
+            var path: URL
+            var getFile: URL
+            var uploadFilePath: String
+            
+            // Get device ID and make path
+            if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString
+            {
+                uploadFilePath = "\(deviceUuid)/trips/\(tripName)"
+                path = (rootDir?.appendingPathComponent(uploadFilePath))!
+            } else {
+                uploadFilePath = "no_device_uuid/trips/\(tripName)"
+                path = (rootDir?.appendingPathComponent(uploadFilePath))!
+            }
+            
+            // loop through files in folder and print the path
+            do {
+                let items = try fm.contentsOfDirectory(atPath: path.path)
+
+                for item in items {
+                    // Just the filename
+                    print("\(item)")
+                    
+                    // path to save the file:
+                    print("\(uploadFilePath)/\(item)")
+                    
+                    // path to get the file:
+                    getFile = path.appendingPathComponent(item)
+                    print(getFile)
+                }
+            } catch {
+                // failed to read directory – bad permissions, perhaps?
+                print("Directory loop error")
+            }
+            
+            
+            
+            
+            
+            
+            
+            
             // Need to get image from SwiftUI's view/ImagePicker class? Pass a PhotoData var?
 //            let imageData = myImageView.image!.jpegData(compressionQuality: 1)
-            let imageData = theImage.jpegData(compressionQuality: 1)
+//            let imageData = theImage.jpegData(compressionQuality: 1)
+//            
+//            if(imageData==nil)  { return }
             
-            if(imageData==nil)  { return }
-            
-            request.httpBody = createBodyWithParameters(parameters: param, filePathKey: "file", imageDataKey: imageData! as NSData, boundary: boundary)
+//            request.httpBody = createBodyWithParameters(parameters: param, filePathKey: "file", imageDataKey: imageData! as NSData, boundary: boundary)
             
             
 //            myActivityIndicator.startAnimating();
@@ -131,6 +221,14 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
 //      filename.append(UUID().uuidString)
         filename.append("CBI2-Demo-Image")
         filename.append(".jpg")
+        
+        // Seperate pics and text
+//        if item.hasSuffix(".heic") {
+//            print("Found heic! \(item)")
+//        }
+//        else if item.hasSuffix(".txt") {
+//            print("Found text! \(item)")
+//        }
         let mimetype = "image/jpg"
         
         fileNameCounter += 1
@@ -160,6 +258,11 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
         }
     }
     
+}
+
+func myImageUploadRequest(theImage: UIImage, lat: String, long: String)
+{
+    // nothing!
 }
 
 // Not needed for current version of Swift
