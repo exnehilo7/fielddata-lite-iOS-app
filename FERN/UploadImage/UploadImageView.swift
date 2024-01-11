@@ -138,16 +138,16 @@ struct UploadImageView: View {
                         if isShowUploadButton {
                             Button(action: {
                                 
-                                var lat: String!
-                                var long: String!
-                                if showArrowGold {
-                                    lat = nmea.latitude ?? "0.0000"
-                                    long = nmea.longitude ?? "0.0000"
-                                }
-                                else {
-                                    lat = clLat
-                                    long = clLong
-                                }
+//                                var lat: String!
+//                                var long: String!
+//                                if showArrowGold {
+//                                    lat = nmea.latitude ?? "0.0000"
+//                                    long = nmea.longitude ?? "0.0000"
+//                                }
+//                                else {
+//                                    lat = clLat
+//                                    long = clLong
+//                                }
                                 
                                 //                    uploadImage.myImageUploadRequestTEST()
 //                                uploadImage.myImageUploadRequest(theImage: self.image, lat: lat, long: long)
