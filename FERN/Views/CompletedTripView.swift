@@ -35,7 +35,7 @@ struct CompletedTripView: View {
                 if (!item.uploaded) {
                     Button {
                         // Funciton to upload files. Will use another function to loop through files. Upload needs to know where it left off if there was an error. Alert user if no signal; don't initiate upload. (Don't show button if no signal?)
-                        uploadImage.myImageUploadRequestTEST(tripName: tripName)
+                        uploadImage.myFileUploadRequest(tripName: tripName)
                         // For now, just toggle the Core Data value
 //                        item.uploaded = true
                         // Save change

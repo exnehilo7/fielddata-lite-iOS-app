@@ -170,6 +170,7 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
                         do {
                             let json = try JSONSerialization.jsonObject(with: data!, options: []) as? NSDictionary
                             
+                            print("-------PRINTING JSON-------")
                             print(json as Any)
                             
                             // dispatch_async(dispatch_get_main_queue() is Obj-C
@@ -225,6 +226,10 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
         else if uploadFilePath.hasSuffix(".txt") {
              mimetype = "text/plain"
         }
+        else if (uploadFilePath.hasSuffix(".jpg") || uploadFilePath.hasSuffix(".jpeg")){
+             mimetype = "image/jpg"
+        }
+        print(mimetype)
 //        let mimetype = "image/jpg"
         
 //        fileNameCounter += 1
