@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import AVFoundation
 
+// 'AVCaptureVideoOrientation' was deprecated in iOS 17.0: Use AVCaptureDeviceRotationCoordinator instead
 extension AVCaptureVideoOrientation {
     init?(deviceOrientation: UIDeviceOrientation) {
         switch deviceOrientation {

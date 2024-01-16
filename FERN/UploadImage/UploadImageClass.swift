@@ -117,24 +117,12 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
 
                 for item in items {
                     // Just the filename
-//                    print("\(item)")
                     
                     // path to save the file:
-//                    print("\(uploadFilePath)/\(item)")
                     let pathAndFile = "\(uploadFilePath)/\(item)"
                     
                     // path to get the file:
                     getFile = path.appendingPathComponent(item)
-//                    print(getFile)
-                    
-                    // SINGLE IMAGE NO LONGER USED
-                    // Need to get image from SwiftUI's view/ImagePicker class? Pass a PhotoData var?
-        //            let imageData = myImageView.image!.jpegData(compressionQuality: 1) // FROM WEB EXAMPLE
-        //            let imageData = theImage.jpegData(compressionQuality: 1)
-        //
-        //            if(imageData==nil)  { return }
-                    
-        //            request.httpBody = createBodyWithParameters(parameters: param, filePathKey: "file", imageDataKey: imageData! as NSData, boundary: boundary)
                     
                     request.httpBody = createBodyWithParameters(parameters: param, filePathKey: "file", fileData: NSData(contentsOf: getFile)!, boundary: boundary, uploadFilePath: pathAndFile)
                     
@@ -212,12 +200,6 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
                 body.append(Data("\(value)\r\n".utf8))
             }
         }
-       
-//        var filename = String(fileNameCounter)
-//        filename.append("_")
-////      filename.append(UUID().uuidString)
-//        filename.append("CBI2-Demo-Image")
-//        filename.append(".jpg")
         
         // Seperate pics and text
         if uploadFilePath.hasSuffix(".heic") {
@@ -229,10 +211,6 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
         else if (uploadFilePath.hasSuffix(".jpg") || uploadFilePath.hasSuffix(".jpeg")){
              mimetype = "image/jpg"
         }
-        print(mimetype)
-//        let mimetype = "image/jpg"
-        
-//        fileNameCounter += 1
                 
         body.append(Data("--\(boundary)\r\n".utf8))
         body.append(Data("Content-Disposition: form-data; name=\"\(filePathKey!)\"; filename=\"\(uploadFilePath)\"\r\n".utf8))

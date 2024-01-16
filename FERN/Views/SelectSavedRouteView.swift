@@ -6,14 +6,17 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct SelectSavedRouteView: View {
+    
+    @Environment(\.modelContext) var modelContext
+    @Query var settings: [Settings]
     
     @State private var areaList: [SelectNameModel] = []
     
     // Get html root
-    private let htmlRoot = HtmlRootModel().htmlRoot
-
+//    private let htmlRoot = HtmlRootModel().htmlRoot
     
     var body: some View {
         
@@ -41,7 +44,7 @@ struct SelectSavedRouteView: View {
     
     func getSavedRoutes() async {
         
-        guard let url: URL = URL(string: htmlRoot + "/php/" + "menuLoadSavedRouteView.php") else {
+        guard let url: URL = URL(string: settings[0].databaseURL + "/php/" + "menuLoadSavedRouteView.php") else {
             Swift.print("invalid URL")
             return
         }
@@ -66,10 +69,4 @@ struct SelectSavedRouteView: View {
             areaList = []
         }
     } // end getSavedRoutes
-}
-
-struct SelectSavedRouteView_Previews: PreviewProvider {
-    static var previews: some View {
-        SelectSavedRouteView()
-    }
 }

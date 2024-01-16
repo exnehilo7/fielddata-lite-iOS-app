@@ -14,6 +14,7 @@ struct MainMenuView: View {
     var body: some View {
         NavigationStack{
             List {
+                // Select a saved route
                 NavigationLink {
                    SelectSavedRouteView()
                         .navigationTitle("Load Saved Route")
@@ -23,6 +24,7 @@ struct MainMenuView: View {
                         Text("Load Saved Route")
                     }
                 }
+                // Search within an area
                 NavigationLink {
                     SelectAreaView(phpFile: "menusAndReports.php", columnName: "area_name")
                         .navigationTitle("Select Area")
@@ -32,6 +34,7 @@ struct MainMenuView: View {
                         Text("Select Area")
                     }
                 }
+                // Narrowed search within a plot
                 NavigationLink {
                     SelectAreaView(phpFile: "menusAndReports.php",  columnName: "plot_name")
                         .navigationTitle("Select Plot")
@@ -41,6 +44,7 @@ struct MainMenuView: View {
                         Text("Select Plot")
                     }
                 }
+                // Various reports
                 NavigationLink {
                     SelectReportView(phpFile: "menusAndReports.php")
                         .navigationTitle("Select Report")
@@ -50,6 +54,7 @@ struct MainMenuView: View {
                         Text("Reports")
                     }
                 }
+                // Basic notes
                 NavigationLink {
                     SelectNotesView(phpFile: "notes.php")
                         .navigationTitle("Notes")
@@ -69,6 +74,7 @@ struct MainMenuView: View {
 //                        Text("GPS Stream")
 //                    }
 //                }
+                // Camera using Arrow GPS
                 NavigationLink {
                     SelectTripView()
                         .navigationTitle("GPS Camera").environment(\.managedObjectContext, persistenceController.container.viewContext)
@@ -86,6 +92,16 @@ struct MainMenuView: View {
                     HStack {
                         Image(systemName: "square.and.arrow.up").bold(false).foregroundColor(.gray)
                         Text("Upload Completed Trips")
+                    }
+                }
+                // App settings
+                NavigationLink {
+                    SettingsView()
+                        .navigationTitle("Settings").environment(\.managedObjectContext, persistenceController.container.viewContext)
+                } label: {
+                    HStack {
+                        Image(systemName: "gearshape").bold(false).foregroundColor(.gray)
+                        Text("Settings")
                     }
                 }
             }.bold().onAppear(perform:{ UIApplication.shared.isIdleTimerDisabled = false})
