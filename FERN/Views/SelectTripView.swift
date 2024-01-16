@@ -23,7 +23,7 @@ struct SelectTripView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
     // Try my own fetch request and data
-    @FetchRequest(sortDescriptors: []) private var trips: FetchedResults<Trip>
+    @FetchRequest(sortDescriptors: [SortDescriptor(\Trip.name)]) private var trips: FetchedResults<Trip>
     
     var body: some View {
         NavigationView {

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main //SearchByNameView?
 struct FERNApp: App {
@@ -15,6 +16,6 @@ struct FERNApp: App {
             NavigationStack {
                 StartScreenView()
            }
-        }
+        }.modelContainer(for: Settings.self)
     }
 }

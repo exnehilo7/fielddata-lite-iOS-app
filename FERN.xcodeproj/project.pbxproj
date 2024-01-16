@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D107EF162B5708960020F0A2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D107EF152B5708960020F0A2 /* SettingsView.swift */; };
+		D107EF182B5716F60020F0A2 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D107EF172B5716F60020F0A2 /* Settings.swift */; };
+		D107EF1B2B571C840020F0A2 /* SettingsDatabaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D107EF1A2B571C840020F0A2 /* SettingsDatabaseView.swift */; };
+		D107EF1D2B571CAA0020F0A2 /* SettingsUploadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D107EF1C2B571CAA0020F0A2 /* SettingsUploadView.swift */; };
+		D107EF1F2B57293B0020F0A2 /* EditDatabaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D107EF1E2B57293A0020F0A2 /* EditDatabaseView.swift */; };
+		D107EF212B5736BD0020F0A2 /* EditUploadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D107EF202B5736BD0020F0A2 /* EditUploadView.swift */; };
 		D10925962B2B9C96005D376F /* Sounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10925952B2B9C96005D376F /* Sounds.swift */; };
 		D10BB31C298ADAA400667E86 /* FERNApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10BB31B298ADAA400667E86 /* FERNApp.swift */; };
 		D10BB31E298ADAA400667E86 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10BB31D298ADAA400667E86 /* ContentView.swift */; };
@@ -74,6 +80,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D107EF152B5708960020F0A2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		D107EF172B5716F60020F0A2 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		D107EF1A2B571C840020F0A2 /* SettingsDatabaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDatabaseView.swift; sourceTree = "<group>"; };
+		D107EF1C2B571CAA0020F0A2 /* SettingsUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsUploadView.swift; sourceTree = "<group>"; };
+		D107EF1E2B57293A0020F0A2 /* EditDatabaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDatabaseView.swift; sourceTree = "<group>"; };
+		D107EF202B5736BD0020F0A2 /* EditUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditUploadView.swift; sourceTree = "<group>"; };
 		D10925952B2B9C96005D376F /* Sounds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sounds.swift; sourceTree = "<group>"; };
 		D10BB318298ADAA400667E86 /* FERN.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FERN.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D10BB31B298ADAA400667E86 /* FERNApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FERNApp.swift; sourceTree = "<group>"; };
@@ -137,6 +149,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D107EF192B571C610020F0A2 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				D107EF152B5708960020F0A2 /* SettingsView.swift */,
+				D107EF1A2B571C840020F0A2 /* SettingsDatabaseView.swift */,
+				D107EF1C2B571CAA0020F0A2 /* SettingsUploadView.swift */,
+				D107EF1E2B57293A0020F0A2 /* EditDatabaseView.swift */,
+				D107EF202B5736BD0020F0A2 /* EditUploadView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		D10BB30F298ADAA400667E86 = {
 			isa = PBXGroup;
 			children = (
@@ -231,6 +255,7 @@
 		D1A56E942B07D05E00AC8291 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				D107EF192B571C610020F0A2 /* Settings */,
 				D1A56E952B07D09D00AC8291 /* Reports */,
 				D127B38A2A15493000F6287A /* CameraView.swift */,
 				D1A56E982B07D27700AC8291 /* CameraImageView.swift */,
@@ -277,6 +302,7 @@
 			isa = PBXGroup;
 			children = (
 				D1A56E842B05208900AC8291 /* TripPersistence.swift */,
+				D107EF172B5716F60020F0A2 /* Settings.swift */,
 			);
 			path = Persistence;
 			sourceTree = "<group>";
@@ -383,6 +409,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D16A6C7829901A5D00835B5E /* CreateCustomRouteView.swift in Sources */,
+				D107EF1D2B571CAA0020F0A2 /* SettingsUploadView.swift in Sources */,
 				D127B3972A1D1F0100F6287A /* UploadImageClass.swift in Sources */,
 				D16A6C86299AE2DF00835B5E /* SelectSavedRouteView.swift in Sources */,
 				D127B3992A1D3C4C00F6287A /* ImagePicker.swift in Sources */,
@@ -396,14 +423,18 @@
 				D10925962B2B9C96005D376F /* Sounds.swift in Sources */,
 				D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */,
 				D1766CA3298DBAA3002F594D /* Functions.swift in Sources */,
+				D107EF1F2B57293B0020F0A2 /* EditDatabaseView.swift in Sources */,
 				D127B3912A1568C800F6287A /* CameraServiceExtensions.swift in Sources */,
 				D127B37E2A12ED3D00F6287A /* NMEADataClass.swift in Sources */,
 				D1A56E852B05208900AC8291 /* TripPersistence.swift in Sources */,
+				D107EF182B5716F60020F0A2 /* Settings.swift in Sources */,
 				D1766C9F298DB9B2002F594D /* SearchByNameView.swift in Sources */,
 				D1A56E922B05257000AC8291 /* CoreData.xcdatamodeld in Sources */,
 				D127B3892A15454400F6287A /* CameraViewModel.swift in Sources */,
 				D10BB31E298ADAA400667E86 /* ContentView.swift in Sources */,
+				D107EF162B5708960020F0A2 /* SettingsView.swift in Sources */,
 				D127B39C2A1EB51500F6287A /* UploadPhotoClass.swift in Sources */,
+				D107EF1B2B571C840020F0A2 /* SettingsDatabaseView.swift in Sources */,
 				D16A6C7C2995D18100835B5E /* StartScreenView.swift in Sources */,
 				D1766C9B298DB922002F594D /* LoginView.swift in Sources */,
 				D1A56E992B07D27700AC8291 /* CameraImageView.swift in Sources */,
@@ -414,6 +445,7 @@
 				D10BB31C298ADAA400667E86 /* FERNApp.swift in Sources */,
 				D127B3832A1528AD00F6287A /* CameraClass.swift in Sources */,
 				D1A56E9B2B0BDB8800AC8291 /* UploadTripsView.swift in Sources */,
+				D107EF212B5736BD0020F0A2 /* EditUploadView.swift in Sources */,
 				D127B38F2A15683700F6287A /* ImageResizer.swift in Sources */,
 				D16A6C7E29970E0900835B5E /* SelectNotesView.swift in Sources */,
 				D1766CA5298E0B3E002F594D /* Classes.swift in Sources */,
@@ -490,7 +522,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -545,7 +577,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -580,7 +612,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -619,7 +651,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

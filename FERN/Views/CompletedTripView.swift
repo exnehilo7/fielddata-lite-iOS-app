@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct CompletedTripView: View {
     
@@ -17,11 +18,10 @@ struct CompletedTripView: View {
     
     // Get trips from core data
     @Environment(\.managedObjectContext) private var viewContext
-    @FetchRequest(sortDescriptors: []) private var trip: FetchedResults<Trip>
+    @FetchRequest(sortDescriptors: [SortDescriptor(\Trip.name)]) private var trip: FetchedResults<Trip>
     
     var body: some View {
         Spacer()
-        Text("In development").font(.system(size: 30))
         Text("Trip \(tripName) is complete!")
         Text("")
         Text("The images are stored in:")
@@ -34,10 +34,10 @@ struct CompletedTripView: View {
                 // If no upload, show button
                 if (!item.uploaded) {
                     Button {
-                        // Funciton to upload files. Will use another function to loop through files. Upload needs to know where it left off if there was an error. Alert user if no signal; don't initiate upload. (Don't show button if no signal?)
+                        // Funciton to upload files. Upload needs to know where it left off if there was an error? Alert user if no signal; don't initiate upload? (Don't show button if no signal?)
                         uploadImage.myFileUploadRequest(tripName: tripName)
-                        // For now, just toggle the Core Data value
 //                        item.uploaded = true
+                        
                         // Save change
                         if viewContext.hasChanges{
                             do {
