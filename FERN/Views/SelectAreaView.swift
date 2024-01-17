@@ -6,8 +6,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct SelectAreaView: View {
+    
+    @Environment(\.modelContext) var modelContext
+    @Query var settings: [Settings]
     
     @State private var areaList: [SelectNameModel] = []
     var phpFile: String
@@ -41,9 +45,9 @@ struct SelectAreaView: View {
     private func qryAreas() async {
         
         // get root
-        let htmlRoot = HtmlRootModel().htmlRoot
+//        let htmlRoot = HtmlRootModel().htmlRoot
         
-        guard let url: URL = URL(string: htmlRoot + "/php/" + phpFile) else {
+        guard let url: URL = URL(string: settings[0].databaseURL + "/php/" + phpFile) else {
             Swift.print("invalid URL")
             return
         }
@@ -85,8 +89,8 @@ struct SelectAreaView: View {
     }// end qryReports
 } //end view
 
-struct SelectAreaView_Previews: PreviewProvider {
-    static var previews: some View {
-        SelectAreaView(phpFile: "menusAndReports.php", columnName: "area_name")
-    }
-}
+//struct SelectAreaView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SelectAreaView(phpFile: "menusAndReports.php", columnName: "area_name")
+//    }
+//}

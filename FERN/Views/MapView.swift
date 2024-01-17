@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MapKit
+import SwiftData
 
 /*
  The geocoordinates, organism name, and PK from the database are inserted into
@@ -19,6 +20,9 @@ import MapKit
 */
 
 struct MapView: View {
+    
+    @Environment(\.modelContext) var modelContext
+    @Query var settings: [Settings]
     
     // From calling view
     var areaName: String
@@ -151,9 +155,9 @@ struct MapView: View {
     private func getMapPoints () async {
         
         // get root
-        let htmlRoot = HtmlRootModel().htmlRoot
+//        let htmlRoot = HtmlRootModel().htmlRoot
 
-        guard let url: URL = URL(string: htmlRoot + "/php/getMapItemsForApp.php") else {
+        guard let url: URL = URL(string: settings[0].databaseURL + "/php/getMapItemsForApp.php") else {
             Swift.print("invalid URL")
             return
         }
@@ -220,9 +224,9 @@ struct MapView: View {
     
 }// end MapView view
 
-struct MapView_Previews: PreviewProvider {
-    static var previews: some View {
-        MapView(areaName: "Davis", columnName: "area_name", organismName: "Besc-112",
-                queryName: "query_search_org_name_by_site")
-    }
-}
+//struct MapView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        MapView(areaName: "Davis", columnName: "area_name", organismName: "Besc-112",
+//                queryName: "query_search_org_name_by_site")
+//    }
+//}
