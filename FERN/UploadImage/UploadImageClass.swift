@@ -69,11 +69,11 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
         }
     }
     
-    func myFileUploadRequest(tripName: String)
+    func myFileUploadRequest(tripName: String, uploadScriptURL: String)
         {
       
             // Set endpoint
-            let myUrl = NSURL(string: "http://103.72.77.233/ORNL/fielddata-lite/php/upload.php") // http://covid-samples01.ornl.gov/upload.php
+            let myUrl = NSURL(string: uploadScriptURL)
             
             let request = NSMutableURLRequest(url:myUrl! as URL)
             request.httpMethod = "POST"

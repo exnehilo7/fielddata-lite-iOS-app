@@ -7,8 +7,12 @@
 
 import SwiftUI
 import CoreData
+import SwiftData
 
 struct CompletedTripView: View {
+    
+    @Environment(\.modelContext) var modelContext
+    @Query var settings: [Settings]
     
     // From calling view
     var tripName: String
@@ -35,7 +39,7 @@ struct CompletedTripView: View {
                 if (!item.uploaded) {
                     Button {
                         // Funciton to upload files. Upload needs to know where it left off if there was an error? Alert user if no signal; don't initiate upload? (Don't show button if no signal?)
-                        uploadImage.myFileUploadRequest(tripName: tripName)
+                        uploadImage.myFileUploadRequest(tripName: tripName, uploadScriptURL: settings[0].uploadScriptURL)
 //                        item.uploaded = true
                         
                         // Save change
