@@ -6,8 +6,13 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct SelectNotesView: View {
+    
+    @Environment(\.modelContext) var modelContext
+    @Query var settings: [Settings]
+    
     @State private var notesList: [SelectNoteModel] = []
     var phpFile: String
     @State private var noteId = "0"
@@ -130,9 +135,9 @@ struct SelectNotesView: View {
     private func qryNotes() async {
         
         // get root
-        let htmlRoot = HtmlRootModel().htmlRoot
+//        let htmlRoot = HtmlRootModel().htmlRoot
         
-        guard let url: URL = URL(string: htmlRoot + "/php/" + phpFile) else {
+        guard let url: URL = URL(string: settings[0].databaseURL + "/php/" + phpFile) else {
             Swift.print("invalid URL")
             return
         }
@@ -195,8 +200,8 @@ struct SelectNotesView: View {
 } // end view
 
 
-struct SelectNotesView_Previews: PreviewProvider {
-    static var previews: some View {
-        SelectNotesView(phpFile: "notes.php")
-    }
-}
+//struct SelectNotesView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SelectNotesView(phpFile: "notes.php")
+//    }
+//}

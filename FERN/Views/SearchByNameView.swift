@@ -7,9 +7,12 @@
 //
 
 import SwiftUI
-
+import SwiftData
 
 struct SearchByNameView: View {
+    
+    @Environment(\.modelContext) var modelContext
+    @Query var settings: [Settings]
     
     var areaName: String // THIS is how variables are passed view-to-view. @EnvironmentObject method has issues(?). See https://medium.com/swlh/swiftui-and-the-missing-environment-object-1a4bf8913ba7 for more info.
     var columnName: String
@@ -77,9 +80,9 @@ struct SearchByNameView: View {
     private func getMapPoints () async {
         
         // get root
-        let htmlRoot = HtmlRootModel().htmlRoot
+//        let htmlRoot = HtmlRootModel().htmlRoot
         
-        guard let url: URL = URL(string: htmlRoot + "/php/getMapItemsForApp.php") else {
+        guard let url: URL = URL(string: settings[0].databaseURL + "/php/getMapItemsForApp.php") else {
             Swift.print("invalid URL")
             return
         }
@@ -131,8 +134,8 @@ struct SearchByNameView: View {
  
 }//end SearchByNameView View
 
-struct SearchByNameView_Previews: PreviewProvider {
-     static var previews: some View {
-         SearchByNameView(areaName: "Davis", columnName: "area_name")
-     }
- }
+//struct SearchByNameView_Previews: PreviewProvider {
+//     static var previews: some View {
+//         SearchByNameView(areaName: "Davis", columnName: "area_name")
+//     }
+// }

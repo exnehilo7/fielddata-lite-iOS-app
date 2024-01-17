@@ -6,8 +6,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ReportRoutes: View {
+    
+    @Environment(\.modelContext) var modelContext
+    @Query var settings: [Settings]
     
     var phpFile: String
     @State private var totalDistances: [RouteTotalDistanceModel] = []
@@ -37,9 +41,9 @@ struct ReportRoutes: View {
     private func qryTotalDistanceReport() async {
         
         // get root
-        let htmlRoot = HtmlRootModel().htmlRoot
+//        let htmlRoot = HtmlRootModel().htmlRoot
         
-        guard let url: URL = URL(string: htmlRoot + "/php/" + phpFile) else {
+        guard let url: URL = URL(string: settings[0].databaseURL + "/php/" + phpFile) else {
             Swift.print("invalid URL")
             return
         }
@@ -80,8 +84,8 @@ struct ReportRoutes: View {
     }// end qryTotalDistanceReport
 }
 
-struct ReportRoutes_Previews: PreviewProvider {
-    static var previews: some View {
-        ReportRoutes(phpFile: "menusAndReports.php")
-    }
-}
+//struct ReportRoutes_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ReportRoutes(phpFile: "menusAndReports.php")
+//    }
+//}
