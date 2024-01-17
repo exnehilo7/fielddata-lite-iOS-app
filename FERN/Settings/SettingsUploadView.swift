@@ -18,7 +18,7 @@ struct SettingsUploadView: View {
             List {
                 ForEach(settings) { item in
                     NavigationLink(item.uploadScriptURL){
-                        EditDatabaseView(setting: item)
+                        EditUploadView(setting: item)
                     }
                 }//.onDelete(perform: deleteItem)  // For testing
             }
