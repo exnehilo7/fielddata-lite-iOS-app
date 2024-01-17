@@ -30,11 +30,10 @@ class UploadPhoto: NSObject, UINavigationControllerDelegate, ObservableObject {
         print ("Upload the Photo!")
     }
     
-    func myPhotoUploadRequest(thePhoto: Photo, lat: String, long: String)
+    func myPhotoUploadRequest(thePhoto: Photo, lat: String, long: String, uploadScriptURL: String)
         {
       
-            let myUrl = NSURL(string: "http://covid-samples01.ornl.gov/upload.php") // http://covid-samples01.ornl.gov/upload.php
-            //let myUrl = NSURL(string: "http://www.boredwear.com/utils/postImage.php");
+            let myUrl = NSURL(string: uploadScriptURL)
             
             let request = NSMutableURLRequest(url:myUrl! as URL)
             request.httpMethod = "POST"
