@@ -10,6 +10,7 @@
 
 import Foundation
 import UIKit
+import CoreData
 
 
 class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
@@ -69,7 +70,7 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
         }
     }
     
-    func myFileUploadRequest(tripName: String, uploadScriptURL: String)
+    func myFileUploadRequest(tripName: String, uploadScriptURL: String, trip: Trip, viewContext: NSManagedObjectContext)
         {
       
             // Set endpoint
@@ -115,8 +116,10 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
             do {
                 let items = try fm.contentsOfDirectory(atPath: path.path)
 
+                let totalFiles = items.count
+                var fileCount = 0
+                
                 for item in items {
-                    // Just the filename
                     
                     // path to save the file:
                     let pathAndFile = "\(uploadFilePath)/\(item)"
@@ -137,12 +140,25 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
                         }
                         
                         // You can print out response object
-                        print("******* response = \(String(describing: response))")
+//                        print("******* response = \(String(describing: response))")
                         
                         // Print out reponse body
                         DispatchQueue.main.async { [self] in
                             self.responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
-                            print("****** response data = \(self.responseString!)")
+//                            print("****** response data = \(self.responseString!)")
+                            if (self.responseString ?? "nada").contains("successfully!") {
+                                fileCount += 1
+                            }
+                            // If all files successfully uploaded, set uploaded to true
+                            if (totalFiles == fileCount) {
+                                trip.uploaded = true
+                                do {
+                                    try viewContext.save()
+                                } catch {
+                                    let nsError = error as NSError
+                                    print("Core Data save error \(nsError), \(nsError.userInfo)")
+                                }
+                            }
                             self.isResponseReceived = true
                         }
                         
@@ -155,27 +171,28 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
         //                //Add OK button to a dialog message
         //                self.uploadResponseMessage.addAction(ok)
                         
-                        do {
-                            let json = try JSONSerialization.jsonObject(with: data!, options: []) as? NSDictionary
+//                        do {
+                            // For debugging?
+//                            let json = try JSONSerialization.jsonObject(with: data!, options: []) as? NSDictionary
+//                            
+//                            print("-------PRINTING JSON-------")
+//                            print(json as Any)
                             
-                            print("-------PRINTING JSON-------")
-                            print(json as Any)
-                            
+                            // From original example?
                             // dispatch_async(dispatch_get_main_queue() is Obj-C
         //                    dispatch_async(dispatch_get_main_queue(),{
         //                        self.myActivityIndicator.stopAnimating()
         //                        self.myImageView.image = nil;
         //                    })
-                            
         //                    DispatchQueue.main.async {
         //                        // May need to interact with ImagePicker class
         //                        self.myImageView.image = nil
         //                    }
                             
-                        }catch
-                        {
-                            print(error)
-                        }
+//                        } catch
+//                        {
+//                            print(error)
+//                        }
                         
                     }
                     task.resume()

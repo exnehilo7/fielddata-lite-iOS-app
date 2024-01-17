@@ -38,19 +38,20 @@ struct CompletedTripView: View {
                 // If no upload, show button
                 if (!item.uploaded) {
                     Button {
-                        // Funciton to upload files. Upload needs to know where it left off if there was an error? Alert user if no signal; don't initiate upload? (Don't show button if no signal?)
-                        uploadImage.myFileUploadRequest(tripName: tripName, uploadScriptURL: settings[0].uploadScriptURL)
-//                        item.uploaded = true
+//                        Task {
+                            // Funciton to upload files. Upload needs to know where it left off if there was an error? Alert user if no signal; don't initiate upload? (Don't show button if no signal?)
+                        uploadImage.myFileUploadRequest(tripName: tripName, uploadScriptURL: settings[0].uploadScriptURL, trip: item, viewContext: viewContext)
                         
-                        // Save change
-                        if viewContext.hasChanges{
-                            do {
-                                try viewContext.save()
-                            } catch {
-                                let nsError = error as NSError
-                                print("private func addItem error \(nsError), \(nsError.userInfo)")
-                            }
-                        }
+                            // Save change
+//                            if viewContext.hasChanges{
+//                                do {
+//                                    try viewContext.save()
+//                                } catch {
+//                                    let nsError = error as NSError
+//                                    print("error \(nsError), \(nsError.userInfo)")
+//                                }
+//                            }
+//                        }
                     } label: {
                         HStack {
                             Image(systemName: "square.and.arrow.up")
@@ -69,5 +70,6 @@ struct CompletedTripView: View {
         }
         Spacer()
     }
+    
 }
 
