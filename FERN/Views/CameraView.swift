@@ -10,6 +10,8 @@
 //  Only allow ASCII characters for the text fields.
 //
 //  Photo Group must not be null when the shutter button is pressed.
+//
+// 18-JAN-2024: View will be shelved. May be used again for Portrait heic depth values.
 
 import SwiftUI
 import AVFoundation
@@ -57,7 +59,7 @@ struct CameraPreview: UIViewRepresentable {
         view.backgroundColor = .black
         view.videoPreviewLayer.cornerRadius = 0
         view.videoPreviewLayer.session = session
-        view.videoPreviewLayer.connection?.videoOrientation = .portrait
+        view.videoPreviewLayer.connection?.videoRotationAngle = 90
 
         return view
     }
