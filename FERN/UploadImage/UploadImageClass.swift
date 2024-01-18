@@ -140,12 +140,12 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
                         }
                         
                         // You can print out response object
-//                        print("******* response = \(String(describing: response))")
+                        print("******* response = \(String(describing: response))")
                         
                         // Print out reponse body
                         DispatchQueue.main.async { [self] in
                             self.responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
-//                            print("****** response data = \(self.responseString!)")
+                            print("****** response data = \(self.responseString!)")
                             if (self.responseString ?? "nada").contains("successfully!") {
                                 fileCount += 1
                             }
