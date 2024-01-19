@@ -8,14 +8,25 @@
 import SwiftUI
 import SwiftData
 
-@main //SearchByNameView?
+@main
 struct FERNApp: App {
+    
+    // Send multiple model configurations into a single model container
+    var container: ModelContainer
+
+    init() {
+        do {
+            container = try ModelContainer(for: Settings.self, SDTrip.self)
+        } catch {
+                fatalError("Failed to configure SwiftData container.")
+            }
+        }
     
     var body: some Scene {
         WindowGroup {
             NavigationStack {
                 StartScreenView()
            }
-        }.modelContainer(for: Settings.self)
+        }.modelContainer(container)
     }
 }

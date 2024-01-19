@@ -8,6 +8,7 @@
 //[Snapshotting] Snapshotting a view (0x107008200, UIKeyboardImpl) that is not in a visible window requires afterScreenUpdates:YES.
 
 import SwiftUI
+import SwiftData
 
 struct CameraImageView: View {
      
@@ -29,8 +30,11 @@ struct CameraImageView: View {
     @State var showArrowGold = false
     
     // Get trips from core data
-    @Environment(\.managedObjectContext) private var viewContext
-    @FetchRequest(sortDescriptors: []) private var trip: FetchedResults<Trip>
+//    @Environment(\.managedObjectContext) private var viewContext
+//    @FetchRequest(sortDescriptors: []) private var trip: FetchedResults<Trip>
+    
+    @Environment(\.modelContext) var modelContext // swift data
+    @Query var sdTrips: [SDTrip]
     
     // GPS -------------------------------------------------------------
     // Arrow Gold
@@ -249,7 +253,7 @@ struct CameraImageView: View {
         VStack {
             if !gpsModeIsSelected {
                 // mark complete button
-                ForEach(trip) { item in
+                ForEach(sdTrips) { item in
                     // Get the previous view's selected trip
                     if (item.name == tripName){
                         Button {
@@ -268,16 +272,16 @@ struct CameraImageView: View {
                             .padding(.horizontal)
                         }.alert("Mark trip as complete?", isPresented: $showingCompleteAlert) {
                             Button("OK"){
-                                item.complete = true
+                                item.isComplete = true
                                 // Save change
-                                if viewContext.hasChanges{
-                                    do {
-                                        try viewContext.save()
-                                    } catch {
-                                        let nsError = error as NSError
-                                        print("private func addItem error \(nsError), \(nsError.userInfo)")
-                                    }
-                                }
+//                                if viewContext.hasChanges{
+//                                    do {
+//                                        try viewContext.save()
+//                                    } catch {
+//                                        let nsError = error as NSError
+//                                        print("private func addItem error \(nsError), \(nsError.userInfo)")
+//                                    }
+//                                }
                                 showCompleteAlertToggle()
                             }
                             Button("Cancel", role: .cancel){}

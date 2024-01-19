@@ -5,55 +5,55 @@
 //  Created by Hopp, Dan on 11/15/23.
 //
 // On clicking a trip name: [API] Failed to create 0x88 image slot (alpha=1 wide=1) (client=0x77d3c009) [0x5 (os/kern) failure]  ??
+// 19-JAN-2024: Edit -> Delete has alert appear and immediately disappear
+// 19-JAN-2024: Switch to SwiftData
 
 
 import SwiftUI
-import CoreData
+import SwiftData
 
 struct SelectTripView: View {
     
     // For allowing Core Data managed object context on the next view
-    let persistenceController = PersistenceController.shared
+//    let persistenceController = PersistenceController.shared
     
     // For add-a-trip popup
     @State private var showingTripNameAlert = false
     @State private var showingDeleteTripAlert = false
     @State private var name = ""
     
-    @Environment(\.managedObjectContext) private var viewContext
-
-    // Try my own fetch request and data
-    @FetchRequest(sortDescriptors: [SortDescriptor(\Trip.name)]) private var trips: FetchedResults<Trip>
+    @Environment(\.modelContext) var modelContext // swift data
+    @Query var sdTrips: [SDTrip]
     
     var body: some View {
         NavigationView {
             List {
-                ForEach(trips) { item in
+                ForEach(sdTrips) { item in
                     // Once a trip is marked complete, the user cannot toggle it back nor acces the CameraImageView
                     NavigationLink {
-                        if !item.complete {
+                        if !item.isComplete {
                             // Go to CameraView with trip name as the title
-                            CameraImageView(tripName: item.name!)
-                                .navigationTitle("\(item.name!)")
-                                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                            CameraImageView(tripName: item.name)
+                                .navigationTitle("\(item.name)")
+                                //.environment(\.managedObjectContext, persistenceController.container.viewContext)
                         }
                         else {
-                            CompletedTripView(tripName: item.name!)
-                                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                            CompletedTripView(tripName: item.name)
+                                //.environment(\.managedObjectContext, persistenceController.container.viewContext)
                         } // Go to an upload screen instead?
                     } label: {
                         HStack{
-                            if item.complete {
+                            if item.isComplete {
                                 Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
                             }
-                            if item.uploaded {
+                            if item.allFilesUploaded {
                                 Image(systemName: "checkmark.circle.fill").foregroundStyle(.orange)
                             }
-                            Text(item.name!)
+                            Text(item.name)
                         }
                     }
                 }
-                .onDelete(perform: deleteItems)
+                .onDelete(perform: deleteTrip)
                 // Notify user that pics and metadata will remain in the trip folder
                 .alert("Trip Deleted!", isPresented: $showingDeleteTripAlert) {
                     Button("OK", action: showDeleteTripAlert)
@@ -93,40 +93,23 @@ struct SelectTripView: View {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         if trimmed.count > 0 {
             withAnimation {
-                let newItem = Trip(context: viewContext)
+
                 // Remove special characters
                 let pattern = "[^A-Za-z0-9_-]+"
                 name = name.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
-                newItem.name = name
-                
-                if viewContext.hasChanges{
-                    do {
-                        try viewContext.save()
-                    } catch {
-                        let nsError = error as NSError
-                        print("private func addItem error \(nsError), \(nsError.userInfo)")
-                    }
-                }
+//                modelContext.insert(SDTrip(name: name, isComplete: false, allFilesUploaded: false, files: []))
+                modelContext.insert(SDTrip(name: name, isComplete: false, allFilesUploaded: false))
             }
         }
         name = ""
     }
 
-    private func deleteItems(offsets: IndexSet) {
+    func deleteTrip(_ indexSet: IndexSet) {
         // Toggle delete alert
         showingDeleteTripAlert = true
-        
-        withAnimation {
-            offsets.map { trips[$0] }.forEach(viewContext.delete)
-
-            if viewContext.hasChanges{
-                do {
-                    try viewContext.save()
-                } catch {
-                    let nsError = error as NSError
-                    print("private func deleteItems error \(nsError), \(nsError.userInfo)")
-                }
-            }
+        for index in indexSet {
+            let trip = sdTrips[index]
+            modelContext.delete(trip)
         }
     }
     

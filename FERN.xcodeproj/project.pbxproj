@@ -33,6 +33,7 @@
 		D127B3972A1D1F0100F6287A /* UploadImageClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B3962A1D1F0100F6287A /* UploadImageClass.swift */; };
 		D127B3992A1D3C4C00F6287A /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B3982A1D3C4C00F6287A /* ImagePicker.swift */; };
 		D127B39C2A1EB51500F6287A /* UploadPhotoClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B39B2A1EB51500F6287A /* UploadPhotoClass.swift */; };
+		D130BADA2B5ADEAE00F0C47C /* Trip.swift in Sources */ = {isa = PBXBuildFile; fileRef = D130BAD92B5ADEAE00F0C47C /* Trip.swift */; };
 		D147C56829A3EC2900D948AB /* FERNTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D147C56729A3EC2900D948AB /* FERNTests.swift */; };
 		D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7129901A2000835B5E /* SelectAreaView.swift */; };
 		D16A6C7829901A5D00835B5E /* CreateCustomRouteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7729901A5D00835B5E /* CreateCustomRouteView.swift */; };
@@ -48,8 +49,6 @@
 		D1766CA3298DBAA3002F594D /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766CA2298DBAA3002F594D /* Functions.swift */; };
 		D1766CA5298E0B3E002F594D /* Classes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766CA4298E0B3E002F594D /* Classes.swift */; };
 		D1A56E812B051DB300AC8291 /* SelectTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E802B051DB300AC8291 /* SelectTripView.swift */; };
-		D1A56E852B05208900AC8291 /* TripPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E842B05208900AC8291 /* TripPersistence.swift */; };
-		D1A56E922B05257000AC8291 /* CoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E902B05257000AC8291 /* CoreData.xcdatamodeld */; };
 		D1A56E992B07D27700AC8291 /* CameraImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E982B07D27700AC8291 /* CameraImageView.swift */; };
 		D1A56E9B2B0BDB8800AC8291 /* UploadTripsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E9A2B0BDB8800AC8291 /* UploadTripsView.swift */; };
 		D1CEED8E2B44C43C00569520 /* CompletedTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1CEED8D2B44C43C00569520 /* CompletedTripView.swift */; };
@@ -107,6 +106,7 @@
 		D127B3962A1D1F0100F6287A /* UploadImageClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImageClass.swift; sourceTree = "<group>"; };
 		D127B3982A1D3C4C00F6287A /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		D127B39B2A1EB51500F6287A /* UploadPhotoClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPhotoClass.swift; sourceTree = "<group>"; };
+		D130BAD92B5ADEAE00F0C47C /* Trip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trip.swift; sourceTree = "<group>"; };
 		D147C56529A3EC2900D948AB /* FERNTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FERNTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D147C56729A3EC2900D948AB /* FERNTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FERNTests.swift; sourceTree = "<group>"; };
 		D16A6C7129901A2000835B5E /* SelectAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAreaView.swift; sourceTree = "<group>"; };
@@ -123,8 +123,6 @@
 		D1766CA2298DBAA3002F594D /* Functions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
 		D1766CA4298E0B3E002F594D /* Classes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Classes.swift; sourceTree = "<group>"; };
 		D1A56E802B051DB300AC8291 /* SelectTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripView.swift; sourceTree = "<group>"; };
-		D1A56E842B05208900AC8291 /* TripPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripPersistence.swift; sourceTree = "<group>"; };
-		D1A56E912B05257000AC8291 /* CoreData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreData.xcdatamodel; sourceTree = "<group>"; };
 		D1A56E982B07D27700AC8291 /* CameraImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraImageView.swift; sourceTree = "<group>"; };
 		D1A56E9A2B0BDB8800AC8291 /* UploadTripsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadTripsView.swift; sourceTree = "<group>"; };
 		D1CEED8D2B44C43C00569520 /* CompletedTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletedTripView.swift; sourceTree = "<group>"; };
@@ -194,7 +192,6 @@
 				D1766CA2298DBAA3002F594D /* Functions.swift */,
 				D10BB31F298ADAA500667E86 /* Assets.xcassets */,
 				D10BB32B298AF42000667E86 /* Info.plist */,
-				D1A56E902B05257000AC8291 /* CoreData.xcdatamodeld */,
 				D10BB321298ADAA500667E86 /* Preview Content */,
 			);
 			path = FERN;
@@ -301,8 +298,8 @@
 		D1A56E972B07D0DE00AC8291 /* Persistence */ = {
 			isa = PBXGroup;
 			children = (
-				D1A56E842B05208900AC8291 /* TripPersistence.swift */,
 				D107EF172B5716F60020F0A2 /* Settings.swift */,
+				D130BAD92B5ADEAE00F0C47C /* Trip.swift */,
 			);
 			path = Persistence;
 			sourceTree = "<group>";
@@ -420,16 +417,15 @@
 				D10BB32A298ADAD600667E86 /* Models.swift in Sources */,
 				D127B3802A12EDF600F6287A /* NMEADataView.swift in Sources */,
 				D127B38B2A15493000F6287A /* CameraView.swift in Sources */,
+				D130BADA2B5ADEAE00F0C47C /* Trip.swift in Sources */,
 				D10925962B2B9C96005D376F /* Sounds.swift in Sources */,
 				D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */,
 				D1766CA3298DBAA3002F594D /* Functions.swift in Sources */,
 				D107EF1F2B57293B0020F0A2 /* EditDatabaseView.swift in Sources */,
 				D127B3912A1568C800F6287A /* CameraServiceExtensions.swift in Sources */,
 				D127B37E2A12ED3D00F6287A /* NMEADataClass.swift in Sources */,
-				D1A56E852B05208900AC8291 /* TripPersistence.swift in Sources */,
 				D107EF182B5716F60020F0A2 /* Settings.swift in Sources */,
 				D1766C9F298DB9B2002F594D /* SearchByNameView.swift in Sources */,
-				D1A56E922B05257000AC8291 /* CoreData.xcdatamodeld in Sources */,
 				D127B3892A15454400F6287A /* CameraViewModel.swift in Sources */,
 				D10BB31E298ADAA400667E86 /* ContentView.swift in Sources */,
 				D107EF162B5708960020F0A2 /* SettingsView.swift in Sources */,
@@ -732,19 +728,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		D1A56E902B05257000AC8291 /* CoreData.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				D1A56E912B05257000AC8291 /* CoreData.xcdatamodel */,
-			);
-			currentVersion = D1A56E912B05257000AC8291 /* CoreData.xcdatamodel */;
-			path = CoreData.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = D10BB310298ADAA400667E86 /* Project object */;
 }

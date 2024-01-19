@@ -13,7 +13,7 @@ struct MainMenuView: View {
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
     
-    let persistenceController = PersistenceController.shared
+    //let persistenceController = PersistenceController.shared
     
     var body: some View {
         NavigationStack{
@@ -83,7 +83,7 @@ struct MainMenuView: View {
                     // Camera using Arrow GPS
                     NavigationLink {
                         SelectTripView()
-                            .navigationTitle("GPS Camera").environment(\.managedObjectContext, persistenceController.container.viewContext)
+                            .navigationTitle("GPS Camera")//.environment(\.managedObjectContext, persistenceController.container.viewContext)
                     } label: {
                         HStack {
                             Image(systemName: "camera").bold(false).foregroundColor(.gray)
