@@ -5,12 +5,12 @@
 //  Created by Hopp, Dan on 5/23/23. Code from https://swiftdeveloperblog.com/image-upload-example/. Adjusted for
 //  Swift 5.8.
 //
-//  11-JAN-2024 - Set upload to:
-//  Upload a trip's folders and files.
+//  11-JAN-2024 - Set upload to: Upload a trip's folders and files.
+//  19-JAN-2024 - Switch to SwiftData
 
 import Foundation
 import UIKit
-import CoreData
+import SwiftData
 
 
 class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
@@ -19,6 +19,7 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
 //    var myImageView: UIImageView!
     
 //    var uploadResponseMessage = UIAlertController()
+    
     
     @Published var responseString: NSString?
     var isResponseReceived: Bool!
@@ -70,7 +71,8 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
         }
     }
     
-    func myFileUploadRequest(tripName: String, uploadScriptURL: String, trip: Trip, viewContext: NSManagedObjectContext)
+//    func myFileUploadRequest(tripName: String, uploadScriptURL: String, trip: Trip, modelContext: "type" )
+    func myFileUploadRequest(tripName: String, uploadScriptURL: String, trip: SDTrip)
         {
       
             // Set endpoint
@@ -112,25 +114,53 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
                 path = (rootDir?.appendingPathComponent(uploadFilePath))!
             }
             
-            // loop through files in folder and print the path
+            // Get a list of all trip files: loop through filenames and insert into Trip files array. Set isUploaded to false
             do {
                 let items = try fm.contentsOfDirectory(atPath: path.path)
 
-                let totalFiles = items.count
-                var fileCount = 0
-                
                 for item in items {
+                    // Just the filename
+                    print("\(item)")
+                    trip.files?.append(TripFile(fileName: item, isUploaded: false))
+                }
+            } catch {
+                // failed to read directory – bad permissions, perhaps?
+                print("Directory loop error")
+            }
+            
+            
+            // loop through files in trip array
+
+            let items = trip.files
+        
+            // get total number of files
+            let totalFiles = items?.count
+            var uploadedFileCount = 0
+            var totalUploaded = 0
+        
+            // get total of uploaded
+            for item in items ?? [] {
+                if item.isUploaded {
+                    print("\(item.fileName) has already been uploaded!")
+                    totalUploaded += 1
+                }
+            }
+            
+            for item in items ?? [] {
+                
+                // if isUploaded = false
+                if (!item.isUploaded) {
                     
                     // path to save the file:
-                    let pathAndFile = "\(uploadFilePath)/\(item)"
+                    let pathAndFile = "\(uploadFilePath)/\(item.fileName)"
                     
                     // path to get the file:
-                    getFile = path.appendingPathComponent(item)
+                    getFile = path.appendingPathComponent(item.fileName)
                     
                     request.httpBody = createBodyWithParameters(parameters: param, filePathKey: "file", fileData: NSData(contentsOf: getFile)!, boundary: boundary, uploadFilePath: pathAndFile)
                     
-                    //            myActivityIndicator.startAnimating();
-                                
+                    // myActivityIndicator.startAnimating();
+                    
                     let task = URLSession.shared.dataTask(with: request as URLRequest) {
                         data, response, error in
                         
@@ -147,60 +177,53 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
                             self.responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
                             print("****** response data = \(self.responseString!)")
                             if (self.responseString ?? "nada").contains("successfully!") {
-                                fileCount += 1
+                                totalUploaded += 1
+                                item.isUploaded = true
+                                print("\(item.fileName) is uploaded!")
                             }
-                            // If all files successfully uploaded, set uploaded to true
-                            if (totalFiles == fileCount) {
-                                trip.uploaded = true
-                                do {
-                                    try viewContext.save()
-                                } catch {
-                                    let nsError = error as NSError
-                                    print("Core Data save error \(nsError), \(nsError.userInfo)")
-                                }
+                            // If all files successfully uploaded, set allFilesUploaded to true
+                            if (totalFiles == totalUploaded) {
+                                trip.allFilesUploaded = true
                             }
                             self.isResponseReceived = true
                         }
                         
-        //                // Display response to user
-        //                self.uploadResponseMessage = UIAlertController(title: "Response", message: responseString! as String, preferredStyle: .alert)
-        //                // Create OK button with action handler
-        //                let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
-        //                    print("Response Ok button tapped")
-        //                 })
-        //                //Add OK button to a dialog message
-        //                self.uploadResponseMessage.addAction(ok)
+                        //                // Display response to user
+                        //                self.uploadResponseMessage = UIAlertController(title: "Response", message: responseString! as String, preferredStyle: .alert)
+                        //                // Create OK button with action handler
+                        //                let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
+                        //                    print("Response Ok button tapped")
+                        //                 })
+                        //                //Add OK button to a dialog message
+                        //                self.uploadResponseMessage.addAction(ok)
                         
-//                        do {
-                            // For debugging?
-//                            let json = try JSONSerialization.jsonObject(with: data!, options: []) as? NSDictionary
-//                            
-//                            print("-------PRINTING JSON-------")
-//                            print(json as Any)
-                            
-                            // From original example?
-                            // dispatch_async(dispatch_get_main_queue() is Obj-C
-        //                    dispatch_async(dispatch_get_main_queue(),{
-        //                        self.myActivityIndicator.stopAnimating()
-        //                        self.myImageView.image = nil;
-        //                    })
-        //                    DispatchQueue.main.async {
-        //                        // May need to interact with ImagePicker class
-        //                        self.myImageView.image = nil
-        //                    }
-                            
-//                        } catch
-//                        {
-//                            print(error)
-//                        }
+                        //                        do {
+                        // For debugging?
+                        //                            let json = try JSONSerialization.jsonObject(with: data!, options: []) as? NSDictionary
+                        //
+                        //                            print("-------PRINTING JSON-------")
+                        //                            print(json as Any)
+                        
+                        // From original example?
+                        // dispatch_async(dispatch_get_main_queue() is Obj-C
+                        //                    dispatch_async(dispatch_get_main_queue(),{
+                        //                        self.myActivityIndicator.stopAnimating()
+                        //                        self.myImageView.image = nil;
+                        //                    })
+                        //                    DispatchQueue.main.async {
+                        //                        // May need to interact with ImagePicker class
+                        //                        self.myImageView.image = nil
+                        //                    }
+                        
+                        //                        } catch
+                        //                        {
+                        //                            print(error)
+                        //                        }
                         
                     }
                     task.resume()
-                }
-            } catch {
-                // failed to read directory – bad permissions, perhaps?
-                print("Directory loop error")
-            }
+                } // end if
+            } // end for
     }
     
     
