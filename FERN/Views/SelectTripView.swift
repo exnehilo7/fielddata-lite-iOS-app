@@ -97,8 +97,8 @@ struct SelectTripView: View {
                 // Remove special characters
                 let pattern = "[^A-Za-z0-9_-]+"
                 name = name.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
-//                modelContext.insert(SDTrip(name: name, isComplete: false, allFilesUploaded: false, files: []))
-                modelContext.insert(SDTrip(name: name, isComplete: false, allFilesUploaded: false))
+                modelContext.insert(SDTrip(name: name, isComplete: false, allFilesUploaded: false, files: []))
+//                modelContext.insert(SDTrip(name: name, isComplete: false, allFilesUploaded: false))
             }
         }
         name = ""

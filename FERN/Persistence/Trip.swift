@@ -15,12 +15,12 @@ class SDTrip {
     var allFilesUploaded: Bool
     @Relationship(deleteRule: .cascade) var files: [TripFile]?
     
-//    init(name: String = "", isComplete: Bool = false, allFilesUploaded: Bool = false, files: [TripFile] = []){
-    init(name: String = "", isComplete: Bool = false, allFilesUploaded: Bool = false){
+    init(name: String = "", isComplete: Bool = false, allFilesUploaded: Bool = false, files: [TripFile] = []){
+//    init(name: String = "", isComplete: Bool = false, allFilesUploaded: Bool = false){
         self.name = name
         self.isComplete = isComplete
         self.allFilesUploaded = allFilesUploaded
-        //self.files = files
+        self.files = files
     }
 }
 

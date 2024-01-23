@@ -26,6 +26,11 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
     
     private var fileNameCounter = 0
     
+    // For progress bar
+//    @Published var uploadProg = 0
+    @Published var totalUploaded = 0
+    @Published var totalFiles = 0
+    
     func myImageUploadRequestTEST(tripName: String){
         
         let fm = FileManager.default
@@ -74,156 +79,175 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
 //    func myFileUploadRequest(tripName: String, uploadScriptURL: String, trip: Trip, modelContext: "type" )
     func myFileUploadRequest(tripName: String, uploadScriptURL: String, trip: SDTrip)
         {
-      
-            // Set endpoint
-            let myUrl = NSURL(string: uploadScriptURL)
-            
-            let request = NSMutableURLRequest(url:myUrl! as URL)
-            request.httpMethod = "POST"
-            
-            let param = [
-                "firstName"     : "FERN",
-                "lastName"      : "Demo",
-                "userId"        : "0"
-            ]
-            
-            let boundary = generateBoundaryString()
-            
-            request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-            
-            // FILE LOOP
-            let fm = FileManager.default
-            
-            // Get app's root dir
-            var rootDir: URL? {
-                guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
-                return documentsDirectory
-            }
-        
-            var path: URL
-            var getFile: URL
-            var uploadFilePath: String
-            
-            // Get device ID and make path
-            if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString
-            {
-                uploadFilePath = "\(deviceUuid)/trips/\(tripName)"
-                path = (rootDir?.appendingPathComponent(uploadFilePath))!
-            } else {
-                uploadFilePath = "no_device_uuid/trips/\(tripName)"
-                path = (rootDir?.appendingPathComponent(uploadFilePath))!
-            }
-            
-            // Get a list of all trip files: loop through filenames and insert into Trip files array. Set isUploaded to false
-            do {
-                let items = try fm.contentsOfDirectory(atPath: path.path)
-
-                for item in items {
-                    // Just the filename
-                    print("\(item)")
-                    trip.files?.append(TripFile(fileName: item, isUploaded: false))
-                }
-            } catch {
-                // failed to read directory – bad permissions, perhaps?
-                print("Directory loop error")
-            }
-            
-            
-            // loop through files in trip array
-
-            let items = trip.files
-        
-            // get total number of files
-            let totalFiles = items?.count
-            var uploadedFileCount = 0
-            var totalUploaded = 0
-        
-            // get total of uploaded
-            for item in items ?? [] {
-                if item.isUploaded {
-                    print("\(item.fileName) has already been uploaded!")
-                    totalUploaded += 1
-                }
-            }
-            
-            for item in items ?? [] {
+            DispatchQueue.global().async {
                 
-                // if isUploaded = false
-                if (!item.isUploaded) {
+                // Set endpoint
+                let myUrl = NSURL(string: uploadScriptURL)
+                
+                let request = NSMutableURLRequest(url:myUrl! as URL)
+                request.httpMethod = "POST"
+                
+                let param = [
+                    "firstName"     : "FERN",
+                    "lastName"      : "Demo",
+                    "userId"        : "0"
+                ]
+                
+                let boundary = self.generateBoundaryString()
+                
+                request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+                
+                // FILE LOOP
+                let fm = FileManager.default
+                
+                // Get app's root dir
+                var rootDir: URL? {
+                    guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
+                    return documentsDirectory
+                }
+                
+                var path: URL
+                var getFile: URL
+                var uploadFilePath: String
+                
+                // Get device ID and make path
+                if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString
+                {
+                    uploadFilePath = "\(deviceUuid)/trips/\(tripName)"
+                    path = (rootDir?.appendingPathComponent(uploadFilePath))!
+                } else {
+                    uploadFilePath = "no_device_uuid/trips/\(tripName)"
+                    path = (rootDir?.appendingPathComponent(uploadFilePath))!
+                }
+                
+                // Get a list of all trip files: loop through filenames and insert into Trip files array. Set isUploaded to false
+                do {
+                    let items = try fm.contentsOfDirectory(atPath: path.path)
                     
-                    // path to save the file:
-                    let pathAndFile = "\(uploadFilePath)/\(item.fileName)"
+                    // Clear trips
+                    trip.files?.removeAll()
                     
-                    // path to get the file:
-                    getFile = path.appendingPathComponent(item.fileName)
-                    
-                    request.httpBody = createBodyWithParameters(parameters: param, filePathKey: "file", fileData: NSData(contentsOf: getFile)!, boundary: boundary, uploadFilePath: pathAndFile)
-                    
-                    // myActivityIndicator.startAnimating();
-                    
-                    let task = URLSession.shared.dataTask(with: request as URLRequest) {
-                        data, response, error in
-                        
-                        if error != nil {
-                            print("error=\(String(describing: error))")
-                            return
-                        }
-                        
-                        // You can print out response object
-                        print("******* response = \(String(describing: response))")
-                        
-                        // Print out reponse body
-                        DispatchQueue.main.async { [self] in
-                            self.responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
-                            print("****** response data = \(self.responseString!)")
-                            if (self.responseString ?? "nada").contains("successfully!") {
-                                totalUploaded += 1
-                                item.isUploaded = true
-                                print("\(item.fileName) is uploaded!")
-                            }
-                            // If all files successfully uploaded, set allFilesUploaded to true
-                            if (totalFiles == totalUploaded) {
-                                trip.allFilesUploaded = true
-                            }
-                            self.isResponseReceived = true
-                        }
-                        
-                        //                // Display response to user
-                        //                self.uploadResponseMessage = UIAlertController(title: "Response", message: responseString! as String, preferredStyle: .alert)
-                        //                // Create OK button with action handler
-                        //                let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
-                        //                    print("Response Ok button tapped")
-                        //                 })
-                        //                //Add OK button to a dialog message
-                        //                self.uploadResponseMessage.addAction(ok)
-                        
-                        //                        do {
-                        // For debugging?
-                        //                            let json = try JSONSerialization.jsonObject(with: data!, options: []) as? NSDictionary
-                        //
-                        //                            print("-------PRINTING JSON-------")
-                        //                            print(json as Any)
-                        
-                        // From original example?
-                        // dispatch_async(dispatch_get_main_queue() is Obj-C
-                        //                    dispatch_async(dispatch_get_main_queue(),{
-                        //                        self.myActivityIndicator.stopAnimating()
-                        //                        self.myImageView.image = nil;
-                        //                    })
-                        //                    DispatchQueue.main.async {
-                        //                        // May need to interact with ImagePicker class
-                        //                        self.myImageView.image = nil
-                        //                    }
-                        
-                        //                        } catch
-                        //                        {
-                        //                            print(error)
-                        //                        }
-                        
+                    // Populate trips
+                    for item in items {
+                        // Just the filename
+                        print("\(item)")
+                        trip.files?.append(TripFile(fileName: item, isUploaded: false))
                     }
-                    task.resume()
-                } // end if
-            } // end for
+                } catch {
+                    // failed to read directory – bad permissions, perhaps?
+                    print("Directory loop error")
+                }
+                
+                
+                // Get file items
+                let items = trip.files
+                
+                // get total number of files
+                DispatchQueue.main.async {
+                    self.totalFiles = items?.count ?? 0
+                }
+                
+                // Reset counters
+                DispatchQueue.main.async {
+                    self.totalUploaded = 0
+                }
+                //            uploadProg = 0
+                
+                // get total of uploaded
+                for item in items ?? [] {
+                    if item.isUploaded {
+                        print("\(item.fileName) has already been uploaded!")
+                        DispatchQueue.main.async {
+                            self.totalUploaded += 1
+                        }
+                    }
+                }
+                
+                
+                
+                // loop through files in trip array
+                for item in items ?? [] {
+                    
+                    // if isUploaded = false
+                    if (!item.isUploaded) {
+                        
+                        // path to save the file:
+                        let pathAndFile = "\(uploadFilePath)/\(item.fileName)"
+                        
+                        // path to get the file:
+                        getFile = path.appendingPathComponent(item.fileName)
+                        
+                        request.httpBody = self.createBodyWithParameters(parameters: param, filePathKey: "file", fileData: NSData(contentsOf: getFile)!, boundary: boundary, uploadFilePath: pathAndFile)
+                        
+                        // myActivityIndicator.startAnimating();
+                        
+                        let task = URLSession.shared.dataTask(with: request as URLRequest) {
+                            data, response, error in
+                            
+                            if error != nil {
+                                print("error=\(String(describing: error))")
+                                return
+                            }
+                            
+                            // You can print out response object
+                            print("******* response = \(String(describing: response))")
+                            
+                            // Print out reponse body
+                            DispatchQueue.main.async { [self] in
+                                self.responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+                                print("****** response data = \(self.responseString!)")
+                                if (self.responseString ?? "nada").contains("successfully!") {
+                                    DispatchQueue.main.async {
+                                        self.totalUploaded += 1
+                                    }
+                                    item.isUploaded = true
+                                    print("\(item.fileName) is uploaded!")
+                                }
+                                // If all files successfully uploaded, set allFilesUploaded to true
+                                if (totalFiles == totalUploaded) {
+                                    //                                trip.allFilesUploaded = true
+                                    print("All files uploaded!")
+                                }
+                                self.isResponseReceived = true
+                            }
+                            
+                            //                // Display response to user
+                            //                self.uploadResponseMessage = UIAlertController(title: "Response", message: responseString! as String, preferredStyle: .alert)
+                            //                // Create OK button with action handler
+                            //                let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
+                            //                    print("Response Ok button tapped")
+                            //                 })
+                            //                //Add OK button to a dialog message
+                            //                self.uploadResponseMessage.addAction(ok)
+                            
+                            //                        do {
+                            // For debugging?
+                            //                            let json = try JSONSerialization.jsonObject(with: data!, options: []) as? NSDictionary
+                            //
+                            //                            print("-------PRINTING JSON-------")
+                            //                            print(json as Any)
+                            
+                            // From original example?
+                            // dispatch_async(dispatch_get_main_queue() is Obj-C
+                            //                    dispatch_async(dispatch_get_main_queue(),{
+                            //                        self.myActivityIndicator.stopAnimating()
+                            //                        self.myImageView.image = nil;
+                            //                    })
+                            //                    DispatchQueue.main.async {
+                            //                        // May need to interact with ImagePicker class
+                            //                        self.myImageView.image = nil
+                            //                    }
+                            
+                            //                        } catch
+                            //                        {
+                            //                            print(error)
+                            //                        }
+                            
+                        }
+                        task.resume()
+                    } // end if
+                } // end for
+            }
     }
     
     
