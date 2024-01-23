@@ -21,6 +21,9 @@ struct CompletedTripView: View {
     // Activate UploadImage class
     @ObservedObject var uploadImage = UploadImage()
     
+    // For progress bar
+//    @State private var uploadProg = 0.0
+    
     var body: some View {
         Spacer()
         Text("Trip \(tripName) is complete!")
@@ -34,21 +37,24 @@ struct CompletedTripView: View {
             if (item.name == tripName){
                 // If no upload, show button
                 if (!item.allFilesUploaded) {
-                    Button {
+                    VStack{
+                        ProgressView("File \(uploadImage.totalUploaded) of \(uploadImage.totalFiles) Uploaded", value: Double(uploadImage.totalUploaded), total: Double(uploadImage.totalFiles))
+                        Button {
                             // Funciton to upload files. Upload needs to know where it left off if there was an error? Alert user if no signal; don't initiate upload? (Don't show button if no signal?)
-                        uploadImage.myFileUploadRequest(tripName: tripName, uploadScriptURL: settings[0].uploadScriptURL, trip: item)
-                    } label: {
-                        HStack {
-                            Image(systemName: "square.and.arrow.up")
-                                .font(.system(size: 20))
-                            Text("Upload Trip")
-                                .font(.headline)
+                            uploadImage.myFileUploadRequest(tripName: tripName, uploadScriptURL: settings[0].uploadScriptURL, trip: item)
+                        } label: {
+                            HStack {
+                                Image(systemName: "square.and.arrow.up")
+                                    .font(.system(size: 20))
+                                Text("Upload Remaining Trip Files")
+                                    .font(.headline)
+                            }
+                            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+                            .background(Color.orange)
+                            .foregroundColor(.white)
+                            .cornerRadius(20)
+                            .padding(.horizontal)
                         }
-                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
-                        .background(Color.orange)
-                        .foregroundColor(.white)
-                        .cornerRadius(20)
-                        .padding(.horizontal)
                     }
                 } else {Text("Trip uploaded!")}
             }
