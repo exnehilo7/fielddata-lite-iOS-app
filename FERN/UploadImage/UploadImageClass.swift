@@ -87,12 +87,6 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
                 let request = NSMutableURLRequest(url:myUrl! as URL)
                 request.httpMethod = "POST"
                 
-                let param = [
-                    "firstName"     : "FERN",
-                    "lastName"      : "Demo",
-                    "userId"        : "0"
-                ]
-                
                 let boundary = self.generateBoundaryString()
                 
                 request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
@@ -163,7 +157,12 @@ class UploadImage: NSObject, UINavigationControllerDelegate, ObservableObject {
                     }
                 }
                 
-                
+                let param = [
+                    "firstName"     : "FERN",
+                    "lastName"      : "Demo",
+                    "userId"        : "0",
+                    "fileSavePath"  : "\(uploadFilePath)"
+                ]
                 
                 // loop through files in trip array
                 for item in items ?? [] {
