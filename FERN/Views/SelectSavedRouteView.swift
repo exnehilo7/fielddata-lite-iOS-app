@@ -33,7 +33,7 @@ struct SelectSavedRouteView: View {
                 List (self.areaList) { (area) in
                     NavigationLink(area.name) {
                         // Pass var to view. Query for route does not need a column or organism name.
-                        MapView(areaName: area.name, columnName: "", organismName: "", queryName: "query_get_route_for_app")
+                        MapWithNMEAView(areaName: area.name, columnName: "", organismName: "", queryName: "query_get_route_for_app")
                     }
                     .bold()
                 }

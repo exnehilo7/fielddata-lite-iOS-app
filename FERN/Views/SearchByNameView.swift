@@ -54,7 +54,7 @@ struct SearchByNameView: View {
                     if hasResults && (resultsCount < 100){
                         VStack{
                             NavigationLink {
-                                MapView(areaName: areaName, columnName: columnName, organismName: organismName,
+                                MapWithNMEAView(areaName: areaName, columnName: columnName, organismName: organismName,
                                         queryName: "query_search_org_name_by_site")
                             } label: {
                                 HStack {
