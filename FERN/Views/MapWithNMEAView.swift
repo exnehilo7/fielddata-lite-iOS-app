@@ -46,8 +46,20 @@ struct MapWithNMEAView: View {
     @State private var hasDistanceAndBearingResult = false
     @State private var distance = "0"
     @State private var bearing = "0"
+    
+    // Start and end lat and longs
     @State private var startLong = "0"
     @State private var startLat = "0"
+    @State private var startLongFloat = 0.0
+    @State private var startLatFloat = 0.0
+    @State private var endLongFloat = 0.0
+    @State private var endLatFloat = 0.0
+    
+    // Show take pic button
+    @State private var showPicButton = false
+    
+    // Sounds
+    let audio = playSound()
     
     // To hold Annotated Map Point Models
     @State private var annotationItems = [MapAnnotationItem]()
@@ -132,6 +144,17 @@ struct MapWithNMEAView: View {
                     gpsModeIsSelected = true
                     // To prevent the device feed from being interruped, disable autosleep
                     UIApplication.shared.isIdleTimerDisabled = true
+                    
+                    // Convert strings to floats for rounding and comaprisons
+                    startLongFloat = (clLong as NSString).doubleValue
+                    startLatFloat = (clLat as NSString).doubleValue
+                    endLongFloat = annotationItems[currentAnnoItem].longitude
+                    endLatFloat = annotationItems[currentAnnoItem].latitude
+                    // Round at 6 decimals
+                    startLongFloat = round(1000000 * startLongFloat) / 1000000
+                    startLatFloat = round(1000000 * startLatFloat) / 1000000
+                    endLongFloat = round(1000000 * endLongFloat) / 1000000
+                    endLatFloat = round(1000000 * endLongFloat) / 1000000
                 } label: {
                     Label("Use Standard GPS", systemImage: "location.fill")
                 }.buttonStyle(.borderedProminent)
@@ -146,11 +169,26 @@ struct MapWithNMEAView: View {
                     gpsModeIsSelected = true
                     // To prevent the device feed from being interruped, disable autosleep
                     UIApplication.shared.isIdleTimerDisabled = true
+                    
+                    // Convert strings to floats for rounding and comaprisons
+                    startLongFloat = ((nmea.longitude ?? "0.0000") as NSString).doubleValue
+                    startLatFloat = ((nmea.latitude ?? "0.0000") as NSString).doubleValue
+                    endLongFloat = annotationItems[currentAnnoItem].longitude
+                    endLatFloat = annotationItems[currentAnnoItem].latitude
+                    // Round at 6 decimals
+                    startLongFloat = round(1000000 * startLongFloat) / 1000000
+                    startLatFloat = round(1000000 * startLatFloat) / 1000000
+                    endLongFloat = round(1000000 * endLongFloat) / 1000000
+                    endLatFloat = round(1000000 * endLongFloat) / 1000000
                 } label: {
                     Label("Use Arrow Gold Device", systemImage: "antenna.radiowaves.left.and.right").foregroundColor(.black)
                 }.buttonStyle(.borderedProminent).tint(.yellow)
             }.padding(.trailing, 20)
-        }
+        // (THIS SHOULD CHECK CONSTANTLY?)
+        }.onAppear(perform: {
+            // if start lat long = end lat long, let user take pic.
+            if (startLongFloat == endLongFloat && startLatFloat == endLatFloat) {showPicButton = true; audio.playDing()}
+        })
     }
     
     // Where is next? button
@@ -171,6 +209,10 @@ struct MapWithNMEAView: View {
                 if (startLong != "0.0000" && startLat != "0.0000"){
                     await getDistanceAndBearing()
                 }
+                
+                // JUST IN CASE THE CHECK IS NOT AUTO:
+                // if start lat long = end lat long, let user take pic.
+                if (startLongFloat == endLongFloat && startLatFloat == endLatFloat) {showPicButton = true; audio.playDing()}
             }
         } label: {
             VStack{
@@ -183,6 +225,15 @@ struct MapWithNMEAView: View {
                 }
             }
         }.buttonStyle(.borderedProminent).tint(.green).padding(.bottom, 25).font(.system(size:15))
+    }
+    
+    // Take pic button (replace with a show swipe-up? use an auto swipe up?)
+    var takePic: some View {
+        Button {
+            showPicButton = false
+        } label: {
+            Text("Take pic")
+        }.buttonStyle(.borderedProminent).tint(.orange)
     }
     
     
@@ -203,14 +254,17 @@ struct MapWithNMEAView: View {
                         }
                     }.padding(.trailing, 25)
                 }
-                // Show device's current position
+                // Show device's current position if GPS method is selected
                 if gpsModeIsSelected {
-                    if showArrowGold {
-                        arrowGpsData
-                    }
-                    else {
-                        coreLocationGpsData
-                    }
+                    // show take pic button (or activate swipe-up) if start lat long = dest lat long
+                    if !showPicButton {
+                        if showArrowGold {
+                            arrowGpsData
+                        }
+                        else {
+                            coreLocationGpsData
+                        }
+                    } else { takePic }
                 }
                 else {
                     selectGpsMode
