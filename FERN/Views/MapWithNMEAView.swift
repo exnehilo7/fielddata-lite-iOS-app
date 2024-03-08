@@ -38,8 +38,14 @@ struct MapWithNMEAView: View {
     @State private var totalAnnoItems = 0
     
     // For map points PHP response
-    @State private var searchResults: [TempMapPointModel] = []
-    @State private var hasResults = false
+    @State private var mapResults: [TempMapPointModel] = []
+    @State private var hasMapPointsResults = false
+    
+    //Distance and bearing PHP response
+    @State private var distanceAndBearingResult: TempDistanceAndBearingModel()
+    @State private var hasDistanceAndBearingResult = false
+    @State private var distance = 0.0
+    @State private var bearing = 0.0
     
     // To hold Annotated Map Point Models
     @State private var annotationItems = [MapAnnotationItem]()
@@ -95,7 +101,7 @@ struct MapWithNMEAView: View {
             HStack {
                 Text("GPS Used: ") + Text(nmea.gpsUsed ?? "No GPS")
             }
-        }.font(.system(size: 12)).foregroundColor(.white)
+        }.font(.system(size: 12))//.foregroundColor(.white)
     }
     
     // iOS Core Location
@@ -112,7 +118,7 @@ struct MapWithNMEAView: View {
                 Text("Horz Acc (m): ") + Text("\(clHorzAccuracy)")
                 Text("Vert Acc (m): ") + Text("\(clVertAccuracy)")
             }
-        }.font(.system(size: 12)).foregroundColor(.white)
+        }.font(.system(size: 12))//.foregroundColor(.white)
     }
     //------------------------------------------------------------------
     
@@ -145,8 +151,22 @@ struct MapWithNMEAView: View {
         }
     }
     
+    // Where is next? button
+    var whereIsNext: some View {
+        Button {
+            getDistanceAndBearing()
+        } label: {
+            HStack{
+                Label("Where is next?")
+                if hasDistanceAndBearingResult {
+                    Label("B: \(bearing)°; D: \(distance)(m)")
+                }
+            }
+        }.buttonStyle(.borderedProminent).tint(.green)
+    }
     
     
+    // MARK: Body
     var body: some View {
         
        // ZStack(alignment: .center) {
@@ -155,7 +175,7 @@ struct MapWithNMEAView: View {
                     Spacer()
                     Button ("Reset Route Markers"){
                         Task {
-                            hasResults = false
+                            hasMapPointsResults = false
                             currentAnnoItem = 0
                             totalAnnoItems = 0
                             annotationItems.removeAll(keepingCapacity: true)
@@ -202,7 +222,7 @@ struct MapWithNMEAView: View {
                     } // end add points
                 }.task { await getMapPoints()}
             // Don't display if no results
-            if hasResults {
+            if hasMapPointsResults {
                VStack {
                    // Show organism name of the selected point
                    Text(annotationItems[currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold) //.background(.white)
@@ -221,6 +241,8 @@ struct MapWithNMEAView: View {
                        // backward
                        Button(action: {
                            cycleAnnotations(forward: false, 1)
+                           // hide distance and bearing
+                           hasDistanceAndBearingResult = false
                            // Alert user if Arrow feed has stopped or values are zero
                            if showArrowGold {
                                if nmea.hasNMEAStreamStopped ||
@@ -240,6 +262,8 @@ struct MapWithNMEAView: View {
                        // forward
                        Button(action:  {
                            cycleAnnotations(forward: true, -1)
+                           // hide distance and bearing
+                           hasDistanceAndBearingResult = false
                            // Alert user if Arrow feed has stopped or values are zero
                            if showArrowGold {
                                if nmea.hasNMEAStreamStopped ||
@@ -255,13 +279,17 @@ struct MapWithNMEAView: View {
                            }
                        }).padding(.leading, 20)
                            .alert(article.title, isPresented: $showAlert, presenting: article) {article in Button("OK"){showAlert = false}} message: {article in Text(article.description)}
+                       
+                       // Where is next? button
+                       whereIsNext
                    }.padding(.bottom, 20)
                } // end vstack
-           } // end if hasResults
+           } // end if hasMapPointsResults
         }
     } //end body view
     
     
+    // MARK: Functions
     // Make sure forward and backward cycling will stay within the annotation's item count.
     private func cycleAnnotations (forward: Bool, _ offset: Int ){
         
@@ -314,15 +342,15 @@ struct MapWithNMEAView: View {
                 decoder.dateDecodingStrategy = .deferredToDate
                 
                 // Get list of points
-                self.searchResults = try decoder.decode([TempMapPointModel].self, from: data)
+                self.mapResults = try decoder.decode([TempMapPointModel].self, from: data)
                 
                 // dont insert if result is empty
-                if !searchResults.isEmpty {
+                if !mapResults.isEmpty {
                     
-                    totalAnnoItems = (searchResults.count - 1) // adjust for array 0-indexing
+                    totalAnnoItems = (mapResults.count - 1) // adjust for array 0-indexing
                     
                     // Put results in an array
-                    for result in searchResults {
+                    for result in mapResults {
                         annotationItems.append(MapAnnotationItem(
                             latitude: Double(result.lat) ?? 0,
                             longitude: Double(result.long) ?? 0,
@@ -333,12 +361,12 @@ struct MapWithNMEAView: View {
                     }
                     
                     // Set staring regoin to the first point in the list
-                    self.region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: Double(searchResults[0].lat) ?? 0, longitude: Double(searchResults[0].long) ?? 0),
+                    self.region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: Double(mapResults[0].lat) ?? 0, longitude: Double(mapResults[0].long) ?? 0),
                         span: MKCoordinateSpan(latitudeDelta: 0.015, longitudeDelta: 0.015))
                     
                     // Don't show items if no data
-                    if hasResults == false {
-                        hasResults.toggle()
+                    if hasMapPointsResults == false {
+                        hasMapPointsResults.toggle()
                     }                          
                 }
                 
@@ -354,9 +382,76 @@ struct MapWithNMEAView: View {
             } catch let error as NSError {
                 NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
             } catch {
-                searchResults = []
+                mapResults = []
             }
     }// end getMapPoints
+    
+    // get distance and bearing to the next selected map point
+    private func getDistanceAndBearing () async {
+
+        guard let url: URL = URL(string: settings[0].databaseURL + "/php/getDistanceAndBearing.php") else {
+            Swift.print("invalid URL")
+            return
+        }
+        
+        var request: URLRequest = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        private var startLong = 0.0
+        private var startLat = 0.0
+        
+        if showArrowGold {
+            startLong = nmea.longitude ?? "0"
+            startLat = nmea.latitude ?? "0"
+        }
+        else {
+            startLong = clLong
+            startLat = clLat
+        }
+        
+        let postString = "_start_long=\(startLong)&_start_lat=\(startLat)&_end_long=\(annotationItems[currentAnnoItem].longitude)&_end_lat=\(annotationItems[currentAnnoItem].latitude)"
+        
+        let postData = postString.data(using: .utf8)
+        
+            do {
+                let (data, _) = try await URLSession.shared.upload(for: request, from: postData!, delegate: nil)
+                
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .useDefaultKeys
+                decoder.dataDecodingStrategy = .deferredToData
+                decoder.dateDecodingStrategy = .deferredToDate
+                
+                // Get result
+                self.distanceAndBearingResult = try decoder.decode(TempMapPointModel.self, from: data)
+                
+                // dont update vars if result is empty
+                if !distanceAndBearingResult.isEmpty {
+                    
+                    // Put results in an vars
+                    distance.self = distanceAndBearingResult.distance
+                    bearing.self = distanceAndBearingResult.bearing
+                    
+                    // Don't show items if no data
+                    if hasDistanceAndBearingResult == false {
+                        hasDistanceAndBearingResult.toggle()
+                    }
+                }
+                
+            // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
+            } catch DecodingError.keyNotFound(let key, let context) {
+                Swift.print("could not find key \(key) in JSON: \(context.debugDescription)")
+            } catch DecodingError.valueNotFound(let type, let context) {
+                Swift.print("could not find type \(type) in JSON: \(context.debugDescription)")
+            } catch DecodingError.typeMismatch(let type, let context) {
+                Swift.print("type mismatch for type \(type) in JSON: \(context.debugDescription)")
+            } catch DecodingError.dataCorrupted(let context) {
+                Swift.print("data found to be corrupted in JSON: \(context.debugDescription)")
+            } catch let error as NSError {
+                NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
+            } catch {
+                distanceAndBearingResult = ()
+            }
+    }//end get distance and bearing
     
 }// end MapView view
 
