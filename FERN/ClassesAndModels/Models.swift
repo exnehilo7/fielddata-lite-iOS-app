@@ -122,6 +122,35 @@ extension TempMapPointModel: Codable {
 //     var TempMapPointModelArray:[TempMapPointModel] = [TempMapPointModel]()
 //}
 
+// temp model for distance and bearing return from PHP POST
+struct TempDistanceAndBearingModel: Identifiable {
+    let id = UUID() // if changed to class, DO NOT SET TO MUTABLE
+    var distance = ""
+    var bearing = ""
+    
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+    
+            try container.encode(distance, forKey: .distance)
+            try container.encode(bearing, forKey: .bearing)
+        }
+    
+        init() { }
+    
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+    
+            distance = try container.decode(String.self, forKey: .distance)
+            bearing = try container.decode(String.self, forKey: .bearing)
+        }
+    
+}
+extension TempMapPointModel: Codable {
+    enum CodingKeys: CodingKey {
+        case distance, bearing
+    }
+}
+
 // Model for map annotations
 struct MapAnnotationItem: Identifiable {
     let id = UUID()
