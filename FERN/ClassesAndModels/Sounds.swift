@@ -52,4 +52,16 @@ public struct playSound {
         AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate, nil)
     }
 
+    // Ding!
+    func playDing() {
+        
+        var complete: SystemSoundID = .zero
+        
+        if complete == .zero {
+            complete = createSysSound(fileName: "/System/Library/Audio/UISounds/SIMToolkitPositiveACK.caf")
+        }
+        AudioServicesPlaySystemSound(complete)
+        // Add a vibrate
+        AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate, nil)
+    }
 }
