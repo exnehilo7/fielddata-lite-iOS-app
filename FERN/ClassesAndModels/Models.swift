@@ -145,7 +145,7 @@ struct TempDistanceAndBearingModel: Identifiable {
         }
     
 }
-extension TempMapPointModel: Codable {
+extension TempDistanceAndBearingModel: Codable {
     enum CodingKeys: CodingKey {
         case distance, bearing
     }

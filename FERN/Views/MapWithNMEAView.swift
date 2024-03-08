@@ -42,10 +42,12 @@ struct MapWithNMEAView: View {
     @State private var hasMapPointsResults = false
     
     //Distance and bearing PHP response
-    @State private var distanceAndBearingResult: TempDistanceAndBearingModel()
+    @State private var distanceAndBearingResult: [TempDistanceAndBearingModel] = []
     @State private var hasDistanceAndBearingResult = false
-    @State private var distance = 0.0
-    @State private var bearing = 0.0
+    @State private var distance = "0"
+    @State private var bearing = "0"
+    @State private var startLong = "0"
+    @State private var startLat = "0"
     
     // To hold Annotated Map Point Models
     @State private var annotationItems = [MapAnnotationItem]()
@@ -154,15 +156,33 @@ struct MapWithNMEAView: View {
     // Where is next? button
     var whereIsNext: some View {
         Button {
-            getDistanceAndBearing()
-        } label: {
-            HStack{
-                Label("Where is next?")
-                if hasDistanceAndBearingResult {
-                    Label("B: \(bearing)°; D: \(distance)(m)")
+            Task {
+                // Get starting lat and long
+                if showArrowGold {
+                    startLong = nmea.longitude ?? "0.0000"
+                    startLat = nmea.latitude ?? "0.0000"
+                }
+                else {
+                    startLong = clLong
+                    startLat = clLat
+                }
+                
+                // if not default values, call
+                if (startLong != "0.0000" && startLat != "0.0000"){
+                    await getDistanceAndBearing()
                 }
             }
-        }.buttonStyle(.borderedProminent).tint(.green)
+        } label: {
+            VStack{
+                // Flip text based on result
+                if !hasDistanceAndBearingResult {
+                    Text("Point to next")
+                }
+                if hasDistanceAndBearingResult {
+                    Text("\(bearing)°; \(distance)(m)")
+                }
+            }
+        }.buttonStyle(.borderedProminent).tint(.green).padding(.bottom, 25).font(.system(size:15))
     }
     
     
@@ -397,18 +417,6 @@ struct MapWithNMEAView: View {
         var request: URLRequest = URLRequest(url: url)
         request.httpMethod = "POST"
         
-        private var startLong = 0.0
-        private var startLat = 0.0
-        
-        if showArrowGold {
-            startLong = nmea.longitude ?? "0"
-            startLat = nmea.latitude ?? "0"
-        }
-        else {
-            startLong = clLong
-            startLat = clLat
-        }
-        
         let postString = "_start_long=\(startLong)&_start_lat=\(startLat)&_end_long=\(annotationItems[currentAnnoItem].longitude)&_end_lat=\(annotationItems[currentAnnoItem].latitude)"
         
         let postData = postString.data(using: .utf8)
@@ -422,14 +430,16 @@ struct MapWithNMEAView: View {
                 decoder.dateDecodingStrategy = .deferredToDate
                 
                 // Get result
-                self.distanceAndBearingResult = try decoder.decode(TempMapPointModel.self, from: data)
+                self.distanceAndBearingResult = try decoder.decode([TempDistanceAndBearingModel].self, from: data)
                 
                 // dont update vars if result is empty
                 if !distanceAndBearingResult.isEmpty {
                     
                     // Put results in an vars
-                    distance.self = distanceAndBearingResult.distance
-                    bearing.self = distanceAndBearingResult.bearing
+                    for result in distanceAndBearingResult {
+                        distance.self = result.distance
+                        bearing.self = result.bearing
+                    }
                     
                     // Don't show items if no data
                     if hasDistanceAndBearingResult == false {
@@ -449,7 +459,7 @@ struct MapWithNMEAView: View {
             } catch let error as NSError {
                 NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
             } catch {
-                distanceAndBearingResult = ()
+                distanceAndBearingResult = distanceAndBearingResult
             }
     }//end get distance and bearing
     
