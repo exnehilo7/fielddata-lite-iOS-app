@@ -51,6 +51,11 @@ struct SelectTripView: View {
                             }
                             Text(item.name)
                         }
+                    }.onTapGesture{
+                       // Toggle upload complete
+                        if item.allFilesUploaded {
+                            item.allFilesUploaded = false
+                        }
                     }
                 }
                 .onDelete(perform: deleteTrip)

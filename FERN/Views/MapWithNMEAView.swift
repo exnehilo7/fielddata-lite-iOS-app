@@ -151,10 +151,10 @@ struct MapWithNMEAView: View {
                     endLongFloat = annotationItems[currentAnnoItem].longitude
                     endLatFloat = annotationItems[currentAnnoItem].latitude
                     // Round at 6 decimals
-                    startLongFloat = round(1000000 * startLongFloat) / 1000000
-                    startLatFloat = round(1000000 * startLatFloat) / 1000000
-                    endLongFloat = round(1000000 * endLongFloat) / 1000000
-                    endLatFloat = round(1000000 * endLongFloat) / 1000000
+                    startLongFloat = round(100000 * startLongFloat) / 100000
+                    startLatFloat = round(100000 * startLatFloat) / 100000
+                    endLongFloat = round(100000 * endLongFloat) / 100000
+                    endLatFloat = round(100000 * endLongFloat) / 100000
                 } label: {
                     Label("Use Standard GPS", systemImage: "location.fill")
                 }.buttonStyle(.borderedProminent)
@@ -176,10 +176,10 @@ struct MapWithNMEAView: View {
                     endLongFloat = annotationItems[currentAnnoItem].longitude
                     endLatFloat = annotationItems[currentAnnoItem].latitude
                     // Round at 6 decimals
-                    startLongFloat = round(1000000 * startLongFloat) / 1000000
-                    startLatFloat = round(1000000 * startLatFloat) / 1000000
-                    endLongFloat = round(1000000 * endLongFloat) / 1000000
-                    endLatFloat = round(1000000 * endLongFloat) / 1000000
+                    startLongFloat = round(100000 * startLongFloat) / 100000
+                    startLatFloat = round(100000 * startLatFloat) / 100000
+                    endLongFloat = round(100000 * endLongFloat) / 100000
+                    endLatFloat = round(100000 * endLongFloat) / 100000
                 } label: {
                     Label("Use Arrow Gold Device", systemImage: "antenna.radiowaves.left.and.right").foregroundColor(.black)
                 }.buttonStyle(.borderedProminent).tint(.yellow)
