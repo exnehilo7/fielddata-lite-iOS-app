@@ -38,7 +38,7 @@ struct UploadImageView: View {
     @State private var isShowUploadButton = false
     @State private var image = UIImage()
     
-    @ObservedObject var uploadImage = UploadImage()
+//    @ObservedObject var uploadImage = UploadImage() // UploadImage class' varables and functions were moved into CompletedTripView
     let myPickerController = UIImagePickerController()
     
     var arrowGpsData: some View {
@@ -88,7 +88,7 @@ struct UploadImageView: View {
     // Get a message from Upload Image
     var responseMessage: some View {
         VStack {
-            Text("PHP Response: \(uploadImage.responseString ?? "None")")
+//            Text("PHP Response: \(uploadImage.responseString ?? "None")")
         }.font(.system(size: 20))
             .padding()
     }
@@ -120,7 +120,7 @@ struct UploadImageView: View {
                     HStack {
                         Button(action: {
                             self.isShowCamera = true
-                            uploadImage.setResponseMsgToBlank()
+//                            uploadImage.setResponseMsgToBlank()
                         }) {
                             HStack {
                                 Image(systemName: "photo")
