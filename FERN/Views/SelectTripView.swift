@@ -47,16 +47,22 @@ struct SelectTripView: View {
                                 Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
                             }
                             if item.allFilesUploaded {
-                                Image(systemName: "checkmark.circle.fill").foregroundStyle(.orange)
+                                Image(systemName: "checkmark.circle.fill").foregroundStyle(.orange).onTapGesture{
+                                    // Toggle upload complete
+                                     if item.allFilesUploaded {
+                                         item.allFilesUploaded = false
+                                     }
+                                 }
                             }
                             Text(item.name)
                         }
-                    }.onTapGesture{
-                       // Toggle upload complete
-                        if item.allFilesUploaded {
-                            item.allFilesUploaded = false
-                        }
                     }
+//                    .onTapGesture{
+//                       // Toggle upload complete
+//                        if item.allFilesUploaded {
+//                            item.allFilesUploaded = false
+//                        }
+//                    }
                 }
                 .onDelete(perform: deleteTrip)
                 // Notify user that pics and metadata will remain in the trip folder
