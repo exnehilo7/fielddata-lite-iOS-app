@@ -116,6 +116,8 @@ struct CompletedTripView: View {
 //        var getFile: URL
         var uploadFilePath: String
         
+        var fileList: [String] = []
+        
         // Get device ID and make path
         if let deviceUuid = await UIDevice.current.identifierForVendor?.uuidString
         {
@@ -136,7 +138,7 @@ struct CompletedTripView: View {
                 //                    print(super.defaultDirectoryURL().absoluteURL(storePathURL))
                 
                 // Clear trips
-                trip.files?.removeAll()
+//                trip.files?.removeAll()
                 
 //                semaphore.signal()
 //            }
@@ -147,7 +149,9 @@ struct CompletedTripView: View {
         for item in items {
             // Just the filename
             //                print("\(item)")
-            trip.files?.append(TripFile(fileName: item, isUploaded: false))
+//            trip.files?.append(TripFile(fileName: item, isUploaded: false))
+            fileList.append(item)
+            
         }
         } catch {
             // failed to read directory – bad permissions, perhaps?
@@ -156,10 +160,11 @@ struct CompletedTripView: View {
         
         
         // Get file items
-        let items = trip.files
+//        let items = trip.files
         
         // get total number of files
-        self.totalFiles = items?.count ?? 0
+//        self.totalFiles = items?.count ?? 0
+        self.totalFiles = fileList.count
         
         // Reset counters
 //                    self.totalUploaded = 0
@@ -178,10 +183,10 @@ struct CompletedTripView: View {
         
         // upload txt file first
         // loop through files in trip array
-        for item in items ?? [] {
-            if item.fileName.contains(".txt") {
+        for item in fileList {
+            if item.contains(".txt") {
                 
-                processFile(item: item, uploadFilePath: uploadFilePath,
+                await processFile(item: item, uploadFilePath: uploadFilePath,
                              boundary: boundary, request: request,
                              path: path, trip: trip)
             }
@@ -189,12 +194,12 @@ struct CompletedTripView: View {
         
         // Upload non-txt files
         // loop through files in trip array
-        for item in items ?? [] {
-            if !item.fileName.contains(".txt") {
+        for item in fileList {
+            if !item.contains(".txt") {
                 // Ignore if already uploaded
 //                if (!item.isUploaded) {
                     
-                    processFile(item: item, uploadFilePath: uploadFilePath,
+                    await processFile(item: item, uploadFilePath: uploadFilePath,
                                  boundary: boundary, request: request,
                                  path: path, trip: trip)
                 
@@ -207,9 +212,9 @@ struct CompletedTripView: View {
         isLoading = false
     }
     
-    private func processFile(item: TripFile, uploadFilePath: String,
-                             boundary: String, request: NSMutableURLRequest, 
-                             path: URL, trip: SDTrip){
+    private func processFile(item: String, uploadFilePath: String,
+                             boundary: String, request: NSMutableURLRequest,
+                             path: URL, trip: SDTrip) async {
         
         //KeyValuePairs
         let paramDict = [
@@ -217,81 +222,86 @@ struct CompletedTripView: View {
             "lastName"      : "Demo",
             "userId"        : "0",
             "fileSavePath"  : "\(uploadFilePath)",
-            "fileName"      : "\(item.fileName)"
+            "fileName"      : "\(item)"
         ]
         
         // path to save the file:
-        let pathAndFile = "\(uploadFilePath)/\(item.fileName)"
+        let pathAndFile = "\(uploadFilePath)/\(item)"
         
         // path to get the file:
-        let getFile = path.appendingPathComponent(item.fileName)
+        let getFile = path.appendingPathComponent(item)
+        
+        // Toggle thread pauses until URLSessions complete
+        let semaphore = DispatchSemaphore(value: 0)
         
         // Is uploaded?
-        if !doesFileExist(item: item, request: request, params: paramDict, trip: trip) {
+        if await !doesFileExist(fileName: item, params: paramDict, trip: trip, semaphore: semaphore) {
             // Upload file
-            request.httpBody = self.createBodyWithParameters(parameters: paramDict, filePathKey: "file", fileData: NSData(contentsOf: getFile)!, boundary: boundary, uploadFilePath: pathAndFile)
-            uploadFile(item: item, request: request, trip: trip)
+            request.httpBody = self.createBodyWithParameters(parameters: paramDict, filePathKey: "file", 
+                                                             fileData: NSData(contentsOf: getFile)!,
+                                                             boundary: boundary, uploadFilePath: pathAndFile)
+            uploadFile(fileName: item, request: request, trip: trip, semaphore: semaphore)
         }
         
         // myActivityIndicator.startAnimating();
     }
     
-    private func doesFileExist(item: TripFile, request: NSMutableURLRequest, params: [String:String], trip: SDTrip) -> Bool {
+    private func doesFileExist(fileName: String, params: [String:String],
+                               trip: SDTrip, semaphore: DispatchSemaphore) async -> Bool {
         
         var exists = false
         
-        let httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
+        // Apparently to do a upload POST with no file, a "clean" URL and the do..let..try..await URLSession.shared.upload is needed?
+        guard let url: URL = URL(string: settings[0].uploadScriptURL) else {
+            Swift.print("invalid URL")
+            return exists
+        }
         
-        request.httpBody = httpBody
+        var request: URLRequest = URLRequest(url: url)
+        request.httpMethod = "POST"
         
-        // Pause the thread until this dataTask completes
-//        let semaphore = DispatchSemaphore(value: 0)
-        URLSession.shared.dataTask(with: request as URLRequest) {(data, response, error)  in
-            
-            if error != nil {
-                print("🔴 error=\(String(describing: error))")
-                // signal to continue
-//                semaphore.signal()
-                return
-            }
+        let fileSavePath:String = params["fileSavePath"] ?? ""
+        let fileName:String = params["fileName"] ?? ""
+        
+        let postString = "fileSavePath=\(fileSavePath)&fileName=\(fileName)"
+        
+        let postData = postString.data(using: .utf8)
+        
+        do {
+            let (data, response) = try await URLSession.shared.upload(for: request as URLRequest, from: postData!, delegate: nil)
             
             let statusCode = (response as! HTTPURLResponse).statusCode
-                // is 200?
+            // is 200?
             if statusCode == 200 {
                 
                 // Get response
-                self.responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
-                // Is success?
+                self.responseString = NSString(data: data, encoding: NSUTF8StringEncoding)
+                // Exists?
                 if (self.responseString ?? "nada").contains("file exists!") {
-                    print("🟠 \(item.fileName) already exists.")
+                    print("🟠 \(fileName) already exists.")
                     self.totalUploaded += 1
                     exists = true
-//                    return
-                } else {
-                    print("🟡 Status code: \(statusCode)")
                 }
+                
+                if (totalFiles == totalUploaded) {
+                    trip.allFilesUploaded = true
+                    print("🔵 All files uploaded!")
+                }
+                
+            } else {
+                print("🟡 Status code: \(statusCode)")
             }
-            if (totalFiles == totalUploaded) {
-                trip.allFilesUploaded = true
-                print("🔵 All files uploaded!")
-//                    return
-            }
-            
-            // signal to continue
-//            semaphore.signal()
-        }.resume()
-        // Hit pause
-//        _ = semaphore.wait(timeout: DispatchTime.distantFuture)
+        } catch let error as NSError {
+            NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
+        }
         
         return exists
     }
     
-    private func uploadFile(item: TripFile, request: NSMutableURLRequest, trip: SDTrip) {
+    private func uploadFile(fileName: String, request: NSMutableURLRequest, trip: SDTrip, semaphore: DispatchSemaphore) {
         
-        print("🟣 uploadFile is firing!")
+        print("Uploading \(fileName)...")
         
-        // Pause the thread until the upload process completes
-        let semaphore = DispatchSemaphore(value: 0)
         // Upload file
         URLSession.shared.dataTask(with: request as URLRequest) {
             data, response, error in
@@ -306,11 +316,7 @@ struct CompletedTripView: View {
             // You can print out response object
 //            print("******* response = \(String(describing: response))")
             
-            print("Uploading \(item.fileName)...")
-            
             // Print out reponse body
-//            Task { [self] in
-//            DispatchQueue.main.async { [self] in // Apparently Task is better than DispatchQueue.main.async? (but we want to sync the uploads; wait until the process completes before moving to the next file in the list.
             let statusCode = (response as! HTTPURLResponse).statusCode
                 // is 200?
                 if statusCode == 200 {
@@ -321,30 +327,17 @@ struct CompletedTripView: View {
                     // Is success?
                     if (self.responseString ?? "nada").contains("successfully!") {
                         self.totalUploaded += 1
-//                        item.isUploaded = true
-
-                        print("🟢 \(item.fileName) is uploaded!")
-                        
-                        // signal the for loop to continue
-//                        semaphore.signal()
-                    // File exists?
-//                    } else if (self.responseString ?? "nada").contains("file exists!") {
-//                        print("🟣 \(item.fileName) already exists.")
-//                        self.totalUploaded += 1
-//                        // signal the for loop to continue
-////                        semaphore.signal()
-                    } else {
-                        print("🟡 Status code: \(statusCode)")
-                        // signal the for loop to continue
-    //                    semaphore.signal()
+                        print("🟢 \(fileName) is uploaded!")
                     }
-                // If all files successfully uploaded, set allFilesUploaded to true
-                if (totalFiles == totalUploaded) {
-                    trip.allFilesUploaded = true
-                    print("🔵 All files uploaded!")
-//                    return
-                }
-                // signal the for loop to continue
+                    // If all files successfully uploaded, set allFilesUploaded to true
+                    if (totalFiles == totalUploaded) {
+                        trip.allFilesUploaded = true
+                        print("🔵 All files uploaded!")
+                    }
+                    // signal the for loop to continue
+                    semaphore.signal()
+            } else {
+                print("🟡 Status code: \(statusCode)")
                 semaphore.signal()
             }
             

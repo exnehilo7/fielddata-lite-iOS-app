@@ -25,13 +25,13 @@ class SDTrip {
 }
 
 @Model
-class TripFile {
+class TripFile { // 14-MAR-2024: No longer required?
     
     var fileName: String
     var isUploaded: Bool
     
     init(fileName: String, isUploaded: Bool = false) {
         self.fileName = fileName
-        self.isUploaded = isUploaded // 14-MAR-2024: No longer required?
+        self.isUploaded = isUploaded
     }
 }
