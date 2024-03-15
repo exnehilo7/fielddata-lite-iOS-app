@@ -9,6 +9,7 @@
 
 import SwiftUI
 import SwiftData
+import CryptoKit
 
 struct CompletedTripView: View {
     
@@ -236,8 +237,16 @@ struct CompletedTripView: View {
         
         // Is uploaded?
         if await !doesFileExist(fileName: item, params: paramDict, trip: trip, semaphore: semaphore) {
+            // Calculate checksum iOS-side
+            let hashed = SHA256.hash(data: NSData(contentsOf: getFile)!)
+            let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
+//            print("#️⃣ iOS SHA256: \(hashString)")
+            
+            // Append hash to params
+            let mergeDict = paramDict.merging(["sourceHash":"\(hashString)"]) { (_, new) in new }
+            
             // Upload file
-            request.httpBody = self.createBodyWithParameters(parameters: paramDict, filePathKey: "file", 
+            request.httpBody = self.createBodyWithParameters(parameters: mergeDict, filePathKey: "file",
                                                              fileData: NSData(contentsOf: getFile)!,
                                                              boundary: boundary, uploadFilePath: pathAndFile)
             uploadFile(fileName: item, request: request, trip: trip, semaphore: semaphore)
