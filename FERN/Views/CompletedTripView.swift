@@ -5,7 +5,7 @@
 //  Created by Hopp, Dan on 1/2/24.
 //
 //  19-JAN-2024: Switch to SwiftData
-//  14-MAR-2024: When there are ~130 files, sometimes the app will "Terminating app due to uncaught exception 'NSGenericException', reason: '*** Collection <__NSCFSet: 0x300da52f0> was mutated while being enumerated."
+//  15-MAR-2024: Add checksum. Change array of model objects to array of strings.
 
 import SwiftUI
 import SwiftData
@@ -23,9 +23,11 @@ struct CompletedTripView: View {
     @State var responseString: NSString?
     
     @State var isLoading = false
+    @State var allFilesProcessed = false
     
     @State var totalUploaded = 0
     @State var totalFiles = 0
+    @State var totalProcessed = 0
 
     
     // MARK: Views
@@ -52,11 +54,13 @@ struct CompletedTripView: View {
         ForEach(sdTrips) { item in // There probably is a better way to get just one specific trip
             // Focus on the relevant trip
             if (item.name == tripName){
-                // If no upload, show button
-                if (!item.allFilesUploaded) {
+                // If all files not processed & uploaded, show button and bar
+                if (!allFilesProcessed || !item.allFilesUploaded) {
                     VStack{
-//                        Text("File \(totalUploaded) of \(totalFiles) uploaded")
-                        ProgressView("File \(totalUploaded) of \(totalFiles) uploaded", value: Double(totalUploaded), total: Double(totalFiles))
+                        // If all files not uploaded, show bar
+                        if (!item.allFilesUploaded){
+                            ProgressView("File \(totalUploaded) of \(totalFiles) uploaded", value: Double(totalUploaded), total: Double(totalFiles))
+                        }
                         // Hide upload button if in progress
                         if (!isLoading) {
                             Button {
@@ -81,7 +85,7 @@ struct CompletedTripView: View {
                     }
                     // for use elsewhere?
                     //setResponseMsgToBlank()
-                } else {Text("Trip uploaded!")}
+                } else {Text("Files uploaded!")}
             }
         }
         Spacer()
@@ -90,9 +94,12 @@ struct CompletedTripView: View {
     // MARK: Functions
     private func myFileUploadRequest(tripName: String, uploadScriptURL: String, trip: SDTrip) async
     {
-//            DispatchQueue.global().async {
         
+        // Set & reset vars
         isLoading = true
+        totalUploaded = 0
+        totalFiles = 0
+        totalProcessed = 0
         
         // Set endpoint
         let myUrl = NSURL(string: uploadScriptURL)
@@ -114,7 +121,6 @@ struct CompletedTripView: View {
         }
         
         var path: URL
-//        var getFile: URL
         var uploadFilePath: String
         
         var fileList: [String] = []
@@ -129,58 +135,21 @@ struct CompletedTripView: View {
             path = (rootDir?.appendingPathComponent(uploadFilePath))!
         }
         
-        // Get a list of all trip files: loop through filenames and insert into Trip files array. Set isUploaded to false
+        // Get a list of all trip files: loop through filenames
         do {
             let items = try fm.contentsOfDirectory(atPath: path.path)
-//            let semaphore = DispatchSemaphore(value: 0)
-//            Task {
-                
-                
-                //                    print(super.defaultDirectoryURL().absoluteURL(storePathURL))
-                
-                // Clear trips
-//                trip.files?.removeAll()
-                
-//                semaphore.signal()
-//            }
-//            _ = semaphore.wait(timeout: DispatchTime.distantFuture)
             
-                
-        // Populate trips
-        for item in items {
-            // Just the filename
-            //                print("\(item)")
-//            trip.files?.append(TripFile(fileName: item, isUploaded: false))
-            fileList.append(item)
-            
-        }
+            // Populate array with filenames
+            for item in items {
+                fileList.append(item)
+            }
         } catch {
             // failed to read directory – bad permissions, perhaps?
             print("Directory loop error")
         }
         
-        
-        // Get file items
-//        let items = trip.files
-        
         // get total number of files
-//        self.totalFiles = items?.count ?? 0
         self.totalFiles = fileList.count
-        
-        // Reset counters
-//                    self.totalUploaded = 0
-        //            uploadProg = 0
-        
-//        // get total of uploaded
-//        for item in items ?? [] {
-//            if item.isUploaded {
-////                print("\(item.fileName) has already been uploaded!")
-//                    self.totalUploaded += 1
-//            }
-//            else {
-////                print("\(item.fileName) will be uploaded")
-//            }
-//        }
         
         // upload txt file first
         // loop through files in trip array
@@ -197,18 +166,14 @@ struct CompletedTripView: View {
         // loop through files in trip array
         for item in fileList {
             if !item.contains(".txt") {
-                // Ignore if already uploaded
-//                if (!item.isUploaded) {
-                    
+
                     await processFile(item: item, uploadFilePath: uploadFilePath,
                                  boundary: boundary, request: request,
                                  path: path, trip: trip)
-                
-//                }
             }
         }
         
-        print("💾 Files in trip array loop complete!")
+        print("ℹ️ Files in trip array loop complete.")
         
         isLoading = false
     }
@@ -286,16 +251,13 @@ struct CompletedTripView: View {
                 // Get response
                 self.responseString = NSString(data: data, encoding: NSUTF8StringEncoding)
                 // Exists?
-                if (self.responseString ?? "nada").contains("file exists!") {
+                if (self.responseString ?? "No response string").contains("file exists!") {
                     print("🟠 \(fileName) already exists.")
-                    self.totalUploaded += 1
+                    upProcessedAndUploadedByOne()
                     exists = true
                 }
                 
-                if (totalFiles == totalUploaded) {
-                    trip.allFilesUploaded = true
-                    print("🔵 All files uploaded!")
-                }
+                finalizeResults(trip: trip)
                 
             } else {
                 print("🟡 Status code: \(statusCode)")
@@ -334,15 +296,19 @@ struct CompletedTripView: View {
                     self.responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
 //                    print("****** response data = \(self.responseString!)")
                     // Is success?
-                    if (self.responseString ?? "nada").contains("successfully!") {
-                        self.totalUploaded += 1
+                    if (self.responseString ?? "No response string").contains("successfully!") {
+                        upProcessedAndUploadedByOne()
                         print("🟢 \(fileName) is uploaded!")
                     }
-                    // If all files successfully uploaded, set allFilesUploaded to true
-                    if (totalFiles == totalUploaded) {
-                        trip.allFilesUploaded = true
-                        print("🔵 All files uploaded!")
+                    
+                    // Checksum failed?
+                    else if (self.responseString ?? "No response string").contains("Hashes do not match!") {
+                        self.totalProcessed += 1
+                        print("🔴 Hashes do not match for \(fileName)!")
                     }
+                    
+                    finalizeResults(trip: trip)
+                    
                     // signal the for loop to continue
                     semaphore.signal()
             } else {
@@ -422,7 +388,6 @@ struct CompletedTripView: View {
     }
     
     
-    
     private func generateBoundaryString() -> String {
         return "Boundary-\(NSUUID().uuidString)"
     }
@@ -431,6 +396,23 @@ struct CompletedTripView: View {
             DispatchQueue.main.async { [self] in
                 self.responseString = "None"
             }
+    }
+    
+    private func upProcessedAndUploadedByOne(){
+        self.totalProcessed += 1
+        self.totalUploaded += 1
+    }
+    
+    private func finalizeResults(trip: SDTrip){
+        // If all files uploaded, set allFilesUploaded = true
+        if (totalFiles == totalUploaded) {
+            trip.allFilesUploaded = true
+            print("🔵 All files uploaded.")
         }
+        // If all files processed, set allFilesProcessed = true
+        if (totalFiles == totalProcessed) {
+            self.allFilesProcessed = true
+        }
+    }
     
 }
