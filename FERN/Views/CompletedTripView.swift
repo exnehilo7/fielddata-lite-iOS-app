@@ -29,6 +29,7 @@ struct CompletedTripView: View {
     @State var totalFiles = 0
     @State var totalProcessed = 0
 
+    @State var consoleText = ""
     
     // MARK: Views
     // Get a message from Upload Image
@@ -43,52 +44,61 @@ struct CompletedTripView: View {
     // MARK: Main body
     
     var body: some View {
-        Spacer()
-        Text("Trip \(tripName) is complete!")
-        Text("")
-        Text("The images are stored in:")
-        Text("Files -> On My [Device] -> FERN ->")
-        Text ("[Unique UUID] -> trips -> \(tripName).")
-        Spacer()
-//        print("ForEach(sdTrips) { item in")
         ForEach(sdTrips) { item in // There probably is a better way to get just one specific trip
             // Focus on the relevant trip
             if (item.name == tripName){
-                // If all files not processed & uploaded, show button and bar
-                if (!allFilesProcessed || !item.allFilesUploaded) {
-                    VStack{
-                        // If all files not uploaded, show bar
-                        if (!item.allFilesUploaded){
-                            ProgressView("File \(totalUploaded) of \(totalFiles) uploaded", value: Double(totalUploaded), total: Double(totalFiles))
-                        }
-                        // Hide upload button if in progress
-                        if (!isLoading) {
-                            Button {
-                                Task {
-                                    // Funciton to upload files. Upload needs to know where it left off if there was an error? Alert user if no signal; don't initiate upload? (Don't show button if no signal?)
-                                     await myFileUploadRequest(tripName: tripName, uploadScriptURL: settings[0].uploadScriptURL, trip: item)
-                                }
-                            } label: {
-                                HStack {
-                                    Image(systemName: "square.and.arrow.up")
-                                        .font(.system(size: 20))
-                                    Text("Upload Remaining Trip Files")
-                                        .font(.headline)
-                                }
-                                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
-                                .background(Color.orange)
-                                .foregroundColor(.white)
-                                .cornerRadius(20)
-                                .padding(.horizontal)
+                VStack {
+                    Spacer()
+                    Text("Trip \(tripName) is complete!")
+                    Text("")
+                    Text("The images are stored in:")
+                    Text("Files -> On My [Device] -> FERN ->")
+                    Text ("[Unique UUID] -> trips -> \(tripName).")
+                    Spacer()
+                    // If all files not processed & uploaded, show button and bar
+                    if (!allFilesProcessed || !item.allFilesUploaded) {
+//                        VStack{
+                            // If all files not uploaded, show bar
+                            if (!item.allFilesUploaded){
+                                ProgressView("File \(totalUploaded) of \(totalFiles) uploaded", value: Double(totalUploaded), total: Double(totalFiles))
                             }
-                        }
-                    }
-                    // for use elsewhere?
-                    //setResponseMsgToBlank()
-                } else {Text("Files uploaded!")}
+                            // Hide upload button if in progress
+                            if (!isLoading) {
+                                Button {
+                                    Task {
+                                        // Show bar
+                                        item.allFilesUploaded = false
+                                        // Funciton to upload files. Upload needs to know where it left off if there was an error? Alert user if no signal; don't initiate upload? (Don't show button if no signal?)
+                                        await myFileUploadRequest(tripName: tripName, uploadScriptURL: settings[0].uploadScriptURL, trip: item)
+                                    }
+                                } label: {
+                                    HStack {
+                                        Image(systemName: "square.and.arrow.up")
+                                            .font(.system(size: 20))
+                                        Text("Upload Trip Files")
+                                            .font(.headline)
+                                    }
+                                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+                                    .background(Color.orange)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(20)
+                                    .padding(.horizontal)
+                                }
+                            }
+//                        }
+                        // for use elsewhere?
+                        //setResponseMsgToBlank()
+                    } else {Text("✅ Files uploaded! ✅")}
+                    Spacer()
+                    // Give feedback. Allow user to select text, but don't edit
+                    TextEditor(text: .constant(self.consoleText))
+                        .foregroundStyle(.secondary)
+                        .font(.system(size: 12)).padding(.horizontal)
+                        .frame(minHeight: 300)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
-        Spacer()
     } // end body view
     
     // MARK: Functions
@@ -174,6 +184,7 @@ struct CompletedTripView: View {
         }
         
         print("ℹ️ Files in trip array loop complete.")
+        appendToTextEditor(text: "ℹ️ Files in trip array loop complete.")
         
         isLoading = false
     }
@@ -253,6 +264,7 @@ struct CompletedTripView: View {
                 // Exists?
                 if (self.responseString ?? "No response string").contains("file exists!") {
                     print("🟠 \(fileName) already exists.")
+                    appendToTextEditor(text: "🟠 \(fileName) already exists.")
                     upProcessedAndUploadedByOne()
                     exists = true
                 }
@@ -261,6 +273,7 @@ struct CompletedTripView: View {
                 
             } else {
                 print("🟡 Status code: \(statusCode)")
+                appendToTextEditor(text: "🟡 Status code: \(statusCode)")
             }
         } catch let error as NSError {
             NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
@@ -279,6 +292,7 @@ struct CompletedTripView: View {
             
             if error != nil {
                 print("🔴 error=\(String(describing: error))")
+                appendToTextEditor(text: "🔴 error=\(String(describing: error))")
                 // signal the for loop to continue
                 semaphore.signal()
                 return
@@ -299,12 +313,14 @@ struct CompletedTripView: View {
                     if (self.responseString ?? "No response string").contains("successfully!") {
                         upProcessedAndUploadedByOne()
                         print("🟢 \(fileName) is uploaded!")
+                        appendToTextEditor(text: "🟢 \(fileName) is uploaded!")
                     }
                     
                     // Checksum failed?
                     else if (self.responseString ?? "No response string").contains("Hashes do not match!") {
                         self.totalProcessed += 1
                         print("🔴 Hashes do not match for \(fileName)!")
+                        appendToTextEditor(text: "🔴 Hashes do not match for \(fileName)!")
                     }
                     
                     finalizeResults(trip: trip)
@@ -313,6 +329,7 @@ struct CompletedTripView: View {
                     semaphore.signal()
             } else {
                 print("🟡 Status code: \(statusCode)")
+                appendToTextEditor(text: "🟡 Status code: \(statusCode)")
                 semaphore.signal()
             }
             
@@ -408,11 +425,16 @@ struct CompletedTripView: View {
         if (totalFiles == totalUploaded) {
             trip.allFilesUploaded = true
             print("🔵 All files uploaded.")
+            appendToTextEditor(text: "🔵 All files uploaded.")
         }
         // If all files processed, set allFilesProcessed = true
         if (totalFiles == totalProcessed) {
             self.allFilesProcessed = true
         }
+    }
+    
+    private func appendToTextEditor(text: String){
+        self.consoleText.append(contentsOf: "\n" + text)
     }
     
 }
