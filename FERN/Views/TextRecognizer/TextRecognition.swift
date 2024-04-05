@@ -36,16 +36,15 @@ struct TextRecognition {
         queue.async {
             for image in scannedImages {
                 guard let cgImage = image.cgImage else { return }
-//                guard let cgImage = scannedImages.cgImage else { return }
                 
                 let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
                 
                 do {
-                    let textItem = TextItem()
+                    let textItem = ScannedTextItem()
                     try requestHandler.perform([getTextRecognitionRequest(with: textItem)])
                     
                     DispatchQueue.main.async {
-                        recognizedContent.items.append(textItem)
+                        recognizedContent.items[0].text = textItem.text
                     }
                 } catch {
                     print(error.localizedDescription)
@@ -59,7 +58,7 @@ struct TextRecognition {
     }
     
     
-    private func getTextRecognitionRequest(with textItem: TextItem) -> VNRecognizeTextRequest {
+    private func getTextRecognitionRequest(with textItem: ScannedTextItem) -> VNRecognizeTextRequest {
         let request = VNRecognizeTextRequest { request, error in
             if let error = error {
                 print(error.localizedDescription)
@@ -71,13 +70,12 @@ struct TextRecognition {
             observations.forEach { observation in
                 guard let recognizedText = observation.topCandidates(1).first else { return }
                 textItem.text += recognizedText.string
-                textItem.text += "\n"
+//                textItem.text += "\n"
             }
         }
         
-        // Plant tags aren't words, set to fast. No auto-correction.
         request.recognitionLevel = .accurate
-//        request.usesLanguageCorrection = true
+        request.usesLanguageCorrection = true
         
         return request
     }

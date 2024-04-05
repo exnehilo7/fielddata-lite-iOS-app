@@ -110,16 +110,15 @@ struct MainMenuView: View {
                             Text("Settings")
                         }
                     }
-                    // App settings
-                    NavigationLink {
-                        TestTextCapture()
-                            .navigationTitle("TestTextCapture")
-                    } label: {
-                        HStack {
-                            Image(systemName: "text.viewfinder").bold(false).foregroundColor(.gray)
-                            Text("Test Text Capture")
-                        }
-                    }
+//                    NavigationLink {
+//                        TestTextCapture()
+//                            .navigationTitle("TestTextCapture")
+//                    } label: {
+//                        HStack {
+//                            Image(systemName: "text.viewfinder").bold(false).foregroundColor(.gray)
+//                            Text("Test Text Capture")
+//                        }
+//                    }
                 }
                 if settings.count < 1 {
                     // App settings

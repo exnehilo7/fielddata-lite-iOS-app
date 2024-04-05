@@ -22,9 +22,11 @@
 
 import Foundation
 
-class TextItem: Identifiable {
+class ScannedTextItem: Identifiable {
+//class ScannedTextItem: ObservableObject {
     var id: String
     var text: String = ""
+//    @Published var text: String = ""
     
     init() {
         id = UUID().uuidString
@@ -33,5 +35,9 @@ class TextItem: Identifiable {
 
 
 class RecognizedContent: ObservableObject {
-    @Published var items = [TextItem]()
+    @Published var items = [ScannedTextItem]()
+    
+    init() {
+        items.append(ScannedTextItem())
+    }
 }
