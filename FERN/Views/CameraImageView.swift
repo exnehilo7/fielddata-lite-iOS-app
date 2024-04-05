@@ -33,8 +33,13 @@ struct CameraImageView: View {
 //    @Environment(\.managedObjectContext) private var viewContext
 //    @FetchRequest(sortDescriptors: []) private var trip: FetchedResults<Trip>
     
-    @Environment(\.modelContext) var modelContext // swift data
+    // Swift data
+    @Environment(\.modelContext) var modelContext
     @Query var sdTrips: [SDTrip]
+    
+    //Text recognition
+    @ObservedObject var recognizedContent = RecognizedContent()
+    @State private var isRecognizing = false
     
     // GPS -------------------------------------------------------------
     // Arrow Gold
@@ -175,6 +180,38 @@ struct CameraImageView: View {
         } label: {
             Label("Show Camera", systemImage: "camera").foregroundColor(.white)
         }.buttonStyle(.borderedProminent).tint(.blue)
+    }
+    
+    // Scan for text button
+    var scanForTextButton: some View {
+        Button(action: {
+            
+            isRecognizing = true
+            // Put image in array
+            var imageArray = [UIImage]()
+            imageArray.append(self.image)
+            
+            // Call struct
+            TextRecognition(scannedImages: imageArray,
+                            recognizedContent: recognizedContent) {
+                // Text recognition is finished, hide the progress indicator.
+                isRecognizing = false
+            }
+            .recognizeText()
+        }, label: {
+            HStack {
+                Image(systemName: "text.viewfinder")
+                    .font(.system(size: 20))//.foregroundColor(.green)
+                
+                Text("Scan Text")
+                    .font(.headline)
+            }
+            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+            .background(Color.purple)
+            .foregroundColor(.white)
+            .cornerRadius(20)
+            .padding(.horizontal)
+        })
     }
     
     // Test fields for user to add custom metadata. Will need to create @State private var's
@@ -331,12 +368,28 @@ struct CameraImageView: View {
                 
                 Spacer()
                 
+                // Display recognized text (remove list?)
+                if isRecognizing {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: Color(UIColor.systemIndigo)))
+                        .padding(.bottom, 20)
+                } else {
+                    List(recognizedContent.items, id: \.id) { textItem in
+                        NavigationLink(destination: TextPreviewView(text: textItem.text)) {
+                            Text(String(textItem.text.prefix(50)))//.appending("..."))
+                        }
+                    }
+                }
+                
                 HStack {
                     
                     Spacer()
                     // Show the image save button if ImagePicker struct has an image.
                     if isImageSelected {
-                        savePicButton
+                        HStack {
+                            scanForTextButton
+                            savePicButton
+                        }
                     }
                     
                     Spacer()

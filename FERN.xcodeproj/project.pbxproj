@@ -35,6 +35,11 @@
 		D127B39C2A1EB51500F6287A /* UploadPhotoClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B39B2A1EB51500F6287A /* UploadPhotoClass.swift */; };
 		D130BADA2B5ADEAE00F0C47C /* Trip.swift in Sources */ = {isa = PBXBuildFile; fileRef = D130BAD92B5ADEAE00F0C47C /* Trip.swift */; };
 		D147C56829A3EC2900D948AB /* FERNTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D147C56729A3EC2900D948AB /* FERNTests.swift */; };
+		D15BFD0B2BBF3AD30013B67F /* TestTextCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BFD0A2BBF3AD30013B67F /* TestTextCapture.swift */; };
+		D15BFD142BBF55000013B67F /* OCRModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BFD132BBF55000013B67F /* OCRModel.swift */; };
+		D15BFD162BBF552E0013B67F /* ScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BFD152BBF552E0013B67F /* ScannerView.swift */; };
+		D15BFD182BBF55590013B67F /* TextPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BFD172BBF55590013B67F /* TextPreviewView.swift */; };
+		D15BFD1A2BBF55880013B67F /* TextRecognition.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BFD192BBF55880013B67F /* TextRecognition.swift */; };
 		D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7129901A2000835B5E /* SelectAreaView.swift */; };
 		D16A6C7829901A5D00835B5E /* CreateCustomRouteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7729901A5D00835B5E /* CreateCustomRouteView.swift */; };
 		D16A6C7C2995D18100835B5E /* StartScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7B2995D18100835B5E /* StartScreenView.swift */; };
@@ -110,6 +115,11 @@
 		D130BAD92B5ADEAE00F0C47C /* Trip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trip.swift; sourceTree = "<group>"; };
 		D147C56529A3EC2900D948AB /* FERNTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FERNTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D147C56729A3EC2900D948AB /* FERNTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FERNTests.swift; sourceTree = "<group>"; };
+		D15BFD0A2BBF3AD30013B67F /* TestTextCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTextCapture.swift; sourceTree = "<group>"; };
+		D15BFD132BBF55000013B67F /* OCRModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRModel.swift; sourceTree = "<group>"; };
+		D15BFD152BBF552E0013B67F /* ScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerView.swift; sourceTree = "<group>"; };
+		D15BFD172BBF55590013B67F /* TextPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextPreviewView.swift; sourceTree = "<group>"; };
+		D15BFD192BBF55880013B67F /* TextRecognition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognition.swift; sourceTree = "<group>"; };
 		D16A6C7129901A2000835B5E /* SelectAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAreaView.swift; sourceTree = "<group>"; };
 		D16A6C7729901A5D00835B5E /* CreateCustomRouteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCustomRouteView.swift; sourceTree = "<group>"; };
 		D16A6C7B2995D18100835B5E /* StartScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreenView.swift; sourceTree = "<group>"; };
@@ -252,6 +262,18 @@
 			path = FERNTests;
 			sourceTree = "<group>";
 		};
+		D15BFD0C2BBF4DFD0013B67F /* TextRecognizer */ = {
+			isa = PBXGroup;
+			children = (
+				D15BFD0A2BBF3AD30013B67F /* TestTextCapture.swift */,
+				D15BFD132BBF55000013B67F /* OCRModel.swift */,
+				D15BFD152BBF552E0013B67F /* ScannerView.swift */,
+				D15BFD172BBF55590013B67F /* TextPreviewView.swift */,
+				D15BFD192BBF55880013B67F /* TextRecognition.swift */,
+			);
+			path = TextRecognizer;
+			sourceTree = "<group>";
+		};
 		D1A56E942B07D05E00AC8291 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -274,6 +296,7 @@
 				D16A6C7B2995D18100835B5E /* StartScreenView.swift */,
 				D1A56E9A2B0BDB8800AC8291 /* UploadTripsView.swift */,
 				D1CEED8D2B44C43C00569520 /* CompletedTripView.swift */,
+				D15BFD0C2BBF4DFD0013B67F /* TextRecognizer */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -409,6 +432,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D16A6C7829901A5D00835B5E /* CreateCustomRouteView.swift in Sources */,
+				D15BFD182BBF55590013B67F /* TextPreviewView.swift in Sources */,
+				D15BFD0B2BBF3AD30013B67F /* TestTextCapture.swift in Sources */,
 				D107EF1D2B571CAA0020F0A2 /* SettingsUploadView.swift in Sources */,
 				D127B3972A1D1F0100F6287A /* UploadImageClass.swift in Sources */,
 				D16A6C86299AE2DF00835B5E /* SelectSavedRouteView.swift in Sources */,
@@ -416,6 +441,7 @@
 				D127B3952A1D1DAF00F6287A /* UploadImageView.swift in Sources */,
 				D1766CA1298DB9C6002F594D /* MapView.swift in Sources */,
 				D127B38D2A15675900F6287A /* CameraServiceEnums.swift in Sources */,
+				D15BFD162BBF552E0013B67F /* ScannerView.swift in Sources */,
 				D1766C9D298DB978002F594D /* MainMenuView.swift in Sources */,
 				D10BB32A298ADAD600667E86 /* Models.swift in Sources */,
 				D127B3802A12EDF600F6287A /* NMEADataView.swift in Sources */,
@@ -429,6 +455,8 @@
 				D127B37E2A12ED3D00F6287A /* NMEADataClass.swift in Sources */,
 				D107EF182B5716F60020F0A2 /* Settings.swift in Sources */,
 				D1766C9F298DB9B2002F594D /* SearchByNameView.swift in Sources */,
+				D15BFD1A2BBF55880013B67F /* TextRecognition.swift in Sources */,
+				D15BFD142BBF55000013B67F /* OCRModel.swift in Sources */,
 				D127B3892A15454400F6287A /* CameraViewModel.swift in Sources */,
 				D10BB31E298ADAA400667E86 /* ContentView.swift in Sources */,
 				D107EF162B5708960020F0A2 /* SettingsView.swift in Sources */,
