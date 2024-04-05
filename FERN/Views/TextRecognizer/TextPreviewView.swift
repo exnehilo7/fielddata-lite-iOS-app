@@ -23,15 +23,13 @@
 import SwiftUI
 
 struct TextPreviewView: View {
-    var text: String
+    @State var scannedText: String
     
     var body: some View {
         VStack {
-            ScrollView {
-                Text(text)
+            TextField("", text: $scannedText)
                     .font(.body)
                     .padding()
-            }
         }
     }
 }
