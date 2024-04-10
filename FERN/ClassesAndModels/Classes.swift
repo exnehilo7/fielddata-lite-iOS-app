@@ -93,7 +93,7 @@ class FieldWorkGPSFile {
     }
     
     static func log(tripName: String, uuid: String, gps: String, hdop: String, longitude: String, latitude: String, altitude: String,
-                    scannedText: String) throws -> Bool {
+                    scannedText: String, notes: String) throws -> Bool {
         guard let gpsFile = gpsFile else {
             return false
         }
@@ -126,7 +126,7 @@ class FieldWorkGPSFile {
             let formatterDateTime = DateFormatter()
             formatterDateTime.dateFormat = "yyyy-MM-dd HH:mm:ssx"
             let timestamp = formatterDateTime.string(from: Date())
-            let message = "\(uuid),\(gps),\(hdop),\(longitude),\(latitude),\(altitude),\(scannedText),\(timestamp)"
+            let message = "\(uuid),\(gps),\(hdop),\(longitude),\(latitude),\(altitude),\(scannedText),\(timestamp),\(notes)"
             guard let data = (message + "\n").data(using: String.Encoding.utf8) else { return false}
             
             print(filePath)
@@ -142,7 +142,7 @@ class FieldWorkGPSFile {
             } else {
                 if uuid.count < 1 {
                     // Create header
-                    guard let headerData = ("pic_uuid,gps,hdop,longitude,latitude,altitude,scanned_text,line_written_on\n").data(using: String.Encoding.utf8) else { return false}
+                    guard let headerData = ("pic_uuid,gps,hdop,longitude,latitude,altitude,scanned_text,line_written_on,notes\n").data(using: String.Encoding.utf8) else { return false}
                     try? headerData.write(to: filePath, options: .atomicWrite)
                 }
             }

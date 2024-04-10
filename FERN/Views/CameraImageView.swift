@@ -16,6 +16,7 @@ struct CameraImageView: View {
     // From calling view
     var tripName: String
     
+    // Image var and camera/image toggles
     @State private var image = UIImage()
     @State private var isShowCamera = false
     @State private var isImageSelected = false
@@ -33,9 +34,12 @@ struct CameraImageView: View {
     @Environment(\.modelContext) var modelContext
     @Query var sdTrips: [SDTrip]
     
-    //Text recognition
+    // Text recognition
     @ObservedObject var recognizedContent = RecognizedContent()
     @State private var isRecognizing = false
+    
+    // Custom Data
+    @State private var textNotes = ""
     
     // GPS -------------------------------------------------------------
     // Arrow Gold
@@ -73,20 +77,20 @@ struct CameraImageView: View {
             Text("Altitude (m): ") + Text(nmea.altitude ?? "0.00")
             Text("Horizontal Accuracy (m): ") + Text(nmea.accuracy ?? "0.00")
             Text("GPS Used: ") + Text(nmea.gpsUsed ?? "No GPS")
-        }.font(.system(size: 18)).foregroundColor(.white)
+        }.font(.system(size: 18))//.foregroundColor(.white)
     }
     
     // iOS Core Location
     var coreLocationGpsData: some View {
         VStack {
             
-            Label("Standard GPS (May need time to start feed)",  systemImage: "location.fill").underline()
+            Label("Standard GPS",  systemImage: "location.fill").underline()
             Text("Latitude: ") + Text("\(clLat)")
             Text("Longitude: ") + Text("\(clLong)")
             Text("Altitude (m): ") + Text("\(clAltitude)")
             Text("Horizontal Accuracy (m): ") + Text("\(clHorzAccuracy)")
             Text("Vertical Accuracy (m): ") + Text("\(clVertAccuracy)")
-        }.font(.system(size: 15)).foregroundColor(.white)
+        }.font(.system(size: 15))//.foregroundColor(.white)
             .padding()
     }
     //------------------------------------------------------------------
@@ -133,6 +137,9 @@ struct CameraImageView: View {
             let fileNameUUID = UUID().uuidString
             let upperUUID = fileNameUUID.uppercased()
             let textInPic = recognizedContent.items[0].text
+            // Remove special characters from user data
+            let pattern = "[^A-Za-z0-9:;\\s]+"
+            textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
             if showArrowGold {
                 // Alert user if feed has stopped or values are zero
                 if nmea.hasNMEAStreamStopped ||
@@ -145,7 +152,7 @@ struct CameraImageView: View {
                     // Pass Arrow GPS data
                     savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "ArrowGold", 
                                     hdop: nmea.accuracy ?? "0.00", longitude: nmea.longitude ?? "0.0000", latitude: nmea.latitude ?? "0.0000", altitude: nmea.altitude ?? "0.00",
-                                    scannedText: textInPic)
+                                    scannedText: textInPic, notes: textNotes)
                     isImageSelected = false
                     isShowCamera = true
                 }
@@ -153,7 +160,7 @@ struct CameraImageView: View {
                 // Pass default GPS data
                 savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "iOS", 
                                 hdop: clHorzAccuracy, longitude: clLong, latitude: clLat, altitude: clAltitude,
-                                scannedText: textInPic)
+                                scannedText: textInPic, notes: textNotes)
                 isImageSelected = false
                 isShowCamera = true
             }
@@ -162,6 +169,8 @@ struct CameraImageView: View {
             self.image = UIImage()
             // Clear scanned text
             recognizedContent.items[0].text = ""
+            // Clear custom data
+            textNotes = ""
             
 
         }, label: {
@@ -223,9 +232,9 @@ struct CameraImageView: View {
         })
     }
     
-    // Test fields for user to add custom metadata. Will need to create @State private var's
-//    var userData: some View {
-//        VStack {
+    // Fields for user to add custom metadata. Will need to create @State private var's
+    var customData: some View {
+        VStack {
 //            HStack {
 //                Text("Photo Group: ").foregroundColor(.white)
 //                TextField("", text: $textPhotoGroup
@@ -241,19 +250,19 @@ struct CameraImageView: View {
 //                TextField("", text: $textGenotype
 //                ).textFieldStyle(.roundedBorder)
 //            }
-//            HStack {
-//                Text("Notes: ").foregroundColor(.white)
-//                TextField("", text: $textNotes
-//                ).textFieldStyle(.roundedBorder)
-//            }
-//        }
-//    }
+            HStack {
+                Text("Notes: ")//.foregroundColor(.white)
+                TextField("", text: $textNotes
+                ).textFieldStyle(.roundedBorder).autocapitalization(.none)
+            }
+        }
+    }
     
     // MARK: Functions
     private func createTxtFileForTheDay() {
         do{
             // create new txt file for the day for GPS data.
-            _ = try FieldWorkGPSFile.log(tripName: tripName, uuid: "", gps: "", hdop: "", longitude: "", latitude: "", altitude: "", scannedText: "")
+            _ = try FieldWorkGPSFile.log(tripName: tripName, uuid: "", gps: "", hdop: "", longitude: "", latitude: "", altitude: "", scannedText: "", notes: "")
         } catch {
             print(error.localizedDescription)
         }
@@ -261,7 +270,7 @@ struct CameraImageView: View {
     
     private func savePicToFolder(imgFile: UIImage, tripName: String, uuid: String, gps: String, 
                                  hdop: String, longitude: String, latitude: String, altitude: String,
-                                 scannedText: String) {
+                                 scannedText: String, notes: String) {
         
         let audio = playSound()
         
@@ -276,7 +285,7 @@ struct CameraImageView: View {
         // Write the pic's info to a .txt file
         do {
             // .txt file header order is uuid, gps, hdop, longitude, latitude, altitude.
-            try _ = FieldWorkGPSFile.log(tripName: tripName, uuid: uuid, gps: gps, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude, scannedText: scannedText)
+            try _ = FieldWorkGPSFile.log(tripName: tripName, uuid: uuid, gps: gps, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude, scannedText: scannedText, notes: notes)
             // Play a success noise
             audio.playSuccess()
         } catch {
@@ -346,7 +355,11 @@ struct CameraImageView: View {
             Image(uiImage: self.image)
             .resizable()
             .scaledToFit()
-                
+            
+            if isImageSelected {
+                customData
+            }
+            
             Spacer()
             
             // Give the user an option to bring back the camera if the ImagePicker was cancelled.
@@ -363,7 +376,7 @@ struct CameraImageView: View {
             // Show GPS feed if one was selected
             if gpsModeIsSelected {
                 // Don't display GPS coords if sheet is displayed.
-                if !isShowCamera{
+                if !isShowCamera {
                     if showArrowGold {
                         arrowGpsData
                     }
@@ -379,9 +392,13 @@ struct CameraImageView: View {
                         .padding(.bottom, 20)
                 } else {
                     if recognizedContent.items[0].text != ""{
-                        TextPreviewView(scannedText: recognizedContent.items[0].text)
+                        HStack {
+                            Text("Scanned text: ")
+                            TextPreviewView(scannedText: recognizedContent.items[0].text)
+                        }
                     }
                 }
+                
                 
                 HStack {
                     
