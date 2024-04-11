@@ -137,6 +137,9 @@ struct CameraImageView: View {
             let fileNameUUID = UUID().uuidString
             let upperUUID = fileNameUUID.uppercased()
             let textInPic = recognizedContent.items[0].text
+            // if ; count is not the same count as :, and matching count is not even, alert user "Invalid note pattern!" and clear text field.
+            
+            // if all is good, save pic
             // Remove special characters from user data
             let pattern = "[^A-Za-z0-9:;\\s]+"
             textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
@@ -251,8 +254,8 @@ struct CameraImageView: View {
 //                ).textFieldStyle(.roundedBorder)
 //            }
             HStack {
-                Text("Notes: ")//.foregroundColor(.white)
-                TextField("", text: $textNotes
+                Text("Notes:")//.foregroundColor(.white)
+                TextField("branch count: 42; status: alive", text: $textNotes
                 ).textFieldStyle(.roundedBorder).autocapitalization(.none)
             }
         }
