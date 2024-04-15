@@ -16,12 +16,6 @@
 import SwiftUI
 import AVFoundation
 
-struct Article: Identifiable {
-    var id: String {title}
-    let title: String
-    let description: String
-}
-
 struct CameraPreview: UIViewRepresentable {
     /* 1.
      We create a UIView subclass that overrides the UIView’s layer type and sets it to

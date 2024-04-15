@@ -11,7 +11,7 @@ import SwiftUI
 import SwiftData
 
 struct CameraImageView: View {
-     
+    
     // MARK: Vars
     // From calling view
     var tripName: String
@@ -23,7 +23,7 @@ struct CameraImageView: View {
     
     // Alerts
     @State private var showAlert = false
-    @State private var article = Article(title: "Device Feed Error", description: "Photo was not saved. Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app.")
+    @State private var article = Article(title: "", description: "")
     @State private var showingCompleteAlert = false
     
     // Select GPS and display toggles
@@ -71,7 +71,7 @@ struct CameraImageView: View {
         VStack {
             
             Label("EOS Arrow Gold", systemImage: "antenna.radiowaves.left.and.right").underline()
-//            Text("Protocol: ") + Text(nmea.protocolText as String)
+            //            Text("Protocol: ") + Text(nmea.protocolText as String)
             Text("Latitude: ") + Text(nmea.latitude ?? "0.0000")
             Text("Longitude: ") + Text(nmea.longitude ?? "0.0000")
             Text("Altitude (m): ") + Text(nmea.altitude ?? "0.00")
@@ -138,44 +138,50 @@ struct CameraImageView: View {
             let upperUUID = fileNameUUID.uppercased()
             let textInPic = recognizedContent.items[0].text
             // if ; count is not the same count as :, and matching count is not even, alert user "Invalid note pattern!" and clear text field.
-            
-            // if all is good, save pic
-            // Remove special characters from user data
-            let pattern = "[^A-Za-z0-9:;\\s]+"
-            textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
-            if showArrowGold {
-                // Alert user if feed has stopped or values are zero
-                if nmea.hasNMEAStreamStopped ||
-                    ((nmea.accuracy ?? "0.00") == "0.00" || (nmea.longitude ?? "0.0000") == "0.0000" ||
-                     (nmea.latitude ?? "0.0000") == "0.0000" || (nmea.altitude ?? "0.00") == "0.00")
-                {
-                    showAlert = true
-                    isShowCamera = false
-                } else {
-                    // Pass Arrow GPS data
-                    savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "ArrowGold", 
-                                    hdop: nmea.accuracy ?? "0.00", longitude: nmea.longitude ?? "0.0000", latitude: nmea.latitude ?? "0.0000", altitude: nmea.altitude ?? "0.00",
-                                    scannedText: textInPic, notes: textNotes)
-                    isImageSelected = false
-                    isShowCamera = true
-                }
-            } else {
-                // Pass default GPS data
-                savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "iOS", 
-                                hdop: clHorzAccuracy, longitude: clLong, latitude: clLat, altitude: clAltitude,
-                                scannedText: textInPic, notes: textNotes)
-                isImageSelected = false
-                isShowCamera = true
-            }
-            
-            // Clear displayed image (if previous image feedback is needed, borrow capturedPhotoThumbnail from CameraView? 
-            self.image = UIImage()
-            // Clear scanned text
-            recognizedContent.items[0].text = ""
-            // Clear custom data
-            textNotes = ""
-            
-
+            let colonCount = textNotes.filter({ $0 == ":"}).count
+            let semicolonCount = textNotes.filter({ $0 == ";"}).count
+            if colonCount == semicolonCount {
+                if colonCount % 2 == 0 {
+                    // if all is good, save pic
+                    // Remove special characters from user data
+                    let pattern = "[^A-Za-z0-9:;\\s]+"
+                    textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
+                    if showArrowGold {
+                        // Alert user if feed has stopped or values are zero
+                        if nmea.hasNMEAStreamStopped ||
+                            ((nmea.accuracy ?? "0.00") == "0.00" || (nmea.longitude ?? "0.0000") == "0.0000" ||
+                             (nmea.latitude ?? "0.0000") == "0.0000" || (nmea.altitude ?? "0.00") == "0.00")
+                        {
+                            article.title = "Device Feed Error"
+                            article.description = "Photo was not saved. Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app."
+                            showAlert = true
+                            isShowCamera = false
+                            isImageSelected = false
+                        } else {
+                            // Pass Arrow GPS data
+                            savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "ArrowGold",
+                                            hdop: nmea.accuracy ?? "0.00", longitude: nmea.longitude ?? "0.0000", latitude: nmea.latitude ?? "0.0000", altitude: nmea.altitude ?? "0.00",
+                                            scannedText: textInPic, notes: textNotes)
+                            isImageSelected = false
+                            isShowCamera = true
+                        }
+                    } else {
+                        // Pass default GPS data
+                        savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "iOS",
+                                        hdop: clHorzAccuracy, longitude: clLong, latitude: clLat, altitude: clAltitude,
+                                        scannedText: textInPic, notes: textNotes)
+                        isImageSelected = false
+                        isShowCamera = true
+                    }
+                    
+                    // Clear displayed image (if previous image feedback is needed, borrow capturedPhotoThumbnail from CameraView?
+                    self.image = UIImage()
+                    // Clear scanned text
+                    recognizedContent.items[0].text = ""
+                    // Clear custom data
+                    clearCustomData()
+                } else {invalidSyntax("for the Notes field"); showAlert = true} // end is_even?
+            } else {invalidSyntax("for the Notes field"); showAlert = true} // end count = count
         }, label: {
             HStack {
                 Image(systemName: "photo")
@@ -189,8 +195,8 @@ struct CameraImageView: View {
             .foregroundColor(.white)
             .cornerRadius(20)
             .padding(.horizontal)
-        }).alert(article.title, isPresented: $showAlert, presenting: article) {article in Button("OK"){showAlert = false; isImageSelected = false
-            }} message: {article in Text(article.description)}
+        }).alert(article.title, isPresented: $showAlert, presenting: article) {article in Button("OK"){showAlert = false
+        }} message: {article in Text(article.description)}
     }
     
     // Show the camera button (for if the user cancels a photo)
@@ -218,7 +224,7 @@ struct CameraImageView: View {
                 // Text recognition is finished, hide the progress indicator.
                 isRecognizing = false
             }
-            .recognizeText()
+                            .recognizeText()
         }, label: {
             HStack {
                 Image(systemName: "text.viewfinder")
@@ -229,6 +235,20 @@ struct CameraImageView: View {
             }
             .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
             .background(Color.purple)
+            .foregroundColor(.white)
+            .cornerRadius(20)
+            .padding(.horizontal)
+        })
+    }
+    
+    var cancelPicButton: some View {
+        Button(action: {cancelPic()},
+        label: {HStack {
+            Image(systemName: "nosign").font(.system(size: 10))
+            Text("Cancel").font(.system(size: 10))
+        }
+            .frame(minWidth: 0, maxWidth: 62, minHeight: 0, maxHeight: 25)
+            .background(Color.red)
             .foregroundColor(.white)
             .cornerRadius(20)
             .padding(.horizontal)
@@ -255,7 +275,7 @@ struct CameraImageView: View {
 //            }
             HStack {
                 Text("Notes:")//.foregroundColor(.white)
-                TextField("branch count: 42; status: alive", text: $textNotes
+                TextField("branch count: 42; status: alive;", text: $textNotes
                 ).textFieldStyle(.roundedBorder).autocapitalization(.none)
             }
         }
@@ -298,8 +318,23 @@ struct CameraImageView: View {
         }
     }
 
+    private func cancelPic(){
+        isImageSelected = false
+        isShowCamera = true
+        textNotes = ""
+    }
+    
     private func showCompleteAlertToggle(){
         showingCompleteAlert.toggle()
+    }
+    
+    private func invalidSyntax(_ object: String){
+        article.title = "Invalid Syntax"
+        article.description = "The syntax \(object) is invalid!"
+    }
+    
+    private func clearCustomData(){
+        textNotes = ""
     }
     
     // MARK: Body
@@ -402,6 +437,11 @@ struct CameraImageView: View {
                     }
                 }
                 
+                if isImageSelected {
+                    HStack{
+                        cancelPicButton
+                    }
+                }
                 
                 HStack {
                     
