@@ -53,7 +53,7 @@ struct CompletedTripView: View {
                     Text("")
                     Text("The images are stored in:")
                     Text("Files -> On My [Device] -> FERN ->")
-                    Text ("[Unique UUID] -> trips -> \(tripName).")
+                    Text ("UUID -> trips -> \(tripName).")
                     Spacer()
                     // If all files not processed & uploaded, show button and bar
                     if (!allFilesProcessed || !item.allFilesUploaded) {

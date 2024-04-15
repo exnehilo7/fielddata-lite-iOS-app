@@ -23,6 +23,12 @@ class SelectNameModel: Codable, Identifiable {
     var name = ""
 }
 
+struct Article: Identifiable {
+    var id: String {title}
+    var title: String
+    var description: String
+}
+
 // Model for SelectNoteView
 struct SelectNoteModel: Codable, Identifiable, Hashable {
     var id = ""
