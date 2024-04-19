@@ -15,9 +15,6 @@ struct SelectSavedRouteView: View {
     
     @State private var areaList: [SelectNameModel] = []
     
-    // Get html root
-//    private let htmlRoot = HtmlRootModel().htmlRoot
-    
     var body: some View {
         
         VStack {

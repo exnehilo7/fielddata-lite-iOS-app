@@ -44,9 +44,6 @@ struct SelectAreaView: View {
     // Process DML and get reports
     private func qryAreas() async {
         
-        // get root
-//        let htmlRoot = HtmlRootModel().htmlRoot
-        
         guard let url: URL = URL(string: settings[0].databaseURL + "/php/" + phpFile) else {
             Swift.print("invalid URL")
             return

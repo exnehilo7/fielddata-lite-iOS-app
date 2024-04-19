@@ -2,10 +2,8 @@
 //  CameraImageView.swift
 //  FERN
 //
-//  Created by Hopp, Dan on 11/17/23. This is to look and function like CameraView, except use a folder-saveable .jpeg Image instead of iOS' restrictive Photo resource.
+//  Created by Hopp, Dan on 11/17/23.
 //
-//[Camera] Attempted to change to mode Portrait with an unsupported device (BackWideDual). Auto device for both positions unsupported, returning Auto device for same position anyway (BackAuto).
-//[Snapshotting] Snapshotting a view (0x107008200, UIKeyboardImpl) that is not in a visible window requires afterScreenUpdates:YES.
 
 import SwiftUI
 import SwiftData
@@ -258,21 +256,6 @@ struct CameraImageView: View {
     // Fields for user to add custom metadata. Will need to create @State private var's
     var customData: some View {
         VStack {
-//            HStack {
-//                Text("Photo Group: ").foregroundColor(.white)
-//                TextField("", text: $textPhotoGroup
-//                ).textFieldStyle(.roundedBorder)
-//            }
-//            HStack {
-//                Text("Organism Name: ").foregroundColor(.white)
-//                TextField("", text: $textOrganismName
-//                ).textFieldStyle(.roundedBorder)
-//            }
-//            HStack {
-//                Text("Genotype: ").foregroundColor(.white)
-//                TextField("", text: $textGenotype
-//                ).textFieldStyle(.roundedBorder)
-//            }
             HStack {
                 Text("Notes:")//.foregroundColor(.white)
                 TextField("branch count: 42; status: alive;", text: $textNotes
@@ -363,15 +346,6 @@ struct CameraImageView: View {
                         }.alert("Mark trip as complete?", isPresented: $showingCompleteAlert) {
                             Button("OK"){
                                 item.isComplete = true
-                                // Save change
-//                                if viewContext.hasChanges{
-//                                    do {
-//                                        try viewContext.save()
-//                                    } catch {
-//                                        let nsError = error as NSError
-//                                        print("private func addItem error \(nsError), \(nsError.userInfo)")
-//                                    }
-//                                }
                                 showCompleteAlertToggle()
                             }
                             Button("Cancel", role: .cancel){}

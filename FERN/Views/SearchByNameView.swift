@@ -79,9 +79,6 @@ struct SearchByNameView: View {
     // call PHP POST and get query results. Pass area/plot name, org name
     private func getMapPoints () async {
         
-        // get root
-//        let htmlRoot = HtmlRootModel().htmlRoot
-        
         guard let url: URL = URL(string: settings[0].databaseURL + "/php/getMapItemsForApp.php") else {
             Swift.print("invalid URL")
             return

@@ -15,7 +15,6 @@
 		D107EF212B5736BD0020F0A2 /* EditUploadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D107EF202B5736BD0020F0A2 /* EditUploadView.swift */; };
 		D10925962B2B9C96005D376F /* Sounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10925952B2B9C96005D376F /* Sounds.swift */; };
 		D10BB31C298ADAA400667E86 /* FERNApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10BB31B298ADAA400667E86 /* FERNApp.swift */; };
-		D10BB31E298ADAA400667E86 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10BB31D298ADAA400667E86 /* ContentView.swift */; };
 		D10BB320298ADAA500667E86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D10BB31F298ADAA500667E86 /* Assets.xcassets */; };
 		D10BB323298ADAA500667E86 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D10BB322298ADAA500667E86 /* Preview Assets.xcassets */; };
 		D10BB32A298ADAD600667E86 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10BB329298ADAD600667E86 /* Models.swift */; };
@@ -23,30 +22,19 @@
 		D127B37B2A12ECF000F6287A /* nmeaToolKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D127B3782A12EC1400F6287A /* nmeaToolKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D127B37E2A12ED3D00F6287A /* NMEADataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B37D2A12ED3D00F6287A /* NMEADataClass.swift */; };
 		D127B3802A12EDF600F6287A /* NMEADataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B37F2A12EDF600F6287A /* NMEADataView.swift */; };
-		D127B3832A1528AD00F6287A /* CameraClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B3822A1528AD00F6287A /* CameraClass.swift */; };
-		D127B3892A15454400F6287A /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B3882A15454400F6287A /* CameraViewModel.swift */; };
-		D127B38B2A15493000F6287A /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B38A2A15493000F6287A /* CameraView.swift */; };
-		D127B38D2A15675900F6287A /* CameraServiceEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B38C2A15675900F6287A /* CameraServiceEnums.swift */; };
-		D127B38F2A15683700F6287A /* ImageResizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B38E2A15683700F6287A /* ImageResizer.swift */; };
-		D127B3912A1568C800F6287A /* CameraServiceExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B3902A1568C800F6287A /* CameraServiceExtensions.swift */; };
-		D127B3952A1D1DAF00F6287A /* UploadImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B3942A1D1DAF00F6287A /* UploadImageView.swift */; };
-		D127B3972A1D1F0100F6287A /* UploadImageClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B3962A1D1F0100F6287A /* UploadImageClass.swift */; };
 		D127B3992A1D3C4C00F6287A /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B3982A1D3C4C00F6287A /* ImagePicker.swift */; };
-		D127B39C2A1EB51500F6287A /* UploadPhotoClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B39B2A1EB51500F6287A /* UploadPhotoClass.swift */; };
 		D130BADA2B5ADEAE00F0C47C /* Trip.swift in Sources */ = {isa = PBXBuildFile; fileRef = D130BAD92B5ADEAE00F0C47C /* Trip.swift */; };
 		D147C56829A3EC2900D948AB /* FERNTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D147C56729A3EC2900D948AB /* FERNTests.swift */; };
 		D15BFD142BBF55000013B67F /* OCRModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BFD132BBF55000013B67F /* OCRModel.swift */; };
 		D15BFD182BBF55590013B67F /* TextPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BFD172BBF55590013B67F /* TextPreviewView.swift */; };
 		D15BFD1A2BBF55880013B67F /* TextRecognition.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BFD192BBF55880013B67F /* TextRecognition.swift */; };
 		D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7129901A2000835B5E /* SelectAreaView.swift */; };
-		D16A6C7829901A5D00835B5E /* CreateCustomRouteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7729901A5D00835B5E /* CreateCustomRouteView.swift */; };
 		D16A6C7C2995D18100835B5E /* StartScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7B2995D18100835B5E /* StartScreenView.swift */; };
 		D16A6C7E29970E0900835B5E /* SelectNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7D29970E0900835B5E /* SelectNotesView.swift */; };
 		D16A6C80299AC65600835B5E /* SelectReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7F299AC65600835B5E /* SelectReportView.swift */; };
 		D16A6C86299AE2DF00835B5E /* SelectSavedRouteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C85299AE2DF00835B5E /* SelectSavedRouteView.swift */; };
 		D16A6C88299AF32600835B5E /* ReportRoutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C87299AF32600835B5E /* ReportRoutes.swift */; };
 		D16B0A8C2B9A34BD002081E1 /* MapWithNMEAView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16B0A8B2B9A34BD002081E1 /* MapWithNMEAView.swift */; };
-		D1766C9B298DB922002F594D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766C9A298DB922002F594D /* LoginView.swift */; };
 		D1766C9D298DB978002F594D /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766C9C298DB978002F594D /* MainMenuView.swift */; };
 		D1766C9F298DB9B2002F594D /* SearchByNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766C9E298DB9B2002F594D /* SearchByNameView.swift */; };
 		D1766CA1298DB9C6002F594D /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766CA0298DB9C6002F594D /* MapView.swift */; };
@@ -54,7 +42,6 @@
 		D1766CA5298E0B3E002F594D /* Classes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766CA4298E0B3E002F594D /* Classes.swift */; };
 		D1A56E812B051DB300AC8291 /* SelectTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E802B051DB300AC8291 /* SelectTripView.swift */; };
 		D1A56E992B07D27700AC8291 /* CameraImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E982B07D27700AC8291 /* CameraImageView.swift */; };
-		D1A56E9B2B0BDB8800AC8291 /* UploadTripsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E9A2B0BDB8800AC8291 /* UploadTripsView.swift */; };
 		D1CEED8E2B44C43C00569520 /* CompletedTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1CEED8D2B44C43C00569520 /* CompletedTripView.swift */; };
 /* End PBXBuildFile section */
 
@@ -92,7 +79,6 @@
 		D10925952B2B9C96005D376F /* Sounds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sounds.swift; sourceTree = "<group>"; };
 		D10BB318298ADAA400667E86 /* FERN.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FERN.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D10BB31B298ADAA400667E86 /* FERNApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FERNApp.swift; sourceTree = "<group>"; };
-		D10BB31D298ADAA400667E86 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		D10BB31F298ADAA500667E86 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D10BB322298ADAA500667E86 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		D10BB329298ADAD600667E86 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
@@ -100,16 +86,7 @@
 		D127B3782A12EC1400F6287A /* nmeaToolKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = nmeaToolKit.framework; path = FERN/nmeaToolKit.framework; sourceTree = SOURCE_ROOT; };
 		D127B37D2A12ED3D00F6287A /* NMEADataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NMEADataClass.swift; sourceTree = "<group>"; };
 		D127B37F2A12EDF600F6287A /* NMEADataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NMEADataView.swift; sourceTree = "<group>"; };
-		D127B3822A1528AD00F6287A /* CameraClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraClass.swift; sourceTree = "<group>"; };
-		D127B3882A15454400F6287A /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
-		D127B38A2A15493000F6287A /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
-		D127B38C2A15675900F6287A /* CameraServiceEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraServiceEnums.swift; sourceTree = "<group>"; };
-		D127B38E2A15683700F6287A /* ImageResizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageResizer.swift; sourceTree = "<group>"; };
-		D127B3902A1568C800F6287A /* CameraServiceExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraServiceExtensions.swift; sourceTree = "<group>"; };
-		D127B3942A1D1DAF00F6287A /* UploadImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImageView.swift; sourceTree = "<group>"; };
-		D127B3962A1D1F0100F6287A /* UploadImageClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadImageClass.swift; sourceTree = "<group>"; };
 		D127B3982A1D3C4C00F6287A /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
-		D127B39B2A1EB51500F6287A /* UploadPhotoClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPhotoClass.swift; sourceTree = "<group>"; };
 		D130BAD92B5ADEAE00F0C47C /* Trip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trip.swift; sourceTree = "<group>"; };
 		D147C56529A3EC2900D948AB /* FERNTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FERNTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D147C56729A3EC2900D948AB /* FERNTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FERNTests.swift; sourceTree = "<group>"; };
@@ -117,14 +94,12 @@
 		D15BFD172BBF55590013B67F /* TextPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextPreviewView.swift; sourceTree = "<group>"; };
 		D15BFD192BBF55880013B67F /* TextRecognition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognition.swift; sourceTree = "<group>"; };
 		D16A6C7129901A2000835B5E /* SelectAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAreaView.swift; sourceTree = "<group>"; };
-		D16A6C7729901A5D00835B5E /* CreateCustomRouteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCustomRouteView.swift; sourceTree = "<group>"; };
 		D16A6C7B2995D18100835B5E /* StartScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreenView.swift; sourceTree = "<group>"; };
 		D16A6C7D29970E0900835B5E /* SelectNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectNotesView.swift; sourceTree = "<group>"; };
 		D16A6C7F299AC65600835B5E /* SelectReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectReportView.swift; sourceTree = "<group>"; };
 		D16A6C85299AE2DF00835B5E /* SelectSavedRouteView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectSavedRouteView.swift; sourceTree = "<group>"; };
 		D16A6C87299AF32600835B5E /* ReportRoutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportRoutes.swift; sourceTree = "<group>"; };
 		D16B0A8B2B9A34BD002081E1 /* MapWithNMEAView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapWithNMEAView.swift; sourceTree = "<group>"; };
-		D1766C9A298DB922002F594D /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		D1766C9C298DB978002F594D /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuView.swift; sourceTree = "<group>"; };
 		D1766C9E298DB9B2002F594D /* SearchByNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchByNameView.swift; sourceTree = "<group>"; };
 		D1766CA0298DB9C6002F594D /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
@@ -132,7 +107,6 @@
 		D1766CA4298E0B3E002F594D /* Classes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Classes.swift; sourceTree = "<group>"; };
 		D1A56E802B051DB300AC8291 /* SelectTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripView.swift; sourceTree = "<group>"; };
 		D1A56E982B07D27700AC8291 /* CameraImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraImageView.swift; sourceTree = "<group>"; };
-		D1A56E9A2B0BDB8800AC8291 /* UploadTripsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadTripsView.swift; sourceTree = "<group>"; };
 		D1CEED8D2B44C43C00569520 /* CompletedTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletedTripView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -191,9 +165,6 @@
 				D1A56E962B07D0C000AC8291 /* ClassesAndModels */,
 				D1A56E942B07D05E00AC8291 /* Views */,
 				D1A56E972B07D0DE00AC8291 /* Persistence */,
-				D127B39A2A1EB29000F6287A /* UploadPhoto */,
-				D127B3932A1D1D9600F6287A /* UploadImage */,
-				D127B3812A1524C800F6287A /* Camera */,
 				D107EF192B571C610020F0A2 /* Settings */,
 				D127B3772A12EBB400F6287A /* NMEA */,
 				D10BB31B298ADAA400667E86 /* FERNApp.swift */,
@@ -221,35 +192,6 @@
 			path = NMEA;
 			sourceTree = "<group>";
 		};
-		D127B3812A1524C800F6287A /* Camera */ = {
-			isa = PBXGroup;
-			children = (
-				D127B3822A1528AD00F6287A /* CameraClass.swift */,
-				D127B3882A15454400F6287A /* CameraViewModel.swift */,
-				D127B38C2A15675900F6287A /* CameraServiceEnums.swift */,
-				D127B38E2A15683700F6287A /* ImageResizer.swift */,
-				D127B3902A1568C800F6287A /* CameraServiceExtensions.swift */,
-			);
-			path = Camera;
-			sourceTree = "<group>";
-		};
-		D127B3932A1D1D9600F6287A /* UploadImage */ = {
-			isa = PBXGroup;
-			children = (
-				D127B3942A1D1DAF00F6287A /* UploadImageView.swift */,
-				D127B3962A1D1F0100F6287A /* UploadImageClass.swift */,
-			);
-			path = UploadImage;
-			sourceTree = "<group>";
-		};
-		D127B39A2A1EB29000F6287A /* UploadPhoto */ = {
-			isa = PBXGroup;
-			children = (
-				D127B39B2A1EB51500F6287A /* UploadPhotoClass.swift */,
-			);
-			path = UploadPhoto;
-			sourceTree = "<group>";
-		};
 		D147C56629A3EC2900D948AB /* FERNTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -272,11 +214,7 @@
 			isa = PBXGroup;
 			children = (
 				D1A56E952B07D09D00AC8291 /* Reports */,
-				D127B38A2A15493000F6287A /* CameraView.swift */,
 				D1A56E982B07D27700AC8291 /* CameraImageView.swift */,
-				D10BB31D298ADAA400667E86 /* ContentView.swift */,
-				D16A6C7729901A5D00835B5E /* CreateCustomRouteView.swift */,
-				D1766C9A298DB922002F594D /* LoginView.swift */,
 				D1766C9C298DB978002F594D /* MainMenuView.swift */,
 				D1766CA0298DB9C6002F594D /* MapView.swift */,
 				D16B0A8B2B9A34BD002081E1 /* MapWithNMEAView.swift */,
@@ -288,7 +226,6 @@
 				D16A6C7F299AC65600835B5E /* SelectReportView.swift */,
 				D1A56E802B051DB300AC8291 /* SelectTripView.swift */,
 				D16A6C7B2995D18100835B5E /* StartScreenView.swift */,
-				D1A56E9A2B0BDB8800AC8291 /* UploadTripsView.swift */,
 				D1CEED8D2B44C43C00569520 /* CompletedTripView.swift */,
 				D15BFD0C2BBF4DFD0013B67F /* TextRecognizer */,
 			);
@@ -425,37 +362,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D16A6C7829901A5D00835B5E /* CreateCustomRouteView.swift in Sources */,
 				D15BFD182BBF55590013B67F /* TextPreviewView.swift in Sources */,
 				D107EF1D2B571CAA0020F0A2 /* SettingsUploadView.swift in Sources */,
-				D127B3972A1D1F0100F6287A /* UploadImageClass.swift in Sources */,
 				D16A6C86299AE2DF00835B5E /* SelectSavedRouteView.swift in Sources */,
 				D127B3992A1D3C4C00F6287A /* ImagePicker.swift in Sources */,
-				D127B3952A1D1DAF00F6287A /* UploadImageView.swift in Sources */,
 				D1766CA1298DB9C6002F594D /* MapView.swift in Sources */,
-				D127B38D2A15675900F6287A /* CameraServiceEnums.swift in Sources */,
 				D1766C9D298DB978002F594D /* MainMenuView.swift in Sources */,
 				D10BB32A298ADAD600667E86 /* Models.swift in Sources */,
 				D127B3802A12EDF600F6287A /* NMEADataView.swift in Sources */,
-				D127B38B2A15493000F6287A /* CameraView.swift in Sources */,
 				D130BADA2B5ADEAE00F0C47C /* Trip.swift in Sources */,
 				D10925962B2B9C96005D376F /* Sounds.swift in Sources */,
 				D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */,
 				D1766CA3298DBAA3002F594D /* Functions.swift in Sources */,
 				D107EF1F2B57293B0020F0A2 /* EditDatabaseView.swift in Sources */,
-				D127B3912A1568C800F6287A /* CameraServiceExtensions.swift in Sources */,
 				D127B37E2A12ED3D00F6287A /* NMEADataClass.swift in Sources */,
 				D107EF182B5716F60020F0A2 /* Settings.swift in Sources */,
 				D1766C9F298DB9B2002F594D /* SearchByNameView.swift in Sources */,
 				D15BFD1A2BBF55880013B67F /* TextRecognition.swift in Sources */,
 				D15BFD142BBF55000013B67F /* OCRModel.swift in Sources */,
-				D127B3892A15454400F6287A /* CameraViewModel.swift in Sources */,
-				D10BB31E298ADAA400667E86 /* ContentView.swift in Sources */,
 				D107EF162B5708960020F0A2 /* SettingsView.swift in Sources */,
-				D127B39C2A1EB51500F6287A /* UploadPhotoClass.swift in Sources */,
 				D107EF1B2B571C840020F0A2 /* SettingsDatabaseView.swift in Sources */,
 				D16A6C7C2995D18100835B5E /* StartScreenView.swift in Sources */,
-				D1766C9B298DB922002F594D /* LoginView.swift in Sources */,
 				D1A56E992B07D27700AC8291 /* CameraImageView.swift in Sources */,
 				D16B0A8C2B9A34BD002081E1 /* MapWithNMEAView.swift in Sources */,
 				D1CEED8E2B44C43C00569520 /* CompletedTripView.swift in Sources */,
@@ -463,10 +390,7 @@
 				D1A56E812B051DB300AC8291 /* SelectTripView.swift in Sources */,
 				D16A6C80299AC65600835B5E /* SelectReportView.swift in Sources */,
 				D10BB31C298ADAA400667E86 /* FERNApp.swift in Sources */,
-				D127B3832A1528AD00F6287A /* CameraClass.swift in Sources */,
-				D1A56E9B2B0BDB8800AC8291 /* UploadTripsView.swift in Sources */,
 				D107EF212B5736BD0020F0A2 /* EditUploadView.swift in Sources */,
-				D127B38F2A15683700F6287A /* ImageResizer.swift in Sources */,
 				D16A6C7E29970E0900835B5E /* SelectNotesView.swift in Sources */,
 				D1766CA5298E0B3E002F594D /* Classes.swift in Sources */,
 			);
