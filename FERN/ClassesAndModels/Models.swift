@@ -7,12 +7,7 @@
 import Foundation
 import CoreLocation
 import MapKit
-//import UIKit
 import SwiftUI
-
-
-// Model object for html root - 17-JAN-2024: Value is now in the Settings @Model class
-
 
 class MapPointSize {
     let size: CGFloat = 35
@@ -124,9 +119,6 @@ extension TempMapPointModel: Codable {
         case siteId, organismName, lat, long
     }
 }
-//class TempMapPointModel_Container: ObservableObject {
-//     var TempMapPointModelArray:[TempMapPointModel] = [TempMapPointModel]()
-//}
 
 // temp model for distance and bearing return from PHP POST
 struct TempDistanceAndBearingModel: Identifiable {
@@ -176,74 +168,3 @@ struct MapAnnotationItem: Identifiable {
     var size: CGFloat = MapPointSize().size
     var highlightColor = Color(white: 0.4745)
 }
-
-
-// NEEDED FOR STRUCT AND CLASS REBUILD?:
-// Model for map annotations
-//struct MapAnnotationItem: Identifiable { //, Sequence, IteratorProtocol {
-//
-//    let id = UUID()
-//
-//    var latitude: CGFloat = 0
-//    var longitude: CGFloat = 0
-//
-//    /* When displaying Area or Plot points, the siteId will be the unique
-//     ID from the database's table. Otherwise, this variable will be the
-//     Routing points' order number. */
-//    var siteId = ""
-//    var organismName = ""
-//    var systemName = ""
-//    var size: CGFloat = MapPointSize().size
-//
-//    var coordinate: CLLocationCoordinate2D {
-//        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-//    }
-//
-//    func encode(to encoder: Encoder) throws {
-//        var container = encoder.container(keyedBy: CodingKeys.self)
-//
-//        try container.encode(latitude, forKey: .latitude)
-//        try container.encode(longitude, forKey: .longitude)
-//        try container.encode(siteId, forKey: .siteId)
-//        try container.encode(organismName, forKey: .organismName)
-//
-//    }
-//
-//    init() { }
-//
-//    init(from decoder: Decoder) throws {
-//        let container = try decoder.container(keyedBy: CodingKeys.self)
-//
-//        latitude = try container.decode(CGFloat.self, forKey: .latitude)
-//        longitude = try container.decode(CGFloat.self, forKey: .longitude)
-//        siteId = try container.decode(String.self, forKey: .siteId)
-//        organismName = try container.decode(String.self, forKey: .organismName)
-//    }
-//
-//}
-//extension MapAnnotationItem: Codable {
-//    enum CodingKeys: String, CodingKey {
-//        case latitude = "lat"
-//        case longitude = "long"
-//        case siteId, organismName//, systemName//, size
-//    }
-//}
-//class MapAnnotationItem_Container: ObservableObject, Codable {
-//    var MapAnnotationItemArray:[MapAnnotationItem] = [MapAnnotationItem]()
-//
-//    enum CodingKeys: CodingKey {
-//        case MapAnnotationItemArray
-//    }
-//
-//    func encode(to encoder: Encoder) throws {
-//        var container = encoder.container(keyedBy: CodingKeys.self)
-//        try container.encode(MapAnnotationItemArray, forKey: .MapAnnotationItemArray)
-//    }
-//
-//    init() { }
-//
-//    required init(from decoder: Decoder) throws {
-//        let container = try decoder.container(keyedBy: CodingKeys.self)
-//        MapAnnotationItemArray = try container.decode([MapAnnotationItem].self, forKey: .MapAnnotationItemArray)
-//    }
-//}

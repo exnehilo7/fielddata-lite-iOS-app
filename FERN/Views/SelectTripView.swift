@@ -14,9 +14,6 @@ import SwiftData
 
 struct SelectTripView: View {
     
-    // For allowing Core Data managed object context on the next view
-//    let persistenceController = PersistenceController.shared
-    
     // For add-a-trip popup
     @State private var showingTripNameAlert = false
     @State private var showingDeleteTripAlert = false
@@ -35,11 +32,9 @@ struct SelectTripView: View {
                             // Go to CameraView with trip name as the title
                             CameraImageView(tripName: item.name)
                                 .navigationTitle("\(item.name)")
-                                //.environment(\.managedObjectContext, persistenceController.container.viewContext)
                         }
                         else {
                             CompletedTripView(tripName: item.name)
-                                //.environment(\.managedObjectContext, persistenceController.container.viewContext)
                         } // Go to an upload screen instead?
                     } label: {
                         HStack{
@@ -57,12 +52,6 @@ struct SelectTripView: View {
                             Text(item.name)
                         }
                     }
-//                    .onTapGesture{
-//                       // Toggle upload complete
-//                        if item.allFilesUploaded {
-//                            item.allFilesUploaded = false
-//                        }
-//                    }
                 }
                 .onDelete(perform: deleteTrip)
                 // Notify user that pics and metadata will remain in the trip folder
@@ -109,7 +98,6 @@ struct SelectTripView: View {
                 let pattern = "[^A-Za-z0-9_-]+"
                 name = name.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
                 modelContext.insert(SDTrip(name: name, isComplete: false, allFilesUploaded: false, files: []))
-//                modelContext.insert(SDTrip(name: name, isComplete: false, allFilesUploaded: false))
             }
         }
         name = ""

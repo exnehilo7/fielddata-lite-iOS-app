@@ -35,15 +35,12 @@ struct SelectReportView: View {
                     }
                     .bold()
                 }
-            } //.task was here
+            }
         }.task { await qryReports()}
     }
     
     // Process DML and get reports
     private func qryReports() async {
-        
-        // get root
-//        let htmlRoot = HtmlRootModel().htmlRoot
         
         guard let url: URL = URL(string: settings[0].databaseURL + "/php/" + phpFile) else {
             Swift.print("invalid URL")

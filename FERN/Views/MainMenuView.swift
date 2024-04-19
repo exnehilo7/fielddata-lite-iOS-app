@@ -13,8 +13,6 @@ struct MainMenuView: View {
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
     
-    //let persistenceController = PersistenceController.shared
-    
     var body: some View {
         NavigationStack{
             List {
@@ -90,16 +88,6 @@ struct MainMenuView: View {
                             Text("GPS Camera")
                         }
                     }
-                    // Upload checked trips
-                    NavigationLink {
-                        UploadTripsView()
-                            .navigationTitle("Upload Completed Trips")
-                    } label: {
-                        HStack {
-                            Image(systemName: "square.and.arrow.up").bold(false).foregroundColor(.gray)
-                            Text("Upload Completed Trips")
-                        }
-                    }
                     // App settings
                     NavigationLink {
                         SettingsView()
@@ -110,15 +98,6 @@ struct MainMenuView: View {
                             Text("Settings")
                         }
                     }
-//                    NavigationLink {
-//                        TestTextCapture()
-//                            .navigationTitle("TestTextCapture")
-//                    } label: {
-//                        HStack {
-//                            Image(systemName: "text.viewfinder").bold(false).foregroundColor(.gray)
-//                            Text("Test Text Capture")
-//                        }
-//                    }
                 }
                 if settings.count < 1 {
                     // App settings

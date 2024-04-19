@@ -20,7 +20,7 @@ struct SettingsUploadView: View {
                     NavigationLink(item.uploadScriptURL){
                         EditUploadView(setting: item)
                     }
-                }//.onDelete(perform: deleteItem)  // For testing
+                }
             }
             .toolbar {
                 Button("Add URL", action: addValue)
@@ -34,12 +34,4 @@ struct SettingsUploadView: View {
             modelContext.insert(Settings())
         }
     }
-    
-//    func deleteItem(_ indexSet: IndexSet) {
-//        for index in indexSet {
-//            let destination = settings[index]
-//            modelContext.delete(destination)
-//        }
-//    }
-    
 }

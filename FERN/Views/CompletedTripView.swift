@@ -51,9 +51,20 @@ struct CompletedTripView: View {
                     Spacer()
                     Text("Trip \(tripName) is complete!")
                     Text("")
-                    Text("The images are stored in:")
-                    Text("Files -> On My [Device] -> FERN ->")
-                    Text ("UUID -> trips -> \(tripName).")
+                    VStack {
+                        Text("The images are stored in:")
+                        Text("Files -> On My [Device] -> FERN ->")
+                        Text ("UUID -> trips -> \(tripName).")
+                    }.font(.system(size: 15))
+                    Text("").font(.system(size: 15))
+                    HStack {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .font(.system(size: 12)).foregroundColor(.red)
+                        Text("Upload when WiFi or unlimited data is available.")
+                            .font(.system(size: 12))
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .font(.system(size: 12)).foregroundColor(.red)
+                    }
                     Spacer()
                     // If all files not processed & uploaded, show button and bar
                     if (!allFilesProcessed || !item.allFilesUploaded) {
@@ -226,6 +237,14 @@ struct CompletedTripView: View {
                                                              fileData: NSData(contentsOf: getFile)!,
                                                              boundary: boundary, uploadFilePath: pathAndFile)
             uploadFile(fileName: item, request: request, trip: trip, semaphore: semaphore)
+        }
+        
+        // If all files are uploaded, insert trip into DB
+        if trip.allFilesUploaded == true {
+            if await !insertIntoDatabase(){
+                print("🔵 Function complete. Check the database for results.")
+                appendToTextEditor(text: "🔵 Function complete. Check the database for results.")
+            }
         }
         
         // myActivityIndicator.startAnimating();
@@ -435,6 +454,47 @@ struct CompletedTripView: View {
     
     private func appendToTextEditor(text: String){
         self.consoleText.append(contentsOf: "\n" + text)
+    }
+    
+    
+    
+    private func insertIntoDatabase() async -> Bool {
+   
+        var complete = false
+        
+        guard let url: URL = URL(string: settings[0].uploadScriptURL) else {
+            Swift.print("invalid URL")
+            return complete
+        }
+        
+        var request: URLRequest = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        let postString = "insertIntoDB=true"
+        
+        let postData = postString.data(using: .utf8)
+        
+        do {
+            let (data, response) = try await URLSession.shared.upload(for: request as URLRequest, from: postData!, delegate: nil)
+            let statusCode = (response as! HTTPURLResponse).statusCode
+            // is 200?
+            if statusCode == 200 {
+                print("🟣 Calling function to insert trip into the database. Check database for results.")
+                appendToTextEditor(text: "🟣 Calling function to insert trip into the database. Check database for results.")
+                self.responseString = NSString(data: data, encoding: NSUTF8StringEncoding)
+//                print("****** response data = \(self.responseString!)")
+                complete = true
+            } else {
+                print("🟡 Status code: \(statusCode)")
+                appendToTextEditor(text: "🟡 Status code: \(statusCode)")
+            }
+//            semaphore.signal()
+          } catch let error as NSError {
+              NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
+          }
+                                                                      
+        return complete
+        
     }
     
 }

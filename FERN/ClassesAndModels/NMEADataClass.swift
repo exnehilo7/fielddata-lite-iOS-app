@@ -2,8 +2,8 @@
 //  EADataEntClass.swift
 //  NMEASwift
 //
-//  Translated from original Objective-C to Swift by Hopp, Dan on 5/8/23, source
-//  from Eos Positioning Systems Inc. Notes prefixed with an [O] were from the source.
+//  Translated from original Objective-C to Swift by Dan Hopp on 5/8/23. Source was
+//  from a Toolkit provided by Eos Positioning Systems Inc. Notes prefixed with an [O] were from the source.
 //
 
 import Foundation
@@ -326,21 +326,7 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
     
     // MARK: - NMEA
     @objc func initNMEAParser(){
-        /* UnsafeMutablePointer puzzlemets:
-         
-         ** The black box'd nmeaPARSER class needs a type "UnsafeMutablePointer<nmeaPARSER>".
-         ** When setting a variable in this class to that type, access to  nmeaPARSER's properties are lost. (Eg. its .buffer (Or is .buffer an iOS proprietary thing?))
-         ** When the classic class variable definition is kept, the call to the black box method expects the above type.
-         ** Unrelated(?) - The original code is calling the black box's method with a pass-by-pointer(reference), but in swift such a called method needs an "inout" in its definition. Objective-C methods do not have "inout"(?)
-         
-         ?? Is there a way to assign a black-box'd Objective-C method(class?) to a UnsafeMutablePointer version of that method(class?)?:
-         
-            var unsafeMutaPointer: UnsafeMutablePointer<nmeaPARSER> = UnsafeMutablePointer(parserTest)
-         
-         !!! Need to set them as UnsafeMutablePointer AND also be able to access their properties! If we can't access their properties there's no(?) way we can get lat, long, accuracy, etc...
-         
-         *** Answer: Instantiate the classes
-         */
+        /* UnsafeMutablePointer answer: Instantiate the classes */
         
         print("initNMEAParser")
         nmea_zero_INFO(&infoInitialized) // [O] reset info for results
@@ -390,13 +376,6 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
             self.gpsUsed = String(format: "%2i", infoInitialized.GPSsatinfo.inuse)
             self.hasNMEAStreamStopped = false
         }
-                
-        // (dev) See what smask's values are.
-//        var smask = infoInitialized.smask // Int32
-//        var testGPSsatinfo = infoInitialized.GPSsatinfo.inuse // Int32
-//        var testAccuracy = infoInitialized.dev_xy // Double
-//        self.stringGPGST = String(GPGST) // _nmeaPACKTYPE
-
     }
     // end NMEA
     
