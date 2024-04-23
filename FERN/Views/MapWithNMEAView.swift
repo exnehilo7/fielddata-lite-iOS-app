@@ -391,9 +391,6 @@ struct MapWithNMEAView: View {
     
     // Get points from database
     private func getMapPoints () async {
-        
-        // get root
-//        let htmlRoot = HtmlRootModel().htmlRoot
 
         guard let url: URL = URL(string: settings[0].databaseURL + "/php/getMapItemsForApp.php") else {
             Swift.print("invalid URL")
