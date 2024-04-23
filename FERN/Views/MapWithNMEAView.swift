@@ -65,7 +65,14 @@ struct MapWithNMEAView: View {
     @State private var annotationItems = [MapAnnotationItem]()
     
     // To hold the starting region's coordinates and zoom level
-    @State private var region: MKCoordinateRegion = MKCoordinateRegion()
+//    @State private var region: MKCoordinateRegion = MKCoordinateRegion()
+    // For 17.0's MapKit SDK change
+    @State private var cameraPosition = MapCameraPosition.region(
+        MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0),
+            span: MKCoordinateSpan(latitudeDelta: 0.015, longitudeDelta: 0.015)
+        )
+    )
     
     // Alerts
     @State private var showAlert = false
@@ -281,28 +288,30 @@ struct MapWithNMEAView: View {
 //                            }
 //                        }
 //                    )
-                    Map(coordinateRegion: $region,
-                    interactionModes: .all,
-                    showsUserLocation: true,
-                    annotationItems: annotationItems
-                    ) { item in // add points
-                    
-                        // Use for custom images and colors:
-                        MapAnnotation(coordinate: item.coordinate, content: {
-                            Image(systemName: item.systemName)
+                    // For 17.0's new MapKit SDK
+                    Map(position: $cameraPosition) {
+                        UserAnnotation()
+                        ForEach(annotationItems) { item in
+                            Annotation(item.organismName, coordinate: item.coordinate) {Image(systemName: item.systemName)
                             .symbolRenderingMode(.palette)
-                            .foregroundStyle(.white, item.highlightColor).font(.system(size: item.size))
-                        })
-                    } // end add points
+                            .foregroundStyle(.white, item.highlightColor).font(.system(size: item.size))}
+                        }
+                    }.mapStyle(.hybrid(elevation: .realistic))
+                    .mapControls {
+                        MapCompass()
+                        MapScaleView()
+                        MapUserLocationButton()
+                    }
                 }.task { await getMapPoints()}
             // Don't display if no results
             if hasMapPointsResults {
                VStack {
                    // Show organism name of the selected point
+                   Text("Next Point:").font(.system(size:15))//.underline()
                    Text(annotationItems[currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold) //.background(.white)
                        .onAppear(perform: {
                            // Mark first point on map
-                           annotationItems[currentAnnoItem].size = 60
+                           annotationItems[currentAnnoItem].size = 40
                            annotationItems[currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
                        })
                    // Show organism's lat and long
@@ -383,7 +392,7 @@ struct MapWithNMEAView: View {
     
     // Draw attention to selected point. Put previous or next point back to its original state
     private func highlightAnnotation (_ offset: Int){
-        annotationItems[currentAnnoItem].size = 60
+        annotationItems[currentAnnoItem].size = 40
         annotationItems[currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
         annotationItems[currentAnnoItem + offset].size = MapPointSize().size
         annotationItems[currentAnnoItem + offset].highlightColor = Color(white: 0.4745)
@@ -432,8 +441,15 @@ struct MapWithNMEAView: View {
                     }
                     
                     // Set staring regoin to the first point in the list
-                    self.region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: Double(mapResults[0].lat) ?? 0, longitude: Double(mapResults[0].long) ?? 0),
-                        span: MKCoordinateSpan(latitudeDelta: 0.015, longitudeDelta: 0.015))
+//                    self.region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: Double(mapResults[0].lat) ?? 0, longitude: Double(mapResults[0].long) ?? 0),
+//                        span: MKCoordinateSpan(latitudeDelta: 0.015, longitudeDelta: 0.015))
+                    // For 17.0's new MapKit SDK
+                    self.cameraPosition = MapCameraPosition.region(
+                        MKCoordinateRegion(
+                            center: CLLocationCoordinate2D(latitude: Double(mapResults[0].lat) ?? 0, longitude: Double(mapResults[0].long) ?? 0),
+                            span: MKCoordinateSpan(latitudeDelta: 0.015, longitudeDelta: 0.015)
+                    ))
+//                    cameraPosition.followsUserLocation == true
                     
                     // Don't show items if no data
                     if hasMapPointsResults == false {
