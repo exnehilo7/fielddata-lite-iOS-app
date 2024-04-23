@@ -113,5 +113,7 @@ struct MainMenuView: View {
                 }
             }.bold().onAppear(perform:{ UIApplication.shared.isIdleTimerDisabled = false})
             }//.preferredColorScheme(.dark)
+        Spacer()
+        Text("Version: \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Cannot get version #")").font(.footnote)
         }
     }

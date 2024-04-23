@@ -9,9 +9,6 @@ import CoreLocation
 import MapKit
 import SwiftUI
 
-class MapPointSize {
-    let size: CGFloat = 35
-}
 
 // Model object for SelectAreaView.
 class SelectNameModel: Codable, Identifiable {
@@ -167,4 +164,7 @@ struct MapAnnotationItem: Identifiable {
     var systemName = ""
     var size: CGFloat = MapPointSize().size
     var highlightColor = Color(white: 0.4745)
+}
+class MapPointSize {
+    let size: CGFloat = 20
 }
