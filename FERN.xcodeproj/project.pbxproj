@@ -28,6 +28,7 @@
 		D15BFD142BBF55000013B67F /* OCRModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BFD132BBF55000013B67F /* OCRModel.swift */; };
 		D15BFD182BBF55590013B67F /* TextPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BFD172BBF55590013B67F /* TextPreviewView.swift */; };
 		D15BFD1A2BBF55880013B67F /* TextRecognition.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BFD192BBF55880013B67F /* TextRecognition.swift */; };
+		D16796372BD9624E00561875 /* TripsInDBView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16796362BD9624E00561875 /* TripsInDBView.swift */; };
 		D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7129901A2000835B5E /* SelectAreaView.swift */; };
 		D16A6C7C2995D18100835B5E /* StartScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7B2995D18100835B5E /* StartScreenView.swift */; };
 		D16A6C7E29970E0900835B5E /* SelectNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7D29970E0900835B5E /* SelectNotesView.swift */; };
@@ -93,6 +94,7 @@
 		D15BFD132BBF55000013B67F /* OCRModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRModel.swift; sourceTree = "<group>"; };
 		D15BFD172BBF55590013B67F /* TextPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextPreviewView.swift; sourceTree = "<group>"; };
 		D15BFD192BBF55880013B67F /* TextRecognition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognition.swift; sourceTree = "<group>"; };
+		D16796362BD9624E00561875 /* TripsInDBView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripsInDBView.swift; sourceTree = "<group>"; };
 		D16A6C7129901A2000835B5E /* SelectAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAreaView.swift; sourceTree = "<group>"; };
 		D16A6C7B2995D18100835B5E /* StartScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreenView.swift; sourceTree = "<group>"; };
 		D16A6C7D29970E0900835B5E /* SelectNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectNotesView.swift; sourceTree = "<group>"; };
@@ -228,6 +230,7 @@
 				D16A6C7B2995D18100835B5E /* StartScreenView.swift */,
 				D1CEED8D2B44C43C00569520 /* CompletedTripView.swift */,
 				D15BFD0C2BBF4DFD0013B67F /* TextRecognizer */,
+				D16796362BD9624E00561875 /* TripsInDBView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -386,6 +389,7 @@
 				D1A56E992B07D27700AC8291 /* CameraImageView.swift in Sources */,
 				D16B0A8C2B9A34BD002081E1 /* MapWithNMEAView.swift in Sources */,
 				D1CEED8E2B44C43C00569520 /* CompletedTripView.swift in Sources */,
+				D16796372BD9624E00561875 /* TripsInDBView.swift in Sources */,
 				D16A6C88299AF32600835B5E /* ReportRoutes.swift in Sources */,
 				D1A56E812B051DB300AC8291 /* SelectTripView.swift in Sources */,
 				D16A6C80299AC65600835B5E /* SelectReportView.swift in Sources */,
