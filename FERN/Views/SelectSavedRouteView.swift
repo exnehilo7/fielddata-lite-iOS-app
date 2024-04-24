@@ -65,5 +65,5 @@ struct SelectSavedRouteView: View {
         } catch {
             areaList = []
         }
-    } // end getSavedRoutes
+    }
 }

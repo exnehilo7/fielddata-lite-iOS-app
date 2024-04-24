@@ -16,7 +16,8 @@ struct FERNApp: App {
 
     init() {
         do {
-            container = try ModelContainer(for: Settings.self, SDTrip.self)
+            container = try ModelContainer(for: Settings.self, SDTrip.self //,migrationPlan: SettingsMigrationPlan.self  APR-2024: SwiftData may still be too immature
+            )
         } catch {
                 fatalError("Failed to configure SwiftData container.")
             }
