@@ -29,6 +29,8 @@
 		D15BFD182BBF55590013B67F /* TextPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BFD172BBF55590013B67F /* TextPreviewView.swift */; };
 		D15BFD1A2BBF55880013B67F /* TextRecognition.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BFD192BBF55880013B67F /* TextRecognition.swift */; };
 		D16796372BD9624E00561875 /* TripsInDBView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16796362BD9624E00561875 /* TripsInDBView.swift */; };
+		D167963B2BD9B78A00561875 /* SettingsCesiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D167963A2BD9B78A00561875 /* SettingsCesiumView.swift */; };
+		D167963D2BD9B7A900561875 /* EditCesiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D167963C2BD9B7A900561875 /* EditCesiumView.swift */; };
 		D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7129901A2000835B5E /* SelectAreaView.swift */; };
 		D16A6C7C2995D18100835B5E /* StartScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7B2995D18100835B5E /* StartScreenView.swift */; };
 		D16A6C7E29970E0900835B5E /* SelectNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7D29970E0900835B5E /* SelectNotesView.swift */; };
@@ -95,6 +97,8 @@
 		D15BFD172BBF55590013B67F /* TextPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextPreviewView.swift; sourceTree = "<group>"; };
 		D15BFD192BBF55880013B67F /* TextRecognition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognition.swift; sourceTree = "<group>"; };
 		D16796362BD9624E00561875 /* TripsInDBView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripsInDBView.swift; sourceTree = "<group>"; };
+		D167963A2BD9B78A00561875 /* SettingsCesiumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCesiumView.swift; sourceTree = "<group>"; };
+		D167963C2BD9B7A900561875 /* EditCesiumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCesiumView.swift; sourceTree = "<group>"; };
 		D16A6C7129901A2000835B5E /* SelectAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAreaView.swift; sourceTree = "<group>"; };
 		D16A6C7B2995D18100835B5E /* StartScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreenView.swift; sourceTree = "<group>"; };
 		D16A6C7D29970E0900835B5E /* SelectNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectNotesView.swift; sourceTree = "<group>"; };
@@ -135,8 +139,10 @@
 			isa = PBXGroup;
 			children = (
 				D107EF152B5708960020F0A2 /* SettingsView.swift */,
+				D167963A2BD9B78A00561875 /* SettingsCesiumView.swift */,
 				D107EF1A2B571C840020F0A2 /* SettingsDatabaseView.swift */,
 				D107EF1C2B571CAA0020F0A2 /* SettingsUploadView.swift */,
+				D167963C2BD9B7A900561875 /* EditCesiumView.swift */,
 				D107EF1E2B57293A0020F0A2 /* EditDatabaseView.swift */,
 				D107EF202B5736BD0020F0A2 /* EditUploadView.swift */,
 			);
@@ -217,20 +223,20 @@
 			children = (
 				D1A56E952B07D09D00AC8291 /* Reports */,
 				D1A56E982B07D27700AC8291 /* CameraImageView.swift */,
+				D1CEED8D2B44C43C00569520 /* CompletedTripView.swift */,
 				D1766C9C298DB978002F594D /* MainMenuView.swift */,
 				D1766CA0298DB9C6002F594D /* MapView.swift */,
 				D16B0A8B2B9A34BD002081E1 /* MapWithNMEAView.swift */,
 				D127B37F2A12EDF600F6287A /* NMEADataView.swift */,
-				D16A6C85299AE2DF00835B5E /* SelectSavedRouteView.swift */,
 				D1766C9E298DB9B2002F594D /* SearchByNameView.swift */,
+				D16A6C85299AE2DF00835B5E /* SelectSavedRouteView.swift */,
 				D16A6C7129901A2000835B5E /* SelectAreaView.swift */,
 				D16A6C7D29970E0900835B5E /* SelectNotesView.swift */,
 				D16A6C7F299AC65600835B5E /* SelectReportView.swift */,
 				D1A56E802B051DB300AC8291 /* SelectTripView.swift */,
 				D16A6C7B2995D18100835B5E /* StartScreenView.swift */,
-				D1CEED8D2B44C43C00569520 /* CompletedTripView.swift */,
-				D15BFD0C2BBF4DFD0013B67F /* TextRecognizer */,
 				D16796362BD9624E00561875 /* TripsInDBView.swift */,
+				D15BFD0C2BBF4DFD0013B67F /* TextRecognizer */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -365,6 +371,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D167963D2BD9B7A900561875 /* EditCesiumView.swift in Sources */,
 				D15BFD182BBF55590013B67F /* TextPreviewView.swift in Sources */,
 				D107EF1D2B571CAA0020F0A2 /* SettingsUploadView.swift in Sources */,
 				D16A6C86299AE2DF00835B5E /* SelectSavedRouteView.swift in Sources */,
@@ -391,6 +398,7 @@
 				D1CEED8E2B44C43C00569520 /* CompletedTripView.swift in Sources */,
 				D16796372BD9624E00561875 /* TripsInDBView.swift in Sources */,
 				D16A6C88299AF32600835B5E /* ReportRoutes.swift in Sources */,
+				D167963B2BD9B78A00561875 /* SettingsCesiumView.swift in Sources */,
 				D1A56E812B051DB300AC8291 /* SelectTripView.swift in Sources */,
 				D16A6C80299AC65600835B5E /* SelectReportView.swift in Sources */,
 				D10BB31C298ADAA400667E86 /* FERNApp.swift in Sources */,
@@ -565,7 +573,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -604,7 +612,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

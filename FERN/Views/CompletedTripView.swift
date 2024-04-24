@@ -31,6 +31,9 @@ struct CompletedTripView: View {
 
     @State var consoleText = ""
     
+    @State private var showCesiumAndContinueAlert = false
+    @State private var continueImageUpload = false
+    
     // MARK: Views
     // Get a message from Upload Image
     var responseMessage: some View {
@@ -56,15 +59,6 @@ struct CompletedTripView: View {
                         Text("Files -> On My [Device] -> FERN ->")
                         Text ("UUID -> trips -> \(tripName).")
                     }.font(.system(size: 15))
-                    Text("").font(.system(size: 15))
-                    HStack {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .font(.system(size: 12)).foregroundColor(.red)
-                        Text("Upload when WiFi or unlimited data is available.")
-                            .font(.system(size: 12))
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .font(.system(size: 12)).foregroundColor(.red)
-                    }
                     Spacer()
                     // If all files not processed & uploaded, show button and bar
                     if (!allFilesProcessed || !item.allFilesUploaded) {
@@ -77,10 +71,11 @@ struct CompletedTripView: View {
                             if (!isLoading) {
                                 Button {
                                     Task {
-                                        // Show bar
-                                        item.allFilesUploaded = false
-                                        // Funciton to upload files. Upload needs to know where it left off if there was an error? Alert user if no signal; don't initiate upload? (Don't show button if no signal?)
-                                        await myFileUploadRequest(tripName: tripName, uploadScriptURL: settings[0].uploadScriptURL, trip: item)
+                                        await beginFileUpload(tripName: tripName, trip: item)
+//                                        // Show bar
+//                                        item.allFilesUploaded = false
+//                                        // Funciton to upload files. Upload needs to know where it left off if there was an error? Alert user if no signal; don't initiate upload? (Don't show button if no signal?)
+//                                        await myFileUploadRequest(tripName: tripName, uploadScriptURL: settings[0].uploadScriptURL, trip: item)
                                     }
                                 } label: {
                                     HStack {
@@ -94,6 +89,23 @@ struct CompletedTripView: View {
                                     .foregroundColor(.white)
                                     .cornerRadius(20)
                                     .padding(.horizontal)
+                                // Give user option to view trip in Cesium and/or continue with iage uploads
+                                }.alert("Continue with image upload?", isPresented: $showCesiumAndContinueAlert) {
+                                    Link("View trip in CesiumJS", destination: URL(string: settings[0].cesiumURL + "?jarvisCommand='jarvis show me \(tripName) trip'")!)
+                                    Button("OK", action: {
+                                        continueImageUpload = true
+                                        Task {
+                                            // Need to fix upload progress bar counter. There should already be a count of 1.
+                                            await beginFileUpload(tripName: tripName, trip: item)
+                                        }
+                                    })
+                                    Button("Cancel", role: .cancel){isLoading = false}
+                                } message: {
+                                    HStack {
+                                        Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.yellow)
+                                        Text("Upload images only when connected to a power cable and WiFi")
+                                        Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.yellow)
+                                    }
                                 }
                             }
 //                        }
@@ -113,6 +125,12 @@ struct CompletedTripView: View {
     } // end body view
     
     // MARK: Functions
+    private func beginFileUpload(tripName: String, trip: SDTrip) async {
+        // Show bar
+        trip.allFilesUploaded = false
+        // Funciton to upload files. Upload needs to know where it left off if there was an error? Alert user if no signal; don't initiate upload? (Don't show button if no signal?)
+        await myFileUploadRequest(tripName: tripName, uploadScriptURL: settings[0].uploadScriptURL, trip: trip)
+    }
     private func myFileUploadRequest(tripName: String, uploadScriptURL: String, trip: SDTrip) async
     {
         
@@ -172,30 +190,45 @@ struct CompletedTripView: View {
         // get total number of files
         self.totalFiles = fileList.count
         
-        // upload txt file first
-        // loop through files in trip array
-        for item in fileList {
-            if item.contains(".txt") {
-                
-                await processFile(item: item, uploadFilePath: uploadFilePath,
-                             boundary: boundary, request: request,
-                             path: path, trip: trip)
+        if !continueImageUpload {
+            // upload txt file first
+            // loop through files in trip array
+            for item in fileList {
+                if item.contains(".txt") {
+                    await processFile(item: item, uploadFilePath: uploadFilePath,
+                                      boundary: boundary, request: request,
+                                      path: path, trip: trip)
+                    
+                    // Insert data into DB
+                    // If all files are uploaded, insert trip into DB
+                    //                if trip.allFilesUploaded == true {
+                    if await !insertIntoDatabase(){
+                        print("🔵 Database insert complete. Check the database for results.")
+                        appendToTextEditor(text: "🔵 Database insert complete. Check the database for results.")
+                    }
+                    //                }
+                    
+                    // Give user option to look at webpage or to continue with picture uploads
+                    showCesiumAndContinueAlert = true
+                    
+                }
             }
         }
         
         // Upload non-txt files
         // loop through files in trip array
-        for item in fileList {
-            if !item.contains(".txt") {
-
+        if continueImageUpload {
+            for item in fileList {
+                if !item.contains(".txt") {
                     await processFile(item: item, uploadFilePath: uploadFilePath,
-                                 boundary: boundary, request: request,
-                                 path: path, trip: trip)
+                                      boundary: boundary, request: request,
+                                      path: path, trip: trip)
+                }
             }
+            print("ℹ️ Trip file array loop complete.")
+            appendToTextEditor(text: "ℹ️ Trip file array loop complete.")
+            continueImageUpload = false
         }
-        
-        print("ℹ️ Files in trip array loop complete.")
-        appendToTextEditor(text: "ℹ️ Files in trip array loop complete.")
         
         isLoading = false
     }
@@ -237,14 +270,6 @@ struct CompletedTripView: View {
                                                              fileData: NSData(contentsOf: getFile)!,
                                                              boundary: boundary, uploadFilePath: pathAndFile)
             uploadFile(fileName: item, request: request, trip: trip, semaphore: semaphore)
-        }
-        
-        // If all files are uploaded, insert trip into DB
-        if trip.allFilesUploaded == true {
-            if await !insertIntoDatabase(){
-                print("🔵 Function complete. Check the database for results.")
-                appendToTextEditor(text: "🔵 Function complete. Check the database for results.")
-            }
         }
         
         // myActivityIndicator.startAnimating();
@@ -484,6 +509,7 @@ struct CompletedTripView: View {
                 self.responseString = NSString(data: data, encoding: NSUTF8StringEncoding)
 //                print("****** response data = \(self.responseString!)")
                 complete = true
+                return complete
             } else {
                 print("🟡 Status code: \(statusCode)")
                 appendToTextEditor(text: "🟡 Status code: \(statusCode)")

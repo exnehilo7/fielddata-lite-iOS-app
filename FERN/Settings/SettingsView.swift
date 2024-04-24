@@ -11,17 +11,27 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack{
             List {
-                // Select a saved route
+                // CesiumJS URL
+                NavigationLink {
+                    SettingsCesiumView()
+                        .navigationTitle("CesiumJS URL")
+                } label: {
+                    HStack {
+                        Image(systemName: "ellipsis.curlybraces").bold(false).foregroundColor(.gray)
+                        Text("CesiumJS URL")
+                    }
+                }
+                // Database URL
                 NavigationLink {
                     SettingsDatabaseView()
                         .navigationTitle("Database URL")
                 } label: {
                     HStack {
-                        Image(systemName: "network").bold(false).foregroundColor(.gray)
+                        Image(systemName: "externaldrive").bold(false).foregroundColor(.gray)
                         Text("Database URL")
                     }
                 }
-                // Search within an area
+                // PHP upload script
                 NavigationLink {
                     SettingsUploadView()
                         .navigationTitle("Upload Script URL")
