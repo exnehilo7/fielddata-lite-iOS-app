@@ -88,6 +88,16 @@ struct MainMenuView: View {
                             Text("GPS Camera")
                         }
                     }
+                    // List of trips in the database
+                    NavigationLink {
+                        TripsInDBView()
+                            .navigationTitle("Trips")
+                    } label: {
+                        HStack {
+                            Image(systemName: "externaldrive").bold(false).foregroundColor(.gray)
+                            Text("Trips in Database")
+                        }
+                    }
                     // App settings
                     NavigationLink {
                         SettingsView()
