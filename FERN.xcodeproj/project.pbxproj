@@ -31,6 +31,7 @@
 		D16796372BD9624E00561875 /* TripsInDBView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16796362BD9624E00561875 /* TripsInDBView.swift */; };
 		D167963B2BD9B78A00561875 /* SettingsCesiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D167963A2BD9B78A00561875 /* SettingsCesiumView.swift */; };
 		D167963D2BD9B7A900561875 /* EditCesiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D167963C2BD9B7A900561875 /* EditCesiumView.swift */; };
+		D167963F2BDAEF2200561875 /* RandoTestingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D167963E2BDAEF2200561875 /* RandoTestingView.swift */; };
 		D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7129901A2000835B5E /* SelectAreaView.swift */; };
 		D16A6C7C2995D18100835B5E /* StartScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7B2995D18100835B5E /* StartScreenView.swift */; };
 		D16A6C7E29970E0900835B5E /* SelectNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7D29970E0900835B5E /* SelectNotesView.swift */; };
@@ -99,6 +100,7 @@
 		D16796362BD9624E00561875 /* TripsInDBView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripsInDBView.swift; sourceTree = "<group>"; };
 		D167963A2BD9B78A00561875 /* SettingsCesiumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCesiumView.swift; sourceTree = "<group>"; };
 		D167963C2BD9B7A900561875 /* EditCesiumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCesiumView.swift; sourceTree = "<group>"; };
+		D167963E2BDAEF2200561875 /* RandoTestingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandoTestingView.swift; sourceTree = "<group>"; };
 		D16A6C7129901A2000835B5E /* SelectAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAreaView.swift; sourceTree = "<group>"; };
 		D16A6C7B2995D18100835B5E /* StartScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreenView.swift; sourceTree = "<group>"; };
 		D16A6C7D29970E0900835B5E /* SelectNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectNotesView.swift; sourceTree = "<group>"; };
@@ -237,6 +239,7 @@
 				D16A6C7B2995D18100835B5E /* StartScreenView.swift */,
 				D16796362BD9624E00561875 /* TripsInDBView.swift */,
 				D15BFD0C2BBF4DFD0013B67F /* TextRecognizer */,
+				D167963E2BDAEF2200561875 /* RandoTestingView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -402,6 +405,7 @@
 				D1A56E812B051DB300AC8291 /* SelectTripView.swift in Sources */,
 				D16A6C80299AC65600835B5E /* SelectReportView.swift in Sources */,
 				D10BB31C298ADAA400667E86 /* FERNApp.swift in Sources */,
+				D167963F2BDAEF2200561875 /* RandoTestingView.swift in Sources */,
 				D107EF212B5736BD0020F0A2 /* EditUploadView.swift in Sources */,
 				D16A6C7E29970E0900835B5E /* SelectNotesView.swift in Sources */,
 				D1766CA5298E0B3E002F594D /* Classes.swift in Sources */,
@@ -573,7 +577,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -612,7 +616,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

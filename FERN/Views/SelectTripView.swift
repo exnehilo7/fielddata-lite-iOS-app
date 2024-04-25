@@ -21,6 +21,7 @@ struct SelectTripView: View {
     
     @Environment(\.modelContext) var modelContext // swift data
     @Query var sdTrips: [SDTrip]
+    @Query var settings: [Settings]
     
     var body: some View {
         NavigationView {
@@ -34,7 +35,8 @@ struct SelectTripView: View {
                                 .navigationTitle("\(item.name)")
                         }
                         else {
-                            CompletedTripView(tripName: item.name)
+                            // Try to prevent data race by passing swiftdata values(?)
+                            CompletedTripView(tripName: item.name, uploadURL: settings[0].uploadScriptURL, cesiumURL: settings[0].cesiumURL)
                         } // Go to an upload screen instead?
                     } label: {
                         HStack{
