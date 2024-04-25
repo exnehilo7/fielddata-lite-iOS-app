@@ -38,6 +38,8 @@ struct CameraImageView: View {
     
     // Custom Data
     @State private var textNotes = ""
+    @State private var scrubbedNotes = ""
+    @State private var numofmatches = 0
     
     // GPS -------------------------------------------------------------
     // Arrow Gold
@@ -134,16 +136,12 @@ struct CameraImageView: View {
         Button(action: {
             let fileNameUUID = UUID().uuidString
             let upperUUID = fileNameUUID.uppercased()
-            let textInPic = recognizedContent.items[0].text
-            // if ; count is not the same count as :, and matching count is not even, alert user "Invalid note pattern!" and clear text field.
-            let colonCount = textNotes.filter({ $0 == ":"}).count
-            let semicolonCount = textNotes.filter({ $0 == ";"}).count
-            if colonCount == semicolonCount {
-                if colonCount % 2 == 0 {
-                    // if all is good, save pic
-                    // Remove special characters from user data
-                    let pattern = "[^A-Za-z0-9:;\\s]+"
-                    textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
+            var textInPic = recognizedContent.items[0].text
+            // Remove " and \ from scanned text
+            var pattern = "[^A-Za-z0-9!@#$%&*()-_+=.,<>;:'/?\\s]+"
+            textInPic = textInPic.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
+            // if user data is all good, save pic
+            if checkUserData() {
                     if showArrowGold {
                         // Alert user if feed has stopped or values are zero
                         if nmea.hasNMEAStreamStopped ||
@@ -178,8 +176,7 @@ struct CameraImageView: View {
                     recognizedContent.items[0].text = ""
                     // Clear custom data
                     clearCustomData()
-                } else {invalidSyntax("for the Notes field"); showAlert = true} // end is_even?
-            } else {invalidSyntax("for the Notes field"); showAlert = true} // end count = count
+            } else {invalidSyntax("for the Notes field"); showAlert = true} // end user notes check
         }, label: {
             HStack {
                 Image(systemName: "photo")
@@ -301,6 +298,35 @@ struct CameraImageView: View {
         }
     }
 
+    private func checkUserData() -> Bool {
+        var isValid = false
+        
+        // Remove special characters from user data
+        var pattern = "[^A-Za-z0-9,.:;\\s]+"
+        textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
+        
+        // remove any text past the final ;
+        pattern = "[A-Za-z0-9\\s]*$"
+        textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
+        
+        // Count # of proper syntax matches
+        let range = NSRange(location: 0, length: textNotes.utf16.count)
+        let regex = try! NSRegularExpression(pattern: "[\\s\\d\\w,.]+\\s*:\\s*[\\s\\d\\w,.]+\\s*;\\s*")
+        numofmatches = regex.numberOfMatches(in: textNotes, range: range)
+        
+        // Are both ; : more than 0? Are ; : counts equal? Is : = to match count?
+        let colonCount = textNotes.filter({ $0 == ":"}).count
+        let semicolonCount = textNotes.filter({ $0 == ";"}).count
+        
+        if ((colonCount > 0 && semicolonCount > 0)
+            && colonCount == semicolonCount
+            && colonCount == numofmatches) {
+            isValid = true
+        }
+        
+        return isValid
+    }
+    
     private func cancelPic(){
         isImageSelected = false
         isShowCamera = true

@@ -14,11 +14,13 @@ import CryptoKit
 struct CompletedTripView: View {
     
     @Environment(\.modelContext) var modelContext
-    @Query var settings: [Settings]
+//    @Query var settings: [Settings]
     @Query var sdTrips: [SDTrip]
     
     // From calling view
     var tripName: String
+    var uploadURL: String
+    var cesiumURL: String
     
     @State var responseString: NSString?
     
@@ -71,11 +73,9 @@ struct CompletedTripView: View {
                             if (!isLoading) {
                                 Button {
                                     Task {
+                                        // Set counters
+                                        resetVars()
                                         await beginFileUpload(tripName: tripName, trip: item)
-//                                        // Show bar
-//                                        item.allFilesUploaded = false
-//                                        // Funciton to upload files. Upload needs to know where it left off if there was an error? Alert user if no signal; don't initiate upload? (Don't show button if no signal?)
-//                                        await myFileUploadRequest(tripName: tripName, uploadScriptURL: settings[0].uploadScriptURL, trip: item)
                                     }
                                 } label: {
                                     HStack {
@@ -91,7 +91,7 @@ struct CompletedTripView: View {
                                     .padding(.horizontal)
                                 // Give user option to view trip in Cesium and/or continue with iage uploads
                                 }.alert("Continue with image upload?", isPresented: $showCesiumAndContinueAlert) {
-                                    Link("View trip in CesiumJS", destination: URL(string: settings[0].cesiumURL + "?jarvisCommand='jarvis show me \(tripName) trip'")!)
+                                    Link("View trip in CesiumJS", destination: URL(string: cesiumURL + "?jarvisCommand='jarvis show me \(tripName) trip'")!)
                                     Button("OK", action: {
                                         continueImageUpload = true
                                         Task {
@@ -102,9 +102,10 @@ struct CompletedTripView: View {
                                     Button("Cancel", role: .cancel){isLoading = false}
                                 } message: {
                                     HStack {
-                                        Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.yellow)
-                                        Text("Upload images only when connected to a power cable and WiFi")
-                                        Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.yellow)
+//                                        Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.yellow)
+                                        Text("It is strongly recommended to be connected to a power cable and Wi-Fi when uploading images.")
+                                        Text("NOTE: The app cannot yet run in the background or when the device is locked.")
+//                                        Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.yellow)
                                     }
                                 }
                             }
@@ -125,21 +126,26 @@ struct CompletedTripView: View {
     } // end body view
     
     // MARK: Functions
+    private func resetVars(){
+        consoleText = ""
+        totalUploaded = 0
+        totalFiles = 0
+        totalProcessed = 0
+    }
+    
     private func beginFileUpload(tripName: String, trip: SDTrip) async {
         // Show bar
         trip.allFilesUploaded = false
         // Funciton to upload files. Upload needs to know where it left off if there was an error? Alert user if no signal; don't initiate upload? (Don't show button if no signal?)
-        await myFileUploadRequest(tripName: tripName, uploadScriptURL: settings[0].uploadScriptURL, trip: trip)
+        await myFileUploadRequest(tripName: tripName, uploadScriptURL: uploadURL, trip: trip)
     }
+    
     private func myFileUploadRequest(tripName: String, uploadScriptURL: String, trip: SDTrip) async
     {
         
-        // Set & reset vars
+        // Set var
         isLoading = true
-        totalUploaded = 0
-        totalFiles = 0
-        totalProcessed = 0
-        
+
         // Set endpoint
         let myUrl = NSURL(string: uploadScriptURL)
         
@@ -281,7 +287,7 @@ struct CompletedTripView: View {
         var exists = false
         
         // Apparently to do a upload POST with no file, a "clean" URL and the do..let..try..await URLSession.shared.upload is needed?
-        guard let url: URL = URL(string: settings[0].uploadScriptURL) else {
+        guard let url: URL = URL(string: uploadURL) else {
             Swift.print("invalid URL")
             return exists
         }
@@ -487,7 +493,7 @@ struct CompletedTripView: View {
    
         var complete = false
         
-        guard let url: URL = URL(string: settings[0].uploadScriptURL) else {
+        guard let url: URL = URL(string: uploadURL) else {
             Swift.print("invalid URL")
             return complete
         }
