@@ -32,6 +32,8 @@
 		D167963B2BD9B78A00561875 /* SettingsCesiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D167963A2BD9B78A00561875 /* SettingsCesiumView.swift */; };
 		D167963D2BD9B7A900561875 /* EditCesiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D167963C2BD9B7A900561875 /* EditCesiumView.swift */; };
 		D167963F2BDAEF2200561875 /* RandoTestingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D167963E2BDAEF2200561875 /* RandoTestingView.swift */; };
+		D16796412BE02CE500561875 /* SelectTripForAppleMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16796402BE02CE500561875 /* SelectTripForAppleMapView.swift */; };
+		D16796432BE02CFF00561875 /* SelectTripForCesiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16796422BE02CFF00561875 /* SelectTripForCesiumView.swift */; };
 		D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7129901A2000835B5E /* SelectAreaView.swift */; };
 		D16A6C7C2995D18100835B5E /* StartScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7B2995D18100835B5E /* StartScreenView.swift */; };
 		D16A6C7E29970E0900835B5E /* SelectNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7D29970E0900835B5E /* SelectNotesView.swift */; };
@@ -101,6 +103,8 @@
 		D167963A2BD9B78A00561875 /* SettingsCesiumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCesiumView.swift; sourceTree = "<group>"; };
 		D167963C2BD9B7A900561875 /* EditCesiumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCesiumView.swift; sourceTree = "<group>"; };
 		D167963E2BDAEF2200561875 /* RandoTestingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandoTestingView.swift; sourceTree = "<group>"; };
+		D16796402BE02CE500561875 /* SelectTripForAppleMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripForAppleMapView.swift; sourceTree = "<group>"; };
+		D16796422BE02CFF00561875 /* SelectTripForCesiumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripForCesiumView.swift; sourceTree = "<group>"; };
 		D16A6C7129901A2000835B5E /* SelectAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAreaView.swift; sourceTree = "<group>"; };
 		D16A6C7B2995D18100835B5E /* StartScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreenView.swift; sourceTree = "<group>"; };
 		D16A6C7D29970E0900835B5E /* SelectNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectNotesView.swift; sourceTree = "<group>"; };
@@ -236,6 +240,8 @@
 				D16A6C7D29970E0900835B5E /* SelectNotesView.swift */,
 				D16A6C7F299AC65600835B5E /* SelectReportView.swift */,
 				D1A56E802B051DB300AC8291 /* SelectTripView.swift */,
+				D16796402BE02CE500561875 /* SelectTripForAppleMapView.swift */,
+				D16796422BE02CFF00561875 /* SelectTripForCesiumView.swift */,
 				D16A6C7B2995D18100835B5E /* StartScreenView.swift */,
 				D16796362BD9624E00561875 /* TripsInDBView.swift */,
 				D15BFD0C2BBF4DFD0013B67F /* TextRecognizer */,
@@ -384,6 +390,7 @@
 				D10BB32A298ADAD600667E86 /* Models.swift in Sources */,
 				D127B3802A12EDF600F6287A /* NMEADataView.swift in Sources */,
 				D130BADA2B5ADEAE00F0C47C /* Trip.swift in Sources */,
+				D16796432BE02CFF00561875 /* SelectTripForCesiumView.swift in Sources */,
 				D10925962B2B9C96005D376F /* Sounds.swift in Sources */,
 				D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */,
 				D1766CA3298DBAA3002F594D /* Functions.swift in Sources */,
@@ -393,6 +400,7 @@
 				D1766C9F298DB9B2002F594D /* SearchByNameView.swift in Sources */,
 				D15BFD1A2BBF55880013B67F /* TextRecognition.swift in Sources */,
 				D15BFD142BBF55000013B67F /* OCRModel.swift in Sources */,
+				D16796412BE02CE500561875 /* SelectTripForAppleMapView.swift in Sources */,
 				D107EF162B5708960020F0A2 /* SettingsView.swift in Sources */,
 				D107EF1B2B571C840020F0A2 /* SettingsDatabaseView.swift in Sources */,
 				D16A6C7C2995D18100835B5E /* StartScreenView.swift in Sources */,
@@ -577,7 +585,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -616,7 +624,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

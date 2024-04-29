@@ -311,7 +311,7 @@ struct MapWithNMEAView: View {
                    Text(annotationItems[currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold) //.background(.white)
                        .onAppear(perform: {
                            // Mark first point on map
-                           annotationItems[currentAnnoItem].size = 40
+                           annotationItems[currentAnnoItem].size = 20
                            annotationItems[currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
                        })
                    // Show organism's lat and long
@@ -392,7 +392,7 @@ struct MapWithNMEAView: View {
     
     // Draw attention to selected point. Put previous or next point back to its original state
     private func highlightAnnotation (_ offset: Int){
-        annotationItems[currentAnnoItem].size = 40
+        annotationItems[currentAnnoItem].size = 20
         annotationItems[currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
         annotationItems[currentAnnoItem + offset].size = MapPointSize().size
         annotationItems[currentAnnoItem + offset].highlightColor = Color(white: 0.4745)

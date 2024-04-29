@@ -137,9 +137,9 @@ struct CameraImageView: View {
             let fileNameUUID = UUID().uuidString
             let upperUUID = fileNameUUID.uppercased()
             var textInPic = recognizedContent.items[0].text
-            // Remove " and \ from scanned text
-            var pattern = "[^A-Za-z0-9!@#$%&*()-_+=.,<>;:'/?\\s]+"
-            textInPic = textInPic.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
+            // Replace " and \ and , with a space for scanned text
+            var pattern = "[^A-Za-z0-9!@#$%&*()-_+=.<>;:'/?\\s]+"
+            textInPic = textInPic.replacingOccurrences(of: pattern, with: " ", options: [.regularExpression])
             // if user data is all good, save pic
             if checkUserData() {
                     if showArrowGold {
@@ -255,8 +255,10 @@ struct CameraImageView: View {
         VStack {
             HStack {
                 Text("Notes:")//.foregroundColor(.white)
-                TextField("branch count: 42; status: alive;", text: $textNotes
-                ).textFieldStyle(.roundedBorder).autocapitalization(.none)
+                TextField("",
+                          text: $textNotes,
+                          prompt: Text("branch count: 42; status: alive;").foregroundColor(.green.opacity(0.5))
+                ).textFieldStyle(.roundedBorder).autocapitalization(.none).foregroundColor(.yellow)
             }
         }
     }
@@ -314,13 +316,17 @@ struct CameraImageView: View {
         let regex = try! NSRegularExpression(pattern: "[\\s\\d\\w,.]+\\s*:\\s*[\\s\\d\\w,.]+\\s*;\\s*")
         numofmatches = regex.numberOfMatches(in: textNotes, range: range)
         
-        // Are both ; : more than 0? Are ; : counts equal? Is : = to match count?
+        // Are both ; : more than 0? Are ; : counts equal? Is : equal to match count? Or is the field blank?
         let colonCount = textNotes.filter({ $0 == ":"}).count
         let semicolonCount = textNotes.filter({ $0 == ";"}).count
         
-        if ((colonCount > 0 && semicolonCount > 0)
-            && colonCount == semicolonCount
-            && colonCount == numofmatches) {
+        if (
+            (
+                (colonCount > 0 && semicolonCount > 0)
+                && colonCount == semicolonCount
+                && colonCount == numofmatches
+            ) || textNotes.count == 0
+        ) {
             isValid = true
         }
         

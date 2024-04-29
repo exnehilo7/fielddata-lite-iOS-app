@@ -166,5 +166,5 @@ struct MapAnnotationItem: Identifiable {
     var highlightColor = Color(white: 0.4745)
 }
 class MapPointSize {
-    let size: CGFloat = 20
+    let size: CGFloat = 10
 }
