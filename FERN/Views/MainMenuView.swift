@@ -91,7 +91,7 @@ struct MainMenuView: View {
                     // List of trips in the database
                     NavigationLink {
                         TripsInDBView()
-                            .navigationTitle("Trips")
+                            .navigationTitle("Select a Map Type")
                     } label: {
                         HStack {
                             Image(systemName: "externaldrive").bold(false).foregroundColor(.gray)

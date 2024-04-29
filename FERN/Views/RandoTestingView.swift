@@ -22,6 +22,14 @@ struct RandoTestingView: View {
                 TextField("branch count: 42; status: alive;", text: $textNotes
                 ).textFieldStyle(.roundedBorder).autocapitalization(.none)
             }
+            TextField("",
+                      text: $textNotes,
+                      prompt: Text("branch count: 42; status: alive;").foregroundColor(.green.opacity(0.75))
+            ).textFieldStyle(.roundedBorder).autocapitalization(.none).foregroundColor(.yellow)
+            TextField("",
+                      text: $textNotes,
+                      prompt: Text("branch count: 42; status: alive;").foregroundColor(.green.opacity(0.5))
+            ).textFieldStyle(.roundedBorder).autocapitalization(.none).foregroundColor(.yellow)
             Text(result)
             Text(String(numofmatches))
             Text(textNotes)

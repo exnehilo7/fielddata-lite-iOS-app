@@ -1,73 +1,44 @@
 //
-//  TripsInDBView.swift
+//  SelectTripForAppleMapView.swift
 //  FERN
 //
-//  Created by Hopp, Dan on 4/24/24.
+//  Created by Hopp, Dan on 4/29/24.
 //
 
 import SwiftUI
 import SwiftData
-import SafariServices
 
+struct SelectTripForAppleMapView: View {
 
-struct TripsInDBView: View {
-    
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
     
     @State private var areaList: [SelectNameModel] = []
     
+    
     var body: some View {
-        
         VStack {
             HStack{
                 Spacer()
                 Button ("Refresh"){
                     Task {
-                        await getSavedRoutes()
+                        await getSavedTrips()
                     }
                 }.padding(.trailing, 25)
             }
             NavigationStack {
-//                List (self.areaList) { (trip) in
-//                    Link(trip.name, destination: URL(string: settings[0].cesiumURL + "?jarvisCommand='jarvis show me \(trip.name) trip'")!)
-//                }
-                List {
-                    NavigationLink {
-                        SelectTripForAppleMapView()
-                            .navigationTitle("Apple Map")
-                    } label: {
-                        HStack {
-                            Image(systemName: "mappin.and.ellipse").bold(false).foregroundColor(.gray)
-                            Text("Apple Map")
-                        }
-                    }
-                    NavigationLink {
-                        SelectTripForCesiumView()
-                            .navigationTitle("Cesium JS")
-                    } label: {
-                        HStack {
-                            Image(systemName: "globe").bold(false).foregroundColor(.gray)
-                            Text("Cesium JS")
-                        }
+                List (self.areaList) { (trip) in
+                    NavigationLink(trip.name) {
+                        // Pass var to view. Query for route does not need a column or organism name.
+                        MapWithNMEAView(areaName: trip.name, columnName: "", organismName: "", queryName: "query_get_trip_for_apple_map")
                     }
                 }
             }
             // query areas. Call PHP GET
-        }.task { await getSavedRoutes()}
+        }.task { await getSavedTrips()}
     } //end View
     
-    // To have web browser in-app
-//    func openSafariInApp(trip: String){
-//        if let url = URL(string: "https://fair.ornl.gov/fielddata/code/html/jarvisWorld.html?jarvisCommand='jarvis show me \(trip.name) trip'") {
-//                                        let config = SFSafariViewController.Configuration()
-//
-//                                        let vc = SFSafariViewController(url: url, configuration: config)
-//                                        present(vc, animated: true) // not found in scope?
-//                                    }
-//    }
-    
-    func getSavedRoutes() async {
+  private func getSavedTrips() async {
         
         guard let url: URL = URL(string: settings[0].databaseURL + "/php/" + "menusAndReports.php") else {
             Swift.print("invalid URL")
