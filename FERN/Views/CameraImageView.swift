@@ -23,10 +23,13 @@ struct CameraImageView: View {
     @State private var showAlert = false
     @State private var article = Article(title: "", description: "")
     @State private var showingCompleteAlert = false
+    @State private var showingStoppedNMEAAlert = false
     
     // Select GPS and display toggles
-    @State var gpsModeIsSelected = false
-    @State var showArrowGold = false
+//    @State var gpsModeIsSelected = false
+//    @State var showArrowGold = false
+    var showArrowGold:Bool
+    var gpsModeIsSelected:Bool
     
     // Swift data
     @Environment(\.modelContext) var modelContext
@@ -43,7 +46,8 @@ struct CameraImageView: View {
     
     // GPS -------------------------------------------------------------
     // Arrow Gold
-    @ObservedObject var nmea:NMEA = NMEA()
+//    @ObservedObject var nmea:NMEA = NMEA()
+    @EnvironmentObject var nmea: NMEA
     
     // Default iOS
     @ObservedObject var clLocationHelper = LocationHelper()
@@ -96,41 +100,56 @@ struct CameraImageView: View {
     //------------------------------------------------------------------
     
     // Select GPS mode
-    var selectGpsMode: some View {
-        HStack {
-            HStack{
-                Button{
-                    // (22-AUG-2023: Need to initiate the camera class(?) and CoreLocation on button press, not on view load?)
-                    gpsModeIsSelected = true
-                    createTxtFileForTheDay()
-                    UIApplication.shared.isIdleTimerDisabled = true
-                    isShowCamera = true
-                    // Clear scanned text
-                    recognizedContent.items[0].text = ""
-                } label: {
-                    Label("Use Standard GPS", systemImage: "location.fill")
-                }.buttonStyle(.borderedProminent)
-            }.padding(.leading, 20)
+//    var selectGpsMode: some View {
+//        HStack {
+//            HStack{
+//                Button{
+//                    // (22-AUG-2023: Need to initiate the camera class(?) and CoreLocation on button press, not on view load?)
+//                    gpsModeIsSelected = true
+//                    createTxtFileForTheDay()
+//                    UIApplication.shared.isIdleTimerDisabled = true
+//                    isShowCamera = true
+//                    // Clear scanned text
+//                    recognizedContent.items[0].text = ""
+//                } label: {
+//                    Label("Use Standard GPS", systemImage: "location.fill")
+//                }.buttonStyle(.borderedProminent)
+//            }.padding(.leading, 20)
+//            Spacer()
+//            HStack{
+//                Button{
+//                    showArrowGold = true
+//                    clLocationHelper.stopUpdatingDefaultCoreLocation() // basic core off
+//                    nmea.viewDidLoad()
+//                    gpsModeIsSelected = true
+//                    createTxtFileForTheDay()
+//                    // To prevent the device feed from being interruped, disable autosleep
+//                    UIApplication.shared.isIdleTimerDisabled = true
+//                    isShowCamera = true
+//                    // Clear scanned text
+//                    recognizedContent.items[0].text = ""
+//                } label: {
+//                    Label("Use Arrow Gold Device", systemImage: "antenna.radiowaves.left.and.right").foregroundColor(.black)
+//                }.buttonStyle(.borderedProminent).tint(.yellow)
+//            }.padding(.trailing, 20)
+//        }
+//    }
+    
+    // NMEA Alert
+    var stoppedNMEA: some View {
+        VStack {
             Spacer()
-            HStack{
-                Button{
-                    showArrowGold = true
-                    clLocationHelper.stopUpdatingDefaultCoreLocation() // basic core off
-                    nmea.viewDidLoad()
-                    gpsModeIsSelected = true
-                    createTxtFileForTheDay()
-                    // To prevent the device feed from being interruped, disable autosleep
-                    UIApplication.shared.isIdleTimerDisabled = true
-                    isShowCamera = true
-                    // Clear scanned text
-                    recognizedContent.items[0].text = ""
-                } label: {
-                    Label("Use Arrow Gold Device", systemImage: "antenna.radiowaves.left.and.right").foregroundColor(.black)
-                }.buttonStyle(.borderedProminent).tint(.yellow)
-            }.padding(.trailing, 20)
+            Text("Device Feed Error").bold().foregroundStyle(.red)
+            Text("Photo was not saved. Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app.")
+//            Button("OK", action: {showingStoppedNMEAAlert = false; isShowCamera = false})
+//                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+//                .background(Color.blue)
+//                .foregroundColor(.white)
+//                .cornerRadius(20)
+//                .padding(.horizontal)
         }
     }
-    
+
     // Save the pic button
     var savePicButton: some View {
         Button(action: {
@@ -145,14 +164,15 @@ struct CameraImageView: View {
                     if showArrowGold {
                         // Alert user if feed has stopped or values are zero
                         if nmea.hasNMEAStreamStopped ||
-                            ((nmea.accuracy ?? "0.00") == "0.00" || (nmea.longitude ?? "0.0000") == "0.0000" ||
-                             (nmea.latitude ?? "0.0000") == "0.0000" || (nmea.altitude ?? "0.00") == "0.00")
+                            ((nmea.accuracy ?? "0.00") == "0.00" || (nmea.longitude ?? "0.00000000") == "0.00000000" ||
+                             (nmea.latitude ?? "0.c") == "0.00000000" || (nmea.altitude ?? "0.00") == "0.00")
                         {
+                            // GPS coords are set to 0 in NMEADataClass
                             article.title = "Device Feed Error"
                             article.description = "Photo was not saved. Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app."
-                            showAlert = true
-                            isShowCamera = false
+//                            showAlert = true
                             isImageSelected = false
+                            showingStoppedNMEAAlert = true
                         } else {
                             // Pass Arrow GPS data
                             savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "ArrowGold",
@@ -198,6 +218,7 @@ struct CameraImageView: View {
     var showCameraButton: some View {
         Button {
             isShowCamera = true
+            showingStoppedNMEAAlert = false
         } label: {
             Label("Show Camera", systemImage: "camera").foregroundColor(.white)
         }.buttonStyle(.borderedProminent).tint(.blue)
@@ -356,7 +377,7 @@ struct CameraImageView: View {
     var body: some View {
         
         VStack {
-            if !gpsModeIsSelected {
+            if !isImageSelected {
                 // mark complete button
                 ForEach(sdTrips) { item in
                     // Get the previous view's selected trip
@@ -395,6 +416,12 @@ struct CameraImageView: View {
                 }
                 Spacer()
             }
+            // No-NMEA alert
+            if showingStoppedNMEAAlert {
+                stoppedNMEA
+            }
+            
+            
             // Show the pic to be saved
             Image(uiImage: self.image)
             .resizable()
@@ -407,64 +434,69 @@ struct CameraImageView: View {
             Spacer()
             
             // Give the user an option to bring back the camera if the ImagePicker was cancelled.
-            if gpsModeIsSelected {
-                // Don't show if an image is ready to save
-                if !isImageSelected {
-                    // Don't show if the camera is already showing
-                    if !isShowCamera {
-                        showCameraButton
+//            if gpsModeIsSelected {
+//                // Don't show if an image is ready to save
+//                if !isImageSelected {
+//                    // Don't show if the camera is already showing
+//                    if !isShowCamera {
+//                        showCameraButton
+//                    }
+//                }
+//            }
+            
+            // Show GPS feed if one was selected
+//            if gpsModeIsSelected {
+                // Don't display GPS coords if sheet is displayed.
+            if !isShowCamera {
+                if showArrowGold {
+                    arrowGpsData
+                }
+                else {
+                    coreLocationGpsData
+                }
+            }
+            
+            // Display recognized text (remove list?)
+            if isRecognizing {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: Color(UIColor.systemIndigo)))
+                    .padding(.bottom, 20)
+            } else {
+                if recognizedContent.items[0].text != ""{
+                    HStack {
+                        Text("Scanned text: ")
+                        TextPreviewView(scannedText: recognizedContent.items[0].text)
                     }
                 }
             }
             
-            // Show GPS feed if one was selected
-            if gpsModeIsSelected {
-                // Don't display GPS coords if sheet is displayed.
-                if !isShowCamera {
-                    if showArrowGold {
-                        arrowGpsData
-                    }
-                    else {
-                        coreLocationGpsData
-                    }
+            if isImageSelected {
+                HStack{
+                    cancelPicButton
                 }
+            }
+            
+            HStack {
                 
-                // Display recognized text (remove list?)
-                if isRecognizing {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: Color(UIColor.systemIndigo)))
-                        .padding(.bottom, 20)
-                } else {
-                    if recognizedContent.items[0].text != ""{
-                        HStack {
-                            Text("Scanned text: ")
-                            TextPreviewView(scannedText: recognizedContent.items[0].text)
-                        }
-                    }
-                }
-                
+                // Show the image save button if ImagePicker struct has an image.
                 if isImageSelected {
-                    HStack{
-                        cancelPicButton
+                    HStack {
+                        scanForTextButton
                     }
-                }
-                
-                HStack {
-                    
-                    // Show the image save button if ImagePicker struct has an image.
-                    if isImageSelected {
-                        HStack {
-                            scanForTextButton
-                        }
-                        Spacer()
-                        HStack {
-                            savePicButton
-                        }
+                    Spacer()
+                    HStack {
+                        savePicButton
                     }
                 }
             }
-            else {
-                selectGpsMode
+//            }
+//            else {
+//                selectGpsMode
+//            }
+            
+            // Don't show camera button if an image is ready to save or if the camera is already showing
+            if !isImageSelected && !isShowCamera {
+                showCameraButton
             }
         }.sheet(isPresented: $isShowCamera) {
             // Try to show the GPS data at all times on the bottom half of the screen
@@ -484,7 +516,19 @@ struct CameraImageView: View {
                 }
             }
         }.animation(.easeInOut, value: true)
-            .preferredColorScheme(.dark)// END VStack
+            .preferredColorScheme(.dark)
+            .onAppear(perform: {
+                if showArrowGold {
+                    // basic core off. May need to better handle LocationHelper instantiation
+                    clLocationHelper.stopUpdatingDefaultCoreLocation()
+                }
+                createTxtFileForTheDay()
+                // To prevent the device feed from being interruped, disable autosleep
+                UIApplication.shared.isIdleTimerDisabled = true
+//                isShowCamera = true
+                // Clear scanned text
+                recognizedContent.items[0].text = ""
+            })// END VStack
     } // END BODY
     
 } // END STRUCT
