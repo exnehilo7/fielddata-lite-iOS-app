@@ -54,8 +54,9 @@ struct SearchByNameView: View {
                     if hasResults && (resultsCount < 100){
                         VStack{
                             NavigationLink {
+                                // NEED TO FIX VIEW FOR ENVIRONMENTOBJECT NMEA
                                 MapWithNMEAView(areaName: areaName, columnName: columnName, organismName: organismName,
-                                        queryName: "query_search_org_name_by_site")
+                                        queryName: "query_search_org_name_by_site", showArrowGold: false, gpsModeIsSelected: false)
                             } label: {
                                 HStack {
                                     Image(systemName: "globe.americas.fill").bold(false).foregroundColor(.green)
