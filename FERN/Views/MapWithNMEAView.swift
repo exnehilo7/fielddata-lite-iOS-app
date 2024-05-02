@@ -250,7 +250,7 @@ struct MapWithNMEAView: View {
 //            Text("Your content here")
 //                .font(.headline)
 //                .padding()
-            CameraImageView(tripName: areaName, showArrowGold: showArrowGold, gpsModeIsSelected: gpsModeIsSelected).environmentObject(nmea)
+            CameraImageView(mapViewIsActive: true, tripName: areaName, showArrowGold: showArrowGold, gpsModeIsSelected: gpsModeIsSelected).environmentObject(nmea)
         }
     }
     
@@ -264,11 +264,7 @@ struct MapWithNMEAView: View {
                     Spacer()
                     Button ("Reset Route Markers"){
                         Task {
-                            hasMapPointsResults = false
-                            currentAnnoItem = 0
-                            totalAnnoItems = 0
-                            annotationItems.removeAll(keepingCapacity: true)
-                            await getMapPoints()
+                            await resetRouteMarkers()
                         }
                     }.padding(.trailing, 25)
                 }
@@ -371,7 +367,7 @@ struct MapWithNMEAView: View {
                            .alert(article.title, isPresented: $showAlert, presenting: article) {article in Button("OK"){showAlert = false}} message: {article in Text(article.description)}
                        
                        // Where is next? button
-                       whereIsNext
+                       // whereIsNext
                    }.padding(.bottom, 20)
                } // end vstack
            } // end if hasMapPointsResults
@@ -409,6 +405,14 @@ struct MapWithNMEAView: View {
     
     
     // MARK: Functions
+    private func resetRouteMarkers() async {
+        hasMapPointsResults = false
+        currentAnnoItem = 0
+        totalAnnoItems = 0
+        annotationItems.removeAll(keepingCapacity: true)
+        await getMapPoints()
+    }
+    
     // If stream is off, display alert. GPS coords are set to 0 in NMEADataClass
     private func checkActiveNMEAStream() {
         if nmea.hasNMEAStreamStopped ||

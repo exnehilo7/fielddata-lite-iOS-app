@@ -12,7 +12,10 @@ struct CameraImageView: View {
     
     // MARK: Vars
     // From calling view
+    var mapViewIsActive: Bool
     var tripName: String
+    
+//    let reloadPointsOnMapWithNMEAView: () async -> ()
     
     // Image var and camera/image toggles
     @State private var image = UIImage()
@@ -34,6 +37,7 @@ struct CameraImageView: View {
     // Swift data
     @Environment(\.modelContext) var modelContext
     @Query var sdTrips: [SDTrip]
+    @Query var settings: [Settings]
     
     // Text recognition
     @ObservedObject var recognizedContent = RecognizedContent()
@@ -141,12 +145,6 @@ struct CameraImageView: View {
             Spacer()
             Text("Device Feed Error").bold().foregroundStyle(.red)
             Text("Photo was not saved. Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app.")
-//            Button("OK", action: {showingStoppedNMEAAlert = false; isShowCamera = false})
-//                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
-//                .background(Color.blue)
-//                .foregroundColor(.white)
-//                .cornerRadius(20)
-//                .padding(.horizontal)
         }
     }
 
@@ -178,6 +176,16 @@ struct CameraImageView: View {
                             savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "ArrowGold",
                                             hdop: nmea.accuracy ?? "0.00", longitude: nmea.longitude ?? "0.0000", latitude: nmea.latitude ?? "0.0000", altitude: nmea.altitude ?? "0.00",
                                             scannedText: textInPic, notes: textNotes)
+                            // If this View was activated from the Map view, call function to insert data directly into the database
+                            if mapViewIsActive {
+                                Task {
+                                    await insertPointIntoDatabase(tripName: tripName, uuid: upperUUID, gps: "ArrowGold",
+                                                                  hdop: nmea.accuracy ?? "0.00", longitude: nmea.longitude ?? "0.0000", latitude: nmea.latitude ?? "0.0000", altitude: nmea.altitude ?? "0.00",
+                                                                  scannedText: textInPic, notes: textNotes)
+//                                    await reloadPointsOnMapWithNMEAView()
+                                }
+                            }
+                                
                             isImageSelected = false
                             isShowCamera = true
                         }
@@ -186,6 +194,16 @@ struct CameraImageView: View {
                         savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "iOS",
                                         hdop: clHorzAccuracy, longitude: clLong, latitude: clLat, altitude: clAltitude,
                                         scannedText: textInPic, notes: textNotes)
+                        // If this View was activated from the Map view, call function to insert data directly into the database
+                        if mapViewIsActive {
+                            Task {
+                                await insertPointIntoDatabase(tripName: tripName, uuid: upperUUID, gps: "iOS",
+                                                              hdop: clHorzAccuracy, longitude: clLong, latitude: clLat, altitude: clAltitude,
+                                                              scannedText: textInPic, notes: textNotes)
+//                                await reloadPointsOnMapWithNMEAView()
+                            }
+                        }
+                            
                         isImageSelected = false
                         isShowCamera = true
                     }
@@ -284,126 +302,39 @@ struct CameraImageView: View {
         }
     }
     
-    // MARK: Functions
-    private func createTxtFileForTheDay() {
-        do{
-            // create new txt file for the day for GPS data.
-            _ = try FieldWorkGPSFile.log(tripName: tripName, uuid: "", gps: "", hdop: "", longitude: "", latitude: "", altitude: "", scannedText: "", notes: "")
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-    
-    private func savePicToFolder(imgFile: UIImage, tripName: String, uuid: String, gps: String, 
-                                 hdop: String, longitude: String, latitude: String, altitude: String,
-                                 scannedText: String, notes: String) {
-        
-        let audio = playSound()
-        
-        do{
-            // Save image to Trip's folder
-            try _ = FieldWorkImageFile.saveToFolder(imgFile: imgFile, tripName: tripName, uuid: uuid, gps: gps, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude)
-        } catch {
-            print(error.localizedDescription)
-            audio.playError()
-        }
-        
-        // Write the pic's info to a .txt file
-        do {
-            // .txt file header order is uuid, gps, hdop, longitude, latitude, altitude.
-            try _ = FieldWorkGPSFile.log(tripName: tripName, uuid: uuid, gps: gps, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude, scannedText: scannedText, notes: notes)
-            // Play a success noise
-            audio.playSuccess()
-        } catch {
-            // failed to write file – bad permissions, bad filename, missing permissions, or more likely it can't be converted to the encoding
-            print(error.localizedDescription)
-            audio.playError()
-        }
-    }
-
-    private func checkUserData() -> Bool {
-        var isValid = false
-        
-        // Remove special characters from user data
-        var pattern = "[^A-Za-z0-9,.:;\\s]+"
-        textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
-        
-        // remove any text past the final ;
-        pattern = "[A-Za-z0-9\\s]*$"
-        textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
-        
-        // Count # of proper syntax matches
-        let range = NSRange(location: 0, length: textNotes.utf16.count)
-        let regex = try! NSRegularExpression(pattern: "[\\s\\d\\w,.]+\\s*:\\s*[\\s\\d\\w,.]+\\s*;\\s*")
-        numofmatches = regex.numberOfMatches(in: textNotes, range: range)
-        
-        // Are both ; : more than 0? Are ; : counts equal? Is : equal to match count? Or is the field blank?
-        let colonCount = textNotes.filter({ $0 == ":"}).count
-        let semicolonCount = textNotes.filter({ $0 == ";"}).count
-        
-        if (
-            (
-                (colonCount > 0 && semicolonCount > 0)
-                && colonCount == semicolonCount
-                && colonCount == numofmatches
-            ) || textNotes.count == 0
-        ) {
-            isValid = true
-        }
-        
-        return isValid
-    }
-    
-    private func cancelPic(){
-        isImageSelected = false
-        isShowCamera = true
-        textNotes = ""
-    }
-    
-    private func showCompleteAlertToggle(){
-        showingCompleteAlert.toggle()
-    }
-    
-    private func invalidSyntax(_ object: String){
-        article.title = "Invalid Syntax"
-        article.description = "The syntax \(object) is invalid!"
-    }
-    
-    private func clearCustomData(){
-        textNotes = ""
-    }
-    
     // MARK: Body
     var body: some View {
         
         VStack {
-            if !isImageSelected {
-                // mark complete button
-                ForEach(sdTrips) { item in
-                    // Get the previous view's selected trip
-                    if (item.name == tripName){
-                        Button {
-                            showCompleteAlertToggle()
-                        } label: {
-                            HStack {
-                                Image(systemName: "checkmark.square")
-                                    .font(.system(size: 20))
-                                Text("Mark Trip Complete")
-                                    .font(.headline)
-                            }
-                            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
-                            .background(Color.green)
-                            .foregroundColor(.white)
-                            .cornerRadius(20)
-                            .padding(.horizontal)
-                        }.alert("Mark trip as complete?", isPresented: $showingCompleteAlert) {
-                            Button("OK"){
-                                item.isComplete = true
+            // Don't show Mark Complete button if View was called from Map
+            if !mapViewIsActive {
+                if !isImageSelected {
+                    // mark complete button
+                    ForEach(sdTrips) { item in
+                        // Get the previous view's selected trip
+                        if (item.name == tripName){
+                            Button {
                                 showCompleteAlertToggle()
-                            }
-                            Button("Cancel", role: .cancel){}
-                        } message: {
-                            Text("""
+                            } label: {
+                                HStack {
+                                    Image(systemName: "checkmark.square")
+                                        .font(.system(size: 20))
+                                    Text("Mark Trip Complete")
+                                        .font(.headline)
+                                }
+                                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+                                .background(Color.green)
+                                .foregroundColor(.white)
+                                .cornerRadius(20)
+                                .padding(.horizontal)
+                            }.alert("Mark trip as complete?", isPresented: $showingCompleteAlert) {
+                                Button("OK"){
+                                    item.isComplete = true
+                                    showCompleteAlertToggle()
+                                }
+                                Button("Cancel", role: .cancel){}
+                            } message: {
+                                Text("""
                 
                 Once completed, additional pictures cannot be added to the trip.
                 
@@ -411,10 +342,11 @@ struct CameraImageView: View {
                 
                 Do you wish to continue?
                 """)
+                            }
                         }
                     }
+                    Spacer()
                 }
-                Spacer()
             }
             // No-NMEA alert
             if showingStoppedNMEAAlert {
@@ -528,8 +460,133 @@ struct CameraImageView: View {
 //                isShowCamera = true
                 // Clear scanned text
                 recognizedContent.items[0].text = ""
+                // Show camera if View was first called from the Map View
+                if mapViewIsActive {
+                    isShowCamera = true
+                }
             })// END VStack
     } // END BODY
+    
+    // MARK: Functions
+    private func createTxtFileForTheDay() {
+        do{
+            // create new txt file for the day for GPS data.
+            _ = try FieldWorkGPSFile.log(tripName: tripName, uuid: "", gps: "", hdop: "", longitude: "", latitude: "", altitude: "", scannedText: "", notes: "")
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    private func savePicToFolder(imgFile: UIImage, tripName: String, uuid: String, gps: String, 
+                                 hdop: String, longitude: String, latitude: String, altitude: String,
+                                 scannedText: String, notes: String) {
+        
+        let audio = playSound()
+        
+        do{
+            // Save image to Trip's folder
+            try _ = FieldWorkImageFile.saveToFolder(imgFile: imgFile, tripName: tripName, uuid: uuid, gps: gps, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude)
+        } catch {
+            print(error.localizedDescription)
+            audio.playError()
+        }
+        
+        // Write the pic's info to a .txt file
+        do {
+            // .txt file header order is uuid, gps, hdop, longitude, latitude, altitude.
+            try _ = FieldWorkGPSFile.log(tripName: tripName, uuid: uuid, gps: gps, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude, scannedText: scannedText, notes: notes)
+            // Play a success noise
+            audio.playSuccess()
+        } catch {
+            // failed to write file – bad permissions, bad filename, missing permissions, or more likely it can't be converted to the encoding
+            print(error.localizedDescription)
+            audio.playError()
+        }
+    }
+    
+    private func insertPointIntoDatabase(tripName: String, uuid: String, gps: String,
+                                       hdop: String, longitude: String, latitude: String, altitude: String,
+                                       scannedText: String, notes: String) async {
+        
+//        let semaphore = DispatchSemaphore(value: 0)
+        
+        // Current datetime
+        let formatterDateTime = DateFormatter()
+        formatterDateTime.dateFormat = "yyyy-MM-dd HH:mm:ssx"
+        let timestamp = formatterDateTime.string(from: Date())
+        
+        guard let url: URL = URL(string: settings[0].databaseURL + "/php/insertSingleTrip.php") else {
+            Swift.print("invalid URL")
+            return
+        }
+        
+        var request: URLRequest = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        var postString = "_name=\(tripName)&_pic_uuid=\(uuid)&_gps=\(gps)&_hdop=\(hdop)&_long=\(longitude)&_lat=\(latitude)&_alt=\(altitude)&_scanned_text=\(scannedText)&_time=\(timestamp)&_notes=\(notes)"
+        
+        var postData = postString.data(using: .utf8)
+        
+        // Insert pic and geo data into trip table. Use max ID of the same trip name
+        do {
+            let (data, response) = try await URLSession.shared.upload(for: request as URLRequest, from: postData!, delegate: nil)
+        } catch let error as NSError {
+            NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
+        }
+        
+    }
+
+    private func checkUserData() -> Bool {
+        var isValid = false
+        
+        // Remove special characters from user data
+        var pattern = "[^A-Za-z0-9,.:;\\s]+"
+        textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
+        
+        // remove any text past the final ;
+        pattern = "[A-Za-z0-9\\s]*$"
+        textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
+        
+        // Count # of proper syntax matches
+        let range = NSRange(location: 0, length: textNotes.utf16.count)
+        let regex = try! NSRegularExpression(pattern: "[\\s\\d\\w,.]+\\s*:\\s*[\\s\\d\\w,.]+\\s*;\\s*")
+        numofmatches = regex.numberOfMatches(in: textNotes, range: range)
+        
+        // Are both ; : more than 0? Are ; : counts equal? Is : equal to match count? Or is the field blank?
+        let colonCount = textNotes.filter({ $0 == ":"}).count
+        let semicolonCount = textNotes.filter({ $0 == ";"}).count
+        
+        if (
+            (
+                (colonCount > 0 && semicolonCount > 0)
+                && colonCount == semicolonCount
+                && colonCount == numofmatches
+            ) || textNotes.count == 0
+        ) {
+            isValid = true
+        }
+        
+        return isValid
+    }
+    
+    private func cancelPic(){
+        isImageSelected = false
+        isShowCamera = true
+        textNotes = ""
+    }
+    
+    private func showCompleteAlertToggle(){
+        showingCompleteAlert.toggle()
+    }
+    
+    private func invalidSyntax(_ object: String){
+        article.title = "Invalid Syntax"
+        article.description = "The syntax \(object) is invalid!"
+    }
+    
+    private func clearCustomData(){
+        textNotes = ""
+    }
     
 } // END STRUCT
 

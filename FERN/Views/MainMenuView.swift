@@ -119,15 +119,15 @@ struct MainMenuView: View {
                         }
                     }
                     // Rando Testing
-                    NavigationLink {
-                        RandoTestingView()
-                            .navigationTitle("Rando Testing")
-                    } label: {
-                        HStack {
-                            Image(systemName: "questionmark.app").bold(false).foregroundColor(.gray)
-                            Text("Rando Testing")
-                        }
-                    }
+//                    NavigationLink {
+//                        RandoTestingView()
+//                            .navigationTitle("Rando Testing")
+//                    } label: {
+//                        HStack {
+//                            Image(systemName: "questionmark.app").bold(false).foregroundColor(.gray)
+//                            Text("Rando Testing")
+//                        }
+//                    }
                 }
                 if settings.count < 1 {
                     // App settings
