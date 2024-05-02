@@ -14,6 +14,11 @@ import SwiftData
 
 struct SelectTripView: View {
     
+    var useArrowGold:Bool
+    var gpsModeIsSelected:Bool
+    
+    @EnvironmentObject var nmea: NMEA
+    
     // For add-a-trip popup
     @State private var showingTripNameAlert = false
     @State private var showingDeleteTripAlert = false
@@ -31,8 +36,8 @@ struct SelectTripView: View {
                     NavigationLink {
                         if !item.isComplete {
                             // Go to CameraView with trip name as the title
-                            CameraImageView(tripName: item.name)
-                                .navigationTitle("\(item.name)")
+                            CameraImageView(tripName: item.name, showArrowGold: useArrowGold, gpsModeIsSelected: gpsModeIsSelected)
+                                .navigationTitle("\(item.name)").environmentObject(nmea)
                         }
                         else {
                             // Try to prevent data race by passing swiftdata values(?)

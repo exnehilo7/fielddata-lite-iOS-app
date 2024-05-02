@@ -12,10 +12,15 @@ import SafariServices
 
 struct TripsInDBView: View {
     
+    var showArrowGold:Bool
+    var gpsModeIsSelected:Bool
+    
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
     
     @State private var areaList: [SelectNameModel] = []
+    
+    @EnvironmentObject var nmea: NMEA
     
     var body: some View {
         
@@ -34,8 +39,8 @@ struct TripsInDBView: View {
 //                }
                 List {
                     NavigationLink {
-                        SelectTripForAppleMapView()
-                            .navigationTitle("Apple Map")
+                        SelectTripForAppleMapView(showArrowGold: showArrowGold, gpsModeIsSelected: gpsModeIsSelected)
+                            .navigationTitle("Apple Map").environmentObject(nmea)
                     } label: {
                         HStack {
                             Image(systemName: "mappin.and.ellipse").bold(false).foregroundColor(.gray)

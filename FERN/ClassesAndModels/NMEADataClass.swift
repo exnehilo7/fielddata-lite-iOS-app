@@ -382,6 +382,12 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
     func setHasNMEAStreamStoppedToTrue(){
         DispatchQueue.main.async { [self] in
             self.hasNMEAStreamStopped = true
+            // set vars to 0
+            self.latitude = "0.00000000"
+            self.longitude = "0.00000000"
+            self.altitude = "0.00"
+            self.accuracy = "0.00"
+            self.gpsUsed = "No GPS"
         }
     }
 }

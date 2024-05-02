@@ -80,24 +80,34 @@ struct MainMenuView: View {
                     //                }
                     // Camera using Arrow GPS
                     NavigationLink {
-                        SelectTripView()
-                            .navigationTitle("GPS Camera")//.environment(\.managedObjectContext, persistenceController.container.viewContext)
+                        SelectTripModeView()
+                            .navigationTitle("Select Mode")
                     } label: {
                         HStack {
-                            Image(systemName: "camera").bold(false).foregroundColor(.gray)
-                            Text("GPS Camera")
+                            Image(systemName: "arrow.triangle.branch").bold(false).foregroundColor(.gray)
+                            Text("Trip")
                         }
                     }
-                    // List of trips in the database
-                    NavigationLink {
-                        TripsInDBView()
-                            .navigationTitle("Select a Map Type")
-                    } label: {
-                        HStack {
-                            Image(systemName: "externaldrive").bold(false).foregroundColor(.gray)
-                            Text("Trips in Database")
-                        }
-                    }
+                    // Camera
+//                    NavigationLink {
+//                        SelectTripView()
+//                            .navigationTitle("GPS Camera")
+//                    } label: {
+//                        HStack {
+//                            Image(systemName: "camera").bold(false).foregroundColor(.gray)
+//                            Text("GPS Camera")
+//                        }
+//                    }
+//                    // List of trips in the database
+//                    NavigationLink {
+//                        TripsInDBView()
+//                            .navigationTitle("Select a Map Type")
+//                    } label: {
+//                        HStack {
+//                            Image(systemName: "externaldrive").bold(false).foregroundColor(.gray)
+//                            Text("Trips in Database")
+//                        }
+//                    }
                     // App settings
                     NavigationLink {
                         SettingsView()

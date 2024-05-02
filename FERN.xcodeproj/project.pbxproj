@@ -34,6 +34,7 @@
 		D167963F2BDAEF2200561875 /* RandoTestingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D167963E2BDAEF2200561875 /* RandoTestingView.swift */; };
 		D16796412BE02CE500561875 /* SelectTripForAppleMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16796402BE02CE500561875 /* SelectTripForAppleMapView.swift */; };
 		D16796432BE02CFF00561875 /* SelectTripForCesiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16796422BE02CFF00561875 /* SelectTripForCesiumView.swift */; };
+		D16796452BE2B65900561875 /* SelectTripModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16796442BE2B65900561875 /* SelectTripModeView.swift */; };
 		D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7129901A2000835B5E /* SelectAreaView.swift */; };
 		D16A6C7C2995D18100835B5E /* StartScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7B2995D18100835B5E /* StartScreenView.swift */; };
 		D16A6C7E29970E0900835B5E /* SelectNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7D29970E0900835B5E /* SelectNotesView.swift */; };
@@ -105,6 +106,7 @@
 		D167963E2BDAEF2200561875 /* RandoTestingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandoTestingView.swift; sourceTree = "<group>"; };
 		D16796402BE02CE500561875 /* SelectTripForAppleMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripForAppleMapView.swift; sourceTree = "<group>"; };
 		D16796422BE02CFF00561875 /* SelectTripForCesiumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripForCesiumView.swift; sourceTree = "<group>"; };
+		D16796442BE2B65900561875 /* SelectTripModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripModeView.swift; sourceTree = "<group>"; };
 		D16A6C7129901A2000835B5E /* SelectAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAreaView.swift; sourceTree = "<group>"; };
 		D16A6C7B2995D18100835B5E /* StartScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreenView.swift; sourceTree = "<group>"; };
 		D16A6C7D29970E0900835B5E /* SelectNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectNotesView.swift; sourceTree = "<group>"; };
@@ -240,6 +242,7 @@
 				D16A6C7D29970E0900835B5E /* SelectNotesView.swift */,
 				D16A6C7F299AC65600835B5E /* SelectReportView.swift */,
 				D1A56E802B051DB300AC8291 /* SelectTripView.swift */,
+				D16796442BE2B65900561875 /* SelectTripModeView.swift */,
 				D16796402BE02CE500561875 /* SelectTripForAppleMapView.swift */,
 				D16796422BE02CFF00561875 /* SelectTripForCesiumView.swift */,
 				D16A6C7B2995D18100835B5E /* StartScreenView.swift */,
@@ -382,6 +385,7 @@
 			files = (
 				D167963D2BD9B7A900561875 /* EditCesiumView.swift in Sources */,
 				D15BFD182BBF55590013B67F /* TextPreviewView.swift in Sources */,
+				D16796452BE2B65900561875 /* SelectTripModeView.swift in Sources */,
 				D107EF1D2B571CAA0020F0A2 /* SettingsUploadView.swift in Sources */,
 				D16A6C86299AE2DF00835B5E /* SelectSavedRouteView.swift in Sources */,
 				D127B3992A1D3C4C00F6287A /* ImagePicker.swift in Sources */,
@@ -585,7 +589,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.1;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -624,7 +628,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.1;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
