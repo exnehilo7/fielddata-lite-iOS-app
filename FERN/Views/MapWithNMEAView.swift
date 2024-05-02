@@ -250,7 +250,7 @@ struct MapWithNMEAView: View {
 //            Text("Your content here")
 //                .font(.headline)
 //                .padding()
-            CameraImageView(tripName: areaName, showArrowGold: showArrowGold, gpsModeIsSelected: gpsModeIsSelected).environmentObject(nmea)
+            CameraImageView(mapViewIsActive: true, tripName: areaName, showArrowGold: showArrowGold, gpsModeIsSelected: gpsModeIsSelected).environmentObject(nmea)
         }
     }
     
@@ -264,26 +264,24 @@ struct MapWithNMEAView: View {
                     Spacer()
                     Button ("Reset Route Markers"){
                         Task {
-                            hasMapPointsResults = false
-                            currentAnnoItem = 0
-                            totalAnnoItems = 0
-                            annotationItems.removeAll(keepingCapacity: true)
-                            await getMapPoints()
+                            await resetRouteMarkers()
                         }
                     }.padding(.trailing, 25)
                 }
                 // Show device's current position if GPS method is selected
-                if gpsModeIsSelected {
+//                if gpsModeIsSelected {
                     // show take pic button (or activate swipe-up) if start lat long = dest lat long
-                    if !showPicButton {
-                        if showArrowGold {
-                            arrowGpsData
-                        }
-                        else {
-                            coreLocationGpsData
-                        }
-                    } else { takePic }
+//                    if !showPicButton {
+                if showArrowGold {
+                    arrowGpsData
                 }
+                else {
+                    coreLocationGpsData
+                }
+//                    } else {
+                takePic
+//                    }
+//                }
 //                else {
 //                    selectGpsMode
 //                }
@@ -369,33 +367,37 @@ struct MapWithNMEAView: View {
                            .alert(article.title, isPresented: $showAlert, presenting: article) {article in Button("OK"){showAlert = false}} message: {article in Text(article.description)}
                        
                        // Where is next? button
-                       whereIsNext
+                       // whereIsNext
                    }.padding(.bottom, 20)
                } // end vstack
            } // end if hasMapPointsResults
-        }.onAppear(perform: {
+        }
+            .onAppear(perform: {
             if showArrowGold {
                 // basic core off. May need to better handle LocationHelper instantiation
                 clLocationHelper.stopUpdatingDefaultCoreLocation()
-                // Convert strings to floats for rounding and comaprisons
-                startLongFloat = ((nmea.longitude ?? "0.0000") as NSString).doubleValue
-                startLatFloat = ((nmea.latitude ?? "0.0000") as NSString).doubleValue
-                endLongFloat = annotationItems[currentAnnoItem].longitude
-                endLatFloat = annotationItems[currentAnnoItem].latitude
+                
+                // NEED TO FIND A BETTER METHOD TO HANDLE START AND END POINTS FOR NAVIGATION GUIDANCE
+                
+//                // Convert strings to floats for rounding and comaprisons
+//                startLongFloat = ((nmea.longitude ?? "0.0000") as NSString).doubleValue
+//                startLatFloat = ((nmea.latitude ?? "0.0000") as NSString).doubleValue
+//                endLongFloat = annotationItems[currentAnnoItem].longitude
+//                endLatFloat = annotationItems[currentAnnoItem].latitude
             } else {
-                // Convert strings to floats for rounding and comaprisons
-                startLongFloat = (clLong as NSString).doubleValue
-                startLatFloat = (clLat as NSString).doubleValue
-                endLongFloat = annotationItems[currentAnnoItem].longitude
-                endLatFloat = annotationItems[currentAnnoItem].latitude
+//                // Convert strings to floats for rounding and comaprisons
+//                startLongFloat = (clLong as NSString).doubleValue
+//                startLatFloat = (clLat as NSString).doubleValue
+//                endLongFloat = annotationItems[currentAnnoItem].longitude
+//                endLatFloat = annotationItems[currentAnnoItem].latitude
             }
             // To prevent the device feed from being interruped, disable autosleep
             UIApplication.shared.isIdleTimerDisabled = true
-            // Round at 6 decimals
-            startLongFloat = round(100000 * startLongFloat) / 100000
-            startLatFloat = round(100000 * startLatFloat) / 100000
-            endLongFloat = round(100000 * endLongFloat) / 100000
-            endLatFloat = round(100000 * endLongFloat) / 100000
+//            // Round at 6 decimals
+//            startLongFloat = round(100000 * startLongFloat) / 100000
+//            startLatFloat = round(100000 * startLatFloat) / 100000
+//            endLongFloat = round(100000 * endLongFloat) / 100000
+//            endLatFloat = round(100000 * endLongFloat) / 100000
             // Show pic button
             showPicButton = true
         })
@@ -403,6 +405,14 @@ struct MapWithNMEAView: View {
     
     
     // MARK: Functions
+    private func resetRouteMarkers() async {
+        hasMapPointsResults = false
+        currentAnnoItem = 0
+        totalAnnoItems = 0
+        annotationItems.removeAll(keepingCapacity: true)
+        await getMapPoints()
+    }
+    
     // If stream is off, display alert. GPS coords are set to 0 in NMEADataClass
     private func checkActiveNMEAStream() {
         if nmea.hasNMEAStreamStopped ||
@@ -481,17 +491,14 @@ struct MapWithNMEAView: View {
                     }
                     
                     // Set staring regoin to the first point in the list
-//                    self.region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: Double(mapResults[0].lat) ?? 0, longitude: Double(mapResults[0].long) ?? 0),
-//                        span: MKCoordinateSpan(latitudeDelta: 0.015, longitudeDelta: 0.015))
-                    // For 17.0's new MapKit SDK
+                    // For 17.0's new MapKit SDK:
                     self.cameraPosition = MapCameraPosition.region(
                         MKCoordinateRegion(
                             center: CLLocationCoordinate2D(latitude: Double(mapResults[0].lat) ?? 0, longitude: Double(mapResults[0].long) ?? 0),
                             span: MKCoordinateSpan(latitudeDelta: 0.015, longitudeDelta: 0.015)
                     ))
-//                    cameraPosition.followsUserLocation == true
                     
-                    // Don't show items if no data
+                    // Toggle next and previous arrows(???)
                     if hasMapPointsResults == false {
                         hasMapPointsResults.toggle()
                     }                          

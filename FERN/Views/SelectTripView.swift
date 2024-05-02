@@ -36,7 +36,7 @@ struct SelectTripView: View {
                     NavigationLink {
                         if !item.isComplete {
                             // Go to CameraView with trip name as the title
-                            CameraImageView(tripName: item.name, showArrowGold: useArrowGold, gpsModeIsSelected: gpsModeIsSelected)
+                            CameraImageView(mapViewIsActive: false, tripName: item.name, showArrowGold: useArrowGold, gpsModeIsSelected: gpsModeIsSelected)
                                 .navigationTitle("\(item.name)").environmentObject(nmea)
                         }
                         else {
