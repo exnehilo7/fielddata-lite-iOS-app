@@ -154,9 +154,9 @@ struct CameraImageView: View {
             let fileNameUUID = UUID().uuidString
             let upperUUID = fileNameUUID.uppercased()
             var textInPic = recognizedContent.items[0].text
-            // Replace " and \ and , with a space for scanned text
-            var pattern = "[^A-Za-z0-9!@#$%&*()-_+=.<>;:'/?\\s]+"
-            textInPic = textInPic.replacingOccurrences(of: pattern, with: " ", options: [.regularExpression])
+            // Replace " and \ and , with nothing for scanned text
+            var pattern = "[^A-Za-z0-9!@#$%&*()\\-_+=.<>;:'/?\\s]+"
+            textInPic = textInPic.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
             // if user data is all good, save pic
             if checkUserData() {
                     if showArrowGold {
