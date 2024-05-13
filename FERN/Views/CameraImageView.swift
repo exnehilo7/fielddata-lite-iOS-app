@@ -155,7 +155,7 @@ struct CameraImageView: View {
             let upperUUID = fileNameUUID.uppercased()
             var textInPic = recognizedContent.items[0].text
             // Replace " and \ and , with nothing for scanned text
-            var pattern = "[^A-Za-z0-9!@#$%&*()\\-_+=.<>;:'/?\\s]+"
+            let pattern = "[^A-Za-z0-9!@#$%&*()\\-_+=.<>;:'/?\\s]+"
             textInPic = textInPic.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
             // if user data is all good, save pic
             if checkUserData() {
@@ -163,7 +163,7 @@ struct CameraImageView: View {
                         // Alert user if feed has stopped or values are zero
                         if nmea.hasNMEAStreamStopped ||
                             ((nmea.accuracy ?? "0.00") == "0.00" || (nmea.longitude ?? "0.00000000") == "0.00000000" ||
-                             (nmea.latitude ?? "0.c") == "0.00000000" || (nmea.altitude ?? "0.00") == "0.00")
+                             (nmea.latitude ?? "0.00") == "0.00000000" || (nmea.altitude ?? "0.00") == "0.00")
                         {
                             // GPS coords are set to 0 in NMEADataClass
                             article.title = "Device Feed Error"
@@ -523,13 +523,13 @@ struct CameraImageView: View {
         var request: URLRequest = URLRequest(url: url)
         request.httpMethod = "POST"
         
-        var postString = "_name=\(tripName)&_pic_uuid=\(uuid)&_gps=\(gps)&_hdop=\(hdop)&_long=\(longitude)&_lat=\(latitude)&_alt=\(altitude)&_scanned_text=\(scannedText)&_time=\(timestamp)&_notes=\(notes)"
+        let postString = "_name=\(tripName)&_pic_uuid=\(uuid)&_gps=\(gps)&_hdop=\(hdop)&_long=\(longitude)&_lat=\(latitude)&_alt=\(altitude)&_scanned_text=\(scannedText)&_time=\(timestamp)&_notes=\(notes)"
         
-        var postData = postString.data(using: .utf8)
+        let postData = postString.data(using: .utf8)
         
         // Insert pic and geo data into trip table. Use max ID of the same trip name
         do {
-            let (data, response) = try await URLSession.shared.upload(for: request as URLRequest, from: postData!, delegate: nil)
+            let (_, _) = try await URLSession.shared.upload(for: request as URLRequest, from: postData!, delegate: nil)
         } catch let error as NSError {
             NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
         }
