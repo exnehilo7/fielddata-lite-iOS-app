@@ -118,7 +118,7 @@ struct CompletedTripView: View {
                     TextEditor(text: .constant(self.consoleText))
                         .foregroundStyle(.secondary)
                         .font(.system(size: 12)).padding(.horizontal)
-                        .frame(minHeight: 300)
+                        .frame(minHeight: 300, maxHeight: 300)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
@@ -242,6 +242,10 @@ struct CompletedTripView: View {
     private func processFile(item: String, uploadFilePath: String,
                              boundary: String, request: NSMutableURLRequest,
                              path: URL, trip: SDTrip) async {
+        
+        // Let user know file is processing
+        print("Processing next...")
+        appendToTextEditor(text: "Processing next...")
         
         //KeyValuePairs
         let paramDict = [
