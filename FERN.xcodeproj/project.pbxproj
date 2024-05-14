@@ -18,6 +18,7 @@
 		D10BB320298ADAA500667E86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D10BB31F298ADAA500667E86 /* Assets.xcassets */; };
 		D10BB323298ADAA500667E86 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D10BB322298ADAA500667E86 /* Preview Assets.xcassets */; };
 		D10BB32A298ADAD600667E86 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10BB329298ADAD600667E86 /* Models.swift */; };
+		D11B2D902BF3BC81004FEE0B /* ScanPhotosInFolderForText.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11B2D8F2BF3BC81004FEE0B /* ScanPhotosInFolderForText.swift */; };
 		D127B37A2A12ECF000F6287A /* nmeaToolKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D127B3782A12EC1400F6287A /* nmeaToolKit.framework */; };
 		D127B37B2A12ECF000F6287A /* nmeaToolKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D127B3782A12EC1400F6287A /* nmeaToolKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D127B37E2A12ED3D00F6287A /* NMEADataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D127B37D2A12ED3D00F6287A /* NMEADataClass.swift */; };
@@ -90,6 +91,7 @@
 		D10BB322298ADAA500667E86 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		D10BB329298ADAD600667E86 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		D10BB32B298AF42000667E86 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		D11B2D8F2BF3BC81004FEE0B /* ScanPhotosInFolderForText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanPhotosInFolderForText.swift; sourceTree = "<group>"; };
 		D127B3782A12EC1400F6287A /* nmeaToolKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = nmeaToolKit.framework; path = FERN/nmeaToolKit.framework; sourceTree = SOURCE_ROOT; };
 		D127B37D2A12ED3D00F6287A /* NMEADataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NMEADataClass.swift; sourceTree = "<group>"; };
 		D127B37F2A12EDF600F6287A /* NMEADataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NMEADataView.swift; sourceTree = "<group>"; };
@@ -236,6 +238,7 @@
 				D1766CA0298DB9C6002F594D /* MapView.swift */,
 				D16B0A8B2B9A34BD002081E1 /* MapWithNMEAView.swift */,
 				D127B37F2A12EDF600F6287A /* NMEADataView.swift */,
+				D11B2D8F2BF3BC81004FEE0B /* ScanPhotosInFolderForText.swift */,
 				D1766C9E298DB9B2002F594D /* SearchByNameView.swift */,
 				D16A6C85299AE2DF00835B5E /* SelectSavedRouteView.swift */,
 				D16A6C7129901A2000835B5E /* SelectAreaView.swift */,
@@ -397,6 +400,7 @@
 				D16796432BE02CFF00561875 /* SelectTripForCesiumView.swift in Sources */,
 				D10925962B2B9C96005D376F /* Sounds.swift in Sources */,
 				D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */,
+				D11B2D902BF3BC81004FEE0B /* ScanPhotosInFolderForText.swift in Sources */,
 				D1766CA3298DBAA3002F594D /* Functions.swift in Sources */,
 				D107EF1F2B57293B0020F0A2 /* EditDatabaseView.swift in Sources */,
 				D127B37E2A12ED3D00F6287A /* NMEADataClass.swift in Sources */,
@@ -589,7 +593,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4.2;
+				MARKETING_VERSION = 1.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -628,7 +632,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4.2;
+				MARKETING_VERSION = 1.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
