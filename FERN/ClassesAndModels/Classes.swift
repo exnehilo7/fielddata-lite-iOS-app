@@ -128,8 +128,6 @@ class FieldWorkGPSFile {
             let timestamp = formatterDateTime.string(from: Date())
             let message = "\(uuid),\(gps),\(hdop),\(longitude),\(latitude),\(altitude),\(scannedText),\(timestamp),\(notes)"
             guard let data = (message + "\n").data(using: String.Encoding.utf8) else { return false}
-            
-            print(filePath)
         
             if FileManager.default.fileExists(atPath: filePath.path) {
                 if uuid.count > 0 {

@@ -118,16 +118,16 @@ struct MainMenuView: View {
                             Text("Settings")
                         }
                     }
-                    // Rando Testing
-//                    NavigationLink {
-//                        RandoTestingView()
-//                            .navigationTitle("Rando Testing")
-//                    } label: {
-//                        HStack {
-//                            Image(systemName: "questionmark.app").bold(false).foregroundColor(.gray)
-//                            Text("Rando Testing")
-//                        }
-//                    }
+                    // Scan photos in folder for text
+                    NavigationLink {
+                        ScanPhotosInFolderForText()
+                            .navigationTitle("Select Trip to Scan")
+                    } label: {
+                        HStack {
+                            Image(systemName: "scanner").bold(false).foregroundColor(.gray)
+                            Text("Scan Photos in Folder for Text")
+                        }
+                    }
                 }
                 if settings.count < 1 {
                     // App settings

@@ -258,7 +258,9 @@ struct CameraImageView: View {
                 // Text recognition is finished, hide the progress indicator.
                 isRecognizing = false
             }
-                            .recognizeText()
+                            .recognizeText(
+//                                semaphore: DispatchSemaphore(value: 0)
+                            )
         }, label: {
             HStack {
                 Image(systemName: "text.viewfinder")
