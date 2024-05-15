@@ -18,6 +18,8 @@ struct ScanPhotosInFolderForText: View {
     @State private var totalFiles = 0
     @State private var counter = 0
     @State private var selectedTrip = ""
+    @State private var showAcceptScannedText = false
+    @State private var showTripList = true
     
     @State private var fileList: [String] = []
     
@@ -27,23 +29,35 @@ struct ScanPhotosInFolderForText: View {
     
     var body: some View {
         // Show trips. Tap on trip to cycle through photos and save file name and scanned text to a text file under the device ID's folder.
-        List {
-            ForEach(sdTrips) { item in
-                Text(item.name).onTapGesture {
-                    selectedTrip = item.name
-                    // Create text file if not exists
-                    writeScannedTextToFile(tripName: "", uuid: "", scannedText: "")
-                    Task {
-                        await getImageFileNames(tripName: item.name)
+        if showTripList {
+            List {
+                ForEach(sdTrips) { item in
+                    Text(item.name).onTapGesture {
+                        selectedTrip = item.name
+                        // Create text file if not exists
+                        writeScannedTextToFile(tripName: "", uuid: "", scannedText: "")
+                        Task {
+                            await getImageFileNames(tripName: item.name)
+                        }
+                        showTripList = false
                     }
                 }
             }
         }
-        Button("Get next pic"){ getNextPic(tripName: selectedTrip) }
+        Button("Get next pic"){
+            getNextPic(tripName: selectedTrip)
+            showAcceptScannedText = false
+        }
+            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(20)
+            .padding(.horizontal)
         Image(uiImage: self.image)
         .resizable()
         .scaledToFit().onTapGesture {
             scanForText(tripName: selectedTrip)
+            showAcceptScannedText = true
         }
         if isRecognizing {
             ProgressView()
@@ -58,6 +72,16 @@ struct ScanPhotosInFolderForText: View {
             }
         }
         Spacer()
+        if showAcceptScannedText {
+            Button("Save scanned text"){
+                // Write to text file
+                filterScannedText(tripName: selectedTrip)
+            }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+                .background(Color.orange)
+                .foregroundColor(.white)
+                .cornerRadius(20)
+                .padding(.horizontal)
+        }
         // Give feedback. Allow user to select text, but don't edit
         TextEditor(text: .constant(self.consoleText))
             .foregroundStyle(.secondary)
@@ -68,31 +92,7 @@ struct ScanPhotosInFolderForText: View {
     
     private func scanForText(tripName: String){
 
-        var scannedText = ""
-//        var picPath: String
-//        var path: URL
-//
-//        var rootDir: URL? {
-//            guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
-//            return documentsDirectory
-//        }
-//        
-//        // Get device ID and path
-//        if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString
-//        {
-//            picPath = "\(deviceUuid)/trips/\(tripName)"
-//            path = (rootDir?.appendingPathComponent(picPath))!
-//        } else {
-//            picPath = "no_device_uuid/trips/\(tripName)"
-//            path = (rootDir?.appendingPathComponent(picPath))!
-//        }
-        
-//        if !fileList[counter].contains(".txt") {
             appendToTextEditor(text: "Scanning \(fileList[counter])")
-            // Scan for text
-            // path to get the file:
-//            let getFile = path.appendingPathComponent(fileList[counter])
-//            image = UIImage(contentsOfFile: getFile.path)!
             
             isRecognizing = true
             // Put image in array
@@ -102,19 +102,6 @@ struct ScanPhotosInFolderForText: View {
             TextRecognition(scannedImages: imageArray,
                            recognizedContent: recognizedContent) {
                 isRecognizing = false }.recognizeText()
-            
-//            // Write to text file
-//            if recognizedContent.items[0].text != ""{
-//                scannedText = recognizedContent.items[0].text
-//                // Replace " and \ and , with nothing for scanned text
-//                let pattern = "[^A-Za-z0-9!@#$%&*()\\-_+=.<>;:'/?\\s]+"
-//                scannedText = scannedText.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
-//                appendToTextEditor(text: "Text found: \(scannedText)")
-//            } else {
-//                scannedText = "No text found"
-//            }
-//            writeScannedTextToFile(tripName: tripName, uuid: fileList[counter], scannedText: scannedText)
-//        }
         
     }
     
@@ -165,13 +152,13 @@ struct ScanPhotosInFolderForText: View {
         self.totalFiles = fileList.count
         
         appendToTextEditor(text: "Number of files in trip: \(String(totalFiles))")
-        
-//        getNextPic(tripName: tripName)
-    
-//        appendToTextEditor(text: "Scanning complete!")
+
     }
     
     private func getNextPic(tripName: String){
+        // Clear scanned text
+        recognizedContent.items[0].text = ""
+        
         if totalFiles == 0 {
             appendToTextEditor(text: "No trip selected")
             return
@@ -182,7 +169,7 @@ struct ScanPhotosInFolderForText: View {
             return
         }
         
-        appendToTextEditor(text: String(counter))
+        appendToTextEditor(text: "File counter: \(String(counter))")
         
         if !fileList[counter].contains(".txt") {
             
@@ -192,8 +179,6 @@ struct ScanPhotosInFolderForText: View {
             }
             var path: URL
             var textFilePath: String
-            
-//            var fileList: [String] = []
             
             // Get device ID and make path
             if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString
@@ -208,8 +193,27 @@ struct ScanPhotosInFolderForText: View {
             image = UIImage(contentsOfFile: getFile.path)!
         } else {
             appendToTextEditor(text: "No image file")
+            image = UIImage()
         }
         counter += 1
+    }
+    
+    private func filterScannedText(tripName: String){
+        var scannedText = ""
+        
+        if recognizedContent.items[0].text != ""{
+            scannedText = recognizedContent.items[0].text
+            // Replace " and \ and , with nothing for scanned text
+            let pattern = "[^A-Za-z0-9!@#$%&*()\\-_+=.<>;:'/?\\s]+"
+            scannedText = scannedText.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
+        } else {
+            scannedText = "No text found"
+        }
+        
+        writeScannedTextToFile(tripName: tripName, uuid: fileList[counter], scannedText: scannedText)
+        appendToTextEditor(text: "Text \(scannedText) written!")
+        
+        showAcceptScannedText = false
     }
     
     // Append info to end of the text file. If the text file doesn't exist, create one.
