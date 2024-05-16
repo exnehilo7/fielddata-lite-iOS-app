@@ -20,6 +20,7 @@ struct ScanPhotosInFolderForText: View {
     @State private var selectedTrip = ""
     @State private var showAcceptScannedText = false
     @State private var showTripList = true
+    @State private var showGetNextPic = true
     
     @State private var fileList: [String] = []
     
@@ -44,15 +45,17 @@ struct ScanPhotosInFolderForText: View {
                 }
             }
         }
-        Button("Get next pic"){
-            getNextPic(tripName: selectedTrip)
-            showAcceptScannedText = false
-        }
+        if showGetNextPic {
+            Button("Get next pic"){
+                getNextPic(tripName: selectedTrip)
+                showAcceptScannedText = false
+            }
             .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
             .background(Color.blue)
             .foregroundColor(.white)
             .cornerRadius(20)
             .padding(.horizontal)
+        }
         Image(uiImage: self.image)
         .resizable()
         .scaledToFit().onTapGesture {
@@ -196,6 +199,7 @@ struct ScanPhotosInFolderForText: View {
             image = UIImage()
         }
         counter += 1
+        showGetNextPic = false
     }
     
     private func filterScannedText(tripName: String){
@@ -204,8 +208,8 @@ struct ScanPhotosInFolderForText: View {
         if recognizedContent.items[0].text != ""{
             scannedText = recognizedContent.items[0].text
             // Replace " and \ and , with nothing for scanned text
-            let pattern = "[^A-Za-z0-9!@#$%&*()\\-_+=.<>;:'/?\\s]+"
-            scannedText = scannedText.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
+//            let scannedTextPattern = "[^A-Za-z0-9!@#$%&*()\\-_+=.<>;:/?\\s]+"
+            scannedText = scannedText.replacingOccurrences(of: ScannedTextPattern().pattern, with: "", options: [.regularExpression])
         } else {
             scannedText = "No text found"
         }
@@ -214,6 +218,8 @@ struct ScanPhotosInFolderForText: View {
         appendToTextEditor(text: "Text \(scannedText) written!")
         
         showAcceptScannedText = false
+        showGetNextPic = true
+        recognizedContent.items[0].text = ""
     }
     
     // Append info to end of the text file. If the text file doesn't exist, create one.

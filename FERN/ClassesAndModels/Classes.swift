@@ -11,6 +11,12 @@ import CoreLocation
 import MapKit
 import UIKit
 
+// Regex pattern to remove invalid characters from an image scan
+class ScannedTextPattern {
+    // Replace " and ' and \ and , with nothing for scanned text
+    let pattern = "[^A-Za-z0-9!@#$%&*()\\-_+=.<>;:/?\\s]+"
+}
+
 class SearchOrganismName : ObservableObject {
     var organismName = ""
 }
