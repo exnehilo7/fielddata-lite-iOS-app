@@ -16,7 +16,7 @@ struct ScanPhotosInFolderForText: View {
     @State private var image = UIImage()
     @State private var consoleText = ""
     @State private var totalFiles = 0
-    @State private var counter = 0
+    @State private var counter = 0 //getImageFileNames is where the starting value is set
     @State private var selectedTrip = ""
     @State private var showAcceptScannedText = false
     @State private var showTripList = true
@@ -92,7 +92,7 @@ struct ScanPhotosInFolderForText: View {
     
     private func scanForText(tripName: String){
 
-            appendToTextEditor(text: "Scanning \(fileList[counter])")
+            appendToTextEditor(text: "Scanning \(fileList[counter - 1])")
             
             isRecognizing = true
             // Put image in array
@@ -169,7 +169,7 @@ struct ScanPhotosInFolderForText: View {
             return
         }
         
-        appendToTextEditor(text: "File counter: \(String(counter))")
+        appendToTextEditor(text: "File counter: \(String(counter)). Current image: \(fileList[counter])")
         
         if !fileList[counter].contains(".txt") {
             
@@ -210,7 +210,7 @@ struct ScanPhotosInFolderForText: View {
             scannedText = "No text found"
         }
         
-        writeScannedTextToFile(tripName: tripName, uuid: fileList[counter], scannedText: scannedText)
+        writeScannedTextToFile(tripName: tripName, uuid: fileList[counter - 1], scannedText: scannedText)
         appendToTextEditor(text: "Text \(scannedText) written!")
         
         showAcceptScannedText = false
