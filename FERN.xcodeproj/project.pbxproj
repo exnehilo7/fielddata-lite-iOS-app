@@ -48,6 +48,10 @@
 		D1766CA1298DB9C6002F594D /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766CA0298DB9C6002F594D /* MapView.swift */; };
 		D1766CA3298DBAA3002F594D /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766CA2298DBAA3002F594D /* Functions.swift */; };
 		D1766CA5298E0B3E002F594D /* Classes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766CA4298E0B3E002F594D /* Classes.swift */; };
+		D18B59CD2C07BC82005A58DB /* TripModeThoroughCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D18B59CC2C07BC82005A58DB /* TripModeThoroughCameraView.swift */; };
+		D18B59CF2C07BCE9005A58DB /* TripModeFastCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D18B59CE2C07BCE9005A58DB /* TripModeFastCameraView.swift */; };
+		D18B59D12C07C002005A58DB /* QCSelectMapTypeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D18B59D02C07C002005A58DB /* QCSelectMapTypeView.swift */; };
+		D18B59D32C07C16B005A58DB /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D18B59D22C07C16B005A58DB /* MessageView.swift */; };
 		D1A56E812B051DB300AC8291 /* SelectTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E802B051DB300AC8291 /* SelectTripView.swift */; };
 		D1A56E992B07D27700AC8291 /* CameraImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E982B07D27700AC8291 /* CameraImageView.swift */; };
 		D1CEED8E2B44C43C00569520 /* CompletedTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1CEED8D2B44C43C00569520 /* CompletedTripView.swift */; };
@@ -121,6 +125,10 @@
 		D1766CA0298DB9C6002F594D /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		D1766CA2298DBAA3002F594D /* Functions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
 		D1766CA4298E0B3E002F594D /* Classes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Classes.swift; sourceTree = "<group>"; };
+		D18B59CC2C07BC82005A58DB /* TripModeThoroughCameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripModeThoroughCameraView.swift; sourceTree = "<group>"; };
+		D18B59CE2C07BCE9005A58DB /* TripModeFastCameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripModeFastCameraView.swift; sourceTree = "<group>"; };
+		D18B59D02C07C002005A58DB /* QCSelectMapTypeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QCSelectMapTypeView.swift; sourceTree = "<group>"; };
+		D18B59D22C07C16B005A58DB /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		D1A56E802B051DB300AC8291 /* SelectTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripView.swift; sourceTree = "<group>"; };
 		D1A56E982B07D27700AC8291 /* CameraImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraImageView.swift; sourceTree = "<group>"; };
 		D1CEED8D2B44C43C00569520 /* CompletedTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletedTripView.swift; sourceTree = "<group>"; };
@@ -228,30 +236,58 @@
 			path = TextRecognizer;
 			sourceTree = "<group>";
 		};
+		D18B59C92C078849005A58DB /* Capstone Views */ = {
+			isa = PBXGroup;
+			children = (
+				D16A6C7D29970E0900835B5E /* SelectNotesView.swift */,
+				D16A6C7F299AC65600835B5E /* SelectReportView.swift */,
+				D1766C9E298DB9B2002F594D /* SearchByNameView.swift */,
+				D16A6C7129901A2000835B5E /* SelectAreaView.swift */,
+				D1A56E952B07D09D00AC8291 /* Reports */,
+			);
+			path = "Capstone Views";
+			sourceTree = "<group>";
+		};
+		D18B59D42C07C3A6005A58DB /* App Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				D1766C9C298DB978002F594D /* MainMenuView.swift */,
+				D18B59D02C07C002005A58DB /* QCSelectMapTypeView.swift */,
+				D16A6C85299AE2DF00835B5E /* SelectSavedRouteView.swift */,
+				D16796402BE02CE500561875 /* SelectTripForAppleMapView.swift */,
+				D16796422BE02CFF00561875 /* SelectTripForCesiumView.swift */,
+				D16796442BE2B65900561875 /* SelectTripModeView.swift */,
+				D1A56E802B051DB300AC8291 /* SelectTripView.swift */,
+			);
+			path = "App Navigation";
+			sourceTree = "<group>";
+		};
+		D18B59D52C07C44E005A58DB /* Camera Views */ = {
+			isa = PBXGroup;
+			children = (
+				D1A56E982B07D27700AC8291 /* CameraImageView.swift */,
+				D18B59CE2C07BCE9005A58DB /* TripModeFastCameraView.swift */,
+				D18B59CC2C07BC82005A58DB /* TripModeThoroughCameraView.swift */,
+			);
+			path = "Camera Views";
+			sourceTree = "<group>";
+		};
 		D1A56E942B07D05E00AC8291 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				D1A56E952B07D09D00AC8291 /* Reports */,
-				D1A56E982B07D27700AC8291 /* CameraImageView.swift */,
+				D18B59D42C07C3A6005A58DB /* App Navigation */,
+				D18B59C92C078849005A58DB /* Capstone Views */,
+				D18B59D52C07C44E005A58DB /* Camera Views */,
+				D15BFD0C2BBF4DFD0013B67F /* TextRecognizer */,
 				D1CEED8D2B44C43C00569520 /* CompletedTripView.swift */,
-				D1766C9C298DB978002F594D /* MainMenuView.swift */,
 				D1766CA0298DB9C6002F594D /* MapView.swift */,
 				D16B0A8B2B9A34BD002081E1 /* MapWithNMEAView.swift */,
 				D127B37F2A12EDF600F6287A /* NMEADataView.swift */,
 				D11B2D8F2BF3BC81004FEE0B /* ScanPhotosInFolderForText.swift */,
-				D1766C9E298DB9B2002F594D /* SearchByNameView.swift */,
-				D16A6C85299AE2DF00835B5E /* SelectSavedRouteView.swift */,
-				D16A6C7129901A2000835B5E /* SelectAreaView.swift */,
-				D16A6C7D29970E0900835B5E /* SelectNotesView.swift */,
-				D16A6C7F299AC65600835B5E /* SelectReportView.swift */,
-				D1A56E802B051DB300AC8291 /* SelectTripView.swift */,
-				D16796442BE2B65900561875 /* SelectTripModeView.swift */,
-				D16796402BE02CE500561875 /* SelectTripForAppleMapView.swift */,
-				D16796422BE02CFF00561875 /* SelectTripForCesiumView.swift */,
 				D16A6C7B2995D18100835B5E /* StartScreenView.swift */,
 				D16796362BD9624E00561875 /* TripsInDBView.swift */,
-				D15BFD0C2BBF4DFD0013B67F /* TextRecognizer */,
 				D167963E2BDAEF2200561875 /* RandoTestingView.swift */,
+				D18B59D22C07C16B005A58DB /* MessageView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -392,11 +428,14 @@
 				D107EF1D2B571CAA0020F0A2 /* SettingsUploadView.swift in Sources */,
 				D16A6C86299AE2DF00835B5E /* SelectSavedRouteView.swift in Sources */,
 				D127B3992A1D3C4C00F6287A /* ImagePicker.swift in Sources */,
+				D18B59CD2C07BC82005A58DB /* TripModeThoroughCameraView.swift in Sources */,
+				D18B59D12C07C002005A58DB /* QCSelectMapTypeView.swift in Sources */,
 				D1766CA1298DB9C6002F594D /* MapView.swift in Sources */,
 				D1766C9D298DB978002F594D /* MainMenuView.swift in Sources */,
 				D10BB32A298ADAD600667E86 /* Models.swift in Sources */,
 				D127B3802A12EDF600F6287A /* NMEADataView.swift in Sources */,
 				D130BADA2B5ADEAE00F0C47C /* Trip.swift in Sources */,
+				D18B59D32C07C16B005A58DB /* MessageView.swift in Sources */,
 				D16796432BE02CFF00561875 /* SelectTripForCesiumView.swift in Sources */,
 				D10925962B2B9C96005D376F /* Sounds.swift in Sources */,
 				D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */,
@@ -417,6 +456,7 @@
 				D1CEED8E2B44C43C00569520 /* CompletedTripView.swift in Sources */,
 				D16796372BD9624E00561875 /* TripsInDBView.swift in Sources */,
 				D16A6C88299AF32600835B5E /* ReportRoutes.swift in Sources */,
+				D18B59CF2C07BCE9005A58DB /* TripModeFastCameraView.swift in Sources */,
 				D167963B2BD9B78A00561875 /* SettingsCesiumView.swift in Sources */,
 				D1A56E812B051DB300AC8291 /* SelectTripView.swift in Sources */,
 				D16A6C80299AC65600835B5E /* SelectReportView.swift in Sources */,
@@ -593,7 +633,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5.2;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -632,7 +672,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5.2;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

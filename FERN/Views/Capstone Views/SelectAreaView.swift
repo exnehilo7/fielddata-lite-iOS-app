@@ -1,44 +1,49 @@
 //
-//  ReportRoutes.swift
+//  SelectAreaView.swift
 //  FERN
 //
-//  Created by Hopp, Dan on 2/13/23.
+//  Created by Hopp, Dan on 2/5/23.
 //
+//  This is a menu from a captsone to select a site's area
 
 import SwiftUI
 import SwiftData
 
-struct ReportRoutes: View {
+struct SelectAreaView: View {
     
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
     
+    @State private var areaList: [SelectNameModel] = []
     var phpFile: String
-    @State private var totalDistances: [RouteTotalDistanceModel] = []
-        
+    var columnName: String
+    
     var body: some View {
+        
         VStack {
-            HStack {
+            HStack{
                 Spacer()
                 Button ("Refresh"){
                     Task {
-                        await qryTotalDistanceReport()
+                        await qryAreas()
                     }
                 }.padding(.trailing, 25)
             }
-            // Route total distances table
-            Table(totalDistances) {
-                TableColumn("Route", value: \.routeName)
-                TableColumn("Kilometers") { distance in
-                    Text(distance.totalDistanceKm)
+            NavigationStack {
+                List (self.areaList) { (area) in
+                    NavigationLink(area.name) {
+                        // Pass vars to view
+                        SearchByNameView(areaName: area.name, columnName: columnName).navigationTitle(area.name)
+                    }
+                    .bold()
                 }
-            }.task { await qryTotalDistanceReport() }
-        }
+            }
+        // Call PHP POST
+        }.task {await qryAreas()}
     }
     
-    
     // Process DML and get reports
-    private func qryTotalDistanceReport() async {
+    private func qryAreas() async {
         
         guard let url: URL = URL(string: settings[0].databaseURL + "/php/" + phpFile) else {
             Swift.print("invalid URL")
@@ -48,7 +53,8 @@ struct ReportRoutes: View {
         var request: URLRequest = URLRequest(url: url)
         request.httpMethod = "POST"
         
-        let postString = "_query_name=report_route_total_distance"
+        // pass name of search column to use
+        let postString = "_query_name=\(columnName)"
        
         let postData = postString.data(using: .utf8)
             
@@ -62,7 +68,7 @@ struct ReportRoutes: View {
                 
                 
                 // convert JSON response into class model as an array
-                self.totalDistances = try decoder.decode([RouteTotalDistanceModel].self, from: data)
+                self.areaList = try decoder.decode([SelectNameModel].self, from: data)
                 
                 // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
             } catch DecodingError.keyNotFound(let key, let context) {
@@ -76,13 +82,13 @@ struct ReportRoutes: View {
             } catch let error as NSError {
                 NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
             } catch {
-                totalDistances = []
+                areaList = []
             }
-    }// end qryTotalDistanceReport
-}
+    }// end qryReports
+} //end view
 
-//struct ReportRoutes_Previews: PreviewProvider {
+//struct SelectAreaView_Previews: PreviewProvider {
 //    static var previews: some View {
-//        ReportRoutes(phpFile: "menusAndReports.php")
+//        SelectAreaView(phpFile: "menusAndReports.php", columnName: "area_name")
 //    }
 //}

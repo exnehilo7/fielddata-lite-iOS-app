@@ -80,10 +80,10 @@ struct MapWithNMEAView: View {
     @State private var article = Article(title: "Device Feed Error", description: "Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app.")
     
     // User GPS selection
-//    @State var gpsModeIsSelected = false
-//    @State var showArrowGold = false
-    var showArrowGold:Bool
-    var gpsModeIsSelected:Bool
+    @State var gpsModeIsSelected = false
+    @State var showArrowGold = false
+//    var showArrowGold:Bool
+//    var gpsModeIsSelected:Bool
     
     // GPS -------------------------------------------------------------
     // Arrow Gold

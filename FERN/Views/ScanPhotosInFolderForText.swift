@@ -207,8 +207,6 @@ struct ScanPhotosInFolderForText: View {
         
         if recognizedContent.items[0].text != ""{
             scannedText = recognizedContent.items[0].text
-            // Replace " and \ and , with nothing for scanned text
-//            let scannedTextPattern = "[^A-Za-z0-9!@#$%&*()\\-_+=.<>;:/?\\s]+"
             scannedText = scannedText.replacingOccurrences(of: ScannedTextPattern().pattern, with: "", options: [.regularExpression])
         } else {
             scannedText = "No text found"

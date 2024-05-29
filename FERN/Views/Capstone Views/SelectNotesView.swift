@@ -4,6 +4,7 @@
 //
 //  Created by Hopp, Dan on 2/10/23.
 //
+//  This is a simple add, edit, and delete notes view from a capstone project.
 
 import SwiftUI
 import SwiftData
