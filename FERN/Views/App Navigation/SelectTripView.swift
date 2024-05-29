@@ -14,10 +14,11 @@ import SwiftData
 
 struct SelectTripView: View {
     
-    var useArrowGold:Bool
-    var gpsModeIsSelected:Bool
+//    var useArrowGold:Bool
+//    var gpsModeIsSelected:Bool
+    var tripMode:String
     
-    @EnvironmentObject var nmea: NMEA
+//    @EnvironmentObject var nmea: NMEA
     
     // For add-a-trip popup
     @State private var showingTripNameAlert = false
@@ -35,9 +36,15 @@ struct SelectTripView: View {
                     // Once a trip is marked complete, the user cannot toggle it back nor acces the CameraImageView
                     NavigationLink {
                         if !item.isComplete {
-                            // Go to CameraView with trip name as the title
-                            CameraImageView(mapViewIsActive: false, tripName: item.name, showArrowGold: useArrowGold, gpsModeIsSelected: gpsModeIsSelected)
-                                .navigationTitle("\(item.name)").environmentObject(nmea)
+                            if (tripMode == "fast") {
+                                TripModeFastCameraView(tripName: item.name).navigationTitle("\(item.name)")//.environmentObject(nmea)
+                            }
+                            else if (tripMode == "thorough") {
+                                TripModeThoroughCameraView(tripName: item.name).navigationTitle("\(item.name)")
+                            }
+                            else {
+                                MessageView(message: "No trip type selected.")
+                            }
                         }
                         else {
                             // Try to prevent data race by passing swiftdata values(?)

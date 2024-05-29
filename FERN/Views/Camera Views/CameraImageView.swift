@@ -42,6 +42,7 @@ struct CameraImageView: View {
     // Text recognition
     @ObservedObject var recognizedContent = RecognizedContent()
     @State private var isRecognizing = false
+//    @State var scannedText = ""
     
     // Custom Data
     @State private var textNotes = ""
@@ -211,6 +212,7 @@ struct CameraImageView: View {
                     self.image = UIImage()
                     // Clear scanned text
                     recognizedContent.items[0].text = ""
+                    recognizedContent.items[0].text = ""
                     // Clear custom data
                     clearCustomData()
             } else {invalidSyntax("for the Notes field"); showAlert = true} // end user notes check
@@ -260,6 +262,7 @@ struct CameraImageView: View {
                             .recognizeText(
 //                                semaphore: DispatchSemaphore(value: 0)
                             )
+//            scannedText = recognizedContent.items[0].text
         }, label: {
             HStack {
                 Image(systemName: "text.viewfinder")
@@ -395,12 +398,16 @@ struct CameraImageView: View {
                     .progressViewStyle(CircularProgressViewStyle(tint: Color(UIColor.systemIndigo)))
                     .padding(.bottom, 20)
             } else {
-                if recognizedContent.items[0].text != ""{
+//                if recognizedContent.items[0].text != ""{
                     HStack {
                         Text("Scanned text: ")
                         TextPreviewView(scannedText: recognizedContent.items[0].text)
+                        
                     }
-                }
+//                TextField("", text: $scannedText)
+//                        .font(.body)
+//                        .padding()
+//                }
             }
             
             if isImageSelected {

@@ -9,16 +9,11 @@ import SwiftUI
 import SwiftData
 
 struct SelectTripForAppleMapView: View {
-
-    var showArrowGold:Bool
-    var gpsModeIsSelected:Bool
     
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
     
     @State private var areaList: [SelectNameModel] = []
-    
-    @EnvironmentObject var nmea: NMEA
     
     var body: some View {
         VStack {
@@ -34,7 +29,7 @@ struct SelectTripForAppleMapView: View {
                 List (self.areaList) { (trip) in
                     NavigationLink(trip.name) {
                         // Pass var to view. Query for route does not need a column or organism name.
-                        MapWithNMEAView(areaName: trip.name, columnName: "", organismName: "", queryName: "query_get_trip_for_apple_map", showArrowGold: showArrowGold, gpsModeIsSelected: gpsModeIsSelected).environmentObject(nmea)
+                        MapWithNMEAView(areaName: trip.name, columnName: "", organismName: "", queryName: "query_get_trip_for_apple_map")//.environmentObject(nmea)
                     }
                 }
             }

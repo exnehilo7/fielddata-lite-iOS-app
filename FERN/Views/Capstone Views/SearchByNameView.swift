@@ -5,6 +5,7 @@
 //  Created by Hopp, Dan on 2/3/23.
 //  Basic PHP query to database from https://adnan-tech.com/get-data-from-api-and-show-in-list-swift-ui-php
 //
+//  This is a search-by-genotype view from a capstone project.
 
 import SwiftUI
 import SwiftData
@@ -56,7 +57,7 @@ struct SearchByNameView: View {
                             NavigationLink {
                                 // NEED TO FIX VIEW FOR ENVIRONMENTOBJECT NMEA
                                 MapWithNMEAView(areaName: areaName, columnName: columnName, organismName: organismName,
-                                        queryName: "query_search_org_name_by_site", showArrowGold: false, gpsModeIsSelected: false)
+                                        queryName: "query_search_org_name_by_site")
                             } label: {
                                 HStack {
                                     Image(systemName: "globe.americas.fill").bold(false).foregroundColor(.green)
