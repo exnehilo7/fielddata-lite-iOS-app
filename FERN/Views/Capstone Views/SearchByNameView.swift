@@ -56,7 +56,7 @@ struct SearchByNameView: View {
                         VStack{
                             NavigationLink {
                                 // NEED TO FIX VIEW FOR ENVIRONMENTOBJECT NMEA
-                                MapWithNMEAView(areaName: areaName, columnName: columnName, organismName: organismName,
+                                MapWithNMEAView(tripName: areaName, columnName: columnName, organismName: organismName,
                                         queryName: "query_search_org_name_by_site")
                             } label: {
                                 HStack {

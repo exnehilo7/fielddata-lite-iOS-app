@@ -20,10 +20,10 @@ struct TripModeFastCameraView: View {
     @State private var isImageSelected = false
     
     // Alerts
-//    @State private var showAlert = false
+    @State private var showAlert = false
     @State private var article = Article(title: "", description: "")
     @State private var showingCompleteAlert = false
-    @State private var showingStoppedNMEAAlert = false
+//    @State private var showingStoppedNMEAAlert = false
     
     // Select GPS and display toggles
     @State var gpsModeIsSelected = false
@@ -132,7 +132,6 @@ struct TripModeFastCameraView: View {
         Button(action: {
             let fileNameUUID = UUID().uuidString
             let upperUUID = fileNameUUID.uppercased()
-            // if user data is all good, save pic
                 if showArrowGold {
                     // Alert user if feed has stopped or values are zero
                     if nmea.hasNMEAStreamStopped ||
@@ -142,10 +141,11 @@ struct TripModeFastCameraView: View {
                         // GPS coords are set to 0 in NMEADataClass
                         article.title = "Device Feed Error"
                         article.description = "Photo was not saved. Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app."
-//                            showAlert = true
+                        showAlert = true
                         isImageSelected = false
-                        showingStoppedNMEAAlert = true
+//                        showingStoppedNMEAAlert = true
                     } else {
+                        // imagePickerController
                         // Pass Arrow GPS data
                         savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "ArrowGold",
                                         hdop: nmea.accuracy ?? "0.00", longitude: nmea.longitude ?? "0.0000", latitude: nmea.latitude ?? "0.0000", altitude: nmea.altitude ?? "0.00",
@@ -177,14 +177,14 @@ struct TripModeFastCameraView: View {
             .foregroundColor(.white)
             .cornerRadius(20)
             .padding(.horizontal)
-        })//.alert(article.title, isPresented: $showAlert, presenting: article) {article in Button("OK"){showAlert = false}} message: {article in Text(article.description)}
+        }).alert(article.title, isPresented: $showAlert, presenting: article) {article in Button("OK"){showAlert = false}} message: {article in Text(article.description)}
     }
     
     // Show the camera button (for if the user cancels a photo)
     var showCameraButton: some View {
         Button {
             isShowCamera = true
-            showingStoppedNMEAAlert = false
+//            showingStoppedNMEAAlert = false
         } label: {
             Label("Show Camera", systemImage: "camera").foregroundColor(.white)
         }.buttonStyle(.borderedProminent).tint(.blue)
@@ -193,7 +193,7 @@ struct TripModeFastCameraView: View {
     // MARK: Body
     var body: some View {
         
-        Text("Under construction")
+        Text("Need to use AVFoundation (and UIKit?) for a custom camera view overlay.")
         
 //        VStack {
 //            if !isImageSelected {
@@ -235,18 +235,41 @@ struct TripModeFastCameraView: View {
 //                }
 //                Spacer()
 //            }
-//            // No-NMEA alert
-//            if showingStoppedNMEAAlert {
-//                stoppedNMEA
+////            // No-NMEA alert
+////            if showingStoppedNMEAAlert {
+////                stoppedNMEA
+////            }
+////            
+//            
+////            // Show the pic to be saved
+////            Image(uiImage: self.image)
+////                .resizable()
+////                .scaledToFit()
+//            ZStack {
+//                Color.black.ignoresSafeArea(.all)
+//                VStack {
+////                    ImagePickerFastMode(sourceType: .camera, selectedImage: self.$image, tripName: tripName, nmea: nmea,
+////                                        clLat: clLat, clLong: clLong, clHorzAccuracy: clHorzAccuracy, clVertAccuracy: clVertAccuracy,
+////                                        clAltitude: clAltitude, gpsModeIsSelected: self.$gpsModeIsSelected, showArrowGold: self.$showArrowGold,
+////                                        isShowCamera: self.$isShowCamera, isImageSelected: self.$isImageSelected, showAlert: self.$showAlert).scaledToFit()
+//                    ImagePickerFastMode(sourceType: .camera, selectedImage: self.$image, isImageSelected: self.$isImageSelected).scaledToFit()
+//                        .alert(article.title, isPresented: $showAlert, presenting: article) {article in Button("OK"){showAlert = false}} message: {article in Text(article.description)}//.presentationDetents([.fraction(0.6)])
+//                    // GPS data on sheet
+//                    if gpsModeIsSelected {
+//                        if showArrowGold {
+//                            arrowGpsData
+//                        }
+//                        else {
+//                            coreLocationGpsData
+//                        }
+//                    }
+//                }
 //            }
 //            
 //            
-//            // Show the pic to be saved
-//            Image(uiImage: self.image)
-//                .resizable()
-//                .scaledToFit()
-//            
 //            Spacer()
+//            
+//            savePicButton
 //            
 //            // Give the user an option to bring back the camera if the ImagePicker was cancelled.
 //            if gpsModeIsSelected {
@@ -273,24 +296,29 @@ struct TripModeFastCameraView: View {
 //            } else {
 //                selectGpsMode
 //            }
-//        }.sheet(isPresented: $isShowCamera) {
-//            // Try to show the GPS data at all times on the bottom half of the screen
-//            ZStack {
-//                Color.black.ignoresSafeArea(.all)
-//                VStack {
-//                    ImagePicker(sourceType: .camera, selectedImage: self.$image, imageIsSelected: self.$isImageSelected)//.presentationDetents([.fraction(0.6)])
-//                    // GPS data on sheet
-//                    if gpsModeIsSelected {
-//                        if showArrowGold {
-//                            arrowGpsData
-//                        }
-//                        else {
-//                            coreLocationGpsData
-//                        }
-//                    }
-//                }
-//            }
-//        }.animation(.easeInOut, value: true)
+//        }
+////        .sheet(isPresented: $isShowCamera) {
+////            // Try to show the GPS data at all times on the bottom half of the screen
+////            ZStack {
+////                Color.black.ignoresSafeArea(.all)
+////                VStack {
+////                    ImagePickerFastMode(sourceType: .camera, selectedImage: self.$image, tripName: tripName, nmea: nmea,
+////                                        clLat: clLat, clLong: clLong, clHorzAccuracy: clHorzAccuracy, clVertAccuracy: clVertAccuracy,
+////                                        clAltitude: clAltitude, gpsModeIsSelected: self.$gpsModeIsSelected, showArrowGold: self.$showArrowGold,
+////                                        isShowCamera: self.$isShowCamera, isImageSelected: self.$isImageSelected, showAlert: self.$showAlert)
+////                        .alert(article.title, isPresented: $showAlert, presenting: article) {article in Button("OK"){showAlert = false}} message: {article in Text(article.description)}//.presentationDetents([.fraction(0.6)])
+////                    // GPS data on sheet
+////                    if gpsModeIsSelected {
+////                        if showArrowGold {
+////                            arrowGpsData
+////                        }
+////                        else {
+////                            coreLocationGpsData
+////                        }
+////                    }
+////                }
+////            }
+////        }.animation(.easeInOut, value: true)
 //            .preferredColorScheme(.dark)
     } // END BODY
     

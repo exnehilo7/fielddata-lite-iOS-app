@@ -68,6 +68,16 @@ struct MainMenuView: View {
                             Text("Settings")
                         }
                     }
+//                    // Testing
+//                    NavigationLink {
+//                        RandoTestingView()
+//                            .navigationTitle("Settings")
+//                    } label: {
+//                        HStack {
+//                            Image(systemName: "gearshape").bold(false).foregroundColor(.gray)
+//                            Text("Settings")
+//                        }
+//                    }
                 }
                 if settings.count < 1 {
                     // App settings

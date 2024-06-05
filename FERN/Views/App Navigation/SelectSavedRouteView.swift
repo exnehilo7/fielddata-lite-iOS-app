@@ -31,7 +31,7 @@ struct SelectSavedRouteView: View {
                     NavigationLink(area.name) {
                         // Pass var to view. Query for route does not need a column or organism name.
                         // NEED TO FIX VIEW FOR ENVIRONMENTOBJECT NMEA
-                        MapWithNMEAView(areaName: area.name, columnName: "", organismName: "", queryName: "query_get_route_for_app")
+                        MapWithNMEAView(tripName: area.name, columnName: "", organismName: "", queryName: "query_get_route_for_app")
                     }
                     .bold()
                 }

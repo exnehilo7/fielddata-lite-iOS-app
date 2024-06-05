@@ -551,9 +551,9 @@ struct CameraImageView: View {
         var pattern = "[^A-Za-z0-9,.:;\\s]+"
         textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
         
-        // remove any text past the final ;
-        pattern = "[A-Za-z0-9\\s]*$"
-        textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
+//        // remove any text past the final ;
+//        pattern = "[A-Za-z0-9\\s]*$"
+//        textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
         
         // Count # of proper syntax matches
         let range = NSRange(location: 0, length: textNotes.utf16.count)
@@ -569,6 +569,8 @@ struct CameraImageView: View {
                 (colonCount > 0 && semicolonCount > 0)
                 && colonCount == semicolonCount
                 && colonCount == numofmatches
+                && textNotes.count > 0
+                && numofmatches > 0
             ) || textNotes.count == 0
         ) {
             isValid = true
