@@ -452,7 +452,7 @@ struct TripModeThoroughCameraView: View {
         }
     }
     
-    // Use for QCMapWithNMEAView:
+    // Don't use for MapQCWithNMEAView. (Add points to memory instead. Use orange arrowtriangle.down.fill):
     private func insertPointIntoDatabase(tripName: String, uuid: String, gps: String,
                                        hdop: String, longitude: String, latitude: String, altitude: String,
                                        scannedText: String, notes: String) async {
@@ -490,9 +490,9 @@ struct TripModeThoroughCameraView: View {
         var pattern = "[^A-Za-z0-9,.:;\\s]+"
         textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
         
-        // remove any text past the final ;
-        pattern = "[A-Za-z0-9\\s]*$"
-        textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
+//        // remove any text past the final ;
+//        pattern = "[A-Za-z0-9\\s]*$"
+//        textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
         
         // Count # of proper syntax matches
         let range = NSRange(location: 0, length: textNotes.utf16.count)
@@ -508,6 +508,8 @@ struct TripModeThoroughCameraView: View {
                 (colonCount > 0 && semicolonCount > 0)
                 && colonCount == semicolonCount
                 && colonCount == numofmatches
+                && textNotes.count > 0
+                && numofmatches > 0
             ) || textNotes.count == 0
         ) {
             isValid = true

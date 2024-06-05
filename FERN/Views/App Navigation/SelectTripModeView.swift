@@ -15,7 +15,7 @@ struct SelectTripModeView: View {
                 // Select Trip
                 NavigationLink {
                     SelectTripView(tripMode: "fast")
-                        .navigationTitle("Select or Create a Trip")
+                        .navigationTitle("🐇 Select or Create a Trip")
                 } label: {
                     HStack {
                         Image(systemName: "hare.fill").bold(false).foregroundColor(.gray)
@@ -25,7 +25,7 @@ struct SelectTripModeView: View {
                 // Select a saved route
                 NavigationLink {
                     SelectTripView(tripMode: "thorough")
-                        .navigationTitle("Select or Create a Trip")
+                        .navigationTitle("🐢 Select or Create a Trip")
                 } label: {
                     HStack {
                         Image(systemName: "tortoise.fill").bold(false).foregroundColor(.gray)

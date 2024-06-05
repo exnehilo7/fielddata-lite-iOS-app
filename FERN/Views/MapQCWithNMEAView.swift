@@ -1,13 +1,13 @@
 //
-//  MapView.swift
+//  MapQCWithNMEAView.swift
 //  FERN
 //
-//  Created by Hopp, Dan on 3/7/24.
+//  Created by Hopp, Dan on 6/5/24.
+//
 //  Map basics help from https://www.mongodb.com/developer/products/realm/realm-swiftui-maps-location/
 //  User can choose default GPS or Arrow Gold GPS. If Arrow is selected, use a custom current device position icon(?)
 //
-//  05-JUN-2024: See if this view can be for Routes only, and if the slow camera view code can be added here and its view integrated with this one. Will need to append current point's organism name into the custom data field. (Populate the custom data field on pic snap? "Organism name: XXXXXXXXX;"?)
-//  Hide Reset Route Markers?
+//  05-JUN-2024: See if this view can be for Trips only, and if the slow camera view code can be added here and its view integrated with this one. Will need to save and process pic and text files via the classic way. 
 
 import SwiftUI
 import MapKit
@@ -23,7 +23,7 @@ import SwiftData
  
 */
 
-struct MapWithNMEAView: View {
+struct MapQCWithNMEAView: View {
     
     // MARK: Vars
     // swift data
@@ -148,7 +148,7 @@ struct MapWithNMEAView: View {
 //            }
 //        }.font(.system(size: 12))//.foregroundColor(.white)
 //    }
-//    
+//
 //    // iOS Core Location
 //    var coreLocationGpsData: some View {
 //        VStack {
@@ -157,7 +157,7 @@ struct MapWithNMEAView: View {
 //                Text("Lat: ") + Text("\(clLat)")
 //                Text("Long: ") + Text("\(clLong)")
 //            }
-//            
+//
 //                Text("Alt (m): ") + Text("\(clAltitude)")
 //            HStack {
 //                Text("Horz Acc (m): ") + Text("\(clHorzAccuracy)")
@@ -166,7 +166,7 @@ struct MapWithNMEAView: View {
 //        }.font(.system(size: 12))//.foregroundColor(.white)
 //    }
 //    //------------------------------------------------------------------
-//    
+//
 //    // Select GPS mode
 //    var selectGpsMode: some View {
 //        HStack {
@@ -175,7 +175,7 @@ struct MapWithNMEAView: View {
 //                    gpsModeIsSelected = true
 //                    // To prevent the device feed from being interruped, disable autosleep
 //                    UIApplication.shared.isIdleTimerDisabled = true
-//                    
+//
 //                    // Convert strings to floats for rounding and comaprisons
 //                    startLongFloat = (clLong as NSString).doubleValue
 //                    startLatFloat = (clLat as NSString).doubleValue
@@ -200,7 +200,7 @@ struct MapWithNMEAView: View {
 //                    gpsModeIsSelected = true
 //                    // To prevent the device feed from being interruped, disable autosleep
 //                    UIApplication.shared.isIdleTimerDisabled = true
-//                    
+//
 //                    // Convert strings to floats for rounding and comaprisons
 //                    startLongFloat = ((nmea.longitude ?? "0.0000") as NSString).doubleValue
 //                    startLatFloat = ((nmea.latitude ?? "0.0000") as NSString).doubleValue
@@ -222,7 +222,7 @@ struct MapWithNMEAView: View {
 //            //if (startLongFloat == endLongFloat && startLatFloat == endLatFloat) {showPicButton = true} //; audio.playDing()}
 //        })
 //    }
-//    
+//
 //    // Where is next? button
 //    var whereIsNext: some View {
 //        Button {
@@ -236,12 +236,12 @@ struct MapWithNMEAView: View {
 ////                    startLong = clLong
 ////                    startLat = clLat
 ////                }
-////                
+////
 ////                // if not default values, call
 ////                if (startLong != "0.0000" && startLat != "0.0000"){
 ////                    await getDistanceAndBearing()
 ////                }
-//                
+//
 //                // JUST IN CASE THE CHECK IS NOT AUTO:
 //                // if start lat long = end lat long, let user take pic.
 //                //if (startLongFloat == endLongFloat && startLatFloat == endLatFloat) {showPicButton = true} //; audio.playDing()}
@@ -540,7 +540,6 @@ struct MapWithNMEAView: View {
             }
             
             
-            
             // Show the pic to be saved
             Image(uiImage: self.image)
                 .resizable()
@@ -640,7 +639,6 @@ struct MapWithNMEAView: View {
         Button {
 //            showPicButton = false
             showPopover = true
-            textNotes = "Organism name:" + annotationItems[currentAnnoItem].organismName + ";"
         } label: {
             Text("Show Camera")
         }.buttonStyle(.borderedProminent).tint(.orange).popover(isPresented: $showPopover) {
@@ -780,9 +778,9 @@ struct MapWithNMEAView: View {
 //            if showArrowGold {
 //                // basic core off. May need to better handle LocationHelper instantiation
 //                clLocationHelper.stopUpdatingDefaultCoreLocation()
-//                
+//
 //                // NEED TO FIND A BETTER METHOD TO HANDLE START AND END POINTS FOR NAVIGATION GUIDANCE
-//                
+//
 ////                // Convert strings to floats for rounding and comaprisons
 ////                startLongFloat = ((nmea.longitude ?? "0.0000") as NSString).doubleValue
 ////                startLatFloat = ((nmea.latitude ?? "0.0000") as NSString).doubleValue
@@ -941,7 +939,7 @@ struct MapWithNMEAView: View {
                     // Toggle next and previous arrows(???)
                     if hasMapPointsResults == false {
                         hasMapPointsResults.toggle()
-                    }                          
+                    }
                 }
                 
             // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
@@ -967,40 +965,40 @@ struct MapWithNMEAView: View {
 //            Swift.print("invalid URL")
 //            return
 //        }
-//        
+//
 //        var request: URLRequest = URLRequest(url: url)
 //        request.httpMethod = "POST"
-//        
+//
 //        let postString = "_start_long=\(startLong)&_start_lat=\(startLat)&_end_long=\(annotationItems[currentAnnoItem].longitude)&_end_lat=\(annotationItems[currentAnnoItem].latitude)"
-//        
+//
 //        let postData = postString.data(using: .utf8)
-//        
+//
 //            do {
 //                let (data, _) = try await URLSession.shared.upload(for: request, from: postData!, delegate: nil)
-//                
+//
 //                let decoder = JSONDecoder()
 //                decoder.keyDecodingStrategy = .useDefaultKeys
 //                decoder.dataDecodingStrategy = .deferredToData
 //                decoder.dateDecodingStrategy = .deferredToDate
-//                
+//
 //                // Get result
 //                self.distanceAndBearingResult = try decoder.decode([TempDistanceAndBearingModel].self, from: data)
-//                
+//
 //                // dont update vars if result is empty
 //                if !distanceAndBearingResult.isEmpty {
-//                    
+//
 //                    // Put results in an vars
 //                    for result in distanceAndBearingResult {
 //                        distance.self = result.distance
 //                        bearing.self = result.bearing
 //                    }
-//                    
+//
 //                    // Don't show items if no data
 //                    if hasDistanceAndBearingResult == false {
 //                        hasDistanceAndBearingResult.toggle()
 //                    }
 //                }
-//                
+//
 //            // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
 //            } catch DecodingError.keyNotFound(let key, let context) {
 //                Swift.print("could not find key \(key) in JSON: \(context.debugDescription)")
@@ -1019,8 +1017,6 @@ struct MapWithNMEAView: View {
 
     private func checkUserData() -> Bool {
         var isValid = false
-        
-        numofmatches = 0
         
         // Remove special characters from user data
         let pattern = "[^A-Za-z0-9,.:;\\s_\\-]+"
@@ -1074,4 +1070,3 @@ struct MapWithNMEAView: View {
     }
     
 }// end MapView view
-

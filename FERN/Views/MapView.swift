@@ -4,6 +4,8 @@
 //
 //  Created by Hopp, Dan on 2/3/23.
 //  Map basics help from https://www.mongodb.com/developer/products/realm/realm-swiftui-maps-location/
+//
+//  This map only uses CoreLocation.
 
 import SwiftUI
 import MapKit

@@ -37,10 +37,10 @@ struct SelectTripView: View {
                     NavigationLink {
                         if !item.isComplete {
                             if (tripMode == "fast") {
-                                TripModeFastCameraView(tripName: item.name).navigationTitle("\(item.name)")//.environmentObject(nmea)
+                                TripModeFastCameraView(tripName: item.name).navigationTitle("🐇 \(item.name)")//.environmentObject(nmea)
                             }
                             else if (tripMode == "thorough") {
-                                TripModeThoroughCameraView(tripName: item.name).navigationTitle("\(item.name)")
+                                TripModeThoroughCameraView(tripName: item.name).navigationTitle("🐢 \(item.name)")
                             }
                             else {
                                 MessageView(message: "No trip type selected.")
