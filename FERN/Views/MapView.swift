@@ -198,7 +198,7 @@ struct MapView: View {
                         annotationItems.append(MapAnnotationItem(
                             latitude: Double(result.lat) ?? 0,
                             longitude: Double(result.long) ?? 0,
-                            siteId: result.siteId,
+                            pointOrder: result.pointOrder,
                             organismName: result.organismName,
                             systemName: "xmark.diamond.fill"
                         ))

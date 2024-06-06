@@ -6,7 +6,7 @@
 //  Map basics help from https://www.mongodb.com/developer/products/realm/realm-swiftui-maps-location/
 //  User can choose default GPS or Arrow Gold GPS. If Arrow is selected, use a custom current device position icon(?)
 //
-//  05-JUN-2024: See if this view can be for Routes only, and if the slow camera view code can be added here and its view integrated with this one. Will need to append current point's organism name into the custom data field. (Populate the custom data field on pic snap? "Organism name: XXXXXXXXX;"?)
+//  05-JUN-2024: See if this view can be for Routes (traveling salesman) only, and if the slow camera view code can be added here and its view integrated with this one. Will need to append current point's organism name into the custom data field. (Populate the custom data field on pic snap? "Organism name: XXXXXXXXX;"?)
 //  Hide Reset Route Markers?
 
 import SwiftUI
@@ -78,6 +78,9 @@ struct MapWithNMEAView: View {
             span: MKCoordinateSpan(latitudeDelta: 0.015, longitudeDelta: 0.015)
         )
     )
+    // For map reloads
+    @State private var currentCameraPosition: MapCameraPosition?
+    
     
     // Alerts
     @State private var showAlert = false
@@ -345,6 +348,7 @@ struct MapWithNMEAView: View {
     // Save the pic button
     var savePicButton: some View {
         Button(action: {
+            let audio = playSound()
             let fileNameUUID = UUID().uuidString
             let upperUUID = fileNameUUID.uppercased()
             var textInPic = recognizedContent.items[0].text
@@ -362,6 +366,7 @@ struct MapWithNMEAView: View {
 //                            article.title = "Device Feed Error"
 //                            article.description = "Photo was not saved. Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app."
 //                            showAlert = true
+                            audio.playError()
                             isImageSelected = false
                             showingStoppedNMEAAlert = true
                         } else {
@@ -372,6 +377,10 @@ struct MapWithNMEAView: View {
                             isImageSelected = false
                             isShowCamera = true
                             showingInvalidSyntaxAlert = false
+                            // Change annotation's color to blue
+                            
+                            // pop view back down
+                            showPopover = false
                         }
                     } else {
                         // Pass default GPS data
@@ -381,6 +390,10 @@ struct MapWithNMEAView: View {
                         isImageSelected = false
                         isShowCamera = true
                         showingInvalidSyntaxAlert = false
+                        // Change annotation's color to blue
+                        
+                        // pop view back down
+                        showPopover = false
                     }
                     
                     // Clear displayed image (if previous image feedback is needed, borrow capturedPhotoThumbnail from CameraView?
@@ -389,11 +402,7 @@ struct MapWithNMEAView: View {
                     recognizedContent.items[0].text = ""
                     // Clear custom data
                     clearCustomData()
-                
-                    // pop view back down
-                    showPopover = false
             } else {
-                let audio = playSound()
                 audio.playError()
 //                invalidSyntax("for the Notes field")
                 showingInvalidSyntaxAlert = true
@@ -659,6 +668,7 @@ struct MapWithNMEAView: View {
         
        // ZStack(alignment: .center) {
             VStack{
+                // Reset map button
 //                HStack {
 //                    Spacer()
 //                    Button ("Reset Route Markers"){
@@ -721,9 +731,9 @@ struct MapWithNMEAView: View {
                VStack {
                    // Show organism name of the selected point
                    Text("Next Point:").font(.system(size:15))//.underline()
-                   Text(annotationItems[currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold) //.background(.white)
+                   Text(annotationItems[currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold)
+                        // Mark first point on map
                        .onAppear(perform: {
-                           // Mark first point on map
                            annotationItems[currentAnnoItem].size = 20
                            annotationItems[currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
                        })
@@ -846,11 +856,15 @@ struct MapWithNMEAView: View {
     }
     
     private func resetRouteMarkers() async {
+        // remember current map camera position
+        currentCameraPosition = cameraPosition
         hasMapPointsResults = false
         currentAnnoItem = 0
         totalAnnoItems = 0
         annotationItems.removeAll(keepingCapacity: true)
         await getMapPoints()
+        // move map back to current spot
+        cameraPosition = currentCameraPosition!
     }
     
     // If stream is off, display alert. GPS coords are set to 0 in NMEADataClass. (Camera pop up now has the NMEA stream)
@@ -866,26 +880,44 @@ struct MapWithNMEAView: View {
     // Make sure forward and backward cycling will stay within the annotation's item count.
     private func cycleAnnotations (forward: Bool, _ offset: Int ){
         
-        if forward {
+        var offsetColor: Color
+        
+        // Get current annotation's color
+        offsetColor = annotationItems[currentAnnoItem].highlightColor
+        
+        if forward { 
+            // offset should be -1
             if currentAnnoItem < totalAnnoItems{
                 currentAnnoItem += 1
-                highlightAnnotation(offset)
+                highlightAnnotation(offset, offsetColor)
             }
         }
         else {
+            // offset should be 1
             if currentAnnoItem > 0 {
                 currentAnnoItem -= 1
-                highlightAnnotation(offset)
+                highlightAnnotation(offset, offsetColor)
             }
         }
     }
     
     // Draw attention to selected point. Put previous or next point back to its original state
-    private func highlightAnnotation (_ offset: Int){
+    private func highlightAnnotation (_ offset: Int, _ currentColor: Color){
         annotationItems[currentAnnoItem].size = 20
-        annotationItems[currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
+        // If currentAnnoItem is blue, make it light blue. Else make it red
+        if annotationItems[currentAnnoItem].highlightColor == Color(red: 0, green: 0, blue: 1) {
+            annotationItems[currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
+        } else {
+            annotationItems[currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
+        }
+        
         annotationItems[currentAnnoItem + offset].size = MapPointSize().size
-        annotationItems[currentAnnoItem + offset].highlightColor = Color(white: 0.4745)
+        // If offsetColor is red, make it grey. Else make it blue
+        if annotationItems[currentAnnoItem + offset].highlightColor == Color(red: 1, green: 0, blue: 0) {
+            annotationItems[currentAnnoItem + offset].highlightColor = Color(red: 0.5, green: 0.5, blue: 0.5)
+        } else {
+            annotationItems[currentAnnoItem + offset].highlightColor = Color(red: 0, green: 0, blue: 1)
+        }
     }
     
     // Get points from database
@@ -924,9 +956,15 @@ struct MapWithNMEAView: View {
                         annotationItems.append(MapAnnotationItem(
                             latitude: Double(result.lat) ?? 0,
                             longitude: Double(result.long) ?? 0,
-                            siteId: result.siteId,
+                            routeID: result.routeID,
+                            pointOrder: result.pointOrder,
                             organismName: result.organismName,
-                            systemName: "xmark.diamond.fill"
+                            systemName: "xmark.diamond.fill",
+                            highlightColor: Color (
+                                red: Double(result.r) ?? 0,
+                                green: Double(result.g) ?? 0,
+                                blue: Double(result.b) ?? 0
+                            )
                         ))
                     }
                     

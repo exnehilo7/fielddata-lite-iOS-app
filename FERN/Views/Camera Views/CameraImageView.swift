@@ -4,6 +4,7 @@
 //
 //  Created by Hopp, Dan on 11/17/23.
 //
+//  01-JUN-2024: Was replaced by TripModeThoroughCameraView and TripModeFastCameraView
 
 import SwiftUI
 import SwiftData
@@ -548,7 +549,7 @@ struct CameraImageView: View {
         var isValid = false
         
         // Remove special characters from user data
-        var pattern = "[^A-Za-z0-9,.:;\\s]+"
+        let pattern = "[^A-Za-z0-9,.:;\\s]+"
         textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
         
 //        // remove any text past the final ;

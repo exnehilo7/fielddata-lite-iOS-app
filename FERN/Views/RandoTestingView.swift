@@ -37,7 +37,7 @@ struct RandoTestingView: View {
         }
         Button("Check"){
             // Remove special characters from user data
-            var pattern = "[^A-Za-z0-9,.:;\\s_\\-]+"
+            let pattern = "[^A-Za-z0-9,.:;\\s_\\-]+"
             textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
 //            
 //            // remove any text past the final ;
