@@ -143,6 +143,7 @@ struct TripModeThoroughCameraView: View {
     // Save the pic button
     var savePicButton: some View {
         Button(action: {
+            let audio = playSound()
             let fileNameUUID = UUID().uuidString
             let upperUUID = fileNameUUID.uppercased()
             var textInPic = recognizedContent.items[0].text
@@ -160,6 +161,7 @@ struct TripModeThoroughCameraView: View {
 //                            article.title = "Device Feed Error"
 //                            article.description = "Photo was not saved. Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app."
 //                            showAlert = true
+                            audio.playError()
                             isImageSelected = false
                             showingStoppedNMEAAlert = true
                         } else {
@@ -185,7 +187,11 @@ struct TripModeThoroughCameraView: View {
                     recognizedContent.items[0].text = ""
                     // Clear custom data
                     clearCustomData()
-            } else {invalidSyntax("for the Notes field"); showAlert = true} // end user notes check
+            } else {
+                audio.playError()
+                invalidSyntax("for the Notes field")
+                showAlert = true
+            } // end user notes check
         }, label: {
             HStack {
                 Image(systemName: "photo")
@@ -487,7 +493,7 @@ struct TripModeThoroughCameraView: View {
         var isValid = false
         
         // Remove special characters from user data
-        var pattern = "[^A-Za-z0-9,.:;\\s]+"
+        let pattern = "[^A-Za-z0-9,.:;\\s]+"
         textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
         
 //        // remove any text past the final ;

@@ -7,7 +7,9 @@
 //  Map basics help from https://www.mongodb.com/developer/products/realm/realm-swiftui-maps-location/
 //  User can choose default GPS or Arrow Gold GPS. If Arrow is selected, use a custom current device position icon(?)
 //
-//  05-JUN-2024: See if this view can be for Trips only, and if the slow camera view code can be added here and its view integrated with this one. Will need to save and process pic and text files via the classic way. 
+//  05-JUN-2024: See if this view can be for Trip map display (to see points and to add new points), and if the slow camera view code can be added here and its view integrated with this one. Will need to save and process pic and text files via the classic way.
+//  Do not start with a selected point. If a point is selected, throw its organsim name into the custom data text field.
+//  (Can a point be selected by touch?)
 
 import SwiftUI
 import MapKit
@@ -345,6 +347,7 @@ struct MapQCWithNMEAView: View {
     // Save the pic button
     var savePicButton: some View {
         Button(action: {
+            let audio = playSound()
             let fileNameUUID = UUID().uuidString
             let upperUUID = fileNameUUID.uppercased()
             var textInPic = recognizedContent.items[0].text
@@ -362,6 +365,7 @@ struct MapQCWithNMEAView: View {
 //                            article.title = "Device Feed Error"
 //                            article.description = "Photo was not saved. Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app."
 //                            showAlert = true
+                            audio.playError()
                             isImageSelected = false
                             showingStoppedNMEAAlert = true
                         } else {
@@ -372,6 +376,8 @@ struct MapQCWithNMEAView: View {
                             isImageSelected = false
                             isShowCamera = true
                             showingInvalidSyntaxAlert = false
+                            // pop view back down
+                            showPopover = false
                         }
                     } else {
                         // Pass default GPS data
@@ -381,6 +387,8 @@ struct MapQCWithNMEAView: View {
                         isImageSelected = false
                         isShowCamera = true
                         showingInvalidSyntaxAlert = false
+                        // pop view back down
+                        showPopover = false
                     }
                     
                     // Clear displayed image (if previous image feedback is needed, borrow capturedPhotoThumbnail from CameraView?
@@ -389,11 +397,7 @@ struct MapQCWithNMEAView: View {
                     recognizedContent.items[0].text = ""
                     // Clear custom data
                     clearCustomData()
-                
-                    // pop view back down
-                    showPopover = false
             } else {
-                let audio = playSound()
                 audio.playError()
 //                invalidSyntax("for the Notes field")
                 showingInvalidSyntaxAlert = true
@@ -922,7 +926,7 @@ struct MapQCWithNMEAView: View {
                         annotationItems.append(MapAnnotationItem(
                             latitude: Double(result.lat) ?? 0,
                             longitude: Double(result.long) ?? 0,
-                            siteId: result.siteId,
+                            pointOrder: result.pointOrder,
                             organismName: result.organismName,
                             systemName: "xmark.diamond.fill"
                         ))

@@ -33,7 +33,6 @@ struct SelectTripView: View {
         NavigationView {
             List {
                 ForEach(sdTrips) { item in
-                    // Once a trip is marked complete, the user cannot toggle it back nor acces the CameraImageView
                     NavigationLink {
                         if !item.isComplete {
                             if (tripMode == "fast") {

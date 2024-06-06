@@ -85,18 +85,26 @@ extension RouteTotalDistanceModel: Codable {
 // temp list for display and insertion into MapAnnotationItem
 struct TempMapPointModel: Identifiable {
     let id = UUID() // if changed to class, DO NOT SET TO MUTABLE
-    var siteId = ""
+    var routeID = ""
+    var pointOrder = ""
     var organismName = ""
     var lat = ""
     var long = ""
+    var r = ""
+    var g = ""
+    var b = ""
     
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
     
-            try container.encode(siteId, forKey: .siteId)
+            try container.encode(routeID, forKey: .routeID)
+            try container.encode(pointOrder, forKey: .pointOrder)
             try container.encode(organismName, forKey: .organismName)
             try container.encode(lat, forKey: .lat)
             try container.encode(long, forKey: .long)
+            try container.encode(r, forKey: .r)
+            try container.encode(g, forKey: .g)
+            try container.encode(b, forKey: .b)
         }
     
         init() { }
@@ -104,16 +112,20 @@ struct TempMapPointModel: Identifiable {
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
     
-            siteId = try container.decode(String.self, forKey: .siteId)
+            routeID = try container.decode(String.self, forKey: .routeID)
+            pointOrder = try container.decode(String.self, forKey: .pointOrder)
             organismName = try container.decode(String.self, forKey: .organismName)
             lat = try container.decode(String.self, forKey: .lat)
             long = try container.decode(String.self, forKey: .long)
+            r = try container.decode(String.self, forKey: .r)
+            g = try container.decode(String.self, forKey: .g)
+            b = try container.decode(String.self, forKey: .b)
         }
     
 }
 extension TempMapPointModel: Codable {
     enum CodingKeys: CodingKey {
-        case siteId, organismName, lat, long
+        case routeID, pointOrder, organismName, lat, long, r, g, b
     }
 }
 
@@ -155,16 +167,18 @@ struct MapAnnotationItem: Identifiable {
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
-
+    
     /* When displaying Area or Plot points, the siteId will be the unique
      ID from the database's table. Otherwise, this variable will be the
      Routing points' order number. */
-    var siteId = ""
+    var routeID = ""
+    var pointOrder = ""
     var organismName = ""
     var systemName = ""
     var size: CGFloat = MapPointSize().size
-    var highlightColor = Color(white: 0.4745)
+    var highlightColor = Color(red: 0, green: 0, blue: 0)
 }
+
 class MapPointSize {
     let size: CGFloat = 10
 }
