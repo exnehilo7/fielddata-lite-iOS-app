@@ -378,9 +378,16 @@ struct MapWithNMEAView: View {
                             isShowCamera = true
                             showingInvalidSyntaxAlert = false
                             // Change annotation's color to blue
+                            Task {
+                                await updatePointColor(routeID: annotationItems[currentAnnoItem].routeID,
+                                                       pointOrder: annotationItems[currentAnnoItem].pointOrder)
+                            }
                             
                             // pop view back down
                             showPopover = false
+                            
+//                            // Mark currently seleted point as "done"
+//                            annotationItems[currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
                         }
                     } else {
                         // Pass default GPS data
@@ -391,9 +398,16 @@ struct MapWithNMEAView: View {
                         isShowCamera = true
                         showingInvalidSyntaxAlert = false
                         // Change annotation's color to blue
-                        
+                        Task {
+                            await updatePointColor(routeID: annotationItems[currentAnnoItem].routeID,
+                                                   pointOrder: annotationItems[currentAnnoItem].pointOrder)
+                        }
+            
                         // pop view back down
                         showPopover = false
+                        
+//                        // Mark currently seleted point as "done"
+//                        annotationItems[currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
                     }
                     
                     // Clear displayed image (if previous image feedback is needed, borrow capturedPhotoThumbnail from CameraView?
@@ -730,12 +744,17 @@ struct MapWithNMEAView: View {
             if hasMapPointsResults {
                VStack {
                    // Show organism name of the selected point
-                   Text("Next Point:").font(.system(size:15))//.underline()
+                   Text("Current Point:").font(.system(size:15))//.underline()
                    Text(annotationItems[currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold)
                         // Mark first point on map
                        .onAppear(perform: {
                            annotationItems[currentAnnoItem].size = 20
-                           annotationItems[currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
+                           // If currentAnnoItem is blue, make it light blue. Else make it red
+                           if annotationItems[currentAnnoItem].highlightColor == Color(red: 0, green: 0, blue: 1) {
+                               annotationItems[currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
+                           } else {
+                               annotationItems[currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
+                           }
                        })
                    // Show organism's lat and long
                    HStack{
@@ -746,6 +765,10 @@ struct MapWithNMEAView: View {
                    HStack {
                        // backward
                        Button(action: {
+//                           // refresh map?
+//                           Task {
+//                               await refreshMap()
+//                           }
                            cycleAnnotations(forward: false, 1)
                            // hide distance and bearing
 //                           hasDistanceAndBearingResult = false
@@ -764,6 +787,10 @@ struct MapWithNMEAView: View {
                        
                        // forward
                        Button(action:  {
+//                           // refresh map?
+//                           Task {
+//                               await refreshMap()
+//                           }
                            cycleAnnotations(forward: true, -1)
                            // hide distance and bearing
 //                           hasDistanceAndBearingResult = false
@@ -865,6 +892,17 @@ struct MapWithNMEAView: View {
         await getMapPoints()
         // move map back to current spot
         cameraPosition = currentCameraPosition!
+    }
+    
+    private func refreshMap() async {
+//        let tempCurrentAnnoItem = currentAnnoItem
+        // remember current map camera position
+        currentCameraPosition = cameraPosition
+        annotationItems.removeAll(keepingCapacity: true)  // or false?
+        await getMapPoints()
+        // move map back to current spot
+        cameraPosition = currentCameraPosition!
+//        currentAnnoItem = tempCurrentAnnoItem
     }
     
     // If stream is off, display alert. GPS coords are set to 0 in NMEADataClass. (Camera pop up now has the NMEA stream)
@@ -979,7 +1017,10 @@ struct MapWithNMEAView: View {
                     // Toggle next and previous arrows(???)
                     if hasMapPointsResults == false {
                         hasMapPointsResults.toggle()
-                    }                          
+                    }                         
+                    
+                    // Release memory?
+                    self.mapResults = [TempMapPointModel]()
                 }
                 
             // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
@@ -997,6 +1038,34 @@ struct MapWithNMEAView: View {
                 mapResults = []
             }
     }// end getMapPoints
+    
+    private func updatePointColor(routeID: String, pointOrder: String) async {
+        
+        guard let url: URL = URL(string: settings[0].databaseURL + "/php/updateRoutePointColor.php") else {
+            Swift.print("invalid URL")
+            return
+        }
+        
+        var request: URLRequest = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        let postString = "_route_id=\(routeID)&_point_order=\(pointOrder)"
+        
+        let postData = postString.data(using: .utf8)
+        
+        // Insert pic and geo data into trip table. Use max ID of the same trip name
+        do {
+            
+            let (_, _) = try await URLSession.shared.upload(for: request as URLRequest, from: postData!, delegate: nil)
+            
+            // Mark currently seleted point as "done"
+            annotationItems[currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
+            
+        } catch let error as NSError {
+            NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
+        }
+        
+    }
     
     // get distance and bearing to the next selected map point
 //    private func getDistanceAndBearing () async {
