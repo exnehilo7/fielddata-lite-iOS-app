@@ -103,7 +103,7 @@ struct MapView: View {
             if hasResults {
                VStack {
                    // Show organism name of the selected point
-                   Text("Next Point").font(.system(size:15)).underline()
+                   Text("Current Point").font(.system(size:15)).underline()
                    Text(annotationItems[currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold) //.background(.white)
                        .onAppear(perform: {
                            // Mark first point on map

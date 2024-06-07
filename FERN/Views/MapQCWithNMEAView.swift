@@ -722,12 +722,13 @@ struct MapQCWithNMEAView: View {
             if hasMapPointsResults {
                VStack {
                    // Show organism name of the selected point
-                   Text("Next Point:").font(.system(size:15))//.underline()
+                   Text("Current Point:").font(.system(size:15))//.underline()
                    Text(annotationItems[currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold) //.background(.white)
                        .onAppear(perform: {
                            // Mark first point on map
                            annotationItems[currentAnnoItem].size = 20
-                           annotationItems[currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
+                           // Leave color alone, just adjust the size
+//                           annotationItems[currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
                        })
                    // Show organism's lat and long
                    HStack{
@@ -884,10 +885,11 @@ struct MapQCWithNMEAView: View {
     
     // Draw attention to selected point. Put previous or next point back to its original state
     private func highlightAnnotation (_ offset: Int){
+        // Leave color alone, just adjust the size
         annotationItems[currentAnnoItem].size = 20
-        annotationItems[currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
         annotationItems[currentAnnoItem + offset].size = MapPointSize().size
-        annotationItems[currentAnnoItem + offset].highlightColor = Color(white: 0.4745)
+//        annotationItems[currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
+//        annotationItems[currentAnnoItem + offset].highlightColor = Color(white: 0.4745)
     }
     
     // Get points from database
@@ -926,9 +928,15 @@ struct MapQCWithNMEAView: View {
                         annotationItems.append(MapAnnotationItem(
                             latitude: Double(result.lat) ?? 0,
                             longitude: Double(result.long) ?? 0,
-                            pointOrder: result.pointOrder,
+                            routeID: result.routeID,
+                            pointOrder: result.pointOrder, // Point order is created in the DB by a pic's timestamp
                             organismName: result.organismName,
-                            systemName: "xmark.diamond.fill"
+                            systemName: "xmark.diamond.fill",
+                            highlightColor: Color (
+                                red: Double(result.r) ?? 0,
+                                green: Double(result.g) ?? 0,
+                                blue: Double(result.b) ?? 0
+                            )
                         ))
                     }
                     
@@ -944,6 +952,9 @@ struct MapQCWithNMEAView: View {
                     if hasMapPointsResults == false {
                         hasMapPointsResults.toggle()
                     }
+                    
+                    // Release memory?
+                    self.mapResults = [TempMapPointModel]()
                 }
                 
             // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024

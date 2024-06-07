@@ -25,17 +25,7 @@ struct MainMenuView: View {
                     } label: {
                         HStack {
                             Image(systemName: "camera").bold(false).foregroundColor(.gray)
-                            Text("Trips")
-                        }
-                    }
-                    // Select a saved route
-                    NavigationLink {
-                        SelectSavedRouteView()
-                            .navigationTitle("Select Saved Route")
-                    } label: {
-                        HStack {
-                            Image(systemName: "map").bold(false).foregroundColor(.gray)
-                            Text("Routes")
+                            Text("Capture a New Trip")
                         }
                     }
                     // QC an Uploaded Trip
@@ -45,7 +35,17 @@ struct MainMenuView: View {
                     } label: {
                         HStack {
                             Image(systemName: "checkmark.square").bold(false).foregroundColor(.gray)
-                            Text("Quality Control Uploaded Trip")
+                            Text("View a Trip on a Map")
+                        }
+                    }
+                    // Select a saved route
+                    NavigationLink {
+                        SelectSavedRouteView()
+                            .navigationTitle("Select Saved Route")
+                    } label: {
+                        HStack {
+                            Image(systemName: "map").bold(false).foregroundColor(.gray)
+                            Text("Routes (Traveling Salesman)")
                         }
                     }
                     // Scan photos in folder for text
@@ -55,7 +55,7 @@ struct MainMenuView: View {
                     } label: {
                         HStack {
                             Image(systemName: "scanner").bold(false).foregroundColor(.gray)
-                            Text("Post-trip Image Scanning")
+                            Text("Post-trip Image OCR")
                         }
                     }
                     // App settings
