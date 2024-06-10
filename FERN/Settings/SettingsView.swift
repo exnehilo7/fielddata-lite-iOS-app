@@ -6,14 +6,19 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct SettingsView: View {
+    
+    @Environment(\.modelContext) var modelContext
+    @Query var settings: [Settings]
+    
     var body: some View {
         NavigationStack{
             List {
                 // CesiumJS URL
                 NavigationLink {
-                    SettingsCesiumView()
+                    SettingsCesiumView(setting: settings[0])
                         .navigationTitle("CesiumJS URL")
                 } label: {
                     HStack {
@@ -23,7 +28,7 @@ struct SettingsView: View {
                 }
                 // Database URL
                 NavigationLink {
-                    SettingsDatabaseView()
+                    SettingsDatabaseView(setting: settings[0])
                         .navigationTitle("Database URL")
                 } label: {
                     HStack {
@@ -33,12 +38,22 @@ struct SettingsView: View {
                 }
                 // PHP upload script
                 NavigationLink {
-                    SettingsUploadView()
+                    SettingsUploadView(setting: settings[0])
                         .navigationTitle("Upload Script URL")
                 } label: {
                     HStack {
                         Image(systemName: "ellipsis.curlybraces").bold(false).foregroundColor(.gray)
                         Text("Upload Script URL")
+                    }
+                }
+                // HDOP Threshold
+                NavigationLink {
+                    SettingsHdopView(setting: settings[0])
+                        .navigationTitle("HDOP Threshold")
+                } label: {
+                    HStack {
+                        Image(systemName: "slider.horizontal.3").bold(false).foregroundColor(.gray)
+                        Text("HDOP Threshold")
                     }
                 }
             }

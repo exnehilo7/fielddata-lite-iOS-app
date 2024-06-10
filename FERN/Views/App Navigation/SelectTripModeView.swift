@@ -12,17 +12,17 @@ struct SelectTripModeView: View {
         
         NavigationStack{
             List {
-                // Select Trip
-                NavigationLink {
-                    SelectTripView(tripMode: "fast")
-                        .navigationTitle("🐇 Select or Create a Trip")
-                } label: {
-                    HStack {
-                        Image(systemName: "hare.fill").bold(false).foregroundColor(.gray)
-                        Text("Fast Acquisition")
-                    }
-                }
-                // Select a saved route
+                // Fast Acquisition
+//                NavigationLink {
+//                    SelectTripView(tripMode: "fast")
+//                        .navigationTitle("🐇 Select or Create a Trip")
+//                } label: {
+//                    HStack {
+//                        Image(systemName: "hare.fill").bold(false).foregroundColor(.gray)
+//                        Text("Fast Acquisition")
+//                    }
+//                }
+                // Thorough Acquisition
                 NavigationLink {
                     SelectTripView(tripMode: "thorough")
                         .navigationTitle("🐢 Select or Create a Trip")
