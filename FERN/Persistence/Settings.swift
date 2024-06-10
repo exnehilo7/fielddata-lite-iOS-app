@@ -4,6 +4,7 @@
 //
 //  Created by Hopp, Dan on 1/16/24.
 //
+//  10-JUN-2024: Add hdop threshold
 
 import Foundation
 import SwiftData
@@ -45,12 +46,19 @@ import SwiftData
         var databaseURL: String
         var uploadScriptURL: String
         var cesiumURL: String
+        var hdopThreshold: Double
+        var useStandardGps: Bool
         
-        init(databaseURL: String = "https://127.0.0.1/folder", uploadScriptURL: String = "https://127.0.0.1/folder/file.php",
-             cesiumURL: String = "https://127.0.0.1/folder/file.html") {
+        init(databaseURL: String = "https://127.0.0.1/folder", 
+             uploadScriptURL: String = "https://127.0.0.1/folder/file.php",
+             cesiumURL: String = "https://127.0.0.1/folder/file.html",
+             hdopThreshold: Double = 0,
+             useStandardGps: Bool = false) {
             self.databaseURL = databaseURL
             self.uploadScriptURL = uploadScriptURL
             self.cesiumURL = cesiumURL
+            self.hdopThreshold = hdopThreshold
+            self.useStandardGps = useStandardGps
         }
     }
 //}

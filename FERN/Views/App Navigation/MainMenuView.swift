@@ -17,7 +17,9 @@ struct MainMenuView: View {
         NavigationStack{
             List {
                 // Don't access others until URLs have been set
-                if settings.count > 0 {
+                if (settings.count > 0) &&
+                    (settings[0].hdopThreshold > 0)
+                {
                     // Select Trip Mode
                     NavigationLink {
                         SelectTripModeView()
@@ -79,7 +81,10 @@ struct MainMenuView: View {
 //                        }
 //                    }
                 }
-                if settings.count < 1 {
+//                if (settings.count < 1) ||
+//                    (settings[0].hdopThreshold == 0) 
+                    else
+                {
                     // App settings
                     NavigationLink {
                         SettingsView()
@@ -91,7 +96,13 @@ struct MainMenuView: View {
                         }
                     }
                 }
-            }.bold().onAppear(perform:{ UIApplication.shared.isIdleTimerDisabled = false})
+            }.bold().onAppear(perform:{
+                UIApplication.shared.isIdleTimerDisabled = false
+                // Only add one setting class
+                if settings.count < 1 {
+                    modelContext.insert(Settings())
+                }
+            })
             }//.preferredColorScheme(.dark)
         Spacer()
         Text("Version: \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Cannot get version #")").font(.footnote)
