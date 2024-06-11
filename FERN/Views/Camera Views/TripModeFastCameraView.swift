@@ -23,7 +23,7 @@ struct TripModeFastCameraView: View {
     @State private var showAlert = false
     @State private var article = Article(title: "", description: "")
     @State private var showingCompleteAlert = false
-//    @State private var showingStoppedNMEAAlert = false
+    @State private var showingHDOPOverLimit = false
     
     // Select GPS and display toggles
     @State var gpsModeIsSelected = false
@@ -33,6 +33,9 @@ struct TripModeFastCameraView: View {
     @Environment(\.modelContext) var modelContext
     @Query var sdTrips: [SDTrip]
     @Query var settings: [Settings]
+    
+    // Sounds
+    let audio = playSound()
     
     // GPS -------------------------------------------------------------
     // Arrow Gold
@@ -63,7 +66,7 @@ struct TripModeFastCameraView: View {
     var arrowGpsData: some View {
         VStack {
             
-            Label("EOS Arrow Gold", systemImage: "antenna.radiowaves.left.and.right").underline()
+            Label("EOS Arrow Gold", systemImage: "antenna.radiowaves.left.and.right").underline().foregroundColor(.yellow)
             //            Text("Protocol: ") + Text(nmea.protocolText as String)
             Text("Latitude: ") + Text(nmea.latitude ?? "0.0000")
             Text("Longitude: ") + Text(nmea.longitude ?? "0.0000")
@@ -77,7 +80,7 @@ struct TripModeFastCameraView: View {
     var coreLocationGpsData: some View {
         VStack {
             
-            Label("Standard GPS",  systemImage: "location.fill").underline()
+            Label("Standard GPS",  systemImage: "location.fill").underline().foregroundColor(.blue)
             Text("Latitude: ") + Text("\(clLat)")
             Text("Longitude: ") + Text("\(clLong)")
             Text("Altitude (m): ") + Text("\(clAltitude)")
@@ -126,44 +129,26 @@ struct TripModeFastCameraView: View {
             Text("Photo was not saved. Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app.")
         }
     }
+    
+    // HDOP Over Threshold Alert
+    var hdopOverLimitView: some View {
+        VStack {
+            Spacer()
+            Text("HDOP Over Limit").bold().foregroundStyle(.red)
+            Text("The horizontal position accuracy was over the limit of \(settings[0].hdopThreshold)!")
+        }
+    }
 
     // Save the pic button
     var savePicButton: some View {
         Button(action: {
             let fileNameUUID = UUID().uuidString
             let upperUUID = fileNameUUID.uppercased()
-                if showArrowGold {
-                    // Alert user if feed has stopped or values are zero
-                    if nmea.hasNMEAStreamStopped ||
-                        ((nmea.accuracy ?? "0.00") == "0.00" || (nmea.longitude ?? "0.00000000") == "0.00000000" ||
-                         (nmea.latitude ?? "0.00") == "0.00000000" || (nmea.altitude ?? "0.00") == "0.00")
-                    {
-                        // GPS coords are set to 0 in NMEADataClass
-                        article.title = "Device Feed Error"
-                        article.description = "Photo was not saved. Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app."
-                        showAlert = true
-                        isImageSelected = false
-//                        showingStoppedNMEAAlert = true
-                    } else {
-                        // imagePickerController
-                        // Pass Arrow GPS data
-                        savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "ArrowGold",
-                                        hdop: nmea.accuracy ?? "0.00", longitude: nmea.longitude ?? "0.0000", latitude: nmea.latitude ?? "0.0000", altitude: nmea.altitude ?? "0.00",
-                                        scannedText: "", notes: "")
-                        isImageSelected = false
-                        isShowCamera = true
-                    }
-                } else {
-                    // Pass default GPS data
-                    savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "iOS",
-                                    hdop: clHorzAccuracy, longitude: clLong, latitude: clLat, altitude: clAltitude,
-                                    scannedText: "", notes: "")
-                    isImageSelected = false
-                    isShowCamera = true
-                }
+            
+            processImage(upperUUID: upperUUID)
                 
-                // Clear displayed image (if previous image feedback is needed, borrow capturedPhotoThumbnail from CameraView?
-                self.image = UIImage()
+            // Clear displayed image (if previous image feedback is needed, borrow capturedPhotoThumbnail from CameraView?
+            self.image = UIImage()
         }, label: {
             HStack {
                 Image(systemName: "photo")
@@ -184,7 +169,6 @@ struct TripModeFastCameraView: View {
     var showCameraButton: some View {
         Button {
             isShowCamera = true
-//            showingStoppedNMEAAlert = false
         } label: {
             Label("Show Camera", systemImage: "camera").foregroundColor(.white)
         }.buttonStyle(.borderedProminent).tint(.blue)
@@ -235,11 +219,11 @@ struct TripModeFastCameraView: View {
 //                }
 //                Spacer()
 //            }
-////            // No-NMEA alert
-////            if showingStoppedNMEAAlert {
-////                stoppedNMEA
-////            }
-////            
+//      // HDOP Threshold Alert
+//     if showingHDOPOverLimit {
+//        hdopOverLimitView
+//    }
+//
 //            
 ////            // Show the pic to be saved
 ////            Image(uiImage: self.image)
@@ -332,13 +316,58 @@ struct TripModeFastCameraView: View {
         }
     }
     
+    private func processImage(upperUUID: String) {
+        if showArrowGold {
+            // Alert user if feed has stopped or values are zero
+            if nmea.hasNMEAStreamStopped ||
+                ((nmea.accuracy ?? "0.00") == "0.00" || (nmea.longitude ?? "0.00000000") == "0.00000000" ||
+                 (nmea.latitude ?? "0.00") == "0.00000000" || (nmea.altitude ?? "0.00") == "0.00")
+            {
+                // GPS coords are set to 0 in NMEADataClass
+                article.title = "Device Feed Error"
+                article.description = "Photo was not saved. Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app."
+                showAlert = true
+                isImageSelected = false
+            } else {
+                // HDOP within the threshold?
+                if Double((nmea.accuracy ?? "0.00")) ?? 99.0 <= settings[0].hdopThreshold {
+                    // Pass Arrow GPS data
+                    savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "ArrowGold",
+                                    hdop: nmea.accuracy ?? "0.00", longitude: nmea.longitude ?? "0.0000", latitude: nmea.latitude ?? "0.0000", altitude: nmea.altitude ?? "0.00",
+                                    scannedText: "", notes: "")
+                    setVarsAfterSuccessfulSave()
+                } else {
+                    audio.playError()
+                    // Display hdop over threshold message
+                    showingHDOPOverLimit = true
+                }
+            }
+        } else {
+            if Double((clHorzAccuracy)) ?? 99.0 <= settings[0].hdopThreshold {
+                // Pass default GPS data
+                savePicToFolder(imgFile: image, tripName: tripName, uuid: upperUUID, gps: "iOS",
+                                hdop: clHorzAccuracy, longitude: clLong, latitude: clLat, altitude: clAltitude,
+                                scannedText: "", notes: "")
+                setVarsAfterSuccessfulSave()
+            } else {
+                audio.playError()
+                // Display hdop over threshold message
+                showingHDOPOverLimit = true
+            }
+        }
+    }
+    
+    private func setVarsAfterSuccessfulSave() {
+        isImageSelected = false
+        isShowCamera = true
+        showingHDOPOverLimit = false
+    }
+    
     private func savePicToFolder(imgFile: UIImage, tripName: String, uuid: String, gps: String,
                                  hdop: String, longitude: String, latitude: String, altitude: String,
                                  scannedText: String, notes: String) {
         
-        let audio = playSound()
-        
-        do{
+        do {
             // Save image to Trip's folder
             try _ = FieldWorkImageFile.saveToFolder(imgFile: imgFile, tripName: tripName, uuid: uuid, gps: gps, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude)
         } catch {
