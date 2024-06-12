@@ -7,15 +7,19 @@
 // Splash screen help from https://mobiraft.com/ios/swiftui/how-to-add-splash-screen-in-swiftui/
 
 import SwiftUI
+import SwiftData
 
 struct StartScreenView: View {
         
     @State private var active: Bool = false
     
+    @Environment(\.modelContext) var modelContext
+    @Query var settings: [Settings]
+    
     var body: some View {
         // Toggle splash screen and Main Menu View. After XCode update, no longer working?
         if active {
-            MainMenuView()
+            TestViewColtrollerView()
         }
         else {
             VStack {
@@ -48,6 +52,12 @@ struct StartScreenView: View {
                     }
                 Spacer()
             }.onAppear {
+                
+                // Create settings if none exist
+                if settings.count < 1 {
+                    modelContext.insert(Settings())
+                }
+                
                 // Set timer for splashscreen fadeout
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     withAnimation {
@@ -55,7 +65,7 @@ struct StartScreenView: View {
                     }
                 }
             }.fullScreenCover(isPresented: $active) {
-                MainMenuView()
+                TestViewColtrollerView()
             }
         }// end else
     }

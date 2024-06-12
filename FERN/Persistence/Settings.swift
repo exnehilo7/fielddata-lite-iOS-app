@@ -47,18 +47,18 @@ import SwiftData
         var uploadScriptURL: String
         var cesiumURL: String
         var hdopThreshold: Double
-        var useStandardGps: Bool
+        var useBluetoothDevice: Bool
         
         init(databaseURL: String = "https://127.0.0.1/folder", 
              uploadScriptURL: String = "https://127.0.0.1/folder/file.php",
              cesiumURL: String = "https://127.0.0.1/folder/file.html",
-             hdopThreshold: Double = 0,
-             useStandardGps: Bool = false) {
+             hdopThreshold: Double = 0.2,
+             useBluetoothDevice: Bool = true) {
             self.databaseURL = databaseURL
             self.uploadScriptURL = uploadScriptURL
             self.cesiumURL = cesiumURL
             self.hdopThreshold = hdopThreshold
-            self.useStandardGps = useStandardGps
+            self.useBluetoothDevice = useBluetoothDevice
         }
     }
 //}

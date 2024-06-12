@@ -18,7 +18,7 @@ struct SettingsHdopView: View {
     
 //    @State private var hdop: Double = 0
     @State private var min: Double = 0
-    @State private var max: Double = 0.4
+    @State private var max: Double = 0.9
 //    @State private var useStandardGps = false
 
         var body: some View {
@@ -26,16 +26,16 @@ struct SettingsHdopView: View {
             Spacer()
             HStack {
                 Spacer()
-                Toggle("Use Standard GPS", isOn: $setting.useStandardGps)
-                    .onChange(of: setting.useStandardGps) {
-                        if setting.useStandardGps {max = 40.0} else {max = 0.4}
+                Toggle("Use Bluetooth Device", isOn: $setting.useBluetoothDevice)
+                    .onChange(of: setting.useBluetoothDevice) {
+                        if !setting.useBluetoothDevice {max = 40.0} else {max = 0.9}
                         setting.hdopThreshold = 0
                     }.onAppear(perform: {
-                        if setting.useStandardGps{
+                        if !setting.useBluetoothDevice{
                             max = 40.0
                         }
                         else {
-                            max = 0.4
+                            max = 0.9
                         }
                     })
                 Spacer()
@@ -47,7 +47,7 @@ struct SettingsHdopView: View {
                     Text("Horizontal position accuracy limit for an image:")
                     Spacer()
                 }
-                Text("\(setting.hdopThreshold, specifier: "%.02f")")
+                Text("\(setting.hdopThreshold, specifier: "%.03f")m")
                 VStack{
                     Slider(value: $setting.hdopThreshold, in: min...max)
                 }

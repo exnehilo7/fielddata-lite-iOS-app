@@ -88,23 +88,21 @@ struct MainMenuView: View {
                     // App settings
                     NavigationLink {
                         SettingsView()
-                            .navigationTitle("Add URLs")
+                            .navigationTitle("Set Settings")
                     } label: {
                         HStack {
                             Image(systemName: "gearshape").bold(false).foregroundColor(.gray)
-                            Text("Add URLs")
+                            Text("Set Settings")
                         }
                     }
                 }
-            }.bold().onAppear(perform:{
-                UIApplication.shared.isIdleTimerDisabled = false
-                // Only add one setting class
-                if settings.count < 1 {
-                    modelContext.insert(Settings())
-                }
-            })
-            }//.preferredColorScheme(.dark)
+            }.bold()
+//                .onAppear(perform:{
+//                UIApplication.shared.isIdleTimerDisabled = false
+//                })
+        }//.preferredColorScheme(.dark)
+        
         Spacer()
         Text("Version: \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Cannot get version #")").font(.footnote)
-        }
     }
+}

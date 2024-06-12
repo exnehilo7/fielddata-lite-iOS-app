@@ -49,11 +49,11 @@ struct SettingsView: View {
                 // HDOP Threshold
                 NavigationLink {
                     SettingsHdopView(setting: settings[0])
-                        .navigationTitle("HDOP Threshold")
+                        .navigationTitle("GPS Settings")
                 } label: {
                     HStack {
                         Image(systemName: "slider.horizontal.3").bold(false).foregroundColor(.gray)
-                        Text("HDOP Threshold")
+                        Text("GPS Settings")
                     }
                 }
             }
