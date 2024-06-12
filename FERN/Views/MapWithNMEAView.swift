@@ -771,7 +771,11 @@ struct MapWithNMEAView: View {
                    }.padding(.bottom, 20)
                } // end vstack
            } // end if hasMapPointsResults
-        }
+            }
+//            .onDisappear(perform: {
+//                print("nmea.endStreaming() will be called from traveling salesman view")
+//                nmea.endStreaming()
+//            })
 //            .onAppear(perform: {
 //            if showArrowGold {
 //                // basic core off. May need to better handle LocationHelper instantiation

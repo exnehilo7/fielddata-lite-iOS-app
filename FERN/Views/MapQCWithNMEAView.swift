@@ -756,6 +756,10 @@ struct MapQCWithNMEAView: View {
                } // end vstack
            } // end if hasMapPointsResults
         }
+//            .onDisappear(perform: {
+//            print("nmea.endStreaming() will be called from maps in DB view")
+//            nmea.endStreaming()
+//        })
 //            .onAppear(perform: {
 //            if showArrowGold {
 //                // basic core off. May need to better handle LocationHelper instantiation

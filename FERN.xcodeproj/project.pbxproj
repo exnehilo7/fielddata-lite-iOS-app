@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D1036C032C1A31C500E2E266 /* TestViewColtrollerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1036C022C1A31C500E2E266 /* TestViewColtrollerView.swift */; };
+		D1036C052C1A320600E2E266 /* TestViewControllerClsAndStrct.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1036C042C1A320600E2E266 /* TestViewControllerClsAndStrct.swift */; };
+		D1036C072C1A475C00E2E266 /* TestJustOneClassForVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1036C062C1A475C00E2E266 /* TestJustOneClassForVc.swift */; };
 		D107EF162B5708960020F0A2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D107EF152B5708960020F0A2 /* SettingsView.swift */; };
 		D107EF182B5716F60020F0A2 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D107EF172B5716F60020F0A2 /* Settings.swift */; };
 		D107EF1B2B571C840020F0A2 /* SettingsDatabaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D107EF1A2B571C840020F0A2 /* SettingsDatabaseView.swift */; };
@@ -31,7 +34,6 @@
 		D15BFD142BBF55000013B67F /* OCRModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BFD132BBF55000013B67F /* OCRModel.swift */; };
 		D15BFD182BBF55590013B67F /* TextPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BFD172BBF55590013B67F /* TextPreviewView.swift */; };
 		D15BFD1A2BBF55880013B67F /* TextRecognition.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BFD192BBF55880013B67F /* TextRecognition.swift */; };
-		D16796372BD9624E00561875 /* TripsInDBView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16796362BD9624E00561875 /* TripsInDBView.swift */; };
 		D167963B2BD9B78A00561875 /* SettingsCesiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D167963A2BD9B78A00561875 /* SettingsCesiumView.swift */; };
 		D167963D2BD9B7A900561875 /* EditCesiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D167963C2BD9B7A900561875 /* EditCesiumView.swift */; };
 		D167963F2BDAEF2200561875 /* RandoTestingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D167963E2BDAEF2200561875 /* RandoTestingView.swift */; };
@@ -86,6 +88,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D1036C022C1A31C500E2E266 /* TestViewColtrollerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewColtrollerView.swift; sourceTree = "<group>"; };
+		D1036C042C1A320600E2E266 /* TestViewControllerClsAndStrct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewControllerClsAndStrct.swift; sourceTree = "<group>"; };
+		D1036C062C1A475C00E2E266 /* TestJustOneClassForVc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestJustOneClassForVc.swift; sourceTree = "<group>"; };
 		D107EF152B5708960020F0A2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		D107EF172B5716F60020F0A2 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		D107EF1A2B571C840020F0A2 /* SettingsDatabaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDatabaseView.swift; sourceTree = "<group>"; };
@@ -112,7 +117,6 @@
 		D15BFD132BBF55000013B67F /* OCRModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRModel.swift; sourceTree = "<group>"; };
 		D15BFD172BBF55590013B67F /* TextPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextPreviewView.swift; sourceTree = "<group>"; };
 		D15BFD192BBF55880013B67F /* TextRecognition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognition.swift; sourceTree = "<group>"; };
-		D16796362BD9624E00561875 /* TripsInDBView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripsInDBView.swift; sourceTree = "<group>"; };
 		D167963A2BD9B78A00561875 /* SettingsCesiumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCesiumView.swift; sourceTree = "<group>"; };
 		D167963C2BD9B7A900561875 /* EditCesiumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCesiumView.swift; sourceTree = "<group>"; };
 		D167963E2BDAEF2200561875 /* RandoTestingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandoTestingView.swift; sourceTree = "<group>"; };
@@ -295,9 +299,9 @@
 				D127B37F2A12EDF600F6287A /* NMEADataView.swift */,
 				D11B2D8F2BF3BC81004FEE0B /* ScanPhotosInFolderForText.swift */,
 				D16A6C7B2995D18100835B5E /* StartScreenView.swift */,
-				D16796362BD9624E00561875 /* TripsInDBView.swift */,
 				D167963E2BDAEF2200561875 /* RandoTestingView.swift */,
 				D18B59D22C07C16B005A58DB /* MessageView.swift */,
+				D1036C022C1A31C500E2E266 /* TestViewColtrollerView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -320,6 +324,8 @@
 				D127B37D2A12ED3D00F6287A /* NMEADataClass.swift */,
 				D10925952B2B9C96005D376F /* Sounds.swift */,
 				D1325D6D2C0A1D2E00DAEBA6 /* ImagePickerFastModeWithOverlay.swift */,
+				D1036C042C1A320600E2E266 /* TestViewControllerClsAndStrct.swift */,
+				D1036C062C1A475C00E2E266 /* TestJustOneClassForVc.swift */,
 			);
 			path = ClassesAndModels;
 			sourceTree = "<group>";
@@ -447,6 +453,7 @@
 				D1766C9D298DB978002F594D /* MainMenuView.swift in Sources */,
 				D10BB32A298ADAD600667E86 /* Models.swift in Sources */,
 				D127B3802A12EDF600F6287A /* NMEADataView.swift in Sources */,
+				D1036C052C1A320600E2E266 /* TestViewControllerClsAndStrct.swift in Sources */,
 				D130BADA2B5ADEAE00F0C47C /* Trip.swift in Sources */,
 				D18B59D32C07C16B005A58DB /* MessageView.swift in Sources */,
 				D16796432BE02CFF00561875 /* SelectTripForCesiumView.swift in Sources */,
@@ -464,12 +471,13 @@
 				D15BFD142BBF55000013B67F /* OCRModel.swift in Sources */,
 				D16796412BE02CE500561875 /* SelectTripForAppleMapView.swift in Sources */,
 				D107EF162B5708960020F0A2 /* SettingsView.swift in Sources */,
+				D1036C032C1A31C500E2E266 /* TestViewColtrollerView.swift in Sources */,
 				D107EF1B2B571C840020F0A2 /* SettingsDatabaseView.swift in Sources */,
 				D16A6C7C2995D18100835B5E /* StartScreenView.swift in Sources */,
 				D1A56E992B07D27700AC8291 /* CameraImageView.swift in Sources */,
 				D16B0A8C2B9A34BD002081E1 /* MapWithNMEAView.swift in Sources */,
 				D1CEED8E2B44C43C00569520 /* CompletedTripView.swift in Sources */,
-				D16796372BD9624E00561875 /* TripsInDBView.swift in Sources */,
+				D1036C072C1A475C00E2E266 /* TestJustOneClassForVc.swift in Sources */,
 				D16A6C88299AF32600835B5E /* ReportRoutes.swift in Sources */,
 				D19FF3712C17542F00B54B7E /* SettingsHdopView.swift in Sources */,
 				D18B59CF2C07BCE9005A58DB /* TripModeFastCameraView.swift in Sources */,
@@ -649,7 +657,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 2.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -688,7 +696,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 2.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

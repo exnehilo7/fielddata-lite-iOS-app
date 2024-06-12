@@ -11,7 +11,47 @@ import CoreLocation
 import nmeaToolKit
 import ExternalAccessory
 
-class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObject {
+// ------12-JUN-2024: was added for Controller view test-------------
+import SwiftUI
+// Create a Coordinator
+class nmeaBridge: ObservableObject {
+    var vc: NMEA!
+}
+
+// The UIViewControllerRepresentable of the ViewController
+struct nmeaControllerRepresentation: UIViewControllerRepresentable {
+    var chikin: nmeaBridge
+
+    func makeCoordinator() -> Coordinator {
+        return Coordinator(self)
+    }
+
+    func makeUIViewController(context: Context) -> some UIViewController {
+        let vc = NMEA()
+        vc.bridgingCoordinator = chikin
+        return vc
+    }
+
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
+        //
+    }
+
+    class Coordinator: NSObject {
+        let parent: nmeaControllerRepresentation
+        init(_ view: nmeaControllerRepresentation) {
+            self.parent = view
+        }
+    }
+}
+//----------- END was added for Controller view test------------------
+
+
+// 12-JUN-2024: NSObject was switched to UIViewController for Controller view test:
+class NMEA : UIViewController, CLLocationManagerDelegate, StreamDelegate, ObservableObject {
+    
+    // 12-JUN-2024: For Controller view test:
+    var bridgingCoordinator: nmeaBridge!
+    // END for Controller view test
     
     var locationManager = CLLocationManager()
     var comThread:Thread?
@@ -42,7 +82,13 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
     
     // MARK: - Main Function
     // Main(?) function from ViewController @implementation
-    func viewDidLoad() {
+    // 12-JUN-2024: override was added for Controller view test:
+    override func viewDidLoad() {
+        
+        // 12-JUN-2024: was added for Controller view test:
+        super.viewDidLoad()
+        bridgingCoordinator.vc = self
+        // END was added for Controller view test
         
         // [O] register for EA notif
         let sharedAccessoryManager = EAAccessoryManager.shared()
@@ -88,6 +134,11 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
             let notif:NSNotification = NSNotification(name: NSNotification.Name(rawValue: "fakeAccessoryNotif") , object: nil, userInfo: (accessoryKey as! [AnyHashable : Any])) // Original userInfo was "userInfo:@{EAAccessoryKey: firstAccessory}" This was an NSDictionary, correct?
             didConnectNotif(notification: notif)
         }
+    }
+    
+    // 12-JUN-2024: Added so the ViewController text won't auto-fire the stream start
+    func startArrowGold () {
+        
     }
     
     // Not used in original code?
