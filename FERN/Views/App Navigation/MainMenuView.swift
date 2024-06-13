@@ -10,6 +10,14 @@ import SwiftData
 
 struct MainMenuView: View {
     
+    // Bridging coordinator
+    @StateObject private var bridgingCoordinator: GpsBridgingCoordinator
+    
+    init() {
+        let gpsCoordinator = GpsBridgingCoordinator()
+        self._bridgingCoordinator = StateObject(wrappedValue: gpsCoordinator)
+    }
+    
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
     
@@ -36,7 +44,7 @@ struct MainMenuView: View {
                             .navigationTitle("Select Trip to QC")
                     } label: {
                         HStack {
-                            Image(systemName: "checkmark.square").bold(false).foregroundColor(.gray)
+                            Image(systemName: "mappin.and.ellipse").bold(false).foregroundColor(.gray)
                             Text("View a Trip on a Map")
                         }
                     }
@@ -101,8 +109,13 @@ struct MainMenuView: View {
 //                UIApplication.shared.isIdleTimerDisabled = false
 //                })
         }//.preferredColorScheme(.dark)
-        
+        GpsViewControllerRepresentable(gpsBridgingCoordinator: bridgingCoordinator)
         Spacer()
         Text("Version: \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Cannot get version #")").font(.footnote)
-    }
-}
+        // Start GPS feed if not already running
+            .onAppear(perform: {
+                
+                bridgingCoordinator.gpsController.startGPSFeed(settings: settings)
+            })
+
+    }}

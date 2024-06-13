@@ -40,7 +40,7 @@ struct NMEADataView: View {
                 .foregroundColor(.accentColor)
             Label("Arrow Gold GPS",  systemImage: "bolt.fill").labelStyle(.titleOnly)
             Button("Start the Arrow Gold stream") {
-                nmea.viewDidLoad() // nmea on
+                /*nmea.viewDidLoad()*/ // nmea on
                 clLocationHelper.stopUpdatingDefaultCoreLocation() // basic core off
 //                    clLat = "0.0000"  // computed properties are a get-only property??
             }.buttonStyle(.borderedProminent)

@@ -11,8 +11,7 @@ import SwiftData
 // ViewController which contains functions that need to be called from SwiftUI
 class StartScreenViewController: UIViewController {
     
-    @Environment(\.modelContext) var modelContext
-    @Query var settings: [Settings]
+    @Published var active: Bool?
     
     // The BridgingCoordinator received from the SwiftUI View
     var startScreenViewControllerBridgingCoordinator: StartScreenBridgingCoordinator!
@@ -23,10 +22,17 @@ class StartScreenViewController: UIViewController {
         startScreenViewControllerBridgingCoordinator.startScreenViewController = self
     }
 
-    func createSettings() {
+    func createSettings(settings: [Settings], modelContext: ModelContext) {
         // Create settings if none exist
         if settings.count < 1 {
             modelContext.insert(Settings())
         }
+    }
+    
+    func setActiveToTrue(active: Bool) { //-> Bool{
+        
+        self.active = active
+        self.active = true
+//        return active
     }
 }

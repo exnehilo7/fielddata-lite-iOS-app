@@ -7,27 +7,27 @@
 // Splash screen help from https://mobiraft.com/ios/swiftui/how-to-add-splash-screen-in-swiftui/
 
 import SwiftUI
-//import SwiftData
+import SwiftData
 
 struct StartScreenView: View {
     
     // Bridging coordinator
-    @StateObject private var bridgingCoordinator: StartScreenBridgingCoordinator
+    @State private var bridgingCoordinator: StartScreenBridgingCoordinator
     
     @State private var active: Bool = false
     
     init() {
         let startScreenCoordinator = StartScreenBridgingCoordinator()
-        self._bridgingCoordinator = StateObject(wrappedValue: startScreenCoordinator)
+        self._bridgingCoordinator = State(wrappedValue: startScreenCoordinator)
     }
     
-//    @Environment(\.modelContext) var modelContext
-//    @Query var settings: [Settings]
+    @Environment(\.modelContext) var modelContext
+    @Query var settings: [Settings]
     
     var body: some View {
-        // Toggle splash screen and Main Menu View. After XCode update, no longer working?
+        // Toggle splash screen and Main Menu View. (After XCode update, no longer working?)
         if active {
-            TestViewColtrollerView()
+            MainMenuView()
         }
         else {
             VStack {
@@ -59,30 +59,22 @@ struct StartScreenView: View {
                         Image(systemName: "leaf.circle.fill").bold(false).foregroundColor(.green).font(.system(size: 300)).dynamicTypeSize(...DynamicTypeSize.xxLarge)
                     }
                 Spacer()
+                
+                StartScreenViewControllerRepresentable(startScreenBridgingCoordinator: bridgingCoordinator)
+                
             }.onAppear {
                 
-//                // Create settings if none exist
-//                if settings.count < 1 {
-//                    modelContext.insert(Settings())
-//                }
-                
-                bridgingCoordinator.startScreenViewController.viewDidLoad()
+                bridgingCoordinator.startScreenViewController.createSettings(settings: settings, modelContext: modelContext)
                 
                 // Set timer for splashscreen fadeout
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     withAnimation {
-                        active = true
+                        active = bridgingCoordinator.startScreenViewController.active ?? true
                     }
                 }
             }.fullScreenCover(isPresented: $active) {
-                TestViewColtrollerView()
+                MainMenuView()
             }
         }// end else
     }
 }
-
-//struct StartScreenView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        StartScreenView()
-//    }
-//}

@@ -314,7 +314,7 @@ struct MapWithNMEAView: View {
                 Button{
                     showArrowGold = true
                     clLocationHelper.stopUpdatingDefaultCoreLocation() // basic core off
-                    nmea.viewDidLoad()
+//                    nmea.viewDidLoad()
                     gpsModeIsSelected = true
                     createTxtFileForTheDay()
                     UIApplication.shared.isIdleTimerDisabled = true
