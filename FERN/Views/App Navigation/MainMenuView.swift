@@ -88,11 +88,11 @@ struct MainMenuView: View {
                     // App settings
                     NavigationLink {
                         SettingsView()
-                            .navigationTitle("Set Settings")
+                            .navigationTitle("Set Threshold")
                     } label: {
                         HStack {
-                            Image(systemName: "gearshape").bold(false).foregroundColor(.gray)
-                            Text("Set Settings")
+                            Image(systemName: "arrow.up.to.line").bold(false).foregroundColor(.gray)
+                            Text("Set Threshold")
                         }
                     }
                 }

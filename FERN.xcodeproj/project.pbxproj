@@ -10,6 +10,8 @@
 		D1036C032C1A31C500E2E266 /* TestViewColtrollerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1036C022C1A31C500E2E266 /* TestViewColtrollerView.swift */; };
 		D1036C052C1A320600E2E266 /* TestViewControllerClsAndStrct.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1036C042C1A320600E2E266 /* TestViewControllerClsAndStrct.swift */; };
 		D1036C072C1A475C00E2E266 /* TestJustOneClassForVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1036C062C1A475C00E2E266 /* TestJustOneClassForVc.swift */; };
+		D1036C0C2C1B4FD500E2E266 /* StartScreenController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1036C0B2C1B4FD500E2E266 /* StartScreenController.swift */; };
+		D1036C0F2C1B519E00E2E266 /* StartScreenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1036C0E2C1B519E00E2E266 /* StartScreenModel.swift */; };
 		D107EF162B5708960020F0A2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D107EF152B5708960020F0A2 /* SettingsView.swift */; };
 		D107EF182B5716F60020F0A2 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D107EF172B5716F60020F0A2 /* Settings.swift */; };
 		D107EF1B2B571C840020F0A2 /* SettingsDatabaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D107EF1A2B571C840020F0A2 /* SettingsDatabaseView.swift */; };
@@ -91,6 +93,8 @@
 		D1036C022C1A31C500E2E266 /* TestViewColtrollerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewColtrollerView.swift; sourceTree = "<group>"; };
 		D1036C042C1A320600E2E266 /* TestViewControllerClsAndStrct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewControllerClsAndStrct.swift; sourceTree = "<group>"; };
 		D1036C062C1A475C00E2E266 /* TestJustOneClassForVc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestJustOneClassForVc.swift; sourceTree = "<group>"; };
+		D1036C0B2C1B4FD500E2E266 /* StartScreenController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreenController.swift; sourceTree = "<group>"; };
+		D1036C0E2C1B519E00E2E266 /* StartScreenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreenModel.swift; sourceTree = "<group>"; };
 		D107EF152B5708960020F0A2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		D107EF172B5716F60020F0A2 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		D107EF1A2B571C840020F0A2 /* SettingsDatabaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDatabaseView.swift; sourceTree = "<group>"; };
@@ -165,6 +169,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D1036C082C1B3B5800E2E266 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				D1036C0B2C1B4FD500E2E266 /* StartScreenController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		D1036C0D2C1B516000E2E266 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				D1036C0E2C1B519E00E2E266 /* StartScreenModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		D107EF192B571C610020F0A2 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -202,9 +222,10 @@
 			isa = PBXGroup;
 			children = (
 				D1A56E962B07D0C000AC8291 /* ClassesAndModels */,
+				D1036C0D2C1B516000E2E266 /* Models */,
 				D1A56E942B07D05E00AC8291 /* Views */,
+				D1036C082C1B3B5800E2E266 /* Controllers */,
 				D1A56E972B07D0DE00AC8291 /* Persistence */,
-				D107EF192B571C610020F0A2 /* Settings */,
 				D127B3772A12EBB400F6287A /* NMEA */,
 				D10BB31B298ADAA400667E86 /* FERNApp.swift */,
 				D1766CA2298DBAA3002F594D /* Functions.swift */,
@@ -289,8 +310,9 @@
 			isa = PBXGroup;
 			children = (
 				D18B59D42C07C3A6005A58DB /* App Navigation */,
-				D18B59C92C078849005A58DB /* Capstone Views */,
 				D18B59D52C07C44E005A58DB /* Camera Views */,
+				D18B59C92C078849005A58DB /* Capstone Views */,
+				D107EF192B571C610020F0A2 /* Settings */,
 				D15BFD0C2BBF4DFD0013B67F /* TextRecognizer */,
 				D1CEED8D2B44C43C00569520 /* CompletedTripView.swift */,
 				D1325D6F2C10CD8500DAEBA6 /* MapQCWithNMEAView.swift */,
@@ -461,6 +483,7 @@
 				D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */,
 				D11B2D902BF3BC81004FEE0B /* ScanPhotosInFolderForText.swift in Sources */,
 				D1766CA3298DBAA3002F594D /* Functions.swift in Sources */,
+				D1036C0F2C1B519E00E2E266 /* StartScreenModel.swift in Sources */,
 				D107EF1F2B57293B0020F0A2 /* EditDatabaseView.swift in Sources */,
 				D1325D6E2C0A1D2E00DAEBA6 /* ImagePickerFastModeWithOverlay.swift in Sources */,
 				D127B37E2A12ED3D00F6287A /* NMEADataClass.swift in Sources */,
@@ -470,6 +493,7 @@
 				D18B59D72C08C7E6005A58DB /* ImagePickerFastMode.swift in Sources */,
 				D15BFD142BBF55000013B67F /* OCRModel.swift in Sources */,
 				D16796412BE02CE500561875 /* SelectTripForAppleMapView.swift in Sources */,
+				D1036C0C2C1B4FD500E2E266 /* StartScreenController.swift in Sources */,
 				D107EF162B5708960020F0A2 /* SettingsView.swift in Sources */,
 				D1036C032C1A31C500E2E266 /* TestViewColtrollerView.swift in Sources */,
 				D107EF1B2B571C840020F0A2 /* SettingsDatabaseView.swift in Sources */,
@@ -657,7 +681,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1.0;
+				MARKETING_VERSION = 2.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -696,7 +720,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1.0;
+				MARKETING_VERSION = 2.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
