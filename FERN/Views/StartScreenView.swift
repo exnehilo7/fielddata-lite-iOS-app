@@ -7,14 +7,22 @@
 // Splash screen help from https://mobiraft.com/ios/swiftui/how-to-add-splash-screen-in-swiftui/
 
 import SwiftUI
-import SwiftData
+//import SwiftData
 
 struct StartScreenView: View {
-        
+    
+    // Bridging coordinator
+    @StateObject private var bridgingCoordinator: StartScreenBridgingCoordinator
+    
     @State private var active: Bool = false
     
-    @Environment(\.modelContext) var modelContext
-    @Query var settings: [Settings]
+    init() {
+        let startScreenCoordinator = StartScreenBridgingCoordinator()
+        self._bridgingCoordinator = StateObject(wrappedValue: startScreenCoordinator)
+    }
+    
+//    @Environment(\.modelContext) var modelContext
+//    @Query var settings: [Settings]
     
     var body: some View {
         // Toggle splash screen and Main Menu View. After XCode update, no longer working?
@@ -53,10 +61,12 @@ struct StartScreenView: View {
                 Spacer()
             }.onAppear {
                 
-                // Create settings if none exist
-                if settings.count < 1 {
-                    modelContext.insert(Settings())
-                }
+//                // Create settings if none exist
+//                if settings.count < 1 {
+//                    modelContext.insert(Settings())
+//                }
+                
+                bridgingCoordinator.startScreenViewController.viewDidLoad()
                 
                 // Set timer for splashscreen fadeout
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {

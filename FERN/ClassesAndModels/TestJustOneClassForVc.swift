@@ -3,7 +3,8 @@
 //  FERN
 //
 //  Created by Hopp, Dan on 6/12/24.
-//
+//  A template for MVC. Model part.
+//  From https://stackoverflow.com/questions/62504435/how-to-call-a-uikit-viewcontroller-method-from-swiftui-view
 
 import Foundation
 import SwiftUI
