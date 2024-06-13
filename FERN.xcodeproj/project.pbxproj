@@ -12,6 +12,8 @@
 		D1036C072C1A475C00E2E266 /* TestJustOneClassForVc.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1036C062C1A475C00E2E266 /* TestJustOneClassForVc.swift */; };
 		D1036C0C2C1B4FD500E2E266 /* StartScreenController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1036C0B2C1B4FD500E2E266 /* StartScreenController.swift */; };
 		D1036C0F2C1B519E00E2E266 /* StartScreenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1036C0E2C1B519E00E2E266 /* StartScreenModel.swift */; };
+		D1036C152C1B948200E2E266 /* GPSModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1036C142C1B948200E2E266 /* GPSModel.swift */; };
+		D1036C172C1B969D00E2E266 /* GPSController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1036C162C1B969D00E2E266 /* GPSController.swift */; };
 		D107EF162B5708960020F0A2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D107EF152B5708960020F0A2 /* SettingsView.swift */; };
 		D107EF182B5716F60020F0A2 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D107EF172B5716F60020F0A2 /* Settings.swift */; };
 		D107EF1B2B571C840020F0A2 /* SettingsDatabaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D107EF1A2B571C840020F0A2 /* SettingsDatabaseView.swift */; };
@@ -95,6 +97,8 @@
 		D1036C062C1A475C00E2E266 /* TestJustOneClassForVc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestJustOneClassForVc.swift; sourceTree = "<group>"; };
 		D1036C0B2C1B4FD500E2E266 /* StartScreenController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreenController.swift; sourceTree = "<group>"; };
 		D1036C0E2C1B519E00E2E266 /* StartScreenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreenModel.swift; sourceTree = "<group>"; };
+		D1036C142C1B948200E2E266 /* GPSModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPSModel.swift; sourceTree = "<group>"; };
+		D1036C162C1B969D00E2E266 /* GPSController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPSController.swift; sourceTree = "<group>"; };
 		D107EF152B5708960020F0A2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		D107EF172B5716F60020F0A2 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		D107EF1A2B571C840020F0A2 /* SettingsDatabaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDatabaseView.swift; sourceTree = "<group>"; };
@@ -173,6 +177,7 @@
 			isa = PBXGroup;
 			children = (
 				D1036C0B2C1B4FD500E2E266 /* StartScreenController.swift */,
+				D1036C162C1B969D00E2E266 /* GPSController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -181,6 +186,7 @@
 			isa = PBXGroup;
 			children = (
 				D1036C0E2C1B519E00E2E266 /* StartScreenModel.swift */,
+				D1036C142C1B948200E2E266 /* GPSModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -472,6 +478,7 @@
 				D18B59D12C07C002005A58DB /* QCSelectMapTypeView.swift in Sources */,
 				D1325D702C10CD8500DAEBA6 /* MapQCWithNMEAView.swift in Sources */,
 				D1766CA1298DB9C6002F594D /* MapView.swift in Sources */,
+				D1036C172C1B969D00E2E266 /* GPSController.swift in Sources */,
 				D1766C9D298DB978002F594D /* MainMenuView.swift in Sources */,
 				D10BB32A298ADAD600667E86 /* Models.swift in Sources */,
 				D127B3802A12EDF600F6287A /* NMEADataView.swift in Sources */,
@@ -511,6 +518,7 @@
 				D10BB31C298ADAA400667E86 /* FERNApp.swift in Sources */,
 				D167963F2BDAEF2200561875 /* RandoTestingView.swift in Sources */,
 				D107EF212B5736BD0020F0A2 /* EditUploadView.swift in Sources */,
+				D1036C152C1B948200E2E266 /* GPSModel.swift in Sources */,
 				D16A6C7E29970E0900835B5E /* SelectNotesView.swift in Sources */,
 				D1766CA5298E0B3E002F594D /* Classes.swift in Sources */,
 			);

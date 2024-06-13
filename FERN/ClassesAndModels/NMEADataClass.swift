@@ -11,47 +11,42 @@ import CoreLocation
 import nmeaToolKit
 import ExternalAccessory
 
-// ------12-JUN-2024: was added for Controller view test-------------
-import SwiftUI
-// Create a Coordinator
-class nmeaBridge: ObservableObject {
-    var vc: NMEA!
-}
+//// ------12-JUN-2024: was added for Controller view test-------------
+//import SwiftUI
+//// Create a Coordinator
+//class nmeaBridge: ObservableObject {
+//    var vc: NMEA!
+//}
+//
+//// The UIViewControllerRepresentable of the ViewController
+//struct nmeaControllerRepresentation: UIViewControllerRepresentable {
+//    var chikin: nmeaBridge
+//
+//    func makeCoordinator() -> Coordinator {
+//        return Coordinator(self)
+//    }
+//
+//    func makeUIViewController(context: Context) -> some UIViewController {
+//        let vc = NMEA()
+//        vc.bridgingCoordinator = chikin
+//        return vc
+//    }
+//
+//    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
+//        //
+//    }
+//
+//    class Coordinator: NSObject {
+//        let parent: nmeaControllerRepresentation
+//        init(_ view: nmeaControllerRepresentation) {
+//            self.parent = view
+//        }
+//    }
+//}
+////----------- END was added for Controller view test------------------
 
-// The UIViewControllerRepresentable of the ViewController
-struct nmeaControllerRepresentation: UIViewControllerRepresentable {
-    var chikin: nmeaBridge
 
-    func makeCoordinator() -> Coordinator {
-        return Coordinator(self)
-    }
-
-    func makeUIViewController(context: Context) -> some UIViewController {
-        let vc = NMEA()
-        vc.bridgingCoordinator = chikin
-        return vc
-    }
-
-    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
-        //
-    }
-
-    class Coordinator: NSObject {
-        let parent: nmeaControllerRepresentation
-        init(_ view: nmeaControllerRepresentation) {
-            self.parent = view
-        }
-    }
-}
-//----------- END was added for Controller view test------------------
-
-
-// 12-JUN-2024: NSObject was switched to UIViewController for Controller view test:
-class NMEA : UIViewController, CLLocationManagerDelegate, StreamDelegate, ObservableObject {
-    
-    // 12-JUN-2024: For Controller view test:
-    var bridgingCoordinator: nmeaBridge!
-    // END for Controller view test
+class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObject {
     
     var locationManager = CLLocationManager()
     var comThread:Thread?
@@ -82,21 +77,17 @@ class NMEA : UIViewController, CLLocationManagerDelegate, StreamDelegate, Observ
     
     // MARK: - Main Function
     // Main(?) function from ViewController @implementation
-    // 12-JUN-2024: override was added for Controller view test:
-    override func viewDidLoad() {
-        
-        // 12-JUN-2024: was added for Controller view test:
-        super.viewDidLoad()
-        bridgingCoordinator.vc = self
-        // END was added for Controller view test
+    // 13-JUN-2024: viewDidLoad() was changed to startNMEA():
+     func startNMEA() {
         
         // [O] register for EA notif
         let sharedAccessoryManager = EAAccessoryManager.shared()
         sharedAccessoryManager.registerForLocalNotifications()
         
-        let defaultCenter = NotificationCenter()
-        defaultCenter.addObserver(self, selector: #selector(didConnectNotif), name: NSNotification.Name("EAAccessoryDidConnect"), object: nil)
-        defaultCenter.addObserver(self, selector: #selector(didDisconnectNotif), name: NSNotification.Name("EAAccessoryDidDisconnect"), object: nil)
+         // 13-JUN-2024: Class' notification center was never used since the Objective-C translation in May 2023.
+//        let defaultCenter = NotificationCenter()
+//        defaultCenter.addObserver(self, selector: #selector(didConnectNotif), name: NSNotification.Name("EAAccessoryDidConnect"), object: nil)
+//        defaultCenter.addObserver(self, selector: #selector(didDisconnectNotif), name: NSNotification.Name("EAAccessoryDidDisconnect"), object: nil)
         
         // [O] BT button - If you want users to be able to pair to the receivers from inside your apps. Otherwise users can use Settings>bluetooth to initiate the pairing.
         // [Original Objective-C code]
@@ -136,11 +127,6 @@ class NMEA : UIViewController, CLLocationManagerDelegate, StreamDelegate, Observ
         }
     }
     
-    // 12-JUN-2024: Added so the ViewController text won't auto-fire the stream start
-    func startArrowGold () {
-        
-    }
-    
     // Not used in original code?
     /* didReceiveMemoryWarning() is for UIViewController subclasses. For other types, use UIApplicationDidReceiveMemoryWarningNotification.
      This funciton is automatically used when the system determines that the memory is low. iPhone 4 and greater usually don't have memory
@@ -151,11 +137,11 @@ class NMEA : UIViewController, CLLocationManagerDelegate, StreamDelegate, Observ
 //    }
 
     // Not used in original code?
-//    func dealloc(sharedAccessoryManager:EAAccessoryManager, defaultCenter:NSNotification) {
-//        // [O] Always unregister when dealloc ...
-//        sharedAccessoryManager.unregisterForLocalNotifications()
-//        defaultCenter.removeObserver(self, forKeyPath: "what goes here?")
-//    }
+    func dealloc(sharedAccessoryManager:EAAccessoryManager, defaultCenter:NSNotification) {
+        // [O] Always unregister when dealloc ...
+        sharedAccessoryManager.unregisterForLocalNotifications()
+        defaultCenter.removeObserver(self, forKeyPath: "what goes here?")
+    }
     
     // MARK: - Core location
     func registerCoreLocation(){
