@@ -33,6 +33,6 @@ class StartScreenViewController: UIViewController {
         
         self.active = active
         self.active = true
-//        return active
+        
     }
 }

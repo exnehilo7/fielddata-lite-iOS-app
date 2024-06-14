@@ -48,6 +48,8 @@
 		D16A6C86299AE2DF00835B5E /* SelectSavedRouteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C85299AE2DF00835B5E /* SelectSavedRouteView.swift */; };
 		D16A6C88299AF32600835B5E /* ReportRoutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C87299AF32600835B5E /* ReportRoutes.swift */; };
 		D16B0A8C2B9A34BD002081E1 /* MapWithNMEAView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16B0A8B2B9A34BD002081E1 /* MapWithNMEAView.swift */; };
+		D16FA6102C1CB74C0090E756 /* MenuListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA60F2C1CB74C0090E756 /* MenuListController.swift */; };
+		D16FA6122C1CB7A50090E756 /* MenuListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA6112C1CB7A50090E756 /* MenuListModel.swift */; };
 		D1766C9D298DB978002F594D /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766C9C298DB978002F594D /* MainMenuView.swift */; };
 		D1766C9F298DB9B2002F594D /* SearchByNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766C9E298DB9B2002F594D /* SearchByNameView.swift */; };
 		D1766CA1298DB9C6002F594D /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766CA0298DB9C6002F594D /* MapView.swift */; };
@@ -132,6 +134,8 @@
 		D16A6C85299AE2DF00835B5E /* SelectSavedRouteView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectSavedRouteView.swift; sourceTree = "<group>"; };
 		D16A6C87299AF32600835B5E /* ReportRoutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportRoutes.swift; sourceTree = "<group>"; };
 		D16B0A8B2B9A34BD002081E1 /* MapWithNMEAView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapWithNMEAView.swift; sourceTree = "<group>"; };
+		D16FA60F2C1CB74C0090E756 /* MenuListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuListController.swift; sourceTree = "<group>"; };
+		D16FA6112C1CB7A50090E756 /* MenuListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuListModel.swift; sourceTree = "<group>"; };
 		D1766C9C298DB978002F594D /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuView.swift; sourceTree = "<group>"; };
 		D1766C9E298DB9B2002F594D /* SearchByNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchByNameView.swift; sourceTree = "<group>"; };
 		D1766CA0298DB9C6002F594D /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
@@ -172,6 +176,7 @@
 			children = (
 				D1036C0B2C1B4FD500E2E266 /* StartScreenController.swift */,
 				D1036C162C1B969D00E2E266 /* GPSController.swift */,
+				D16FA60F2C1CB74C0090E756 /* MenuListController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -182,6 +187,7 @@
 				D1036C0E2C1B519E00E2E266 /* StartScreenModel.swift */,
 				D1036C142C1B948200E2E266 /* GPSModel.swift */,
 				D1036C062C1A475C00E2E266 /* TestJustOneClassForVc.swift */,
+				D16FA6112C1CB7A50090E756 /* MenuListModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -483,6 +489,7 @@
 				D1036C0F2C1B519E00E2E266 /* StartScreenModel.swift in Sources */,
 				D1325D6E2C0A1D2E00DAEBA6 /* ImagePickerFastModeWithOverlay.swift in Sources */,
 				D127B37E2A12ED3D00F6287A /* NMEADataClass.swift in Sources */,
+				D16FA6122C1CB7A50090E756 /* MenuListModel.swift in Sources */,
 				D107EF182B5716F60020F0A2 /* Settings.swift in Sources */,
 				D1766C9F298DB9B2002F594D /* SearchByNameView.swift in Sources */,
 				D15BFD1A2BBF55880013B67F /* TextRecognition.swift in Sources */,
@@ -493,6 +500,7 @@
 				D107EF162B5708960020F0A2 /* SettingsView.swift in Sources */,
 				D1036C032C1A31C500E2E266 /* TestViewColtrollerView.swift in Sources */,
 				D107EF1B2B571C840020F0A2 /* SettingsDatabaseView.swift in Sources */,
+				D16FA6102C1CB74C0090E756 /* MenuListController.swift in Sources */,
 				D16A6C7C2995D18100835B5E /* StartScreenView.swift in Sources */,
 				D1A56E992B07D27700AC8291 /* CameraImageView.swift in Sources */,
 				D16B0A8C2B9A34BD002081E1 /* MapWithNMEAView.swift in Sources */,

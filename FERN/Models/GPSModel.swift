@@ -32,10 +32,11 @@ class GpsController: UIViewController {
                     nmea = NMEA()
                     nmea!.startNMEA()
                     print("--------------------------- NMEA's startNMEA() called ---------------------------")
-                }
+                } else {print("--------------------------- nmea VARIABLE IS NOT NIL ---------------------------")}
         } else {
             // If default GPS is not active
                 // Use default GPS
+                print("Starting standard GPS")
                 clLocationHelper = LocationHelper()
         }
     }
