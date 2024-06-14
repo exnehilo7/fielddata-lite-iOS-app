@@ -78,20 +78,18 @@ struct MainMenuView: View {
                             Text("Settings")
                         }
                     }
-//                    // Testing
-//                    NavigationLink {
-//                        RandoTestingView()
-//                            .navigationTitle("Settings")
-//                    } label: {
-//                        HStack {
-//                            Image(systemName: "gearshape").bold(false).foregroundColor(.gray)
-//                            Text("Settings")
-//                        }
-//                    }
+                    // Testing
+                    NavigationLink {
+                        RandoTestingView().environmentObject(bridgingCoordinator)
+                            .navigationTitle("Testing")
+                    } label: {
+                        HStack {
+                            Image(systemName: "testtube.2").bold(false).foregroundColor(.gray)
+                            Text("Testing")
+                        }
+                    }
                 }
-//                if (settings.count < 1) ||
-//                    (settings[0].hdopThreshold == 0) 
-                    else
+                else
                 {
                     // App settings
                     NavigationLink {
@@ -105,17 +103,21 @@ struct MainMenuView: View {
                     }
                 }
             }.bold()
-//                .onAppear(perform:{
-//                UIApplication.shared.isIdleTimerDisabled = false
-//                })
+            //                .onAppear(perform:{
+            //                UIApplication.shared.isIdleTimerDisabled = false
+            //                })
         }//.preferredColorScheme(.dark)
         GpsViewControllerRepresentable(gpsBridgingCoordinator: bridgingCoordinator)
         Spacer()
         Text("Version: \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Cannot get version #")").font(.footnote)
-        // Start GPS feed if not already running
+            // Start GPS feed if not already running
             .onAppear(perform: {
-                
-                bridgingCoordinator.gpsController.startGPSFeed(settings: settings)
+                startGPS()
             })
-
-    }}
+        
+    }
+    
+    private func startGPS() {
+        bridgingCoordinator.gpsController.startGPSFeed(settings: settings)
+    }
+}

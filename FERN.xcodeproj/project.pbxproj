@@ -18,8 +18,6 @@
 		D107EF182B5716F60020F0A2 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D107EF172B5716F60020F0A2 /* Settings.swift */; };
 		D107EF1B2B571C840020F0A2 /* SettingsDatabaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D107EF1A2B571C840020F0A2 /* SettingsDatabaseView.swift */; };
 		D107EF1D2B571CAA0020F0A2 /* SettingsUploadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D107EF1C2B571CAA0020F0A2 /* SettingsUploadView.swift */; };
-		D107EF1F2B57293B0020F0A2 /* EditDatabaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D107EF1E2B57293A0020F0A2 /* EditDatabaseView.swift */; };
-		D107EF212B5736BD0020F0A2 /* EditUploadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D107EF202B5736BD0020F0A2 /* EditUploadView.swift */; };
 		D10925962B2B9C96005D376F /* Sounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10925952B2B9C96005D376F /* Sounds.swift */; };
 		D10BB31C298ADAA400667E86 /* FERNApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10BB31B298ADAA400667E86 /* FERNApp.swift */; };
 		D10BB320298ADAA500667E86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D10BB31F298ADAA500667E86 /* Assets.xcassets */; };
@@ -39,7 +37,6 @@
 		D15BFD182BBF55590013B67F /* TextPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BFD172BBF55590013B67F /* TextPreviewView.swift */; };
 		D15BFD1A2BBF55880013B67F /* TextRecognition.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15BFD192BBF55880013B67F /* TextRecognition.swift */; };
 		D167963B2BD9B78A00561875 /* SettingsCesiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D167963A2BD9B78A00561875 /* SettingsCesiumView.swift */; };
-		D167963D2BD9B7A900561875 /* EditCesiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D167963C2BD9B7A900561875 /* EditCesiumView.swift */; };
 		D167963F2BDAEF2200561875 /* RandoTestingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D167963E2BDAEF2200561875 /* RandoTestingView.swift */; };
 		D16796412BE02CE500561875 /* SelectTripForAppleMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16796402BE02CE500561875 /* SelectTripForAppleMapView.swift */; };
 		D16796432BE02CFF00561875 /* SelectTripForCesiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16796422BE02CFF00561875 /* SelectTripForCesiumView.swift */; };
@@ -103,8 +100,6 @@
 		D107EF172B5716F60020F0A2 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		D107EF1A2B571C840020F0A2 /* SettingsDatabaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDatabaseView.swift; sourceTree = "<group>"; };
 		D107EF1C2B571CAA0020F0A2 /* SettingsUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsUploadView.swift; sourceTree = "<group>"; };
-		D107EF1E2B57293A0020F0A2 /* EditDatabaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDatabaseView.swift; sourceTree = "<group>"; };
-		D107EF202B5736BD0020F0A2 /* EditUploadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditUploadView.swift; sourceTree = "<group>"; };
 		D10925952B2B9C96005D376F /* Sounds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sounds.swift; sourceTree = "<group>"; };
 		D10BB318298ADAA400667E86 /* FERN.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FERN.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D10BB31B298ADAA400667E86 /* FERNApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FERNApp.swift; sourceTree = "<group>"; };
@@ -126,7 +121,6 @@
 		D15BFD172BBF55590013B67F /* TextPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextPreviewView.swift; sourceTree = "<group>"; };
 		D15BFD192BBF55880013B67F /* TextRecognition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognition.swift; sourceTree = "<group>"; };
 		D167963A2BD9B78A00561875 /* SettingsCesiumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCesiumView.swift; sourceTree = "<group>"; };
-		D167963C2BD9B7A900561875 /* EditCesiumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCesiumView.swift; sourceTree = "<group>"; };
 		D167963E2BDAEF2200561875 /* RandoTestingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandoTestingView.swift; sourceTree = "<group>"; };
 		D16796402BE02CE500561875 /* SelectTripForAppleMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripForAppleMapView.swift; sourceTree = "<group>"; };
 		D16796422BE02CFF00561875 /* SelectTripForCesiumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripForCesiumView.swift; sourceTree = "<group>"; };
@@ -187,6 +181,7 @@
 			children = (
 				D1036C0E2C1B519E00E2E266 /* StartScreenModel.swift */,
 				D1036C142C1B948200E2E266 /* GPSModel.swift */,
+				D1036C062C1A475C00E2E266 /* TestJustOneClassForVc.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -198,9 +193,6 @@
 				D167963A2BD9B78A00561875 /* SettingsCesiumView.swift */,
 				D107EF1A2B571C840020F0A2 /* SettingsDatabaseView.swift */,
 				D107EF1C2B571CAA0020F0A2 /* SettingsUploadView.swift */,
-				D167963C2BD9B7A900561875 /* EditCesiumView.swift */,
-				D107EF1E2B57293A0020F0A2 /* EditDatabaseView.swift */,
-				D107EF202B5736BD0020F0A2 /* EditUploadView.swift */,
 				D19FF3702C17542F00B54B7E /* SettingsHdopView.swift */,
 			);
 			path = Settings;
@@ -353,7 +345,6 @@
 				D10925952B2B9C96005D376F /* Sounds.swift */,
 				D1325D6D2C0A1D2E00DAEBA6 /* ImagePickerFastModeWithOverlay.swift */,
 				D1036C042C1A320600E2E266 /* TestViewControllerClsAndStrct.swift */,
-				D1036C062C1A475C00E2E266 /* TestJustOneClassForVc.swift */,
 			);
 			path = ClassesAndModels;
 			sourceTree = "<group>";
@@ -468,7 +459,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D167963D2BD9B7A900561875 /* EditCesiumView.swift in Sources */,
 				D15BFD182BBF55590013B67F /* TextPreviewView.swift in Sources */,
 				D16796452BE2B65900561875 /* SelectTripModeView.swift in Sources */,
 				D107EF1D2B571CAA0020F0A2 /* SettingsUploadView.swift in Sources */,
@@ -491,7 +481,6 @@
 				D11B2D902BF3BC81004FEE0B /* ScanPhotosInFolderForText.swift in Sources */,
 				D1766CA3298DBAA3002F594D /* Functions.swift in Sources */,
 				D1036C0F2C1B519E00E2E266 /* StartScreenModel.swift in Sources */,
-				D107EF1F2B57293B0020F0A2 /* EditDatabaseView.swift in Sources */,
 				D1325D6E2C0A1D2E00DAEBA6 /* ImagePickerFastModeWithOverlay.swift in Sources */,
 				D127B37E2A12ED3D00F6287A /* NMEADataClass.swift in Sources */,
 				D107EF182B5716F60020F0A2 /* Settings.swift in Sources */,
@@ -517,7 +506,6 @@
 				D16A6C80299AC65600835B5E /* SelectReportView.swift in Sources */,
 				D10BB31C298ADAA400667E86 /* FERNApp.swift in Sources */,
 				D167963F2BDAEF2200561875 /* RandoTestingView.swift in Sources */,
-				D107EF212B5736BD0020F0A2 /* EditUploadView.swift in Sources */,
 				D1036C152C1B948200E2E266 /* GPSModel.swift in Sources */,
 				D16A6C7E29970E0900835B5E /* SelectNotesView.swift in Sources */,
 				D1766CA5298E0B3E002F594D /* Classes.swift in Sources */,

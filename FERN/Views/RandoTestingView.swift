@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct RandoTestingView: View {
     
@@ -15,7 +16,14 @@ struct RandoTestingView: View {
     @State private var numofmatches = 0
     @State private var count = 0
     
+    // Bridging coordinator
+    @EnvironmentObject var bridgingCoordinator: GpsBridgingCoordinator
+    
+    @Environment(\.modelContext) var modelContext
+    @Query var settings: [Settings]
+    
     var body: some View {
+        // -------- Regex checks ---------------------------------------------
         VStack {
             HStack {
                 Text("Notes:")//.foregroundColor(.white)
@@ -39,10 +47,10 @@ struct RandoTestingView: View {
             // Remove special characters from user data
             let pattern = "[^A-Za-z0-9,.:;\\s_\\-]+"
             textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
-//            
-//            // remove any text past the final ;
-//            pattern = "[A-Za-z0-9\\s]*$"
-//            textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
+            //
+            //            // remove any text past the final ;
+            //            pattern = "[A-Za-z0-9\\s]*$"
+            //            textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
             
             
             // Count # of proper syntax matches
@@ -67,6 +75,47 @@ struct RandoTestingView: View {
             ) {result = "Good to go!"}
             else { result = "Invalid text." }
             
+        }
+        // ------END Regex checks ---------------------------------------------
+        
+        Spacer()
+        
+        // ----- Stop GPS Feeds -----------------------------------------------
+        VStack {
+            HStack{
+                Button (action: stopArrowTapped) {
+                    Text("Stop Arrow")
+                }
+                Spacer()
+                Button (action: stopStandardGPSTapped) {
+                    Text("Stop Standard GPS")
+                }
+            }
+            Spacer()
+            Button (action: restartSelectedGpsTapped) {
+                Text("Rrrrrestart selected GPS")
+            }
+        }
+        
+        // ------END Stop GPS Feeds -------------------------------------------
+    }
+    
+    private func stopArrowTapped() {
+        print("---------------STOPPING ARROW FEED --------------------------")
+        bridgingCoordinator.gpsController.nmea?.stopUpdatingArrowCoreLocation()
+        bridgingCoordinator.gpsController.nmea?.endStreaming()
+        bridgingCoordinator.gpsController.setNmeaVarToNil()
+    }
+    
+    private func stopStandardGPSTapped() {
+        print("Stopping standard gps...")
+        bridgingCoordinator.gpsController.clLocationHelper?.stopUpdatingDefaultCoreLocation()
+    }
+    
+    private func restartSelectedGpsTapped() {
+        if bridgingCoordinator.gpsController.nmea == nil {
+            print("---------------STARTING ARROW FEED --------------------------")
+            bridgingCoordinator.gpsController.startGPSFeed(settings: settings)
         }
     }
 }

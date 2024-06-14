@@ -43,6 +43,7 @@ class LocationHelper: NSObject, ObservableObject {
         manager.desiredAccuracy = kCLLocationAccuracyBest
         manager.requestWhenInUseAuthorization()
         manager.startUpdatingLocation()
+        print("Core location started.")
     }
     
     func stopUpdatingDefaultCoreLocation(){
