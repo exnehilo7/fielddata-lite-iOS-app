@@ -4,11 +4,14 @@
 //
 //  Created by Hopp, Dan on 2/5/23.
 //
+//  14-JUN-2024: Integrated with a MVC
 
 import SwiftUI
 import SwiftData
 
 struct SelectSavedRouteView: View {
+    
+    @EnvironmentObject var menuListBridgingCoordinator: MenuListBridgingCoordinator
     
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
@@ -22,7 +25,7 @@ struct SelectSavedRouteView: View {
                 Spacer()
                 Button ("Refresh"){
                     Task {
-                        await getSavedRoutes()
+                        await getTripList()
                     }
                 }.padding(.trailing, 25)
             }
@@ -30,41 +33,18 @@ struct SelectSavedRouteView: View {
                 List (self.areaList) { (area) in
                     NavigationLink(area.name) {
                         // Pass var to view. Query for route does not need a column or organism name.
-                        // NEED TO FIX VIEW FOR ENVIRONMENTOBJECT NMEA
+                        // NEED TO FIX VIEW FOR ENVIRONMENTOBJECT NMEA(?)
                         MapWithNMEAView(tripName: area.name, columnName: "", organismName: "", queryName: "query_get_route_for_app")
                     }
                     .bold()
                 }
             }
             // query areas. Call PHP GET
-        }.task { await getSavedRoutes()}
+        }.task { await getTripList()}
     } //end View
     
-    func getSavedRoutes() async {
-        
-        guard let url: URL = URL(string: settings[0].databaseURL + "/php/" + "menuLoadSavedRouteView.php") else {
-            Swift.print("invalid URL")
-            return
-        }
-        
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-
-            // convert JSON response into class model as an array
-            self.areaList = try JSONDecoder().decode([SelectNameModel].self, from: data)
-        // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
-        }  catch DecodingError.keyNotFound(let key, let context) {
-            Swift.print("could not find key \(key) in JSON: \(context.debugDescription)")
-        } catch DecodingError.valueNotFound(let type, let context) {
-            Swift.print("could not find type \(type) in JSON: \(context.debugDescription)")
-        } catch DecodingError.typeMismatch(let type, let context) {
-            Swift.print("type mismatch for type \(type) in JSON: \(context.debugDescription)")
-        } catch DecodingError.dataCorrupted(let context) {
-            Swift.print("data found to be corrupted in JSON: \(context.debugDescription)")
-        } catch let error as NSError {
-            NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
-        } catch {
-            areaList = []
-        }
+    private func getTripList() async {
+        self.areaList = await menuListBridgingCoordinator.menuListController.getTripListFromDatabase(settings: settings, areaList: areaList, phpFile: "menuLoadSavedRouteView.php", isMethodPost: false)
     }
+
 }

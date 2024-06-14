@@ -939,6 +939,8 @@ struct MapQCWithNMEAView: View {
                 let (data, _) = try await URLSession.shared.upload(for: request, from: postData!, delegate: nil)
                 
                 let decoder = JSONDecoder()
+                
+                // Are these necessary?
                 decoder.keyDecodingStrategy = .useDefaultKeys
                 decoder.dataDecodingStrategy = .deferredToData
                 decoder.dateDecodingStrategy = .deferredToDate

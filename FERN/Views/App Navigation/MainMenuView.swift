@@ -53,7 +53,7 @@ struct MainMenuView: View {
                     }
                     // Select a saved route
                     NavigationLink {
-                        SelectSavedRouteView()
+                        SelectSavedRouteView().environmentObject(menuListBridgingCoordinator)
                             .navigationTitle("Select Saved Route")
                     } label: {
                         HStack {
