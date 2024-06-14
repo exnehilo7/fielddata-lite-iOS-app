@@ -17,7 +17,7 @@ struct RandoTestingView: View {
     @State private var count = 0
     
     // Bridging coordinator
-    @EnvironmentObject var bridgingCoordinator: GpsBridgingCoordinator
+    @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
     
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
@@ -95,6 +95,7 @@ struct RandoTestingView: View {
             Button (action: restartSelectedGpsTapped) {
                 Text("Rrrrrestart selected GPS")
             }
+            Spacer()
         }
         
         // ------END Stop GPS Feeds -------------------------------------------
@@ -102,20 +103,20 @@ struct RandoTestingView: View {
     
     private func stopArrowTapped() {
         print("---------------STOPPING ARROW FEED --------------------------")
-        bridgingCoordinator.gpsController.nmea?.stopUpdatingArrowCoreLocation()
-        bridgingCoordinator.gpsController.nmea?.endStreaming()
-        bridgingCoordinator.gpsController.setNmeaVarToNil()
+        gpsBridgingCoordinator.gpsController.nmea?.stopUpdatingArrowCoreLocation()
+        gpsBridgingCoordinator.gpsController.nmea?.endStreaming()
+        gpsBridgingCoordinator.gpsController.setNmeaVarToNil()
     }
     
     private func stopStandardGPSTapped() {
         print("Stopping standard gps...")
-        bridgingCoordinator.gpsController.clLocationHelper?.stopUpdatingDefaultCoreLocation()
+        gpsBridgingCoordinator.gpsController.clLocationHelper?.stopUpdatingDefaultCoreLocation()
     }
     
     private func restartSelectedGpsTapped() {
-        if bridgingCoordinator.gpsController.nmea == nil {
+        if gpsBridgingCoordinator.gpsController.nmea == nil {
             print("---------------STARTING ARROW FEED --------------------------")
-            bridgingCoordinator.gpsController.startGPSFeed(settings: settings)
+            gpsBridgingCoordinator.gpsController.startGPSFeed(settings: settings)
         }
     }
 }

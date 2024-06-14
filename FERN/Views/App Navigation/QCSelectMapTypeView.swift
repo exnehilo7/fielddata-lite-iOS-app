@@ -8,14 +8,17 @@
 import SwiftUI
 
 struct QCSelectMapTypeView: View {
+    
+    @EnvironmentObject var menuListBridgingCoordinator: MenuListBridgingCoordinator
+    
     var body: some View {
         
         VStack {
             NavigationStack {
                 List {
                     NavigationLink {
-                        SelectTripForAppleMapView()
-                            .navigationTitle("Apple Map")//.environmentObject(nmea)
+                        SelectTripForAppleMapView().environmentObject(menuListBridgingCoordinator)
+                            .navigationTitle("Apple Map")
                     } label: {
                         HStack {
                             Image(systemName: "mappin.and.ellipse").bold(false).foregroundColor(.gray)
@@ -23,7 +26,7 @@ struct QCSelectMapTypeView: View {
                         }
                     }
                     NavigationLink {
-                        SelectTripForCesiumView()
+                        SelectTripForCesiumView().environmentObject(menuListBridgingCoordinator)
                             .navigationTitle("Cesium JS")
                     } label: {
                         HStack {

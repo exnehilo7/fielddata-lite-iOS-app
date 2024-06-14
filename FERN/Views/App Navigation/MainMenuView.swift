@@ -11,11 +11,14 @@ import SwiftData
 struct MainMenuView: View {
     
     // Bridging coordinator
-    @StateObject private var bridgingCoordinator: GpsBridgingCoordinator
+    @StateObject private var gpsBridgingCoordinator: GpsBridgingCoordinator
+    @StateObject private var menuListBridgingCoordinator: MenuListBridgingCoordinator
     
     init() {
         let gpsCoordinator = GpsBridgingCoordinator()
-        self._bridgingCoordinator = StateObject(wrappedValue: gpsCoordinator)
+        self._gpsBridgingCoordinator = StateObject(wrappedValue: gpsCoordinator)
+        let menuListCoordinator = MenuListBridgingCoordinator()
+        self._menuListBridgingCoordinator = StateObject(wrappedValue: menuListCoordinator)
     }
     
     @Environment(\.modelContext) var modelContext
@@ -40,7 +43,7 @@ struct MainMenuView: View {
                     }
                     // QC an Uploaded Trip
                     NavigationLink {
-                        QCSelectMapTypeView()
+                        QCSelectMapTypeView().environmentObject(menuListBridgingCoordinator)
                             .navigationTitle("Select Trip to QC")
                     } label: {
                         HStack {
@@ -80,7 +83,7 @@ struct MainMenuView: View {
                     }
                     // Testing
                     NavigationLink {
-                        RandoTestingView().environmentObject(bridgingCoordinator)
+                        RandoTestingView().environmentObject(gpsBridgingCoordinator)
                             .navigationTitle("Testing")
                     } label: {
                         HStack {
@@ -103,11 +106,18 @@ struct MainMenuView: View {
                     }
                 }
             }.bold()
+            // No need to toggle device auto-sleep back to on?
             //                .onAppear(perform:{
             //                UIApplication.shared.isIdleTimerDisabled = false
             //                })
+            
         }//.preferredColorScheme(.dark)
-        GpsViewControllerRepresentable(gpsBridgingCoordinator: bridgingCoordinator)
+        
+        // Get the bridging connectors going in the parent view?
+        HStack {
+            GpsViewControllerRepresentable(gpsBridgingCoordinator: gpsBridgingCoordinator)
+            MenuListViewControllerRepresentable(menuListBridgingCoordinator: menuListBridgingCoordinator)
+        }
         Spacer()
         Text("Version: \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Cannot get version #")").font(.footnote)
             // Start GPS feed if not already running
@@ -118,6 +128,6 @@ struct MainMenuView: View {
     }
     
     private func startGPS() {
-        bridgingCoordinator.gpsController.startGPSFeed(settings: settings)
+        gpsBridgingCoordinator.gpsController.startGPSFeed(settings: settings)
     }
 }
