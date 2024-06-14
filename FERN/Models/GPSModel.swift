@@ -27,13 +27,22 @@ class GpsController: UIViewController {
         if settings[0].useBluetoothDevice {
             // If NMEA stream is not running
                 // Start NMEA
-                nmea = NMEA()
-                nmea!.startNMEA()
+                if nmea == nil {
+                    print("--------------------------- INITIALIZING nmea VARIABLE ---------------------------")
+                    nmea = NMEA()
+                    nmea!.startNMEA()
+                    print("--------------------------- NMEA's startNMEA() called ---------------------------")
+                }
         } else {
             // If default GPS is not active
                 // Use default GPS
                 clLocationHelper = LocationHelper()
         }
+    }
+    
+    func setNmeaVarToNil(){
+        print("--------------------------- SETTING nmea VARIABLE TO NIL ---------------------------")
+        nmea = nil
     }
     
 }

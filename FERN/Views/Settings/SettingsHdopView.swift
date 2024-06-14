@@ -28,8 +28,13 @@ struct SettingsHdopView: View {
                 Spacer()
                 Toggle("Use Bluetooth Device", isOn: $setting.useBluetoothDevice)
                     .onChange(of: setting.useBluetoothDevice) {
-                        if !setting.useBluetoothDevice {max = 40.0} else {max = 0.9}
-                        setting.hdopThreshold = 0
+                        if !setting.useBluetoothDevice {
+                            max = 40.0
+                            setting.hdopThreshold = 10.0
+                        } else {
+                            max = 0.9
+                            setting.hdopThreshold = 0.2
+                        }
                     }.onAppear(perform: {
                         if !setting.useBluetoothDevice{
                             max = 40.0
