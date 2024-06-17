@@ -77,7 +77,7 @@ class MenuListController: UIViewController {
         let (data, _) = try await URLSession.shared.upload(for: request, from: postData, delegate: nil)
         return data
     }
-    // Get databae data
+    // Get database data, no post
     func urlSessionData (url: URL) async throws -> Data {
         let (data, _) = try await URLSession.shared.data(from: url)
         return data

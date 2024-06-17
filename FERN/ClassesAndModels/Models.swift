@@ -10,6 +10,15 @@ import MapKit
 import SwiftUI
 
 
+// Test global function
+class TestGlobalFunction {
+    // Get database data from a post
+    func urlSessionUpload (request: URLRequest, postData: Data) async throws -> Data {
+        let (data, _) = try await URLSession.shared.upload(for: request, from: postData, delegate: nil)
+        return data
+    }
+}
+
 // Model object for SelectAreaView.
 class SelectNameModel: Codable, Identifiable {
     var name = ""

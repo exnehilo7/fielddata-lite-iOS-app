@@ -60,7 +60,7 @@ struct MapWithNMEAView: View {
 //    @State private var endLatFloat = 0.0
     
     // Show take pic button and popover view
-    @State private var showPicButton = false
+    @State private var showPicButton = false  // TO BE MOVED TO CAMERA MVC?
     @State private var showPopover = false
     
     // Sounds
@@ -87,7 +87,7 @@ struct MapWithNMEAView: View {
     @State private var article = Article(title: "Device Feed Error", description: "Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app.")
     
     // User GPS selection
-    @State var gpsModeIsSelected = false
+    @State var gpsModeIsSelected = false  // THESE TWO WILL BE MERGED INTO SETTINGS' useBluetoothDevice
     @State var showArrowGold = false
 //    var showArrowGold:Bool
 //    var gpsModeIsSelected:Bool
@@ -115,7 +115,9 @@ struct MapWithNMEAView: View {
 //    @EnvironmentObject var nmea:NMEA
     
     // Default iOS
-    @ObservedObject var clLocationHelper = LocationHelper()
+    @ObservedObject var clLocationHelper = LocationHelper() // WILL BE GRABBED FROM GPS MVC
+    
+    // MOVE THESE TO A SOME VIEW DECLARATION CONTROLLED BY useBluetoothDevice? PLACE IN A NEW CAMERA VIEW FILE?
     var clLat:String {
         return "\(clLocationHelper.lastLocation?.coordinate.latitude ?? 0.0000)"
     }
@@ -265,7 +267,7 @@ struct MapWithNMEAView: View {
     
     //MARK: View code from TripModeThoroughCameraView
     // GPS Data Display ------------------------------------------------
-    // Arrow Gold
+    // Arrow Gold  //PLACE IN A NEW CAMERA VIEW FILE?
     var arrowGpsData: some View {
         VStack {
             
@@ -279,7 +281,7 @@ struct MapWithNMEAView: View {
         }.font(.system(size: 18))//.foregroundColor(.white)
     }
     
-    // iOS Core Location
+    // iOS Core Location  PLACE IN A NEW CAMERA VIEW FILE?
     var coreLocationGpsData: some View {
         VStack {
             
@@ -300,7 +302,7 @@ struct MapWithNMEAView: View {
             HStack{
                 Button{
                     gpsModeIsSelected = true
-                    createTxtFileForTheDay()
+                    createTxtFileForTheDay()  // CREATE THE TEXT FILE ON THE CAMERA VIEW FILE?
                     UIApplication.shared.isIdleTimerDisabled = true
                     isShowCamera = true
                     // Clear scanned text
@@ -328,7 +330,7 @@ struct MapWithNMEAView: View {
         }
     }
     
-    // NMEA Alert
+    // NMEA Alert  // PLACE IN A NEW CAMERA VIEW FILE?
     var stoppedNMEA: some View {
         VStack {
             Spacer()
@@ -337,7 +339,7 @@ struct MapWithNMEAView: View {
         }
     }
     
-    // Invalid Syntax Alert
+    // Invalid Syntax Alert  // PLACE IN A NEW CAMERA VIEW FILE?
      var invalidSyntaxView: some View {
          VStack {
              Spacer()
@@ -346,7 +348,7 @@ struct MapWithNMEAView: View {
          }
      }
     
-    // HDOP Over Threshold Alert
+    // HDOP Over Threshold Alert  // PLACE IN A NEW CAMERA VIEW FILE?
     var hdopOverLimitView: some View {
         VStack {
             Spacer()
@@ -355,7 +357,7 @@ struct MapWithNMEAView: View {
         }
     }
     
-    // Save the pic button
+    // Save the pic button  // PLACE IN A NEW CAMERA VIEW FILE?
     var savePicButton: some View {
         Button(action: {
             let fileNameUUID = UUID().uuidString
@@ -396,7 +398,7 @@ struct MapWithNMEAView: View {
 //        }} message: {article in Text(article.description)}
     }
     
-    // Show the camera button (for if the user cancels a photo)
+    // Show the camera button (for if the user cancels a photo)  // PLACE IN A NEW CAMERA VIEW FILE?
     var showCameraButton: some View {
         Button {
             isShowCamera = true
@@ -406,7 +408,7 @@ struct MapWithNMEAView: View {
         }.buttonStyle(.borderedProminent).tint(.blue)
     }
     
-    // Scan for text button
+    // Scan for text button  // PLACE IN A NEW CAMERA VIEW FILE?
     var scanForTextButton: some View {
         Button(action: {
             
@@ -440,7 +442,7 @@ struct MapWithNMEAView: View {
         })
     }
     
-    var cancelPicButton: some View {
+    var cancelPicButton: some View {  // PLACE IN A NEW CAMERA VIEW FILE?
         Button(action: {cancelPic()},
         label: {HStack {
             Image(systemName: "arrow.triangle.2.circlepath.camera").font(.system(size: 15))
@@ -454,7 +456,7 @@ struct MapWithNMEAView: View {
         })
     }
     
-    // Fields for user to add custom metadata. Will need to create @State private var's
+    // Fields for user to add custom metadata. Will need to create @State private var's  // PLACE IN A NEW CAMERA VIEW FILE?
     var customData: some View {
         VStack {
             HStack {
@@ -467,7 +469,7 @@ struct MapWithNMEAView: View {
         }
     }
     
-    // View for Camera
+    // View for Camera // PLACE IN A NEW CAMERA VIEW FILE?
     var popUpThoroughCamera: some View {
         VStack {
             if !isImageSelected {
@@ -809,7 +811,7 @@ struct MapWithNMEAView: View {
     
     
     // MARK: Functions
-    private func createTxtFileForTheDay() {
+    private func createTxtFileForTheDay() {  // CREATE THE TEXT FILE ON THE CAMERA VIEW FILE?
         do{
             // create new txt file for the day for GPS data.
             _ = try FieldWorkGPSFile.log(tripName: tripName, uuid: "", gps: "", hdop: "", longitude: "", latitude: "", altitude: "", scannedText: "", notes: "")
@@ -818,7 +820,7 @@ struct MapWithNMEAView: View {
         }
     }
     
-    private func processImage(upperUUID: String, textInPic: String) {
+    private func processImage(upperUUID: String, textInPic: String) {  // MOVE TO CAMERA MVC
         if showArrowGold {
             // Alert user if feed has stopped or values are zero
             if nmea.hasNMEAStreamStopped ||
@@ -859,13 +861,13 @@ struct MapWithNMEAView: View {
         }
     }
     
-    private func setVarsAndViewAfterSuccessfulSave() {
+    private func setVarsAndViewAfterSuccessfulSave() {  // MOVE TO CAMERA MVC
         isImageSelected = false
         isShowCamera = true
         showingInvalidSyntaxAlert = false
         showingHDOPOverLimit = false
         
-        // Change annotation's color to blue
+        // Change annotation's color to blue  // MOVE TO MAP MVC?
         Task {
             await updatePointColor(routeID: annotationItems[currentAnnoItem].routeID,
                                    pointOrder: annotationItems[currentAnnoItem].pointOrder)
@@ -875,7 +877,7 @@ struct MapWithNMEAView: View {
         showPopover = false
     }
     
-    private func savePicToFolder(imgFile: UIImage, tripName: String, uuid: String, gps: String,
+    private func savePicToFolder(imgFile: UIImage, tripName: String, uuid: String, gps: String,  // MOVE TO CAMERA MVC
                                  hdop: String, longitude: String, latitude: String, altitude: String,
                                  scannedText: String, notes: String) {
         
@@ -900,7 +902,7 @@ struct MapWithNMEAView: View {
         }
     }
     
-    private func resetRouteMarkers() async {
+    private func resetRouteMarkers() async {  // MOVE TO MAP MVC
         // remember current map camera position
         currentCameraPosition = cameraPosition
         hasMapPointsResults = false
@@ -912,7 +914,7 @@ struct MapWithNMEAView: View {
         cameraPosition = currentCameraPosition!
     }
     
-    private func refreshMap() async {
+    private func refreshMap() async {  // MOVE TO MAP MVC
 //        let tempCurrentAnnoItem = currentAnnoItem
         // remember current map camera position
         currentCameraPosition = cameraPosition
@@ -934,7 +936,7 @@ struct MapWithNMEAView: View {
 //    }
     
     // Make sure forward and backward cycling will stay within the annotation's item count.
-    private func cycleAnnotations (forward: Bool, _ offset: Int ){
+    private func cycleAnnotations (forward: Bool, _ offset: Int ){  // MOVE TO MAP MVC
         
         var offsetColor: Color
         
@@ -958,7 +960,7 @@ struct MapWithNMEAView: View {
     }
     
     // Draw attention to selected point. Put previous or next point back to its original state
-    private func highlightAnnotation (_ offset: Int, _ currentColor: Color){
+    private func highlightAnnotation (_ offset: Int, _ currentColor: Color){  // MOVE TO MAP MVC (MOVED)
         annotationItems[currentAnnoItem].size = 20
         // If currentAnnoItem is blue, make it light blue. Else make it red
         if annotationItems[currentAnnoItem].highlightColor == Color(red: 0, green: 0, blue: 1) {
@@ -977,7 +979,7 @@ struct MapWithNMEAView: View {
     }
     
     // Get points from database
-    private func getMapPoints () async {
+    private func getMapPoints () async {  // MOVE TO MAP MVC (MOVED)
 
         guard let url: URL = URL(string: settings[0].databaseURL + "/php/getMapItemsForApp.php") else {
             Swift.print("invalid URL")
@@ -1002,7 +1004,7 @@ struct MapWithNMEAView: View {
                 // Get list of points
                 self.mapResults = try decoder.decode([TempMapPointModel].self, from: data)
                 
-                // dont insert if result is empty
+                // dont process if result is empty
                 if !mapResults.isEmpty {
                     
                     totalAnnoItems = (mapResults.count - 1) // adjust for array 0-indexing
@@ -1057,7 +1059,7 @@ struct MapWithNMEAView: View {
             }
     }// end getMapPoints
     
-    private func updatePointColor(routeID: String, pointOrder: String) async {
+    private func updatePointColor(routeID: String, pointOrder: String) async {  // MOVE TO MAP MVC (MOVED)
         
         guard let url: URL = URL(string: settings[0].databaseURL + "/php/updateRoutePointColor.php") else {
             Swift.print("invalid URL")
@@ -1070,8 +1072,7 @@ struct MapWithNMEAView: View {
         let postString = "_route_id=\(routeID)&_point_order=\(pointOrder)"
         
         let postData = postString.data(using: .utf8)
-        
-        // Insert pic and geo data into trip table. Use max ID of the same trip name
+
         do {
             
             let (_, _) = try await URLSession.shared.upload(for: request as URLRequest, from: postData!, delegate: nil)
@@ -1142,7 +1143,7 @@ struct MapWithNMEAView: View {
 //            }
 //    }//end get distance and bearing
 
-    private func checkUserData() -> Bool {
+    private func checkUserData() -> Bool {  // MOVE TO CAMERA MVC
         var isValid = false
         
         numofmatches = 0
@@ -1179,13 +1180,13 @@ struct MapWithNMEAView: View {
         return isValid
     }
     
-    private func cancelPic(){
+    private func cancelPic(){  // MOVE TO CAMERA MVC
         isImageSelected = false
         isShowCamera = true
         textNotes = ""
     }
     
-    private func showCompleteAlertToggle(){
+    private func showCompleteAlertToggle(){  // MOVE TO CAMERA MVC
         showingCompleteAlert.toggle()
     }
     
@@ -1194,7 +1195,7 @@ struct MapWithNMEAView: View {
 //        article.description = "The syntax \(object) is invalid!"
 //    }
     
-    private func clearCustomData(){
+    private func clearCustomData(){  // MOVE TO CAMERA MVC
         textNotes = ""
     }
     
