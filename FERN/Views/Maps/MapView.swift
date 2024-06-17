@@ -23,6 +23,7 @@ struct MapView: View {
     @Query var sdTrips: [SDTrip]
     
     @State private var textNotes = ""
+    @State private var annotationItems = [MapAnnotationItem]()
     
     // From calling view
     var tripName: String
@@ -84,7 +85,7 @@ struct MapView: View {
     var popupCameraButton: some View {
         Button {
             M.mapController.showPopover = true
-            textNotes = "Organism name:" + M.mapController.annotationItems[M.mapController.currentAnnoItem].organismName + ";"
+            textNotes = "Organism name:" + self.annotationItems[M.mapController.currentAnnoItem].organismName + ";"
         } label: {
             Text("Show Camera")
         }.buttonStyle(.borderedProminent).tint(.orange).popover(isPresented: $M.mapController.showPopover) {
@@ -121,7 +122,7 @@ struct MapView: View {
                 // 17.0's new MapKit SDK:
                 Map(position: $M.mapController.cameraPosition) {
                     UserAnnotation()
-                    ForEach(M.mapController.annotationItems) { item in
+                    ForEach(self.annotationItems) { item in
                         Annotation(item.organismName, coordinate: item.coordinate) {Image(systemName: item.systemName)
                         .symbolRenderingMode(.palette)
                         .foregroundStyle(.white, item.highlightColor).font(.system(size: item.size))}
@@ -132,27 +133,27 @@ struct MapView: View {
                     MapScaleView()
                     MapUserLocationButton()
                 }
-            }.task { await M.mapController.getMapPointsFromDatabase()}  // REMEMEBER TO PASS VARS
+            }.task { await getMapPoints()}
         // Don't display if no results
             if M.mapController.hasMapPointsResults {
                VStack {
                    // Show organism name of the selected point
                    Text("Current Point:").font(.system(size:15))//.underline()
-                   Text(M.mapController.annotationItems[M.mapController.currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold)
+                   Text(self.annotationItems[M.mapController.currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold)
                         // Mark first point on map
                        .onAppear(perform: {
-                           M.mapController.annotationItems[M.mapController.currentAnnoItem].size = 20
+                           self.annotationItems[M.mapController.currentAnnoItem].size = 20
                            // If currentAnnoItem is blue, make it light blue. Else make it red
-                           if M.mapController.annotationItems[M.mapController.currentAnnoItem].highlightColor == Color(red: 0, green: 0, blue: 1) {
-                               M.mapController.annotationItems[M.mapController.currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
+                           if self.annotationItems[M.mapController.currentAnnoItem].highlightColor == Color(red: 0, green: 0, blue: 1) {
+                               self.annotationItems[M.mapController.currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
                            } else {
-                               M.mapController.annotationItems[M.mapController.currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
+                               self.annotationItems[M.mapController.currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
                            }
                        })
                    // Show organism's lat and long
                    HStack{
-                       Text("\(M.mapController.annotationItems[M.mapController.currentAnnoItem].latitude)").font(.system(size:15)).padding(.bottom, 25)
-                       Text("\(M.mapController.annotationItems[M.mapController.currentAnnoItem].longitude)").font(.system(size:15)).padding(.bottom, 25)
+                       Text("\(self.annotationItems[M.mapController.currentAnnoItem].latitude)").font(.system(size:15)).padding(.bottom, 25)
+                       Text("\(self.annotationItems[M.mapController.currentAnnoItem].longitude)").font(.system(size:15)).padding(.bottom, 25)
                    }
                    // Previous / Next Arrows
                    HStack {
@@ -182,4 +183,9 @@ struct MapView: View {
            } //end if hasMapPointsResults
         } //end VStack
     } //end body view
+    
+    private func getMapPoints() async {
+        self.annotationItems = await M.mapController.getMapPointsFromDatabase(annotationItems: annotationItems, settings: settings, phpFile: "getMapItemsForApp.php", postString: "_column_name=\(columnName)&_column_value=\(tripName)&_org_name=\(organismName)&_query_name=\(queryName)")
+    }
+    
 }//end MapView view

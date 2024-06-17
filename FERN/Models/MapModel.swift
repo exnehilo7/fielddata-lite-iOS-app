@@ -11,7 +11,7 @@ import MapKit
 // ViewController which contains functions that need to be called from SwiftUI
 class MapController: UIViewController {
     
-    @Published var mapResults: [TempMapPointModel]?
+    @Published var mapResults: [TempMapPointModel] = []
     @Published var hasMapPointsResults = false
     
     // Annotation tracking
@@ -90,34 +90,35 @@ class MapController: UIViewController {
         }
     }
     
-    func resetRouteMarkers(settings: [Settings], mapResults: [TempMapPointModel], phpFile: String, postString: String = "") async {
+    func resetRouteMarkers(settings: [Settings], phpFile: String, postString: String = "") async {
         // remember current map camera position
         currentCameraPosition = cameraPosition
         hasMapPointsResults = false
         currentAnnoItem = 0
         totalAnnoItems = 0
         annotationItems.removeAll(keepingCapacity: true)
-        _ = await getMapPointsFromDatabase(settings: settings, mapResults: mapResults, phpFile: phpFile, postString: postString)
+        _ = await getMapPointsFromDatabase(annotationItems: annotationItems, settings: settings, phpFile: phpFile, postString: postString)
         // move map back to current spot
         cameraPosition = currentCameraPosition!
     }
     
-    func refreshMap(settings: [Settings], mapResults: [TempMapPointModel], phpFile: String, postString: String = "") async {
+    func refreshMap(settings: [Settings], phpFile: String, postString: String = "") async {
         // remember current map camera position
         currentCameraPosition = cameraPosition
         annotationItems.removeAll(keepingCapacity: true)  // or false?
-        _ = await getMapPointsFromDatabase(settings: settings, mapResults: mapResults, phpFile: phpFile, postString: postString)
+        _ = await getMapPointsFromDatabase(annotationItems: annotationItems, settings: settings, phpFile: phpFile, postString: postString)
         // move map back to current spot
         cameraPosition = currentCameraPosition!
     }
 
-    func getMapPointsFromDatabase(settings: [Settings], mapResults: [TempMapPointModel], phpFile: String, postString: String = "") async -> [TempMapPointModel] {
+    func getMapPointsFromDatabase(annotationItems: [MapAnnotationItem], settings: [Settings], phpFile: String, postString: String = "") async -> [MapAnnotationItem] 
+    {
         
-        self.mapResults = mapResults
+        self.annotationItems = annotationItems
         
         guard let url: URL = URL(string: settings[0].databaseURL + "/php/\(phpFile)") else {
             Swift.print("invalid URL")
-            return self.mapResults!
+            return self.annotationItems //mapResults!
         }
         
         var request: URLRequest = URLRequest(url: url)
@@ -126,17 +127,18 @@ class MapController: UIViewController {
 
         
         if let data = try? await TestGlobalFunction().urlSessionUpload(request: request, postData: postData!) {
+
                 do {
-                    self.mapResults = try! decodeTempMapPointModelReturn (mapResults: mapResults, data: data)
+                    mapResults = try! decodeTempMapPointModelReturn (mapResults: mapResults, data: data)
                     
                     // dont process if result is empty
-                    if !self.mapResults!.isEmpty {
+                    if !mapResults.isEmpty {
                         
-                        totalAnnoItems = (self.mapResults!.count - 1) // adjust for array 0-indexing
+                        totalAnnoItems = (self.mapResults.count - 1) // adjust for array 0-indexing
                         
                         // Put results in an array
-                        for result in self.mapResults! {
-                            annotationItems.append(MapAnnotationItem(
+                        for result in mapResults {
+                            self.annotationItems.append(MapAnnotationItem(
                                 latitude: Double(result.lat) ?? 0,
                                 longitude: Double(result.long) ?? 0,
                                 routeID: result.routeID,
@@ -155,7 +157,7 @@ class MapController: UIViewController {
                         // For 17.0's new MapKit SDK:
                         self.cameraPosition = MapCameraPosition.region(
                             MKCoordinateRegion(
-                                center: CLLocationCoordinate2D(latitude: Double(self.mapResults![0].lat) ?? 0, longitude: Double(self.mapResults![0].long) ?? 0),
+                                center: CLLocationCoordinate2D(latitude: Double(mapResults[0].lat) ?? 0, longitude: Double(mapResults[0].long) ?? 0),
                                 span: MKCoordinateSpan(latitudeDelta: 0.015, longitudeDelta: 0.015)
                         ))
                         
@@ -165,7 +167,9 @@ class MapController: UIViewController {
                         }
                         
                         // Release memory?
-                        self.mapResults = [TempMapPointModel]()
+                        mapResults = [TempMapPointModel]()
+                        
+                        return self.annotationItems
                     }
                 }
             } else {
@@ -183,7 +187,7 @@ class MapController: UIViewController {
                 //            NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
             }
 
-        return self.mapResults!
+        return self.annotationItems
     }
     
     
@@ -198,7 +202,7 @@ class MapController: UIViewController {
         request.httpMethod = "POST"
         let postData = postString.data(using: .utf8)
                 
-        if let data = try? await urlSessionUploadNoReturn(request: request, postData: postData!) {
+        if ((try? await urlSessionUploadNoReturn(request: request, postData: postData!)) != nil) {
             // Mark currently seleted point as "done"
             annotationItems[currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
         } else {
@@ -222,7 +226,8 @@ class MapController: UIViewController {
     }
     
     // Decode the returning database data
-    func decodeTempMapPointModelReturn (mapResults: [TempMapPointModel], data: Data) throws -> [TempMapPointModel] {
+    func decodeTempMapPointModelReturn (mapResults: [TempMapPointModel] , data: Data) throws -> [TempMapPointModel]  {
+
         self.mapResults = mapResults
         
         // Is this necessary?
@@ -233,6 +238,7 @@ class MapController: UIViewController {
         
         self.mapResults = try decoder.decode([TempMapPointModel].self, from: data)
         
-        return self.mapResults!
+        return self.mapResults
+        
     }
 }
