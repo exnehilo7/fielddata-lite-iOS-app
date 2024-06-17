@@ -902,7 +902,7 @@ struct MapWithNMEAView: View {
         }
     }
     
-    private func resetRouteMarkers() async {  // MOVE TO MAP MVC
+    private func resetRouteMarkers() async {  // MOVE TO MAP MVC (MOVED)
         // remember current map camera position
         currentCameraPosition = cameraPosition
         hasMapPointsResults = false
@@ -914,7 +914,7 @@ struct MapWithNMEAView: View {
         cameraPosition = currentCameraPosition!
     }
     
-    private func refreshMap() async {  // MOVE TO MAP MVC
+    private func refreshMap() async {  // MOVE TO MAP MVC (MOVED)
 //        let tempCurrentAnnoItem = currentAnnoItem
         // remember current map camera position
         currentCameraPosition = cameraPosition
@@ -936,7 +936,7 @@ struct MapWithNMEAView: View {
 //    }
     
     // Make sure forward and backward cycling will stay within the annotation's item count.
-    private func cycleAnnotations (forward: Bool, _ offset: Int ){  // MOVE TO MAP MVC
+    private func cycleAnnotations (forward: Bool, _ offset: Int ){  // MOVE TO MAP MVC (MOVED)
         
         var offsetColor: Color
         

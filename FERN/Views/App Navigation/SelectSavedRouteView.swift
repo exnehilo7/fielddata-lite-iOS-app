@@ -12,6 +12,8 @@ import SwiftData
 struct SelectSavedRouteView: View {
     
     @EnvironmentObject var menuListBridgingCoordinator: MenuListBridgingCoordinator
+    @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
+    @EnvironmentObject var mapBridgingCoordinator: MapBridgingCoordinator
     
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
@@ -33,8 +35,9 @@ struct SelectSavedRouteView: View {
                 List (self.areaList) { (area) in
                     NavigationLink(area.name) {
                         // Pass var to view. Query for route does not need a column or organism name.
-                        // NEED TO FIX VIEW FOR ENVIRONMENTOBJECT NMEA(?)
-                        MapWithNMEAView(tripName: area.name, columnName: "", organismName: "", queryName: "query_get_route_for_app")
+                        MapView(tripName: area.name, columnName: "", organismName: "", queryName: "query_get_route_for_app")
+                            .environmentObject(gpsBridgingCoordinator)
+                            .environmentObject(mapBridgingCoordinator)
                     }
                     .bold()
                 }

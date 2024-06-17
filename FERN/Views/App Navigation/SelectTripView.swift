@@ -14,6 +14,9 @@ import SwiftData
 
 struct SelectTripView: View {
     
+    // Bridging coordinator
+    @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
+    
 //    var useArrowGold:Bool
 //    var gpsModeIsSelected:Bool
     var tripMode:String
@@ -40,6 +43,7 @@ struct SelectTripView: View {
                             }
                             else if (tripMode == "thorough") {
                                 TripModeThoroughCameraView(tripName: item.name).navigationTitle("🐢 \(item.name)")
+                                    .environmentObject(gpsBridgingCoordinator)
                             }
                             else {
                                 MessageView(message: "No trip type selected.")

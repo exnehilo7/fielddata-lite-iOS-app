@@ -12,10 +12,10 @@ import MapKit
 class MapController: UIViewController {
     
     @Published var mapResults: [TempMapPointModel]?
-    @State private var hasMapPointsResults = false
+    @Published var hasMapPointsResults = false
     
     // Annotation tracking
-    @State private var currentAnnoItem = 0 // starting index is 0, so the first "next" will be 1
+    @Published var currentAnnoItem = 0 // starting index is 0, so the first "next" will be 1
     @State private var totalAnnoItems = 0
     // For annotated Map Point Models
     @Published var annotationItems = [MapAnnotationItem]()
@@ -35,9 +35,7 @@ class MapController: UIViewController {
     
     // View toggles
     @Published var showPopover = false
-    
-    // Sounds
-    let audio = playSound()
+
     
     // The BridgingCoordinator received from the SwiftUI View
     var mapControllerBridgingCoordinator: MapBridgingCoordinator!
@@ -48,6 +46,30 @@ class MapController: UIViewController {
         mapControllerBridgingCoordinator.mapController = self
     }
     
+    
+    // Make sure forward and backward cycling will stay within the annotation's item count.
+    func cycleAnnotations (forward: Bool, _ offset: Int ){
+        
+        var offsetColor: Color
+        
+        // Get current annotation's color
+        offsetColor = annotationItems[currentAnnoItem].highlightColor
+        
+        if forward {
+            // offset should be -1
+            if currentAnnoItem < totalAnnoItems{
+                currentAnnoItem += 1
+                highlightMapAnnotation(offset, offsetColor)
+            }
+        }
+        else {
+            // offset should be 1
+            if currentAnnoItem > 0 {
+                currentAnnoItem -= 1
+                highlightMapAnnotation(offset, offsetColor)
+            }
+        }
+    }
     
     // Draw attention to selected point. Put previous or next point back to its original state
     func highlightMapAnnotation (_ offset: Int, _ currentColor: Color){
@@ -66,6 +88,27 @@ class MapController: UIViewController {
         } else {
             annotationItems[currentAnnoItem + offset].highlightColor = Color(red: 0, green: 0, blue: 1)
         }
+    }
+    
+    func resetRouteMarkers(settings: [Settings], mapResults: [TempMapPointModel], phpFile: String, postString: String = "") async {
+        // remember current map camera position
+        currentCameraPosition = cameraPosition
+        hasMapPointsResults = false
+        currentAnnoItem = 0
+        totalAnnoItems = 0
+        annotationItems.removeAll(keepingCapacity: true)
+        _ = await getMapPointsFromDatabase(settings: settings, mapResults: mapResults, phpFile: phpFile, postString: postString)
+        // move map back to current spot
+        cameraPosition = currentCameraPosition!
+    }
+    
+    func refreshMap(settings: [Settings], mapResults: [TempMapPointModel], phpFile: String, postString: String = "") async {
+        // remember current map camera position
+        currentCameraPosition = cameraPosition
+        annotationItems.removeAll(keepingCapacity: true)  // or false?
+        _ = await getMapPointsFromDatabase(settings: settings, mapResults: mapResults, phpFile: phpFile, postString: postString)
+        // move map back to current spot
+        cameraPosition = currentCameraPosition!
     }
 
     func getMapPointsFromDatabase(settings: [Settings], mapResults: [TempMapPointModel], phpFile: String, postString: String = "") async -> [TempMapPointModel] {
@@ -167,7 +210,7 @@ class MapController: UIViewController {
     }
     
     
-    // MOVE THIS TO A CLASS FILE? THE SAME ACTION IS BEING USED IN MenuListModel
+    // MOVED TO A TEST CLASS FILE. NOTE THAT THE SAME ACTION IS BEING USED IN MenuListModel
     // Get database data from a post
 //    func urlSessionUpload (request: URLRequest, postData: Data) async throws -> Data {
 //        let (data, _) = try await URLSession.shared.upload(for: request, from: postData, delegate: nil)

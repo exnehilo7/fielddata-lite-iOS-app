@@ -13,12 +13,15 @@ struct MainMenuView: View {
     // Bridging coordinator
     @StateObject private var gpsBridgingCoordinator: GpsBridgingCoordinator
     @StateObject private var menuListBridgingCoordinator: MenuListBridgingCoordinator
+    @StateObject private var mapBridgingCoordinator: MapBridgingCoordinator
     
     init() {
         let gpsCoordinator = GpsBridgingCoordinator()
         self._gpsBridgingCoordinator = StateObject(wrappedValue: gpsCoordinator)
         let menuListCoordinator = MenuListBridgingCoordinator()
         self._menuListBridgingCoordinator = StateObject(wrappedValue: menuListCoordinator)
+        let mapCoordinator = MapBridgingCoordinator()
+        self._mapBridgingCoordinator = StateObject(wrappedValue: mapCoordinator)
     }
     
     @Environment(\.modelContext) var modelContext
@@ -31,9 +34,10 @@ struct MainMenuView: View {
                 if (settings.count > 0) &&
                     (settings[0].hdopThreshold > 0)
                 {
-                    // Select Trip Mode
+                    // Select Trip Mode (new trip acquisition)
                     NavigationLink {
                         SelectTripModeView()
+                            .environmentObject(gpsBridgingCoordinator)
                             .navigationTitle("Select Trip Mode")
                     } label: {
                         HStack {
@@ -43,7 +47,10 @@ struct MainMenuView: View {
                     }
                     // QC an Uploaded Trip
                     NavigationLink {
-                        QCSelectMapTypeView().environmentObject(menuListBridgingCoordinator)
+                        QCSelectMapTypeView()
+                            .environmentObject(menuListBridgingCoordinator)
+                            .environmentObject(gpsBridgingCoordinator)
+                            .environmentObject(mapBridgingCoordinator)
                             .navigationTitle("Select Trip to QC")
                     } label: {
                         HStack {
@@ -53,7 +60,11 @@ struct MainMenuView: View {
                     }
                     // Select a saved route
                     NavigationLink {
-                        SelectSavedRouteView().environmentObject(menuListBridgingCoordinator)
+                        SelectSavedRouteView()
+                            // Hopefully mapBridgingCoordinator will be "enabled" after the GPS feed coordinator is "enabled" (below in HStack)
+                            .environmentObject(menuListBridgingCoordinator)
+                            .environmentObject(gpsBridgingCoordinator)
+                            .environmentObject(mapBridgingCoordinator)
                             .navigationTitle("Select Saved Route")
                     } label: {
                         HStack {
@@ -117,6 +128,7 @@ struct MainMenuView: View {
         HStack {
             GpsViewControllerRepresentable(gpsBridgingCoordinator: gpsBridgingCoordinator)
             MenuListViewControllerRepresentable(menuListBridgingCoordinator: menuListBridgingCoordinator)
+            MapViewControllerRepresentable(mapBridgingCoordinator: mapBridgingCoordinator)
         }
         Spacer()
         Text("Version: \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Cannot get version #")").font(.footnote)
