@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct SelectTripModeView: View {
+    
+    // Bridging coordinator
+    @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
+    
     var body: some View {
         
         NavigationStack{
@@ -26,6 +30,7 @@ struct SelectTripModeView: View {
                 NavigationLink {
                     SelectTripView(tripMode: "thorough")
                         .navigationTitle("🐢 Select or Create a Trip")
+                        .environmentObject(gpsBridgingCoordinator)
                 } label: {
                     HStack {
                         Image(systemName: "tortoise.fill").bold(false).foregroundColor(.gray)

@@ -71,7 +71,7 @@ class MenuListController: UIViewController {
         return self.areaList!
     }
     
-    // MOVE THESE 2 TO A CLASS FILE?
+    // MOVE THESE 2 TO A CLASS FILE?  MapModel uses one as well
     // Get database data from a post
     func urlSessionUpload (request: URLRequest, postData: Data) async throws -> Data {
         let (data, _) = try await URLSession.shared.upload(for: request, from: postData, delegate: nil)

@@ -52,6 +52,8 @@
 		D16FA6122C1CB7A50090E756 /* MenuListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA6112C1CB7A50090E756 /* MenuListModel.swift */; };
 		D16FA6142C207B620090E756 /* MapModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA6132C207B620090E756 /* MapModel.swift */; };
 		D16FA6162C207BAF0090E756 /* MapController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA6152C207BAF0090E756 /* MapController.swift */; };
+		D16FA6192C20A8300090E756 /* MapView_Old.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA6182C20A8300090E756 /* MapView_Old.swift */; };
+		D16FA61B2C20BEDC0090E756 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA61A2C20BEDC0090E756 /* CameraView.swift */; };
 		D1766C9D298DB978002F594D /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766C9C298DB978002F594D /* MainMenuView.swift */; };
 		D1766C9F298DB9B2002F594D /* SearchByNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766C9E298DB9B2002F594D /* SearchByNameView.swift */; };
 		D1766CA1298DB9C6002F594D /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766CA0298DB9C6002F594D /* MapView.swift */; };
@@ -140,6 +142,8 @@
 		D16FA6112C1CB7A50090E756 /* MenuListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuListModel.swift; sourceTree = "<group>"; };
 		D16FA6132C207B620090E756 /* MapModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapModel.swift; sourceTree = "<group>"; };
 		D16FA6152C207BAF0090E756 /* MapController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapController.swift; sourceTree = "<group>"; };
+		D16FA6182C20A8300090E756 /* MapView_Old.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView_Old.swift; sourceTree = "<group>"; };
+		D16FA61A2C20BEDC0090E756 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		D1766C9C298DB978002F594D /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuView.swift; sourceTree = "<group>"; };
 		D1766C9E298DB9B2002F594D /* SearchByNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchByNameView.swift; sourceTree = "<group>"; };
 		D1766CA0298DB9C6002F594D /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
@@ -286,6 +290,7 @@
 				D1766CA0298DB9C6002F594D /* MapView.swift */,
 				D1325D6F2C10CD8500DAEBA6 /* MapQCWithNMEAView.swift */,
 				D16B0A8B2B9A34BD002081E1 /* MapWithNMEAView.swift */,
+				D16FA6182C20A8300090E756 /* MapView_Old.swift */,
 			);
 			path = Maps;
 			sourceTree = "<group>";
@@ -319,6 +324,7 @@
 		D18B59D52C07C44E005A58DB /* Camera Views */ = {
 			isa = PBXGroup;
 			children = (
+				D16FA61A2C20BEDC0090E756 /* CameraView.swift */,
 				D1A56E982B07D27700AC8291 /* CameraImageView.swift */,
 				D18B59CE2C07BCE9005A58DB /* TripModeFastCameraView.swift */,
 				D18B59CC2C07BC82005A58DB /* TripModeThoroughCameraView.swift */,
@@ -494,6 +500,7 @@
 				D127B3802A12EDF600F6287A /* NMEADataView.swift in Sources */,
 				D1036C052C1A320600E2E266 /* TestViewControllerClsAndStrct.swift in Sources */,
 				D130BADA2B5ADEAE00F0C47C /* Trip.swift in Sources */,
+				D16FA61B2C20BEDC0090E756 /* CameraView.swift in Sources */,
 				D18B59D32C07C16B005A58DB /* MessageView.swift in Sources */,
 				D16796432BE02CFF00561875 /* SelectTripForCesiumView.swift in Sources */,
 				D10925962B2B9C96005D376F /* Sounds.swift in Sources */,
@@ -527,6 +534,7 @@
 				D167963B2BD9B78A00561875 /* SettingsCesiumView.swift in Sources */,
 				D1A56E812B051DB300AC8291 /* SelectTripView.swift in Sources */,
 				D16A6C80299AC65600835B5E /* SelectReportView.swift in Sources */,
+				D16FA6192C20A8300090E756 /* MapView_Old.swift in Sources */,
 				D10BB31C298ADAA400667E86 /* FERNApp.swift in Sources */,
 				D167963F2BDAEF2200561875 /* RandoTestingView.swift in Sources */,
 				D1036C152C1B948200E2E266 /* GPSModel.swift in Sources */,
