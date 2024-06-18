@@ -39,7 +39,7 @@ class MenuListController: UIViewController {
         
         // Post method
         if isMethodPost {
-            if let data = try? await urlSessionUpload(request: request, postData: postData!) {
+            if let data = try? await URLSessionUpload().urlSessionUpload(request: request, postData: postData!) {
                 do {
                     return try! decodeSelectNameModelReturn (areaList: areaList, data: data)
                 }
@@ -59,7 +59,7 @@ class MenuListController: UIViewController {
             }
         // Regular 'ol URL data get
         } else {
-            if let data = try? await urlSessionData(url: url) {
+            if let data = try? await URLSessionData().urlSessionData(url: url) {
                 do {
                     return try! decodeSelectNameModelReturn (areaList: areaList, data: data)
                 }
@@ -73,15 +73,15 @@ class MenuListController: UIViewController {
     
     // MOVE THESE 2 TO A CLASS FILE?  MapModel uses one as well
     // Get database data from a post
-    func urlSessionUpload (request: URLRequest, postData: Data) async throws -> Data {
-        let (data, _) = try await URLSession.shared.upload(for: request, from: postData, delegate: nil)
-        return data
-    }
-    // Get database data, no post
-    func urlSessionData (url: URL) async throws -> Data {
-        let (data, _) = try await URLSession.shared.data(from: url)
-        return data
-    }
+//    func urlSessionUpload (request: URLRequest, postData: Data) async throws -> Data {
+//        let (data, _) = try await URLSession.shared.upload(for: request, from: postData, delegate: nil)
+//        return data
+//    }
+//    // Get database data, no post
+//    func urlSessionData (url: URL) async throws -> Data {
+//        let (data, _) = try await URLSession.shared.data(from: url)
+//        return data
+//    }
     
     // Decode the returning database data
     func decodeSelectNameModelReturn (areaList: [SelectNameModel], data: Data) throws -> [SelectNameModel] {

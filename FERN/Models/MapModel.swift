@@ -16,7 +16,7 @@ class MapController: UIViewController {
     
     // Annotation tracking
     @Published var currentAnnoItem = 0 // starting index is 0, so the first "next" will be 1
-    @State private var totalAnnoItems = 0
+    @Published var totalAnnoItems = 0
     // For annotated Map Point Models
     @Published var annotationItems = [MapAnnotationItem]()
     // Create camera position var
@@ -26,7 +26,7 @@ class MapController: UIViewController {
             span: MKCoordinateSpan(latitudeDelta: 0.015, longitudeDelta: 0.015)
         )
     )
-    // For map reloads
+    // For map reloadings
     @State private var currentCameraPosition: MapCameraPosition?
     @State private var showAlert = false  // NECESSARY? MOVE TO GPS MVC?
     
@@ -44,50 +44,6 @@ class MapController: UIViewController {
         super.viewDidLoad()
         // Set self to the BridgingCoordinator
         mapControllerBridgingCoordinator.mapController = self
-    }
-    
-    
-    // Make sure forward and backward cycling will stay within the annotation's item count.
-    func cycleAnnotations (forward: Bool, _ offset: Int ){
-        
-        var offsetColor: Color
-        
-        // Get current annotation's color
-        offsetColor = annotationItems[currentAnnoItem].highlightColor
-        
-        if forward {
-            // offset should be -1
-            if currentAnnoItem < totalAnnoItems{
-                currentAnnoItem += 1
-                highlightMapAnnotation(offset, offsetColor)
-            }
-        }
-        else {
-            // offset should be 1
-            if currentAnnoItem > 0 {
-                currentAnnoItem -= 1
-                highlightMapAnnotation(offset, offsetColor)
-            }
-        }
-    }
-    
-    // Draw attention to selected point. Put previous or next point back to its original state
-    func highlightMapAnnotation (_ offset: Int, _ currentColor: Color){
-        annotationItems[currentAnnoItem].size = 20
-        // If currentAnnoItem is blue, make it light blue. Else make it red
-        if annotationItems[currentAnnoItem].highlightColor == Color(red: 0, green: 0, blue: 1) {
-            annotationItems[currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
-        } else {
-            annotationItems[currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
-        }
-        
-        annotationItems[currentAnnoItem + offset].size = MapPointSize().size
-        // If offsetColor is red, make it grey. Else make it blue
-        if annotationItems[currentAnnoItem + offset].highlightColor == Color(red: 1, green: 0, blue: 0) {
-            annotationItems[currentAnnoItem + offset].highlightColor = Color(red: 0.5, green: 0.5, blue: 0.5)
-        } else {
-            annotationItems[currentAnnoItem + offset].highlightColor = Color(red: 0, green: 0, blue: 1)
-        }
     }
     
     func resetRouteMarkers(settings: [Settings], phpFile: String, postString: String = "") async {
@@ -126,7 +82,7 @@ class MapController: UIViewController {
         let postData = postString.data(using: .utf8)
 
         
-        if let data = try? await TestGlobalFunction().urlSessionUpload(request: request, postData: postData!) {
+        if let data = try? await URLSessionUpload().urlSessionUpload(request: request, postData: postData!) {
 
                 do {
                     mapResults = try! decodeTempMapPointModelReturn (mapResults: mapResults, data: data)
@@ -134,7 +90,7 @@ class MapController: UIViewController {
                     // dont process if result is empty
                     if !mapResults.isEmpty {
                         
-                        totalAnnoItems = (self.mapResults.count - 1) // adjust for array 0-indexing
+                        totalAnnoItems = (mapResults.count - 1) // adjust for array 0-indexing
                         
                         // Put results in an array
                         for result in mapResults {
@@ -202,7 +158,7 @@ class MapController: UIViewController {
         request.httpMethod = "POST"
         let postData = postString.data(using: .utf8)
                 
-        if ((try? await urlSessionUploadNoReturn(request: request, postData: postData!)) != nil) {
+        if ((try? await URLSessionUploadNoReturn().urlSessionUploadNoReturn(request: request, postData: postData!)) != nil) {
             // Mark currently seleted point as "done"
             annotationItems[currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
         } else {
@@ -221,9 +177,9 @@ class MapController: UIViewController {
 //        return data
 //    }
 
-    func urlSessionUploadNoReturn (request: URLRequest, postData: Data) async throws {
-        let (_, _) = try await URLSession.shared.upload(for: request, from: postData, delegate: nil)
-    }
+//    func urlSessionUploadNoReturn (request: URLRequest, postData: Data) async throws {
+//        let (_, _) = try await URLSession.shared.upload(for: request, from: postData, delegate: nil)
+//    }
     
     // Decode the returning database data
     func decodeTempMapPointModelReturn (mapResults: [TempMapPointModel] , data: Data) throws -> [TempMapPointModel]  {

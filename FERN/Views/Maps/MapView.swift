@@ -159,7 +159,7 @@ struct MapView: View {
                    HStack {
                        // backward
                        Button(action: {
-                           M.mapController.cycleAnnotations(forward: false, 1)
+                           cycleAnnotations(forward: false, 1)
                        }, label: {
                            VStack {
                                Image(systemName: "arrowshape.backward.fill")
@@ -170,7 +170,7 @@ struct MapView: View {
                        
                        // forward
                        Button(action:  {
-                           M.mapController.cycleAnnotations(forward: true, -1)
+                           cycleAnnotations(forward: true, -1)
                        }, label: {
                            VStack {
                                Image(systemName: "arrowshape.forward.fill")
@@ -186,6 +186,49 @@ struct MapView: View {
     
     private func getMapPoints() async {
         self.annotationItems = await M.mapController.getMapPointsFromDatabase(annotationItems: annotationItems, settings: settings, phpFile: "getMapItemsForApp.php", postString: "_column_name=\(columnName)&_column_value=\(tripName)&_org_name=\(organismName)&_query_name=\(queryName)")
+    }
+    
+    // Make sure forward and backward cycling will stay within the annotation's item count.
+    private func cycleAnnotations (forward: Bool, _ offset: Int ) {
+
+        var offsetColor: Color
+        
+        // Get current annotation's color
+        offsetColor = annotationItems[M.mapController.currentAnnoItem].highlightColor
+        
+        if forward {
+            // offset should be -1
+            if M.mapController.currentAnnoItem < M.mapController.totalAnnoItems {
+                M.mapController.currentAnnoItem += 1
+                highlightMapAnnotation(offset, offsetColor)
+            }
+        }
+        else {
+            // offset should be 1
+            if M.mapController.currentAnnoItem > 0 {
+                M.mapController.currentAnnoItem -= 1
+                highlightMapAnnotation(offset, offsetColor)
+            }
+        }
+    }
+    
+    // Draw attention to selected point. Put previous or next point back to its original state
+    private func highlightMapAnnotation (_ offset: Int, _ currentColor: Color){
+        annotationItems[M.mapController.currentAnnoItem].size = 20
+        // If currentAnnoItem is blue, make it light blue. Else make it red
+        if annotationItems[M.mapController.currentAnnoItem].highlightColor == Color(red: 0, green: 0, blue: 1) {
+            annotationItems[M.mapController.currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
+        } else {
+            annotationItems[M.mapController.currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
+        }
+        
+        annotationItems[M.mapController.currentAnnoItem + offset].size = MapPointSize().size
+        // If offsetColor is red, make it grey. Else make it blue
+        if annotationItems[M.mapController.currentAnnoItem + offset].highlightColor == Color(red: 1, green: 0, blue: 0) {
+            annotationItems[M.mapController.currentAnnoItem + offset].highlightColor = Color(red: 0.5, green: 0.5, blue: 0.5)
+        } else {
+            annotationItems[M.mapController.currentAnnoItem + offset].highlightColor = Color(red: 0, green: 0, blue: 1)
+        }
     }
     
 }//end MapView view
