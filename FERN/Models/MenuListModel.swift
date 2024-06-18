@@ -71,18 +71,6 @@ class MenuListController: UIViewController {
         return self.nameList!
     }
     
-    // MOVE THESE 2 TO A CLASS FILE?  MapModel uses one as well
-    // Get database data from a post
-//    func urlSessionUpload (request: URLRequest, postData: Data) async throws -> Data {
-//        let (data, _) = try await URLSession.shared.upload(for: request, from: postData, delegate: nil)
-//        return data
-//    }
-//    // Get database data, no post
-//    func urlSessionData (url: URL) async throws -> Data {
-//        let (data, _) = try await URLSession.shared.data(from: url)
-//        return data
-//    }
-    
     // Decode the returning database data
     func decodeSelectNameModelReturn (nameList: [SelectNameModel], data: Data) throws -> [SelectNameModel] {
         self.nameList = nameList

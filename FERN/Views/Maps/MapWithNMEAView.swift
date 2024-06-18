@@ -119,7 +119,7 @@ struct MapWithNMEAView: View {
     // Default iOS
     @ObservedObject var clLocationHelper = LocationHelper() // WILL BE GRABBED FROM GPS MVC
     
-    // MOVE THESE TO A SOME VIEW DECLARATION CONTROLLED BY useBluetoothDevice? PLACE IN A NEW CAMERA VIEW FILE?
+    // MOVE THESE TO A SOME VIEW DECLARATION CONTROLLED BY useBluetoothDevice? PLACE IN A NEW CAMERA VIEW FILE? (done)
     var clLat:String {
         return "\(clLocationHelper.lastLocation?.coordinate.latitude ?? 0.0000)"
     }
@@ -269,7 +269,7 @@ struct MapWithNMEAView: View {
     
     //MARK: View code from TripModeThoroughCameraView
     // GPS Data Display ------------------------------------------------
-    // Arrow Gold  //PLACE IN A NEW CAMERA VIEW FILE?
+    // Arrow Gold  //PLACE IN A NEW CAMERA VIEW FILE? (done)
     var arrowGpsData: some View {
         VStack {
             
@@ -332,7 +332,7 @@ struct MapWithNMEAView: View {
         }
     }
     
-    // NMEA Alert  // PLACE IN A NEW CAMERA VIEW FILE?
+    // NMEA Alert  // PLACE IN A NEW CAMERA VIEW FILE? (done)
     var stoppedNMEA: some View {
         VStack {
             Spacer()
@@ -341,7 +341,7 @@ struct MapWithNMEAView: View {
         }
     }
     
-    // Invalid Syntax Alert  // PLACE IN A NEW CAMERA VIEW FILE?
+    // Invalid Syntax Alert  // PLACE IN A NEW CAMERA VIEW FILE? (done)
      var invalidSyntaxView: some View {
          VStack {
              Spacer()
@@ -350,7 +350,7 @@ struct MapWithNMEAView: View {
          }
      }
     
-    // HDOP Over Threshold Alert  // PLACE IN A NEW CAMERA VIEW FILE?
+    // HDOP Over Threshold Alert  // PLACE IN A NEW CAMERA VIEW FILE? (done)
     var hdopOverLimitView: some View {
         VStack {
             Spacer()
@@ -359,7 +359,7 @@ struct MapWithNMEAView: View {
         }
     }
     
-    // Save the pic button  // PLACE IN A NEW CAMERA VIEW FILE?
+    // Save the pic button  // PLACE IN A NEW CAMERA VIEW FILE? (done)
     var savePicButton: some View {
         Button(action: {
             let fileNameUUID = UUID().uuidString
@@ -400,7 +400,7 @@ struct MapWithNMEAView: View {
 //        }} message: {article in Text(article.description)}
     }
     
-    // Show the camera button (for if the user cancels a photo)  // PLACE IN A NEW CAMERA VIEW FILE?
+    // Show the camera button (for if the user cancels a photo)  // PLACE IN A NEW CAMERA VIEW FILE? (done)
     var showCameraButton: some View {
         Button {
             isShowCamera = true
@@ -410,7 +410,7 @@ struct MapWithNMEAView: View {
         }.buttonStyle(.borderedProminent).tint(.blue)
     }
     
-    // Scan for text button  // PLACE IN A NEW CAMERA VIEW FILE?
+    // Scan for text button  // PLACE IN A NEW CAMERA VIEW FILE? (done)
     var scanForTextButton: some View {
         Button(action: {
             
@@ -444,7 +444,7 @@ struct MapWithNMEAView: View {
         })
     }
     
-    var cancelPicButton: some View {  // PLACE IN A NEW CAMERA VIEW FILE?
+    var cancelPicButton: some View {  // PLACE IN A NEW CAMERA VIEW FILE? (done)
         Button(action: {cancelPic()},
         label: {HStack {
             Image(systemName: "arrow.triangle.2.circlepath.camera").font(.system(size: 15))
@@ -458,7 +458,7 @@ struct MapWithNMEAView: View {
         })
     }
     
-    // Fields for user to add custom metadata. Will need to create @State private var's  // PLACE IN A NEW CAMERA VIEW FILE?
+    // Fields for user to add custom metadata. Will need to create @State private var's  // PLACE IN A NEW CAMERA VIEW FILE? (done)
     var customData: some View {
         VStack {
             HStack {
@@ -471,7 +471,7 @@ struct MapWithNMEAView: View {
         }
     }
     
-    // View for Camera // PLACE IN A NEW CAMERA VIEW FILE?
+    // View for Camera // PLACE IN A NEW CAMERA VIEW FILE? (done)
     var popUpThoroughCamera: some View {
         VStack {
             if !isImageSelected {
@@ -813,7 +813,7 @@ struct MapWithNMEAView: View {
     
     
     // MARK: Functions
-    private func createTxtFileForTheDay() {  // CREATE THE TEXT FILE ON THE CAMERA VIEW FILE?
+    private func createTxtFileForTheDay() {  // CREATE THE TEXT FILE ON THE CAMERA VIEW FILE? (moved to model)
         do{
             // create new txt file for the day for GPS data.
             _ = try FieldWorkGPSFile.log(tripName: tripName, uuid: "", gps: "", hdop: "", longitude: "", latitude: "", altitude: "", scannedText: "", notes: "")
@@ -822,7 +822,7 @@ struct MapWithNMEAView: View {
         }
     }
     
-    private func processImage(upperUUID: String, textInPic: String) {  // MOVE TO CAMERA MVC
+    private func processImage(upperUUID: String, textInPic: String) {  // MOVE TO CAMERA MVC (moved to model)
         if showArrowGold {
             // Alert user if feed has stopped or values are zero
             if nmea.hasNMEAStreamStopped ||

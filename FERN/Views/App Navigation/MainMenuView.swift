@@ -14,6 +14,7 @@ struct MainMenuView: View {
     @StateObject private var gpsBridgingCoordinator: GpsBridgingCoordinator
     @StateObject private var menuListBridgingCoordinator: MenuListBridgingCoordinator
     @StateObject private var mapBridgingCoordinator: MapBridgingCoordinator
+    @StateObject private var cameraBridgingCoordinator: CameraBridgingCoordinator
     
     init() {
         let gpsCoordinator = GpsBridgingCoordinator()
@@ -22,6 +23,8 @@ struct MainMenuView: View {
         self._menuListBridgingCoordinator = StateObject(wrappedValue: menuListCoordinator)
         let mapCoordinator = MapBridgingCoordinator()
         self._mapBridgingCoordinator = StateObject(wrappedValue: mapCoordinator)
+        let cameraCoordinator = CameraBridgingCoordinator()
+        self._cameraBridgingCoordinator = StateObject(wrappedValue: cameraCoordinator)
     }
     
     @Environment(\.modelContext) var modelContext
@@ -38,6 +41,7 @@ struct MainMenuView: View {
                     NavigationLink {
                         SelectTripModeView()
                             .environmentObject(gpsBridgingCoordinator)
+//                            .environmentObject(cameraBridgingCoordinator)  Is there a need to pass it?
                             .navigationTitle("Select Trip Mode")
                     } label: {
                         HStack {
@@ -51,6 +55,7 @@ struct MainMenuView: View {
                             .environmentObject(menuListBridgingCoordinator)
                             .environmentObject(gpsBridgingCoordinator)
                             .environmentObject(mapBridgingCoordinator)
+//                            .environmentObject(cameraBridgingCoordinator)
                             .navigationTitle("Select Trip to QC")
                     } label: {
                         HStack {
@@ -61,10 +66,11 @@ struct MainMenuView: View {
                     // Select a saved route
                     NavigationLink {
                         SelectSavedRouteView()
-                            // Hopefully mapBridgingCoordinator will be "enabled" after the GPS feed coordinator is "enabled" (below in HStack)
+                            // Hopefully cameraBridgingCoordinator will be "enabled" after the GPS feed coordinator is "enabled" (below in HStack)
                             .environmentObject(menuListBridgingCoordinator)
                             .environmentObject(gpsBridgingCoordinator)
                             .environmentObject(mapBridgingCoordinator)
+//                            .environmentObject(cameraBridgingCoordinator)
                             .navigationTitle("Select Saved Route")
                     } label: {
                         HStack {
@@ -129,6 +135,7 @@ struct MainMenuView: View {
             GpsViewControllerRepresentable(gpsBridgingCoordinator: gpsBridgingCoordinator)
             MenuListViewControllerRepresentable(menuListBridgingCoordinator: menuListBridgingCoordinator)
             MapViewControllerRepresentable(mapBridgingCoordinator: mapBridgingCoordinator)
+            CameraViewControllerRepresentable(cameraBridgingCoordinator: cameraBridgingCoordinator)
         }
         Spacer()
         Text("Version: \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Cannot get version #")").font(.footnote)

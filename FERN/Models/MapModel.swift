@@ -182,18 +182,6 @@ class MapController: UIViewController {
         
     }
     
-    
-    // MOVED TO A TEST CLASS FILE. NOTE THAT THE SAME ACTION IS BEING USED IN MenuListModel
-    // Get database data from a post
-//    func urlSessionUpload (request: URLRequest, postData: Data) async throws -> Data {
-//        let (data, _) = try await URLSession.shared.upload(for: request, from: postData, delegate: nil)
-//        return data
-//    }
-
-//    func urlSessionUploadNoReturn (request: URLRequest, postData: Data) async throws {
-//        let (_, _) = try await URLSession.shared.upload(for: request, from: postData, delegate: nil)
-//    }
-    
     // Decode the returning database data
     func decodeTempMapPointModelReturn (mapResults: [TempMapPointModel] , data: Data) throws -> [TempMapPointModel]  {
 
