@@ -10,7 +10,7 @@ import SwiftUI
 // ViewController which contains functions that need to be called from SwiftUI
 class MenuListController: UIViewController {
     
-    @Published var areaList: [SelectNameModel]?
+    @Published var nameList: [SelectNameModel]?
     
     // The BridgingCoordinator received from the SwiftUI View
     var menuListControllerBridgingCoordinator: MenuListBridgingCoordinator!
@@ -21,13 +21,13 @@ class MenuListController: UIViewController {
         menuListControllerBridgingCoordinator.menuListController = self
     }
 
-    func getTripListFromDatabase(settings: [Settings], areaList: [SelectNameModel], phpFile: String, isMethodPost: Bool, postString: String = "") async -> [SelectNameModel] {
+    func getTripListFromDatabase(settings: [Settings], nameList: [SelectNameModel], phpFile: String, isMethodPost: Bool, postString: String = "") async -> [SelectNameModel] {
         
-        self.areaList = areaList
+        self.nameList = nameList
         
         guard let url: URL = URL(string: settings[0].databaseURL + "/php/\(phpFile)") else {
             Swift.print("invalid URL")
-            return self.areaList!
+            return self.nameList!
         }
         
         // will be used later if isMethodPost is true
@@ -41,7 +41,7 @@ class MenuListController: UIViewController {
         if isMethodPost {
             if let data = try? await URLSessionUpload().urlSessionUpload(request: request, postData: postData!) {
                 do {
-                    return try! decodeSelectNameModelReturn (areaList: areaList, data: data)
+                    return try! decodeSelectNameModelReturn (nameList: nameList, data: data)
                 }
             } else {
                 print("MenuListModel Logger messages to go here")
@@ -61,14 +61,14 @@ class MenuListController: UIViewController {
         } else {
             if let data = try? await URLSessionData().urlSessionData(url: url) {
                 do {
-                    return try! decodeSelectNameModelReturn (areaList: areaList, data: data)
+                    return try! decodeSelectNameModelReturn (nameList: nameList, data: data)
                 }
             } else {
                 print("MenuListModel Logger messages to go here")
             }
         }
 
-        return self.areaList!
+        return self.nameList!
     }
     
     // MOVE THESE 2 TO A CLASS FILE?  MapModel uses one as well
@@ -84,9 +84,9 @@ class MenuListController: UIViewController {
 //    }
     
     // Decode the returning database data
-    func decodeSelectNameModelReturn (areaList: [SelectNameModel], data: Data) throws -> [SelectNameModel] {
-        self.areaList = areaList
-        self.areaList = try JSONDecoder().decode([SelectNameModel].self, from: data)
-        return self.areaList!
+    func decodeSelectNameModelReturn (nameList: [SelectNameModel], data: Data) throws -> [SelectNameModel] {
+        self.nameList = nameList
+        self.nameList = try JSONDecoder().decode([SelectNameModel].self, from: data)
+        return self.nameList!
     }
 }

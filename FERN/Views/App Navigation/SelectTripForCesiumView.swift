@@ -40,7 +40,7 @@ struct SelectTripForCesiumView: View {
     } //end View
     
     private func getTripList() async {
-        self.areaList = await menuListBridgingCoordinator.menuListController.getTripListFromDatabase(settings: settings, areaList: areaList, phpFile: "menusAndReports.php", isMethodPost: true, postString: "_query_name=trips_in_db_view")
+        self.areaList = await menuListBridgingCoordinator.menuListController.getTripListFromDatabase(settings: settings, nameList: areaList, phpFile: "menusAndReports.php", isMethodPost: true, postString: "_query_name=trips_in_db_view")
     }
     
     // To have web browser in-app

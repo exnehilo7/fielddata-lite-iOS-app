@@ -18,7 +18,7 @@ struct SelectSavedRouteView: View {
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
     
-    @State private var areaList: [SelectNameModel] = []
+    @State private var routeList: [SelectNameModel] = []
     
     var body: some View {
         
@@ -32,22 +32,25 @@ struct SelectSavedRouteView: View {
                 }.padding(.trailing, 25)
             }
             NavigationStack {
-                List (self.areaList) { (area) in
-                    NavigationLink(area.name) {
+                List (self.routeList) { (route) in
+                    NavigationLink(route.name) {
                         // Pass var to view. Query for route does not need a column or organism name.
-                        MapView(tripName: area.name, columnName: "", organismName: "", queryName: "query_get_route_for_app")
+                        MapView(mapMode: "route", tripName: route.name, columnName: "", organismName: "", queryName: "query_get_route_for_app")
                             .environmentObject(gpsBridgingCoordinator)
                             .environmentObject(mapBridgingCoordinator)
                     }
                     .bold()
                 }
             }
-            // query areas. Call PHP GET
+            // query routes. Call PHP GET
         }.task { await getTripList()}
     } //end View
     
     private func getTripList() async {
-        self.areaList = await menuListBridgingCoordinator.menuListController.getTripListFromDatabase(settings: settings, areaList: areaList, phpFile: "menuLoadSavedRouteView.php", isMethodPost: false)
+        
+        // Need to reset vars in MapModel
+        mapBridgingCoordinator.mapController.resetMapModelVariables()
+        
+        self.routeList = await menuListBridgingCoordinator.menuListController.getTripListFromDatabase(settings: settings, nameList: routeList, phpFile: "menuLoadSavedRouteView.php", isMethodPost: false)
     }
-
 }

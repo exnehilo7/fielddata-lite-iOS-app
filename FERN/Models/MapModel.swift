@@ -67,7 +67,20 @@ class MapController: UIViewController {
         cameraPosition = currentCameraPosition!
     }
 
-    func getMapPointsFromDatabase(annotationItems: [MapAnnotationItem], settings: [Settings], phpFile: String, postString: String = "") async -> [MapAnnotationItem] 
+    func resetMapModelVariables(){
+        currentAnnoItem = 0
+        totalAnnoItems = 0
+        hasMapPointsResults = false
+        annotationItems = [MapAnnotationItem]()
+        cameraPosition = MapCameraPosition.region(
+            MKCoordinateRegion(
+                center: CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0),
+                span: MKCoordinateSpan(latitudeDelta: 0.015, longitudeDelta: 0.015)
+            )
+        )
+    }
+    
+    func getMapPointsFromDatabase(annotationItems: [MapAnnotationItem], settings: [Settings], phpFile: String, postString: String = "") async -> [MapAnnotationItem]
     {
         
         self.annotationItems = annotationItems
@@ -91,7 +104,7 @@ class MapController: UIViewController {
                     if !mapResults.isEmpty {
                         
                         totalAnnoItems = (mapResults.count - 1) // adjust for array 0-indexing
-                        
+
                         // Put results in an array
                         for result in mapResults {
                             self.annotationItems.append(MapAnnotationItem(
@@ -186,7 +199,7 @@ class MapController: UIViewController {
 
         self.mapResults = mapResults
         
-        // Is this necessary?
+        // Are these strategies necessary?
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .useDefaultKeys
         decoder.dataDecodingStrategy = .deferredToData
