@@ -8,6 +8,8 @@
 //
 //  05-JUN-2024: See if this view can be for Routes (traveling salesman) only, and if the slow camera view code can be added here and its view integrated with this one. Will need to append current point's organism name into the custom data field. (Populate the custom data field on pic snap? "Organism name: XXXXXXXXX;"?)
 //  Hide Reset Route Markers?
+//
+//  18-JUN-2024: Moved to Map MVC
 
 import SwiftUI
 import MapKit

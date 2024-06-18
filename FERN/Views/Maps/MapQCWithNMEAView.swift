@@ -10,6 +10,8 @@
 //  05-JUN-2024: See if this view can be for Trip map display (to see points and to add new points), and if the slow camera view code can be added here and its view integrated with this one. Will need to save and process pic and text files via the classic way.
 //  Do not start with a selected point. If a point is selected, throw its organsim name into the custom data text field.
 //  (Can a point be selected by touch?)
+//
+//  18-JUN-2024: Moved to Map MVC
 
 import SwiftUI
 import MapKit

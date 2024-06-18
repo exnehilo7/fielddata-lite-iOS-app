@@ -26,6 +26,7 @@ struct MapView: View {
     @State private var annotationItems = [MapAnnotationItem]()
     
     // From calling view
+    var mapMode: String
     var tripName: String
     var columnName: String
     var organismName: String
@@ -143,11 +144,13 @@ struct MapView: View {
                         // Mark first point on map
                        .onAppear(perform: {
                            self.annotationItems[M.mapController.currentAnnoItem].size = 20
-                           // If currentAnnoItem is blue, make it light blue. Else make it red
-                           if self.annotationItems[M.mapController.currentAnnoItem].highlightColor == Color(red: 0, green: 0, blue: 1) {
-                               self.annotationItems[M.mapController.currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
-                           } else {
-                               self.annotationItems[M.mapController.currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
+                           if mapMode == "route" {
+                               // If currentAnnoItem is blue, make it light blue. Else make it red
+                               if self.annotationItems[M.mapController.currentAnnoItem].highlightColor == Color(red: 0, green: 0, blue: 1) {
+                                   self.annotationItems[M.mapController.currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
+                               } else {
+                                   self.annotationItems[M.mapController.currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
+                               }
                            }
                        })
                    // Show organism's lat and long
@@ -185,7 +188,9 @@ struct MapView: View {
     } //end body view
     
     private func getMapPoints() async {
+        
         self.annotationItems = await M.mapController.getMapPointsFromDatabase(annotationItems: annotationItems, settings: settings, phpFile: "getMapItemsForApp.php", postString: "_column_name=\(columnName)&_column_value=\(tripName)&_org_name=\(organismName)&_query_name=\(queryName)")
+
     }
     
     // Make sure forward and backward cycling will stay within the annotation's item count.
@@ -214,20 +219,25 @@ struct MapView: View {
     
     // Draw attention to selected point. Put previous or next point back to its original state
     private func highlightMapAnnotation (_ offset: Int, _ currentColor: Color){
+
         annotationItems[M.mapController.currentAnnoItem].size = 20
-        // If currentAnnoItem is blue, make it light blue. Else make it red
-        if annotationItems[M.mapController.currentAnnoItem].highlightColor == Color(red: 0, green: 0, blue: 1) {
-            annotationItems[M.mapController.currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
-        } else {
-            annotationItems[M.mapController.currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
-        }
-        
         annotationItems[M.mapController.currentAnnoItem + offset].size = MapPointSize().size
-        // If offsetColor is red, make it grey. Else make it blue
-        if annotationItems[M.mapController.currentAnnoItem + offset].highlightColor == Color(red: 1, green: 0, blue: 0) {
-            annotationItems[M.mapController.currentAnnoItem + offset].highlightColor = Color(red: 0.5, green: 0.5, blue: 0.5)
-        } else {
-            annotationItems[M.mapController.currentAnnoItem + offset].highlightColor = Color(red: 0, green: 0, blue: 1)
+        
+        // if map is for a route, use the grey-blue-red setup
+        if mapMode == "route" {
+            // If currentAnnoItem is blue, make it light blue. Else make it red
+            if annotationItems[M.mapController.currentAnnoItem].highlightColor == Color(red: 0, green: 0, blue: 1) {
+                annotationItems[M.mapController.currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
+            } else {
+                annotationItems[M.mapController.currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
+            }
+            
+            // If offsetColor is red, make it grey. Else make it blue
+            if annotationItems[M.mapController.currentAnnoItem + offset].highlightColor == Color(red: 1, green: 0, blue: 0) {
+                annotationItems[M.mapController.currentAnnoItem + offset].highlightColor = Color(red: 0.5, green: 0.5, blue: 0.5)
+            } else {
+                annotationItems[M.mapController.currentAnnoItem + offset].highlightColor = Color(red: 0, green: 0, blue: 1)
+            }
         }
     }
     
