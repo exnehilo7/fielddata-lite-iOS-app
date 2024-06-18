@@ -57,6 +57,8 @@
 		D16FA6242C21DDF40090E756 /* ClassURLSessions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA6232C21DDF40090E756 /* ClassURLSessions.swift */; };
 		D16FA6262C21DE900090E756 /* ClassMapPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA6252C21DE900090E756 /* ClassMapPoints.swift */; };
 		D16FA6282C21E4110090E756 /* StructMapPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA6272C21E4110090E756 /* StructMapPoints.swift */; };
+		D16FA62A2C2209A90090E756 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA6292C2209A90090E756 /* CameraController.swift */; };
+		D16FA62C2C220A2A0090E756 /* CameraModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA62B2C220A2A0090E756 /* CameraModel.swift */; };
 		D1766C9D298DB978002F594D /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766C9C298DB978002F594D /* MainMenuView.swift */; };
 		D1766C9F298DB9B2002F594D /* SearchByNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766C9E298DB9B2002F594D /* SearchByNameView.swift */; };
 		D1766CA1298DB9C6002F594D /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766CA0298DB9C6002F594D /* MapView.swift */; };
@@ -150,6 +152,8 @@
 		D16FA6232C21DDF40090E756 /* ClassURLSessions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassURLSessions.swift; sourceTree = "<group>"; };
 		D16FA6252C21DE900090E756 /* ClassMapPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassMapPoints.swift; sourceTree = "<group>"; };
 		D16FA6272C21E4110090E756 /* StructMapPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructMapPoints.swift; sourceTree = "<group>"; };
+		D16FA6292C2209A90090E756 /* CameraController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
+		D16FA62B2C220A2A0090E756 /* CameraModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraModel.swift; sourceTree = "<group>"; };
 		D1766C9C298DB978002F594D /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuView.swift; sourceTree = "<group>"; };
 		D1766C9E298DB9B2002F594D /* SearchByNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchByNameView.swift; sourceTree = "<group>"; };
 		D1766CA0298DB9C6002F594D /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
@@ -192,6 +196,7 @@
 				D16FA6152C207BAF0090E756 /* MapController.swift */,
 				D16FA60F2C1CB74C0090E756 /* MenuListController.swift */,
 				D1036C0B2C1B4FD500E2E266 /* StartScreenController.swift */,
+				D16FA6292C2209A90090E756 /* CameraController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -204,6 +209,7 @@
 				D16FA6112C1CB7A50090E756 /* MenuListModel.swift */,
 				D1036C0E2C1B519E00E2E266 /* StartScreenModel.swift */,
 				D1036C062C1A475C00E2E266 /* TestJustOneClassForVc.swift */,
+				D16FA62B2C220A2A0090E756 /* CameraModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -543,6 +549,7 @@
 				D1766CA3298DBAA3002F594D /* Functions.swift in Sources */,
 				D1036C0F2C1B519E00E2E266 /* StartScreenModel.swift in Sources */,
 				D1325D6E2C0A1D2E00DAEBA6 /* ImagePickerFastModeWithOverlay.swift in Sources */,
+				D16FA62C2C220A2A0090E756 /* CameraModel.swift in Sources */,
 				D127B37E2A12ED3D00F6287A /* NMEADataClass.swift in Sources */,
 				D16FA6122C1CB7A50090E756 /* MenuListModel.swift in Sources */,
 				D16FA6262C21DE900090E756 /* ClassMapPoints.swift in Sources */,
@@ -572,6 +579,7 @@
 				D16A6C80299AC65600835B5E /* SelectReportView.swift in Sources */,
 				D16FA6192C20A8300090E756 /* MapView_Old.swift in Sources */,
 				D10BB31C298ADAA400667E86 /* FERNApp.swift in Sources */,
+				D16FA62A2C2209A90090E756 /* CameraController.swift in Sources */,
 				D167963F2BDAEF2200561875 /* RandoTestingView.swift in Sources */,
 				D1036C152C1B948200E2E266 /* GPSModel.swift in Sources */,
 				D16A6C7E29970E0900835B5E /* SelectNotesView.swift in Sources */,
