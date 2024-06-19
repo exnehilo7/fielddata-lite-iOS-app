@@ -157,11 +157,23 @@ struct CameraView: View {
     
     private func savePic(upperUUID: String, textInPic: String) {
         // if user data is all good, save pic
-        if C.cameraController.checkUserData() {
-
-            C.cameraController.processImage(upperUUID: upperUUID, textInPic: textInPic)
+        if C.cameraController.checkUserData() { // MAY NEED TO PASS VARS
             
-            // Clear displayed image (if previous image feedback is needed, borrow capturedPhotoThumbnail from CameraView?
+            if settings[0].useBluetoothDevice {
+                C.cameraController.processImage(upperUUID: upperUUID, textInPic: textInPic)
+                
+            } else {
+                C.cameraController.processImage(upperUUID: upperUUID, textInPic: textInPic)
+            }
+            
+            // If above was successful:
+            // Change annotation's color to blue
+            Task {
+                await updatePointColor(routeID: annotationItems[currentAnnoItem].routeID,
+                                       pointOrder: annotationItems[currentAnnoItem].pointOrder)
+            }
+            
+            // Clear displayed image
             self.image = UIImage()
             // Clear scanned text
             recognizedContent.items[0].text = ""
@@ -370,7 +382,7 @@ struct CameraView: View {
             }
         }.onAppear(perform: {
             // Create Text File for the Day
-            C.cameraController.createTxtFileForTheDay()
+            C.cameraController.createTxtFileForTheDay(tripName: tripOrRouteName)
         })
         .sheet(isPresented: $isShowCamera) {
             // Try to show the GPS data at all times on the bottom half of the screen
