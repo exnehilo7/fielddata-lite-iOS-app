@@ -863,7 +863,7 @@ struct MapWithNMEAView: View {
         }
     }
     
-    private func setVarsAndViewAfterSuccessfulSave() {  // MOVE TO CAMERA MVC
+    private func setVarsAndViewAfterSuccessfulSave() {  // MOVE TO CAMERA MVC (MOVED)
         isImageSelected = false
         isShowCamera = true
         showingInvalidSyntaxAlert = false
@@ -879,7 +879,7 @@ struct MapWithNMEAView: View {
         showPopover = false
     }
     
-    private func savePicToFolder(imgFile: UIImage, tripName: String, uuid: String, gps: String,  // MOVE TO CAMERA MVC
+    private func savePicToFolder(imgFile: UIImage, tripName: String, uuid: String, gps: String,  // MOVE TO CAMERA MVC (MOVED)
                                  hdop: String, longitude: String, latitude: String, altitude: String,
                                  scannedText: String, notes: String) {
         
