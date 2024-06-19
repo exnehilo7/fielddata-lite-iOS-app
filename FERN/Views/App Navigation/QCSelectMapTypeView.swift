@@ -12,6 +12,7 @@ struct QCSelectMapTypeView: View {
     @EnvironmentObject var menuListBridgingCoordinator: MenuListBridgingCoordinator
     @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
     @EnvironmentObject var mapBridgingCoordinator: MapBridgingCoordinator
+    @EnvironmentObject var cameraBridgingCoordinator: CameraBridgingCoordinator
     
     var body: some View {
         
@@ -23,6 +24,7 @@ struct QCSelectMapTypeView: View {
                             .environmentObject(menuListBridgingCoordinator)
                             .environmentObject(gpsBridgingCoordinator)
                             .environmentObject(mapBridgingCoordinator)
+                            .environmentObject(cameraBridgingCoordinator)
                             .navigationTitle("Apple Map")
                     } label: {
                         HStack {

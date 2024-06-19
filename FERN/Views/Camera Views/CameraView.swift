@@ -13,15 +13,16 @@ struct CameraView: View {
     
     // Bridging coordinator
     @EnvironmentObject var G: GpsBridgingCoordinator
+    @EnvironmentObject var C: CameraBridgingCoordinator
+
     
+    // Swift Data
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
     @Query var sdTrips: [SDTrip]
     
+    // View toggles
     @State private var showPicButton = false
-    @State private var recognizedContent = RecognizedContent()  // Should be in a class? It's own MVC?
-    @State private var isRecognizing = false
-    @State private var textNotes = ""
     @State private var isShowCamera = false
     @State private var isImageSelected = false
     @State private var showingStoppedNMEAAlert = false
@@ -29,6 +30,19 @@ struct CameraView: View {
     @State private var showingHDOPOverLimit = false
     @State private var showingCompleteAlert = false
     
+    // Text scanning
+    @State private var recognizedContent = RecognizedContent()  // Should be in a class? It's own MVC?
+    @State private var isRecognizing = false
+    
+    // Image
+    @State private var image = UIImage()
+    
+    // Custom notes
+    @State private var textNotes = ""
+
+    
+    // Sounds
+    let audio = playSound()
     
     // From calling view
     var tripOrRouteName: String
@@ -52,7 +66,14 @@ struct CameraView: View {
     //------------------------------------------------------------------
 
     
-    //MARK: Views
+    //MARK: Views and Functions
+//    // Get the bridging connector going?
+//    var bridging: some View {
+//        HStack {
+//            CameraViewControllerRepresentable(cameraBridgingCoordinator: C)
+//        }
+//    }
+    
     // GPS Data Display ------------------------------------------------
     // Arrow Gold
     var arrowGpsData: some View {
@@ -117,24 +138,7 @@ struct CameraView: View {
             let upperUUID = fileNameUUID.uppercased()
             var textInPic = recognizedContent.items[0].text
             textInPic = textInPic.replacingOccurrences(of: ScannedTextPattern().pattern, with: "", options: [.regularExpression])
-            // WRAP IN FUNCTION AND PLACE CODE IN MODEL ----------------------------------------------------------------------
-            // if user data is all good, save pic
-            if checkUserData() {
-
-                processImage(upperUUID: upperUUID, textInPic: textInPic)
-                
-                // Clear displayed image (if previous image feedback is needed, borrow capturedPhotoThumbnail from CameraView?
-                self.image = UIImage()
-                // Clear scanned text
-                recognizedContent.items[0].text = ""
-                // Clear custom data
-                clearCustomData()
-                
-            } else {
-                audio.playError()
-                showingInvalidSyntaxAlert = true
-            }// end user notes check
-            // ----------------------------------------------------------------------------------------------------------------
+            savePic(upperUUID: upperUUID, textInPic: textInPic)
         }, label: {
             HStack {
                 Image(systemName: "photo")
@@ -151,13 +155,30 @@ struct CameraView: View {
         })
     }
     
+    private func savePic(upperUUID: String, textInPic: String) {
+        // if user data is all good, save pic
+        if C.cameraController.checkUserData() {
+
+            C.cameraController.processImage(upperUUID: upperUUID, textInPic: textInPic)
+            
+            // Clear displayed image (if previous image feedback is needed, borrow capturedPhotoThumbnail from CameraView?
+            self.image = UIImage()
+            // Clear scanned text
+            recognizedContent.items[0].text = ""
+            // Clear custom data
+            C.cameraController.clearCustomData()
+            
+        } else {
+            audio.playError()
+            showingInvalidSyntaxAlert = true
+        }
+    }
+    
     // Show the camera button (for if the user cancels a photo)
     var showCameraButton: some View {
         Button {
-            // WRAP IN FUNCTION AND PLACE CODE IN MODEL ----------------------------------------------------------------------
             isShowCamera = true
             showingStoppedNMEAAlert = false
-            // ----------------------------------------------------------------------------------------------------------------
         } label: {
             Label("Show Camera", systemImage: "camera").foregroundColor(.white)
         }.buttonStyle(.borderedProminent).tint(.blue)
@@ -200,9 +221,7 @@ struct CameraView: View {
     
     var cancelPicButton: some View {
         Button(action: {
-            // WRAP IN FUNCTION AND PLACE CODE IN MODEL -----------------------------------------------------------------------
-            cancelPic()
-            // ----------------------------------------------------------------------------------------------------------------
+            C.cameraController.cancelPic()
         },
         label: {HStack {
             Image(systemName: "arrow.triangle.2.circlepath.camera").font(.system(size: 15))
@@ -229,7 +248,6 @@ struct CameraView: View {
         }
     }
     
-    // Need to call these somewhere: createTxtFileForTheDay()
     //MARK: Main View
     var body: some View {
         VStack {
@@ -239,9 +257,7 @@ struct CameraView: View {
                     // Get the previous view's selected trip
                     if (item.name == tripOrRouteName){
                         Button {
-                            // WRAP IN FUNCTION AND PLACE CODE IN MODEL --------------------------
-                            showCompleteAlertToggle()
-                            // -------------------------------------------------------------------
+                            C.cameraController.showCompleteAlertToggle()
                         } label: {
                             HStack {
                                 Image(systemName: "checkmark.square")
@@ -256,10 +272,8 @@ struct CameraView: View {
                             .padding(.horizontal)
                         }.alert("Mark trip as complete?", isPresented: $showingCompleteAlert) {
                             Button("OK"){
-                                // WRAP IN FUNCTION AND PLACE CODE IN MODEL --------------------------------------------
                                 item.isComplete = true
-                                showCompleteAlertToggle()
-                                // -------------------------------------------------------------------------------------
+                                C.cameraController.showCompleteAlertToggle()
                             }
                             Button("Cancel", role: .cancel){}
                         } message: {
@@ -302,18 +316,14 @@ struct CameraView: View {
             Spacer()
             
             // Give the user an option to bring back the camera if the ImagePicker was cancelled.
-//            if gpsModeIsSelected {
-                // Don't show if an image is ready to save
-                if !isImageSelected {
-                    // Don't show if the camera is already showing
-                    if !isShowCamera {
-                        showCameraButton
-                    }
+            // Don't show if an image is ready to save
+            if !isImageSelected {
+                // Don't show if the camera is already showing
+                if !isShowCamera {
+                    showCameraButton
                 }
-//            }
+            }
             
-            // Show GPS feed if one was selected
-//            if gpsModeIsSelected {
                 // Don't display GPS coords if sheet is displayed.
             if !isShowCamera {
                 if settings[0].useBluetoothDevice {
@@ -358,10 +368,11 @@ struct CameraView: View {
                     }
                 }
             }
-//            } else {
-//                selectGpsMode
-//            }
-        }.sheet(isPresented: $isShowCamera) {
+        }.onAppear(perform: {
+            // Create Text File for the Day
+            C.cameraController.createTxtFileForTheDay()
+        })
+        .sheet(isPresented: $isShowCamera) {
             // Try to show the GPS data at all times on the bottom half of the screen
             ZStack {
                 Color.black.ignoresSafeArea(.all)

@@ -14,6 +14,7 @@ struct SelectTripForAppleMapView: View {
     @EnvironmentObject var menuListBridgingCoordinator: MenuListBridgingCoordinator
     @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
     @EnvironmentObject var mapBridgingCoordinator: MapBridgingCoordinator
+    @EnvironmentObject var cameraBridgingCoordinator: CameraBridgingCoordinator
     
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
@@ -39,6 +40,7 @@ struct SelectTripForAppleMapView: View {
                         MapView(mapMode: "trip", tripName: trip.name, columnName: "", organismName: "", queryName: "query_get_trip_for_apple_map")
                             .environmentObject(gpsBridgingCoordinator)
                             .environmentObject(mapBridgingCoordinator)
+                            .environmentObject(cameraBridgingCoordinator)
                     }
                 }
             }

@@ -16,12 +16,9 @@ struct SelectTripView: View {
     
     // Bridging coordinator
     @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
+    @EnvironmentObject var cameraBridgingCoordinator: CameraBridgingCoordinator
     
-//    var useArrowGold:Bool
-//    var gpsModeIsSelected:Bool
     var tripMode:String
-    
-//    @EnvironmentObject var nmea: NMEA
     
     // For add-a-trip popup
     @State private var showingTripNameAlert = false
@@ -44,6 +41,7 @@ struct SelectTripView: View {
                             else if (tripMode == "thorough") {
                                 TripModeThoroughCameraView(tripName: item.name).navigationTitle("🐢 \(item.name)")
                                     .environmentObject(gpsBridgingCoordinator)
+                                    .environmentObject(cameraBridgingCoordinator)
                             }
                             else {
                                 MessageView(message: "No trip type selected.")

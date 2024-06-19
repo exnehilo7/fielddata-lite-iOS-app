@@ -105,7 +105,7 @@ struct MapWithNMEAView: View {
     @State private var showingInvalidSyntaxAlert = false
     @State private var showingHDOPOverLimit = false
     @State private var textNotes = ""
-    @State private var scrubbedNotes = ""
+//    @State private var scrubbedNotes = ""
     @State private var numofmatches = 0
     @State private var showingCompleteAlert = false
     
@@ -1145,7 +1145,7 @@ struct MapWithNMEAView: View {
 //            }
 //    }//end get distance and bearing
 
-    private func checkUserData() -> Bool {  // MOVE TO CAMERA MVC
+    private func checkUserData() -> Bool {   // MOVE TO MAP MVC (MOVED)
         var isValid = false
         
         numofmatches = 0
@@ -1182,13 +1182,13 @@ struct MapWithNMEAView: View {
         return isValid
     }
     
-    private func cancelPic(){  // MOVE TO CAMERA MVC
+    private func cancelPic(){  // MOVE TO CAMERA MVC (MOVED)
         isImageSelected = false
         isShowCamera = true
         textNotes = ""
     }
     
-    private func showCompleteAlertToggle(){  // MOVE TO CAMERA MVC
+    private func showCompleteAlertToggle(){  // MOVE TO CAMERA MVC (MOVED)
         showingCompleteAlert.toggle()
     }
     
@@ -1197,7 +1197,7 @@ struct MapWithNMEAView: View {
 //        article.description = "The syntax \(object) is invalid!"
 //    }
     
-    private func clearCustomData(){  // MOVE TO CAMERA MVC
+    private func clearCustomData(){  // MOVE TO CAMERA MVC (MOVED)
         textNotes = ""
     }
     

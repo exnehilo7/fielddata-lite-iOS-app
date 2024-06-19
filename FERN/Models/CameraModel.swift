@@ -87,4 +87,55 @@ class CameraController: UIViewController {
         }
     }
     
+    func checkUserData() -> Bool {   // MOVE TO MAP MVC (MOVED)
+        var isValid = false
+        
+        numofmatches = 0
+        
+        // Remove special characters from user data
+        let pattern = "[^A-Za-z0-9,.:;\\s_\\-]+"
+        textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
+        
+//        // remove any text past the final ;
+//        pattern = "[A-Za-z0-9\\s]*$"
+//        textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
+        
+        // Count # of proper syntax matches
+        let range = NSRange(location: 0, length: textNotes.utf16.count)
+        let regex = try! NSRegularExpression(pattern: "[\\s\\d\\w,._\\-]+\\s*:\\s*[\\s\\d\\w,._\\-]+\\s*;\\s*")
+        numofmatches = regex.numberOfMatches(in: textNotes, range: range)
+        
+        // Are both ; : more than 0? Are ; : counts equal? Is : equal to match count? Or is the field blank?
+        let colonCount = textNotes.filter({ $0 == ":"}).count
+        let semicolonCount = textNotes.filter({ $0 == ";"}).count
+        
+        if (
+            (
+                (colonCount > 0 && semicolonCount > 0)
+                && colonCount == semicolonCount
+                && colonCount == numofmatches
+                && textNotes.count > 0
+                && numofmatches > 0
+            ) || textNotes.count == 0
+        ) {
+            isValid = true
+        }
+        
+        return isValid
+    }
+    
+    func cancelPic() {
+        isImageSelected = false
+        isShowCamera = true
+        textNotes = ""
+    }
+    
+    func showCompleteAlertToggle() {
+        showingCompleteAlert.toggle()
+    }
+    
+    func clearCustomData() {
+        textNotes = ""
+    }
+    
 }
