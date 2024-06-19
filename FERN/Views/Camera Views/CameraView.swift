@@ -173,8 +173,8 @@ struct CameraView: View {
                 imageSuccessful = C.cameraController.processImage(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: true, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "iOS", hdop: clHorzAccuracy, longitude: clLong, latitude: clLat, altitude: clAltitude, scannedText: textInPic, notes: result.textNotes)
             }
             
-            if imageSuccessful {
-                // pop view back down
+            // pop view back down
+            if imageSuccessful && mapMode != "none"{
                 M.mapController.showPopover = false
             }
             
