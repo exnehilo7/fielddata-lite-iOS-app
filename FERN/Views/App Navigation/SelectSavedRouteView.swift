@@ -36,7 +36,7 @@ struct SelectSavedRouteView: View {
                 List (self.routeList) { (route) in
                     NavigationLink(route.name) {
                         // Pass var to view. Query for route does not need a column or organism name.
-                        MapView(mapMode: "route", tripName: route.name, columnName: "", organismName: "", queryName: "query_get_route_for_app")
+                        MapView(mapMode: "route", tripOrRouteName: route.name, columnName: "", organismName: "", queryName: "query_get_route_for_app")
                             .environmentObject(gpsBridgingCoordinator)
                             .environmentObject(mapBridgingCoordinator)
                             .environmentObject(cameraBridgingCoordinator)

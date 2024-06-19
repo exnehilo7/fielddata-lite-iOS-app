@@ -14,6 +14,7 @@ struct CameraView: View {
     // Bridging coordinator
     @EnvironmentObject var G: GpsBridgingCoordinator
     @EnvironmentObject var C: CameraBridgingCoordinator
+    @EnvironmentObject var M: MapBridgingCoordinator
 
     
     // Swift Data
@@ -45,6 +46,7 @@ struct CameraView: View {
     let audio = playSound()
     
     // From calling view
+    var mapMode: String
     var tripOrRouteName: String
     
     // MOVE THESE TO A SOME VIEW DECLARATION CONTROLLED BY useBluetoothDevice?
@@ -138,7 +140,7 @@ struct CameraView: View {
             let upperUUID = fileNameUUID.uppercased()
             var textInPic = recognizedContent.items[0].text
             textInPic = textInPic.replacingOccurrences(of: ScannedTextPattern().pattern, with: "", options: [.regularExpression])
-            savePic(upperUUID: upperUUID, textInPic: textInPic)
+            savePic(upperUUID: upperUUID, textInPic: textInPic, textNotes: textNotes)
         }, label: {
             HStack {
                 Image(systemName: "photo")
@@ -155,22 +157,34 @@ struct CameraView: View {
         })
     }
     
-    private func savePic(upperUUID: String, textInPic: String) {
+    private func savePic(upperUUID: String, textInPic: String, textNotes: String) {
+        
+        let result = C.cameraController.checkUserData(textNotes: textNotes)
+        
         // if user data is all good, save pic
-        if C.cameraController.checkUserData() { // MAY NEED TO PASS VARS
+        if result.isValid { // MAY NEED TO PASS VARS
+            
+            var imageSuccessful = false
             
             if settings[0].useBluetoothDevice {
-                C.cameraController.processImage(upperUUID: upperUUID, textInPic: textInPic)
+                imageSuccessful = C.cameraController.processImage(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: ((G.gpsController.nmea?.hasNMEAStreamStopped) != nil), hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "ArrowGold", hdop: G.gpsController.nmea?.accuracy ?? "0.00", longitude: G.gpsController.nmea?.longitude ?? "0.00000000", latitude: G.gpsController.nmea?.latitude ?? "0.00000000", altitude: G.gpsController.nmea?.altitude ?? "0.00", scannedText: textInPic, notes: result.textNotes)
                 
             } else {
-                C.cameraController.processImage(upperUUID: upperUUID, textInPic: textInPic)
+                imageSuccessful = C.cameraController.processImage(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: true, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "iOS", hdop: clHorzAccuracy, longitude: clLong, latitude: clLat, altitude: clAltitude, scannedText: textInPic, notes: result.textNotes)
             }
             
-            // If above was successful:
-            // Change annotation's color to blue
-            Task {
-                await updatePointColor(routeID: annotationItems[currentAnnoItem].routeID,
-                                       pointOrder: annotationItems[currentAnnoItem].pointOrder)
+            if imageSuccessful {
+                // pop view back down
+                M.mapController.showPopover = false
+            }
+            
+            // If above was successful and map mode is Route:
+            if imageSuccessful && mapMode == "route" {
+                // Change annotation's color to blue
+                Task {
+                    await M.mapController.updatePointColor(settings: settings, phpFile: "updateRoutePointColor.php",
+                    postString:"_route_id=\(M.mapController.annotationItems[M.mapController.currentAnnoItem].routeID)&_point_order=\(M.mapController.annotationItems[M.mapController.currentAnnoItem].pointOrder)")
+                }
             }
             
             // Clear displayed image
@@ -382,7 +396,7 @@ struct CameraView: View {
             }
         }.onAppear(perform: {
             // Create Text File for the Day
-            C.cameraController.createTxtFileForTheDay(tripName: tripOrRouteName)
+            C.cameraController.createTxtFileForTheDay(tripOrRouteName: tripOrRouteName)
         })
         .sheet(isPresented: $isShowCamera) {
             // Try to show the GPS data at all times on the bottom half of the screen

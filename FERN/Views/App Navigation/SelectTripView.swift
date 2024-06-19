@@ -39,7 +39,7 @@ struct SelectTripView: View {
                                 TripModeFastCameraView(tripName: item.name).navigationTitle("🐇 \(item.name)")//.environmentObject(nmea)
                             }
                             else if (tripMode == "thorough") {
-                                TripModeThoroughCameraView(tripName: item.name).navigationTitle("🐢 \(item.name)")
+                                CameraView(mapMode: "none", tripOrRouteName: item.name).navigationTitle("🐢 \(item.name)")
                                     .environmentObject(gpsBridgingCoordinator)
                                     .environmentObject(cameraBridgingCoordinator)
                             }
