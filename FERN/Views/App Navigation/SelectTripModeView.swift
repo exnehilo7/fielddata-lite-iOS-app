@@ -12,6 +12,7 @@ struct SelectTripModeView: View {
     // Bridging coordinator
     @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
     @EnvironmentObject var cameraBridgingCoordinator: CameraBridgingCoordinator
+    @EnvironmentObject var mapBridgingCoordinator: MapBridgingCoordinator
     
     var body: some View {
         
@@ -32,6 +33,7 @@ struct SelectTripModeView: View {
                     SelectTripView(tripMode: "thorough")
                         .navigationTitle("🐢 Select or Create a Trip")
                         .environmentObject(gpsBridgingCoordinator)
+                        .environmentObject(mapBridgingCoordinator)
                         .environmentObject(cameraBridgingCoordinator)
                 } label: {
                     HStack {
