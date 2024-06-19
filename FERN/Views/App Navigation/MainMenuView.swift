@@ -41,7 +41,7 @@ struct MainMenuView: View {
                     NavigationLink {
                         SelectTripModeView()
                             .environmentObject(gpsBridgingCoordinator)
-//                            .environmentObject(cameraBridgingCoordinator)  Is there a need to pass it?
+                            .environmentObject(cameraBridgingCoordinator)
                             .navigationTitle("Select Trip Mode")
                     } label: {
                         HStack {
@@ -55,7 +55,7 @@ struct MainMenuView: View {
                             .environmentObject(menuListBridgingCoordinator)
                             .environmentObject(gpsBridgingCoordinator)
                             .environmentObject(mapBridgingCoordinator)
-//                            .environmentObject(cameraBridgingCoordinator)
+                            .environmentObject(cameraBridgingCoordinator)
                             .navigationTitle("Select Trip to QC")
                     } label: {
                         HStack {
@@ -70,7 +70,7 @@ struct MainMenuView: View {
                             .environmentObject(menuListBridgingCoordinator)
                             .environmentObject(gpsBridgingCoordinator)
                             .environmentObject(mapBridgingCoordinator)
-//                            .environmentObject(cameraBridgingCoordinator)
+                            .environmentObject(cameraBridgingCoordinator)
                             .navigationTitle("Select Saved Route")
                     } label: {
                         HStack {

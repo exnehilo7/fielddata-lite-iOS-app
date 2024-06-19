@@ -11,6 +11,7 @@ struct SelectTripModeView: View {
     
     // Bridging coordinator
     @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
+    @EnvironmentObject var cameraBridgingCoordinator: CameraBridgingCoordinator
     
     var body: some View {
         
@@ -31,6 +32,7 @@ struct SelectTripModeView: View {
                     SelectTripView(tripMode: "thorough")
                         .navigationTitle("🐢 Select or Create a Trip")
                         .environmentObject(gpsBridgingCoordinator)
+                        .environmentObject(cameraBridgingCoordinator)
                 } label: {
                     HStack {
                         Image(systemName: "tortoise.fill").bold(false).foregroundColor(.gray)
