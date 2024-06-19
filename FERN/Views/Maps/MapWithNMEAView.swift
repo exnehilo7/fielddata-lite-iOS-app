@@ -816,7 +816,7 @@ struct MapWithNMEAView: View {
     private func createTxtFileForTheDay() {  // CREATE THE TEXT FILE ON THE CAMERA VIEW FILE? (moved to model)
         do{
             // create new txt file for the day for GPS data.
-            _ = try FieldWorkGPSFile.log(tripName: tripName, uuid: "", gps: "", hdop: "", longitude: "", latitude: "", altitude: "", scannedText: "", notes: "")
+            _ = try FieldWorkGPSFile.log(tripOrRouteName: tripName, uuid: "", gpsUsed: "", hdop: "", longitude: "", latitude: "", altitude: "", scannedText: "", notes: "")
         } catch {
             print(error.localizedDescription)
         }
@@ -885,7 +885,7 @@ struct MapWithNMEAView: View {
         
         do {
             // Save image to Trip's folder
-            try _ = FieldWorkImageFile.saveToFolder(imgFile: imgFile, tripName: tripName, uuid: uuid, gps: gps, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude)
+            try _ = FieldWorkImageFile.saveToFolder(imgFile: imgFile, tripOrRouteName: tripName, uuid: uuid, gpsUsed: gps, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude)
         } catch {
             print(error.localizedDescription)
             audio.playError()
@@ -894,7 +894,7 @@ struct MapWithNMEAView: View {
         // Write the pic's info to a .txt file
         do {
             // .txt file header order is uuid, gps, hdop, longitude, latitude, altitude.
-            try _ = FieldWorkGPSFile.log(tripName: tripName, uuid: uuid, gps: gps, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude, scannedText: scannedText, notes: notes)
+            try _ = FieldWorkGPSFile.log(tripOrRouteName: tripName, uuid: uuid, gpsUsed: gps, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude, scannedText: scannedText, notes: notes)
             // Play a success noise
             audio.playSuccess()
         } catch {

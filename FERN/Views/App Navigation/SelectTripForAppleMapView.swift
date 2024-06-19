@@ -37,7 +37,7 @@ struct SelectTripForAppleMapView: View {
                         // Pass var to view. Query for route does not need a column or organism name.
                         /* 14-JUN-2024: Interesting..... The @ObservedObject var clLocationHelper = LocationHelper() in MapQCWithNMEAView is
                          fired twice for every trip that appears in the list? */
-                        MapView(mapMode: "trip", tripName: trip.name, columnName: "", organismName: "", queryName: "query_get_trip_for_apple_map")
+                        MapView(mapMode: "trip", tripOrRouteName: trip.name, columnName: "", organismName: "", queryName: "query_get_trip_for_apple_map")
                             .environmentObject(gpsBridgingCoordinator)
                             .environmentObject(mapBridgingCoordinator)
                             .environmentObject(cameraBridgingCoordinator)

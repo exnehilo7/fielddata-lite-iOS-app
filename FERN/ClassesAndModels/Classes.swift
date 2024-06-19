@@ -99,7 +99,7 @@ class FieldWorkGPSFile {
         return documentsDirectory
     }
     
-    static func log(tripName: String, uuid: String, gps: String, hdop: String, longitude: String, latitude: String, altitude: String,
+    static func log(tripOrRouteName: String, uuid: String, gpsUsed: String, hdop: String, longitude: String, latitude: String, altitude: String,
                     scannedText: String, notes: String) throws -> Bool {
         guard let gpsFile = gpsFile else {
             return false
@@ -114,15 +114,15 @@ class FieldWorkGPSFile {
         // Use the unique device ID for the text file name and the folder path.
         if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString
         {
-            let fileName = "\(dateString)_\(tripName)_\(deviceUuid).txt"
-            let path = gpsFile.appendingPathComponent("\(deviceUuid)/trips/\(tripName)")
+            let fileName = "\(dateString)_\(tripOrRouteName)_\(deviceUuid).txt"
+            let path = gpsFile.appendingPathComponent("\(deviceUuid)/trips/\(tripOrRouteName)")
             do {
                 try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true, attributes: nil)
             } catch {}
             filePath = path.appendingPathComponent(fileName)
         } else {
             let fileName = "\(dateString)_No_Device_UUID.txt"
-            let path = gpsFile.appendingPathComponent("no_device_uuid/trips/\(tripName)")
+            let path = gpsFile.appendingPathComponent("no_device_uuid/trips/\(tripOrRouteName)")
             do {
                 try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true, attributes: nil)
             } catch {}
@@ -133,7 +133,7 @@ class FieldWorkGPSFile {
             let formatterDateTime = DateFormatter()
             formatterDateTime.dateFormat = "yyyy-MM-dd HH:mm:ssx"
             let timestamp = formatterDateTime.string(from: Date())
-            let message = "\(uuid),\(gps),\(hdop),\(longitude),\(latitude),\(altitude),\(scannedText),\(timestamp),\(notes)"
+            let message = "\(uuid),\(gpsUsed),\(hdop),\(longitude),\(latitude),\(altitude),\(scannedText),\(timestamp),\(notes)"
             guard let data = (message + "\n").data(using: String.Encoding.utf8) else { return false}
         
             if FileManager.default.fileExists(atPath: filePath.path) {
@@ -162,7 +162,7 @@ class FieldWorkImageFile {
         return documentsDirectory
     }
     
-    static func saveToFolder(imgFile: UIImage, tripName: String, uuid: String, gps: String, 
+    static func saveToFolder(imgFile: UIImage, tripOrRouteName: String, uuid: String, gpsUsed: String,
                              hdop: String, longitude: String, latitude: String, altitude: String) throws -> Bool {
         guard let gpsFile = gpsFile else {
             return false
@@ -174,13 +174,13 @@ class FieldWorkImageFile {
         // Use the unique device ID for the text file name and the folder path.
         if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString
         {
-            let path = gpsFile.appendingPathComponent("\(deviceUuid)/trips/\(tripName)")
+            let path = gpsFile.appendingPathComponent("\(deviceUuid)/trips/\(tripOrRouteName)")
             do {
                 try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true, attributes: nil)
             } catch {}
             filePath = path.appendingPathComponent(fileName)
         } else {
-            let path = gpsFile.appendingPathComponent("no_device_uuid/trips/\(tripName)")
+            let path = gpsFile.appendingPathComponent("no_device_uuid/trips/\(tripOrRouteName)")
             do {
                 try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true, attributes: nil)
             } catch {}

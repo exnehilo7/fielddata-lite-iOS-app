@@ -42,6 +42,7 @@ struct MainMenuView: View {
                         SelectTripModeView()
                             .environmentObject(gpsBridgingCoordinator)
                             .environmentObject(cameraBridgingCoordinator)
+                            .environmentObject(mapBridgingCoordinator)
                             .navigationTitle("Select Trip Mode")
                     } label: {
                         HStack {

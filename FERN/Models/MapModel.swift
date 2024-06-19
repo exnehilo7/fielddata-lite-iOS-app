@@ -160,7 +160,7 @@ class MapController: UIViewController {
     }
     
     
-    func updatePointColor(settings: [Settings], routeID: String, pointOrder: String, phpFile: String, postString: String = "") async {
+    func updatePointColor(settings: [Settings], phpFile: String, postString: String = "") async {
         
         guard let url: URL = URL(string: settings[0].databaseURL + "/php/\(phpFile)") else {
             Swift.print("invalid URL")

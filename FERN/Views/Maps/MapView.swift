@@ -16,6 +16,7 @@ struct MapView: View {
     // Bridging coordinator
     @EnvironmentObject var G: GpsBridgingCoordinator
     @EnvironmentObject var M: MapBridgingCoordinator
+    @EnvironmentObject var C: CameraBridgingCoordinator
     
     // swift data
     @Environment(\.modelContext) var modelContext
@@ -27,7 +28,7 @@ struct MapView: View {
     
     // From calling view
     var mapMode: String
-    var tripName: String
+    var tripOrRouteName: String
     var columnName: String
     var organismName: String
     var queryName: String
@@ -90,9 +91,11 @@ struct MapView: View {
         } label: {
             Text("Show Camera")
         }.buttonStyle(.borderedProminent).tint(.orange).popover(isPresented: $M.mapController.showPopover) {
-
             // Show view. Pass textNotes.
-//            CameraImageView(mapViewIsActive: true, tripName: tripName, showArrowGold: showArrowGold, gpsModeIsSelected: gpsModeIsSelected)//.environmentObject(nmea)
+            CameraView(mapMode: mapMode, tripOrRouteName: tripOrRouteName)
+                .environmentObject(G)
+                .environmentObject(M)
+                .environmentObject(C)
         }
     }
     
@@ -189,7 +192,7 @@ struct MapView: View {
     
     private func getMapPoints() async {
         
-        self.annotationItems = await M.mapController.getMapPointsFromDatabase(annotationItems: annotationItems, settings: settings, phpFile: "getMapItemsForApp.php", postString: "_column_name=\(columnName)&_column_value=\(tripName)&_org_name=\(organismName)&_query_name=\(queryName)")
+        self.annotationItems = await M.mapController.getMapPointsFromDatabase(annotationItems: annotationItems, settings: settings, phpFile: "getMapItemsForApp.php", postString: "_column_name=\(columnName)&_column_value=\(tripOrRouteName)&_org_name=\(organismName)&_query_name=\(queryName)")
 
     }
     
