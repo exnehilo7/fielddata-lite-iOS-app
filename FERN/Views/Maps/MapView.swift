@@ -15,7 +15,7 @@ struct MapView: View {
     // MARK: Vars
     // Bridging coordinator
 //    @EnvironmentObject var G: GpsBridgingCoordinator
-    @EnvironmentObject var M: MapBridgingCoordinator
+//    @EnvironmentObject var M: MapBridgingCoordinator
 //    @EnvironmentObject var C: CameraBridgingCoordinator
     
     // swift data
@@ -96,7 +96,7 @@ struct MapView: View {
             Text("Show Camera")
         }.buttonStyle(.borderedProminent).tint(.orange).popover(isPresented: $map.showPopover) {
             // Show view. Pass textNotes.
-            CameraView(gps: gps, camera: camera, mapMode: mapMode, tripOrRouteName: tripOrRouteName)
+            CameraView(map: map, gps: gps, camera: camera, mapMode: mapMode, tripOrRouteName: tripOrRouteName)
 //                .environmentObject(G)
 //                .environmentObject(M)
 //                .environmentObject(C)

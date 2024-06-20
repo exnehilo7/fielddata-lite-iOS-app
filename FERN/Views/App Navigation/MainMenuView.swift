@@ -43,7 +43,7 @@ struct MainMenuView: View {
                 {
                     // Select Trip Mode (new trip acquisition)
                     NavigationLink {
-                        SelectTripModeView(gps: gps, camera: camera)
+                        SelectTripModeView(map: map, gps: gps, camera: camera)
 //                            .environmentObject(gpsBridgingCoordinator)
 //                            .environmentObject(cameraBridgingCoordinator)
 //                            .environmentObject(mapBridgingCoordinator)

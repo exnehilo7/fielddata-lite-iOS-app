@@ -14,10 +14,13 @@ struct CameraView: View {
     // Bridging coordinator
 //    @EnvironmentObject var G: GpsBridgingCoordinator
 //    @EnvironmentObject var C: CameraBridgingCoordinator
-    @EnvironmentObject var M: MapBridgingCoordinator
+//    @EnvironmentObject var M: MapBridgingCoordinator
 
+    var map: MapClass
     var gps: GpsClass
     @Bindable var camera: CameraClass
+    var mapMode: String
+    var tripOrRouteName: String
     
     // Swift Data
     @Environment(\.modelContext) var modelContext
@@ -46,10 +49,6 @@ struct CameraView: View {
     
     // Sounds
     let audio = playSound()
-    
-    // From calling view
-    var mapMode: String
-    var tripOrRouteName: String
     
     // MOVE THESE TO A SOME VIEW DECLARATION CONTROLLED BY useBluetoothDevice?
 //    var clLat:String {
@@ -205,15 +204,15 @@ struct CameraView: View {
             
             // pop view back down
             if imageSuccessful && mapMode != "none"{
-                M.mapController.showPopover = false
+                map.showPopover = false
             }
             
             // If above was successful and map mode is Route:
             if imageSuccessful && mapMode == "route" {
                 // Change annotation's color to blue
                 Task {
-                    await M.mapController.updatePointColor(settings: settings, phpFile: "updateRoutePointColor.php",
-                    postString:"_route_id=\(M.mapController.annotationItems[M.mapController.currentAnnoItem].routeID)&_point_order=\(M.mapController.annotationItems[M.mapController.currentAnnoItem].pointOrder)")
+                    await map.updatePointColor(settings: settings, phpFile: "updateRoutePointColor.php",
+                                                           postString:"_route_id=\(map.annotationItems[map.currentAnnoItem].routeID)&_point_order=\(map.annotationItems[map.currentAnnoItem].pointOrder)")
                 }
             }
             

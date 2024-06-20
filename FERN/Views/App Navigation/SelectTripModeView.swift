@@ -14,7 +14,7 @@ struct SelectTripModeView: View {
 //    @EnvironmentObject var cameraBridgingCoordinator: CameraBridgingCoordinator
 //    @EnvironmentObject var mapBridgingCoordinator: MapBridgingCoordinator
     
-//    var map: MapClass
+    var map: MapClass
     var gps: GpsClass
     var camera: CameraClass
     
@@ -35,7 +35,7 @@ struct SelectTripModeView: View {
 //                }
                 // Thorough Acquisition
                 NavigationLink {
-                    SelectTripView(gps: gps, camera: camera, tripMode: "thorough")
+                    SelectTripView(map: map, gps: gps, camera: camera, tripMode: "thorough")
                         .navigationTitle("🐢 Select or Create a Trip")
 //                        .environmentObject(gpsBridgingCoordinator)
 //                        .environmentObject(mapBridgingCoordinator)
