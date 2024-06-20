@@ -12,9 +12,12 @@ import SwiftData
 struct SelectTripForAppleMapView: View {
     
     @EnvironmentObject var menuListBridgingCoordinator: MenuListBridgingCoordinator
-    @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
+//    @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
     @EnvironmentObject var mapBridgingCoordinator: MapBridgingCoordinator
-    @EnvironmentObject var cameraBridgingCoordinator: CameraBridgingCoordinator
+//    @EnvironmentObject var cameraBridgingCoordinator: CameraBridgingCoordinator
+    
+    var gps: GpsClass
+    var camera: CameraClass
     
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
@@ -37,10 +40,10 @@ struct SelectTripForAppleMapView: View {
                         // Pass var to view. Query for route does not need a column or organism name.
                         /* 14-JUN-2024: Interesting..... The @ObservedObject var clLocationHelper = LocationHelper() in MapQCWithNMEAView is
                          fired twice for every trip that appears in the list? */
-                        MapView(mapMode: "trip", tripOrRouteName: trip.name, columnName: "", organismName: "", queryName: "query_get_trip_for_apple_map")
-                            .environmentObject(gpsBridgingCoordinator)
+                        MapView(gps: gps, camera: camera, mapMode: "trip", tripOrRouteName: trip.name, columnName: "", organismName: "", queryName: "query_get_trip_for_apple_map")
+//                            .environmentObject(gpsBridgingCoordinator)
                             .environmentObject(mapBridgingCoordinator)
-                            .environmentObject(cameraBridgingCoordinator)
+//                            .environmentObject(cameraBridgingCoordinator)
                     }
                 }
             }

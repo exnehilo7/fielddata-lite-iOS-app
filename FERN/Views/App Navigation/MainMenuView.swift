@@ -11,20 +11,23 @@ import SwiftData
 struct MainMenuView: View {
     
     // Bridging coordinator
-    @StateObject private var gpsBridgingCoordinator: GpsBridgingCoordinator
+//    @StateObject private var gpsBridgingCoordinator: GpsBridgingCoordinator
     @StateObject private var menuListBridgingCoordinator: MenuListBridgingCoordinator
     @StateObject private var mapBridgingCoordinator: MapBridgingCoordinator
-    @StateObject private var cameraBridgingCoordinator: CameraBridgingCoordinator
+//    @StateObject private var cameraBridgingCoordinator: CameraBridgingCoordinator
+    
+    @State var camera = CameraClass()
+    @State private var gps = GpsClass()
     
     init() {
-        let gpsCoordinator = GpsBridgingCoordinator()
-        self._gpsBridgingCoordinator = StateObject(wrappedValue: gpsCoordinator)
+//        let gpsCoordinator = GpsBridgingCoordinator()
+//        self._gpsBridgingCoordinator = StateObject(wrappedValue: gpsCoordinator)
         let menuListCoordinator = MenuListBridgingCoordinator()
         self._menuListBridgingCoordinator = StateObject(wrappedValue: menuListCoordinator)
         let mapCoordinator = MapBridgingCoordinator()
         self._mapBridgingCoordinator = StateObject(wrappedValue: mapCoordinator)
-        let cameraCoordinator = CameraBridgingCoordinator()
-        self._cameraBridgingCoordinator = StateObject(wrappedValue: cameraCoordinator)
+//        let cameraCoordinator = CameraBridgingCoordinator()
+//        self._cameraBridgingCoordinator = StateObject(wrappedValue: cameraCoordinator)
     }
     
     @Environment(\.modelContext) var modelContext
@@ -39,10 +42,11 @@ struct MainMenuView: View {
                 {
                     // Select Trip Mode (new trip acquisition)
                     NavigationLink {
-                        SelectTripModeView()
-                            .environmentObject(gpsBridgingCoordinator)
-                            .environmentObject(cameraBridgingCoordinator)
+                        SelectTripModeView(gps: gps, camera: camera)
+//                            .environmentObject(gpsBridgingCoordinator)
+//                            .environmentObject(cameraBridgingCoordinator)
                             .environmentObject(mapBridgingCoordinator)
+                            .environment(gps)
                             .navigationTitle("Select Trip Mode")
                     } label: {
                         HStack {
@@ -52,11 +56,11 @@ struct MainMenuView: View {
                     }
                     // QC an Uploaded Trip
                     NavigationLink {
-                        QCSelectMapTypeView()
+                        QCSelectMapTypeView(gps: gps, camera: camera)
                             .environmentObject(menuListBridgingCoordinator)
-                            .environmentObject(gpsBridgingCoordinator)
+//                            .environmentObject(gpsBridgingCoordinator)
                             .environmentObject(mapBridgingCoordinator)
-                            .environmentObject(cameraBridgingCoordinator)
+//                            .environmentObject(cameraBridgingCoordinator)
                             .navigationTitle("Select Trip to QC")
                     } label: {
                         HStack {
@@ -66,12 +70,12 @@ struct MainMenuView: View {
                     }
                     // Select a saved route
                     NavigationLink {
-                        SelectSavedRouteView()
+                        SelectSavedRouteView(gps: gps, camera: camera)
                             // Hopefully cameraBridgingCoordinator will be "enabled" after the GPS feed coordinator is "enabled" (below in HStack)
                             .environmentObject(menuListBridgingCoordinator)
-                            .environmentObject(gpsBridgingCoordinator)
+//                            .environmentObject(gpsBridgingCoordinator)
                             .environmentObject(mapBridgingCoordinator)
-                            .environmentObject(cameraBridgingCoordinator)
+//                            .environmentObject(cameraBridgingCoordinator)
                             .navigationTitle("Select Saved Route")
                     } label: {
                         HStack {
@@ -101,7 +105,7 @@ struct MainMenuView: View {
                     }
                     // Testing
                     NavigationLink {
-                        RandoTestingView().environmentObject(gpsBridgingCoordinator)
+                        RandoTestingView()//.environmentObject(gpsBridgingCoordinator)
                             .navigationTitle("Testing")
                     } label: {
                         HStack {
@@ -133,10 +137,10 @@ struct MainMenuView: View {
         
         // Get the bridging connectors going in the parent view?
         HStack {
-            GpsViewControllerRepresentable(gpsBridgingCoordinator: gpsBridgingCoordinator)
+//            GpsViewControllerRepresentable(gpsBridgingCoordinator: gpsBridgingCoordinator)
             MenuListViewControllerRepresentable(menuListBridgingCoordinator: menuListBridgingCoordinator)
             MapViewControllerRepresentable(mapBridgingCoordinator: mapBridgingCoordinator)
-            CameraViewControllerRepresentable(cameraBridgingCoordinator: cameraBridgingCoordinator)
+//            CameraViewControllerRepresentable(cameraBridgingCoordinator: cameraBridgingCoordinator)
         }
         Spacer()
         Text("Version: \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Cannot get version #")").font(.footnote)
@@ -148,6 +152,7 @@ struct MainMenuView: View {
     }
     
     private func startGPS() {
-        gpsBridgingCoordinator.gpsController.startGPSFeed(settings: settings)
+        gps.startGPSFeed(settings: settings)
+//        gpsBridgingCoordinator.gpsController.startGPSFeed(settings: settings)
     }
 }
