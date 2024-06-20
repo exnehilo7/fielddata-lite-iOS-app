@@ -112,7 +112,7 @@ struct MapQCWithNMEAView: View {
     //MARK: Sections from View's Original Setup
     // GPS -------------------------------------------------------------
     // Arrow Gold
-    @ObservedObject var nmea:NMEA = NMEA()
+    var nmea:NMEA = NMEA()
 //    @EnvironmentObject var nmea:NMEA
     
     // Default iOS

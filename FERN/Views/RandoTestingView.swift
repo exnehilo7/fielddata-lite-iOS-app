@@ -17,7 +17,7 @@ struct RandoTestingView: View {
     @State private var count = 0
     
     // Bridging coordinator
-    @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
+//    @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
     
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
@@ -79,44 +79,5 @@ struct RandoTestingView: View {
         // ------END Regex checks ---------------------------------------------
         
         Spacer()
-        
-        // ----- Stop GPS Feeds -----------------------------------------------
-        VStack {
-            HStack{
-                Button (action: stopArrowTapped) {
-                    Text("Stop Arrow")
-                }
-                Spacer()
-                Button (action: stopStandardGPSTapped) {
-                    Text("Stop Standard GPS")
-                }
-            }
-            Spacer()
-            Button (action: restartSelectedGpsTapped) {
-                Text("Rrrrrestart selected GPS")
-            }
-            Spacer()
-        }
-        
-        // ------END Stop GPS Feeds -------------------------------------------
-    }
-    
-    private func stopArrowTapped() {
-        print("---------------STOPPING ARROW FEED --------------------------")
-        gpsBridgingCoordinator.gpsController.nmea?.stopUpdatingArrowCoreLocation()
-        gpsBridgingCoordinator.gpsController.nmea?.endStreaming()
-        gpsBridgingCoordinator.gpsController.setNmeaVarToNil()
-    }
-    
-    private func stopStandardGPSTapped() {
-        print("Stopping standard gps...")
-        gpsBridgingCoordinator.gpsController.clLocationHelper?.stopUpdatingDefaultCoreLocation()
-    }
-    
-    private func restartSelectedGpsTapped() {
-        if gpsBridgingCoordinator.gpsController.nmea == nil {
-            print("---------------STARTING ARROW FEED --------------------------")
-            gpsBridgingCoordinator.gpsController.startGPSFeed(settings: settings)
-        }
     }
 }

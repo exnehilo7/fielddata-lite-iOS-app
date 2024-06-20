@@ -12,9 +12,12 @@ import SwiftData
 struct SelectSavedRouteView: View {
     
     @EnvironmentObject var menuListBridgingCoordinator: MenuListBridgingCoordinator
-    @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
+//    @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
     @EnvironmentObject var mapBridgingCoordinator: MapBridgingCoordinator
-    @EnvironmentObject var cameraBridgingCoordinator: CameraBridgingCoordinator
+//    @EnvironmentObject var cameraBridgingCoordinator: CameraBridgingCoordinator
+    
+    var gps: GpsClass
+    var camera: CameraClass
     
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
@@ -36,10 +39,10 @@ struct SelectSavedRouteView: View {
                 List (self.routeList) { (route) in
                     NavigationLink(route.name) {
                         // Pass var to view. Query for route does not need a column or organism name.
-                        MapView(mapMode: "route", tripOrRouteName: route.name, columnName: "", organismName: "", queryName: "query_get_route_for_app")
-                            .environmentObject(gpsBridgingCoordinator)
+                        MapView(gps: gps, camera: camera, mapMode: "route", tripOrRouteName: route.name, columnName: "", organismName: "", queryName: "query_get_route_for_app")
+//                            .environmentObject(gpsBridgingCoordinator)
                             .environmentObject(mapBridgingCoordinator)
-                            .environmentObject(cameraBridgingCoordinator)
+//                            .environmentObject(cameraBridgingCoordinator)
                     }
                     .bold()
                 }

@@ -46,7 +46,8 @@ import ExternalAccessory
 ////----------- END was added for Controller view test------------------
 
 
-class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObject {
+//class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObject {
+@Observable class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate {
     
     var locationManager = CLLocationManager()
     var comThread:Thread?
@@ -63,16 +64,16 @@ class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObje
     private var infoInitialized = nmeaINFO()
 
     
-    @Published var latitude:String?
-    @Published var longitude:String?
-    @Published var altitude:String?
-    @Published var accuracy:String?
-    @Published var gpsUsed:String?
-    @Published var protocolText:NSString = "No Protocol"
-    @Published var stringGPGST:String?
+    var latitude:String?
+    var longitude:String?
+    var altitude:String?
+    var accuracy:String?
+    var gpsUsed:String?
+    var protocolText:NSString = "No Protocol"
+    var stringGPGST:String?
     
     // To alert the view if the stream has stopped
-    @Published var hasNMEAStreamStopped = false
+    var hasNMEAStreamStopped = false
     
     
     // MARK: - Main Function

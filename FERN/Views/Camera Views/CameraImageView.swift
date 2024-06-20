@@ -57,7 +57,7 @@ struct CameraImageView: View {
     // GPS -------------------------------------------------------------
     // Arrow Gold
 //    @ObservedObject var nmea:NMEA = NMEA()
-    @EnvironmentObject var nmea: NMEA
+    var nmea: NMEA
     
     // Default iOS
     @ObservedObject var clLocationHelper = LocationHelper()

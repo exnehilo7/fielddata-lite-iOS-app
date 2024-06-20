@@ -10,9 +10,13 @@ import SwiftUI
 struct SelectTripModeView: View {
     
     // Bridging coordinator
-    @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
-    @EnvironmentObject var cameraBridgingCoordinator: CameraBridgingCoordinator
+//    @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
+//    @EnvironmentObject var cameraBridgingCoordinator: CameraBridgingCoordinator
     @EnvironmentObject var mapBridgingCoordinator: MapBridgingCoordinator
+    
+    var gps: GpsClass
+    var camera: CameraClass
+    
     
     var body: some View {
         
@@ -30,11 +34,12 @@ struct SelectTripModeView: View {
 //                }
                 // Thorough Acquisition
                 NavigationLink {
-                    SelectTripView(tripMode: "thorough")
+                    SelectTripView(gps: gps, camera: camera, tripMode: "thorough")
                         .navigationTitle("🐢 Select or Create a Trip")
-                        .environmentObject(gpsBridgingCoordinator)
+//                        .environmentObject(gpsBridgingCoordinator)
                         .environmentObject(mapBridgingCoordinator)
-                        .environmentObject(cameraBridgingCoordinator)
+                        .environment(gps)
+//                        .environmentObject(cameraBridgingCoordinator)
                 } label: {
                     HStack {
                         Image(systemName: "tortoise.fill").bold(false).foregroundColor(.gray)

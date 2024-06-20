@@ -10,7 +10,7 @@
 import SwiftUI
 
 struct NMEADataView: View {
-    @ObservedObject var nmea:NMEA = NMEA()
+    var nmea:NMEA = NMEA()
     @State var toggleArrowGold = false
     
     @ObservedObject var clLocationHelper = LocationHelper()

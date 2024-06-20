@@ -49,7 +49,7 @@ struct TripModeThoroughCameraView: View {
     
     // GPS -------------------------------------------------------------
     // Arrow Gold
-    @ObservedObject var nmea:NMEA = NMEA()
+    var nmea:NMEA = NMEA()
     
     // Default iOS
     @ObservedObject var clLocationHelper = LocationHelper()
