@@ -19,7 +19,7 @@ struct SelectTripView: View {
 //    @EnvironmentObject var cameraBridgingCoordinator: CameraBridgingCoordinator
 //    @EnvironmentObject var mapBridgingCoordinator: MapBridgingCoordinator
     
-//    var map: MapClass
+    var map: MapClass
     var gps: GpsClass
     var camera: CameraClass
     
@@ -44,7 +44,7 @@ struct SelectTripView: View {
                                 TripModeFastCameraView(tripName: item.name).navigationTitle("🐇 \(item.name)")//.environmentObject(nmea)
                             }
                             else if (tripMode == "thorough") {
-                                CameraView(gps: gps, camera: camera, mapMode: "none", tripOrRouteName: item.name).navigationTitle("🐢 \(item.name)")
+                                CameraView(map: map, gps: gps, camera: camera, mapMode: "none", tripOrRouteName: item.name).navigationTitle("🐢 \(item.name)")
 //                                    .environmentObject(gpsBridgingCoordinator)
 //                                    .environmentObject(mapBridgingCoordinator)
 //                                    .environment(gps)
