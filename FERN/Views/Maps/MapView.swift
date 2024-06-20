@@ -24,9 +24,10 @@ struct MapView: View {
     @Query var sdTrips: [SDTrip]
     
     @State private var textNotes = ""
-    @State private var annotationItems = [MapAnnotationItem]()
+//    @State private var annotationItems = [MapAnnotationItem]()
     
     // From calling view
+    @Bindable var map: MapClass
     var gps: GpsClass
     var camera: CameraClass
     var mapMode: String
@@ -88,11 +89,12 @@ struct MapView: View {
     // Take pic button. Use a swipe-up view.
     var popupCameraButton: some View {
         Button {
-            M.mapController.showPopover = true
-            textNotes = "Organism name:" + self.annotationItems[M.mapController.currentAnnoItem].organismName + ";"
+            map.showPopover = true
+//            textNotes = "Organism name:" + self.annotationItems[map.currentAnnoItem].organismName + ";"
+            textNotes = "Organism name:" + map.annotationItems[map.currentAnnoItem].organismName + ";"
         } label: {
             Text("Show Camera")
-        }.buttonStyle(.borderedProminent).tint(.orange).popover(isPresented: $M.mapController.showPopover) {
+        }.buttonStyle(.borderedProminent).tint(.orange).popover(isPresented: $map.showPopover) {
             // Show view. Pass textNotes.
             CameraView(gps: gps, camera: camera, mapMode: mapMode, tripOrRouteName: tripOrRouteName)
 //                .environmentObject(G)
@@ -126,9 +128,10 @@ struct MapView: View {
 //                        }
 //                    )
                 // 17.0's new MapKit SDK:
-                Map(position: $M.mapController.cameraPosition) {
+                Map(position: $map.cameraPosition) {
                     UserAnnotation()
-                    ForEach(self.annotationItems) { item in
+//                    ForEach(self.annotationItems) { item in
+                    ForEach(map.annotationItems) { item in
                         Annotation(item.organismName, coordinate: item.coordinate) {Image(systemName: item.systemName)
                         .symbolRenderingMode(.palette)
                         .foregroundStyle(.white, item.highlightColor).font(.system(size: item.size))}
@@ -141,27 +144,43 @@ struct MapView: View {
                 }
             }.task { await getMapPoints()}
         // Don't display if no results
-            if M.mapController.hasMapPointsResults {
+            if map.hasMapPointsResults {
                VStack {
                    // Show organism name of the selected point
                    Text("Current Point:").font(.system(size:15))//.underline()
-                   Text(self.annotationItems[M.mapController.currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold)
+//                   Text(self.annotationItems[map.currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold)
+//                        // Mark first point on map
+//                       .onAppear(perform: {
+//                           self.annotationItems[map.currentAnnoItem].size = 20
+                   Text(map.annotationItems[map.currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold)
                         // Mark first point on map
                        .onAppear(perform: {
-                           self.annotationItems[M.mapController.currentAnnoItem].size = 20
+                           map.annotationItems[map.currentAnnoItem].size = 20
                            if mapMode == "route" {
                                // If currentAnnoItem is blue, make it light blue. Else make it red
-                               if self.annotationItems[M.mapController.currentAnnoItem].highlightColor == Color(red: 0, green: 0, blue: 1) {
-                                   self.annotationItems[M.mapController.currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
+//                               if self.annotationItems[map.currentAnnoItem].highlightColor == Color(red: 0, green: 0, blue: 1) {
+//                                   self.annotationItems[map.currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
+//                               } else {
+//                                   self.annotationItems[map.currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
+//                               }
+//                           }
+//                       })
+//                   // Show organism's lat and long
+//                   HStack{
+//                       Text("\(self.annotationItems[map.currentAnnoItem].latitude)").font(.system(size:15)).padding(.bottom, 25)
+//                       Text("\(self.annotationItems[map.currentAnnoItem].longitude)").font(.system(size:15)).padding(.bottom, 25)
+//                   }
+                               if map.annotationItems[map.currentAnnoItem].highlightColor == Color(red: 0, green: 0, blue: 1) {
+                                   map.annotationItems[map.currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
                                } else {
-                                   self.annotationItems[M.mapController.currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
+                                   map.annotationItems[map.currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
                                }
                            }
                        })
                    // Show organism's lat and long
                    HStack{
-                       Text("\(self.annotationItems[M.mapController.currentAnnoItem].latitude)").font(.system(size:15)).padding(.bottom, 25)
-                       Text("\(self.annotationItems[M.mapController.currentAnnoItem].longitude)").font(.system(size:15)).padding(.bottom, 25)
+                       Text("\(map.annotationItems[map.currentAnnoItem].latitude)").font(.system(size:15)).padding(.bottom, 25)
+                       Text("\(map.annotationItems[map.currentAnnoItem].longitude)").font(.system(size:15)).padding(.bottom, 25)
                    }
                    // Previous / Next Arrows
                    HStack {
@@ -194,7 +213,8 @@ struct MapView: View {
     
     private func getMapPoints() async {
         
-        self.annotationItems = await M.mapController.getMapPointsFromDatabase(annotationItems: annotationItems, settings: settings, phpFile: "getMapItemsForApp.php", postString: "_column_name=\(columnName)&_column_value=\(tripOrRouteName)&_org_name=\(organismName)&_query_name=\(queryName)")
+//        self.annotationItems = 
+        await map.getMapPointsFromDatabase(settings: settings, phpFile: "getMapItemsForApp.php", postString: "_column_name=\(columnName)&_column_value=\(tripOrRouteName)&_org_name=\(organismName)&_query_name=\(queryName)")
 
     }
     
@@ -204,19 +224,20 @@ struct MapView: View {
         var offsetColor: Color
         
         // Get current annotation's color
-        offsetColor = annotationItems[M.mapController.currentAnnoItem].highlightColor
+//        offsetColor = annotationItems[map.currentAnnoItem].highlightColor
+        offsetColor = map.annotationItems[map.currentAnnoItem].highlightColor
         
         if forward {
             // offset should be -1
-            if M.mapController.currentAnnoItem < M.mapController.totalAnnoItems {
-                M.mapController.currentAnnoItem += 1
+            if map.currentAnnoItem < map.totalAnnoItems {
+                map.currentAnnoItem += 1
                 highlightMapAnnotation(offset, offsetColor)
             }
         }
         else {
             // offset should be 1
-            if M.mapController.currentAnnoItem > 0 {
-                M.mapController.currentAnnoItem -= 1
+            if map.currentAnnoItem > 0 {
+                map.currentAnnoItem -= 1
                 highlightMapAnnotation(offset, offsetColor)
             }
         }
@@ -225,23 +246,43 @@ struct MapView: View {
     // Draw attention to selected point. Put previous or next point back to its original state
     private func highlightMapAnnotation (_ offset: Int, _ currentColor: Color){
 
-        annotationItems[M.mapController.currentAnnoItem].size = 20
-        annotationItems[M.mapController.currentAnnoItem + offset].size = MapPointSize().size
+//        annotationItems[map.currentAnnoItem].size = 20
+//        annotationItems[map.currentAnnoItem + offset].size = MapPointSize().size
+//        
+//        // if map is for a route, use the grey-blue-red setup
+//        if mapMode == "route" {
+//            // If currentAnnoItem is blue, make it light blue. Else make it red
+//            if annotationItems[map.currentAnnoItem].highlightColor == Color(red: 0, green: 0, blue: 1) {
+//                annotationItems[map.currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
+//            } else {
+//                annotationItems[map.currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
+//            }
+//            
+//            // If offsetColor is red, make it grey. Else make it blue
+//            if annotationItems[map.currentAnnoItem + offset].highlightColor == Color(red: 1, green: 0, blue: 0) {
+//                annotationItems[map.currentAnnoItem + offset].highlightColor = Color(red: 0.5, green: 0.5, blue: 0.5)
+//            } else {
+//                annotationItems[map.currentAnnoItem + offset].highlightColor = Color(red: 0, green: 0, blue: 1)
+//            }
+//        }
+        
+        map.annotationItems[map.currentAnnoItem].size = 20
+        map.annotationItems[map.currentAnnoItem + offset].size = MapPointSize().size
         
         // if map is for a route, use the grey-blue-red setup
         if mapMode == "route" {
             // If currentAnnoItem is blue, make it light blue. Else make it red
-            if annotationItems[M.mapController.currentAnnoItem].highlightColor == Color(red: 0, green: 0, blue: 1) {
-                annotationItems[M.mapController.currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
+            if map.annotationItems[map.currentAnnoItem].highlightColor == Color(red: 0, green: 0, blue: 1) {
+                map.annotationItems[map.currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
             } else {
-                annotationItems[M.mapController.currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
+                map.annotationItems[map.currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
             }
             
             // If offsetColor is red, make it grey. Else make it blue
-            if annotationItems[M.mapController.currentAnnoItem + offset].highlightColor == Color(red: 1, green: 0, blue: 0) {
-                annotationItems[M.mapController.currentAnnoItem + offset].highlightColor = Color(red: 0.5, green: 0.5, blue: 0.5)
+            if map.annotationItems[map.currentAnnoItem + offset].highlightColor == Color(red: 1, green: 0, blue: 0) {
+                map.annotationItems[map.currentAnnoItem + offset].highlightColor = Color(red: 0.5, green: 0.5, blue: 0.5)
             } else {
-                annotationItems[M.mapController.currentAnnoItem + offset].highlightColor = Color(red: 0, green: 0, blue: 1)
+                map.annotationItems[map.currentAnnoItem + offset].highlightColor = Color(red: 0, green: 0, blue: 1)
             }
         }
     }

@@ -13,10 +13,11 @@ struct MainMenuView: View {
     // Bridging coordinator
 //    @StateObject private var gpsBridgingCoordinator: GpsBridgingCoordinator
     @StateObject private var menuListBridgingCoordinator: MenuListBridgingCoordinator
-    @StateObject private var mapBridgingCoordinator: MapBridgingCoordinator
+//    @StateObject private var mapBridgingCoordinator: MapBridgingCoordinator
 //    @StateObject private var cameraBridgingCoordinator: CameraBridgingCoordinator
     
-    @State var camera = CameraClass()
+    @State private var map = MapClass()
+    @State private var camera = CameraClass()
     @State private var gps = GpsClass()
     
     init() {
@@ -24,8 +25,8 @@ struct MainMenuView: View {
 //        self._gpsBridgingCoordinator = StateObject(wrappedValue: gpsCoordinator)
         let menuListCoordinator = MenuListBridgingCoordinator()
         self._menuListBridgingCoordinator = StateObject(wrappedValue: menuListCoordinator)
-        let mapCoordinator = MapBridgingCoordinator()
-        self._mapBridgingCoordinator = StateObject(wrappedValue: mapCoordinator)
+//        let mapCoordinator = MapBridgingCoordinator()
+//        self._mapBridgingCoordinator = StateObject(wrappedValue: mapCoordinator)
 //        let cameraCoordinator = CameraBridgingCoordinator()
 //        self._cameraBridgingCoordinator = StateObject(wrappedValue: cameraCoordinator)
     }
@@ -45,7 +46,7 @@ struct MainMenuView: View {
                         SelectTripModeView(gps: gps, camera: camera)
 //                            .environmentObject(gpsBridgingCoordinator)
 //                            .environmentObject(cameraBridgingCoordinator)
-                            .environmentObject(mapBridgingCoordinator)
+//                            .environmentObject(mapBridgingCoordinator)
                             .environment(gps)
                             .navigationTitle("Select Trip Mode")
                     } label: {
@@ -56,10 +57,10 @@ struct MainMenuView: View {
                     }
                     // QC an Uploaded Trip
                     NavigationLink {
-                        QCSelectMapTypeView(gps: gps, camera: camera)
+                        QCSelectMapTypeView(map: map, gps: gps, camera: camera)
                             .environmentObject(menuListBridgingCoordinator)
 //                            .environmentObject(gpsBridgingCoordinator)
-                            .environmentObject(mapBridgingCoordinator)
+//                            .environmentObject(mapBridgingCoordinator)
 //                            .environmentObject(cameraBridgingCoordinator)
                             .navigationTitle("Select Trip to QC")
                     } label: {
@@ -70,11 +71,11 @@ struct MainMenuView: View {
                     }
                     // Select a saved route
                     NavigationLink {
-                        SelectSavedRouteView(gps: gps, camera: camera)
+                        SelectSavedRouteView(map: map, gps: gps, camera: camera)
                             // Hopefully cameraBridgingCoordinator will be "enabled" after the GPS feed coordinator is "enabled" (below in HStack)
                             .environmentObject(menuListBridgingCoordinator)
 //                            .environmentObject(gpsBridgingCoordinator)
-                            .environmentObject(mapBridgingCoordinator)
+//                            .environmentObject(mapBridgingCoordinator)
 //                            .environmentObject(cameraBridgingCoordinator)
                             .navigationTitle("Select Saved Route")
                     } label: {
@@ -139,7 +140,7 @@ struct MainMenuView: View {
         HStack {
 //            GpsViewControllerRepresentable(gpsBridgingCoordinator: gpsBridgingCoordinator)
             MenuListViewControllerRepresentable(menuListBridgingCoordinator: menuListBridgingCoordinator)
-            MapViewControllerRepresentable(mapBridgingCoordinator: mapBridgingCoordinator)
+//            MapViewControllerRepresentable(mapBridgingCoordinator: mapBridgingCoordinator)
 //            CameraViewControllerRepresentable(cameraBridgingCoordinator: cameraBridgingCoordinator)
         }
         Spacer()

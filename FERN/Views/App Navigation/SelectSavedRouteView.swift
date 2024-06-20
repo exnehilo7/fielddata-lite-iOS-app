@@ -13,9 +13,10 @@ struct SelectSavedRouteView: View {
     
     @EnvironmentObject var menuListBridgingCoordinator: MenuListBridgingCoordinator
 //    @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
-    @EnvironmentObject var mapBridgingCoordinator: MapBridgingCoordinator
+//    @EnvironmentObject var mapBridgingCoordinator: MapBridgingCoordinator
 //    @EnvironmentObject var cameraBridgingCoordinator: CameraBridgingCoordinator
     
+    var map: MapClass
     var gps: GpsClass
     var camera: CameraClass
     
@@ -39,9 +40,9 @@ struct SelectSavedRouteView: View {
                 List (self.routeList) { (route) in
                     NavigationLink(route.name) {
                         // Pass var to view. Query for route does not need a column or organism name.
-                        MapView(gps: gps, camera: camera, mapMode: "route", tripOrRouteName: route.name, columnName: "", organismName: "", queryName: "query_get_route_for_app")
+                        MapView(map: map, gps: gps, camera: camera, mapMode: "route", tripOrRouteName: route.name, columnName: "", organismName: "", queryName: "query_get_route_for_app")
 //                            .environmentObject(gpsBridgingCoordinator)
-                            .environmentObject(mapBridgingCoordinator)
+//                            .environmentObject(mapBridgingCoordinator)
 //                            .environmentObject(cameraBridgingCoordinator)
                     }
                     .bold()
@@ -54,7 +55,7 @@ struct SelectSavedRouteView: View {
     private func getTripList() async {
         
         // Need to reset vars in MapModel
-        mapBridgingCoordinator.mapController.resetMapModelVariables()
+        map.resetMapModelVariables()
         
         self.routeList = await menuListBridgingCoordinator.menuListController.getTripListFromDatabase(settings: settings, nameList: routeList, phpFile: "menuLoadSavedRouteView.php", isMethodPost: false)
     }
