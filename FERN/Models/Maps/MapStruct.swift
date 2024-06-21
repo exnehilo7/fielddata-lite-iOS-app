@@ -96,9 +96,9 @@ struct MapAnnotationItem: Identifiable {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
     
-    /* When displaying Area or Plot points, the siteId will be the unique
+    /* When displaying points, the pointOrder will be the unique
      ID from the database's table. Otherwise, this variable will be the
-     Routing points' order number. */
+     Routing's (traveling salesman) order number. */
     var routeID = ""
     var pointOrder = ""
     var organismName = ""

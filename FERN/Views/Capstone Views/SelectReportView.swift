@@ -85,9 +85,3 @@ struct SelectReportView: View {
     }// end qryReports
     
 }
-
-//struct SelectReportView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SelectReportView(phpFile: "menusAndReports.php")
-//    }
-//}

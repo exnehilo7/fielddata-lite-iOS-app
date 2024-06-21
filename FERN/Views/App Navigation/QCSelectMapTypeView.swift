@@ -10,9 +10,6 @@ import SwiftUI
 struct QCSelectMapTypeView: View {
     
     @EnvironmentObject var menuListBridgingCoordinator: MenuListBridgingCoordinator
-//    @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
-//    @EnvironmentObject var mapBridgingCoordinator: MapBridgingCoordinator
-//    @EnvironmentObject var cameraBridgingCoordinator: CameraBridgingCoordinator
     
     var map: MapClass
     var gps: GpsClass
@@ -26,9 +23,6 @@ struct QCSelectMapTypeView: View {
                     NavigationLink {
                         SelectTripForAppleMapView(map: map, gps: gps, camera: camera)
                             .environmentObject(menuListBridgingCoordinator)
-//                            .environmentObject(gpsBridgingCoordinator)
-//                            .environmentObject(mapBridgingCoordinator)
-//                            .environmentObject(cameraBridgingCoordinator)
                             .navigationTitle("Apple Map")
                     } label: {
                         HStack {

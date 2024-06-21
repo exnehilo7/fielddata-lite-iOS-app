@@ -16,9 +16,6 @@ struct RandoTestingView: View {
     @State private var numofmatches = 0
     @State private var count = 0
     
-    // Bridging coordinator
-//    @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
-    
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
     

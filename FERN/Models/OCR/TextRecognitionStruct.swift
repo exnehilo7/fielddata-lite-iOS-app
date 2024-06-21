@@ -24,9 +24,8 @@ import SwiftUI
 import Vision
 
 struct TextRecognition {
-    // For Camera View testing, try single image
+    // For Camera View, use a single image
     var scannedImages: [UIImage]
-//    var scannedImages: UIImage
     @ObservedObject var recognizedContent: RecognizedContent
     var didFinishRecognition: () -> Void
     

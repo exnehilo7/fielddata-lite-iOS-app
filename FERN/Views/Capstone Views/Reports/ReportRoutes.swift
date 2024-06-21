@@ -79,11 +79,5 @@ struct ReportRoutes: View {
             } catch {
                 totalDistances = []
             }
-    }// end qryTotalDistanceReport
+    }
 }
-
-//struct ReportRoutes_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ReportRoutes(phpFile: "menusAndReports.php")
-//    }
-//}

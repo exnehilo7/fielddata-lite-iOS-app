@@ -23,10 +23,9 @@
 import Foundation
 
 class ScannedTextItem: Identifiable {
-//class ScannedTextItem: ObservableObject {
+
     var id: String
     var text: String = ""
-//    @Published var text: String = ""
     
     init() {
         id = UUID().uuidString

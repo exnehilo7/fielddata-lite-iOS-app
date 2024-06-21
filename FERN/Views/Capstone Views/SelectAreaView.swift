@@ -55,40 +55,34 @@ struct SelectAreaView: View {
         
         // pass name of search column to use
         let postString = "_query_name=\(columnName)"
-       
+        
         let postData = postString.data(using: .utf8)
+        
+        do {
+            let (data, _) = try await URLSession.shared.upload(for: request, from: postData!, delegate: nil)
             
-            do {
-                let (data, _) = try await URLSession.shared.upload(for: request, from: postData!, delegate: nil)
-                
-                let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .useDefaultKeys
-                decoder.dataDecodingStrategy = .deferredToData
-                decoder.dateDecodingStrategy = .deferredToDate
-                
-                
-                // convert JSON response into class model as an array
-                self.areaList = try decoder.decode([SelectNameModel].self, from: data)
-                
-                // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
-            } catch DecodingError.keyNotFound(let key, let context) {
-                Swift.print("could not find key \(key) in JSON: \(context.debugDescription)")
-            } catch DecodingError.valueNotFound(let type, let context) {
-                Swift.print("could not find type \(type) in JSON: \(context.debugDescription)")
-            } catch DecodingError.typeMismatch(let type, let context) {
-                Swift.print("type mismatch for type \(type) in JSON: \(context.debugDescription)")
-            } catch DecodingError.dataCorrupted(let context) {
-                Swift.print("data found to be corrupted in JSON: \(context.debugDescription)")
-            } catch let error as NSError {
-                NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
-            } catch {
-                areaList = []
-            }
-    }// end qryReports
-} //end view
-
-//struct SelectAreaView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SelectAreaView(phpFile: "menusAndReports.php", columnName: "area_name")
-//    }
-//}
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .useDefaultKeys
+            decoder.dataDecodingStrategy = .deferredToData
+            decoder.dateDecodingStrategy = .deferredToDate
+            
+            
+            // convert JSON response into class model as an array
+            self.areaList = try decoder.decode([SelectNameModel].self, from: data)
+            
+            // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
+        } catch DecodingError.keyNotFound(let key, let context) {
+            Swift.print("could not find key \(key) in JSON: \(context.debugDescription)")
+        } catch DecodingError.valueNotFound(let type, let context) {
+            Swift.print("could not find type \(type) in JSON: \(context.debugDescription)")
+        } catch DecodingError.typeMismatch(let type, let context) {
+            Swift.print("type mismatch for type \(type) in JSON: \(context.debugDescription)")
+        } catch DecodingError.dataCorrupted(let context) {
+            Swift.print("data found to be corrupted in JSON: \(context.debugDescription)")
+        } catch let error as NSError {
+            NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
+        } catch {
+            areaList = []
+        }
+    }
+}

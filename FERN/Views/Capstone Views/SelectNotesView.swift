@@ -196,10 +196,3 @@ struct SelectNotesView: View {
         }
     }
 } // end view
-
-
-//struct SelectNotesView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SelectNotesView(phpFile: "notes.php")
-//    }
-//}

@@ -7,25 +7,25 @@
 
 import Foundation
 
-// Test global function
+
+// Get data using POST
 class URLSessionUpload {
-    // Get data using POST
     func urlSessionUpload (request: URLRequest, postData: Data) async throws -> Data {
         let (data, _) = try await URLSession.shared.upload(for: request, from: postData, delegate: nil)
         return data
     }
 }
 
+// Get data, no POST
 class URLSessionData {
-    // Get data, no POST
     func urlSessionData (url: URL) async throws -> Data {
         let (data, _) = try await URLSession.shared.data(from: url)
         return data
     }
 }
 
+// Call a URL POST session with no data return
 class URLSessionUploadNoReturn {
-    // Call a URL POST session with no data return
     func urlSessionUploadNoReturn (request: URLRequest, postData: Data) async throws {
         let (_, _) = try await URLSession.shared.upload(for: request, from: postData, delegate: nil)
     }

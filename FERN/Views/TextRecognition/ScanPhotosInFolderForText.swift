@@ -129,8 +129,6 @@ struct ScanPhotosInFolderForText: View {
         var textFilePath: String
         var path: URL
         
-        //var scannedText: String = ""
-        
         // Get device ID and path
         if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString
         {
