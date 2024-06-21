@@ -1,96 +1,13 @@
 //
-//  Classes.swift
+//  FieldWorkClass.swift
 //  FERN
 //
 //  Created by Hopp, Dan on 2/3/23.
 //
-// Decodeable syntax error fix help from https://www.hackingwithswift.com/forums/swiftui/trying-to-make-a-observable-object-with-an-array-of-codable-objects-to-be-able-to-reference-it-anywhere-in-my-app/6560
+//  Create a text file for a trip and append GPS plus other data.
 
 import Foundation
-import CoreLocation
-import MapKit
 import UIKit
-
-// Regex pattern to remove invalid characters from an image scan
-class ScannedTextPattern {
-    // Replace " and ' and \ and , with nothing for scanned text
-    let pattern = "[^A-Za-z0-9!@#$%&*()\\-_+=.<>;:/?\\s]+"
-}
-
-class SearchOrganismName : ObservableObject {
-    var organismName = ""
-}
-
-// Core location functionality from https://www.mongodb.com/developer/products/realm/realm-swiftui-maps-location/
-//class LocationHelper: NSObject, ObservableObject {
-@Observable class LocationHelper: NSObject, ObservableObject {
-
-    static let shared = LocationHelper()
-    static let DefaultLocation = CLLocationCoordinate2D(latitude: 1.1, longitude: 1.1)
-    var lastLocation: CLLocation?
-//    @Published var lastLocation: CLLocation?
-
-    static var currentLocation: CLLocationCoordinate2D {
-        guard let location = shared.manager.location else {
-            return DefaultLocation
-        }
-        return location.coordinate
-    }
-
-    private let manager = CLLocationManager()
-
-    override init() {
-        super.init()
-        manager.delegate = self
-        manager.desiredAccuracy = kCLLocationAccuracyBest
-        manager.requestWhenInUseAuthorization()
-        manager.startUpdatingLocation()
-        print("Core location started.")
-    }
-    
-    func stopUpdatingDefaultCoreLocation(){
-        manager.stopUpdatingLocation()
-    }
-    
-    func startUpdatingDefaultCoreLocation(){
-        manager.startUpdatingLocation()
-    }
-}
-
-extension LocationHelper: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let location = locations.last else {return}
-        lastLocation = location
-    }
-
-    public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("Location manager failed with error: \(error.localizedDescription)")
-    }
-
-    public func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        print("Location manager changed the status: \(status)")
-    }
-}
-
-// Alert struct from https://betterprogramming.pub/effortless-swiftui-camera-d7a74abde37e
-public struct AlertError {
-    public var title: String = ""
-    public var message: String = ""
-    public var primaryButtonTitle = "Accept"
-    public var secondaryButtonTitle: String?
-    public var primaryAction: (() -> ())?
-    public var secondaryAction: (() -> ())?
-    
-    public init(title: String = "", message: String = "", primaryButtonTitle: String = "Accept",
-                secondaryButtonTitle: String? = nil, primaryAction: (() -> ())? = nil,
-                secondaryAction: (() -> ())? = nil) {
-        self.title = title
-        self.message = message
-        self.primaryAction = primaryAction
-        self.primaryButtonTitle = primaryButtonTitle
-        self.secondaryAction = secondaryAction
-    }
-}
 
 
 // File create and append from https://stackoverflow.com/questions/27327067/append-text-or-data-to-text-file-in-swift

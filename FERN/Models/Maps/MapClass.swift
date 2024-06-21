@@ -8,6 +8,11 @@
 import MapKit
 import SwiftUI
 
+class MapPointSize {
+    let size: CGFloat = 10
+}
+
+
 // ViewController which contains functions that need to be called from SwiftUI
 @Observable class MapClass {
     

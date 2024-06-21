@@ -21,6 +21,7 @@ struct CameraView: View {
     @Bindable var camera: CameraClass
     var mapMode: String
     var tripOrRouteName: String
+//    var textNotes: String = ""
     
     // Swift Data
     @Environment(\.modelContext) var modelContext
@@ -44,7 +45,7 @@ struct CameraView: View {
     @State private var image = UIImage()
     
     // Custom notes
-    @State private var textNotes = ""
+//    @State private var textNotes = ""
 
     
     // Sounds
@@ -256,7 +257,7 @@ struct CameraView: View {
             
             // Put image in array
             var imageArray = [UIImage]()
-            imageArray.append(self.image)
+            imageArray.append(camera.image)
             
             // Call struct
             TextRecognition(scannedImages: imageArray,

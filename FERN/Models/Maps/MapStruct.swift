@@ -1,5 +1,5 @@
 //
-//  StructMapPoints.swift
+//  MapStruct.swift
 //  FERN
 //
 //  Created by Hopp, Dan on 6/18/24.

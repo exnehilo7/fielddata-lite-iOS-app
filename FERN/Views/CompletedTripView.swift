@@ -4,6 +4,8 @@
 //
 //  Created by Hopp, Dan on 1/2/24.
 //
+//  Upload a completed trip's text and image files to a server.
+//
 //  19-JAN-2024: Switch to SwiftData
 //  15-MAR-2024: Add checksum. Change array of model objects to array of strings.
 

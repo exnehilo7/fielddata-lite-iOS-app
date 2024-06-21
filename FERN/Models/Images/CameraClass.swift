@@ -113,6 +113,11 @@ import SwiftUI
         showingHDOPOverLimit = false
     }
     
+    func resetCamera() {
+        image = UIImage()
+        setVarsAndViewAfterSuccessfulSave()
+    }
+    
     func checkUserData(textNotes: String) -> (isValid: Bool, textNotes: String) {   // MOVE TO MAP MVC (MOVED)
 
         self.textNotes = textNotes
@@ -155,7 +160,10 @@ import SwiftUI
     func cancelPic() {
         isImageSelected = false
         isShowCamera = true
-        textNotes = ""
+//        // Don't clear custom notes, if any
+//        if textNotes.count > 0 {
+//            textNotes = ""
+//        }
     }
     
     func showCompleteAlertToggle() {

@@ -41,7 +41,7 @@ struct SelectTripView: View {
                     NavigationLink {
                         if !item.isComplete {
                             if (tripMode == "fast") {
-                                TripModeFastCameraView(tripName: item.name).navigationTitle("🐇 \(item.name)")//.environmentObject(nmea)
+//                                TripModeFastCameraView(tripName: item.name).navigationTitle("🐇 \(item.name)")//.environmentObject(nmea)
                             }
                             else if (tripMode == "thorough") {
                                 CameraView(map: map, gps: gps, camera: camera, mapMode: "none", tripOrRouteName: item.name).navigationTitle("🐢 \(item.name)")

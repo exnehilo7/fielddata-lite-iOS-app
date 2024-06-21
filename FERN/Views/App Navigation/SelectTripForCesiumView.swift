@@ -43,7 +43,7 @@ struct SelectTripForCesiumView: View {
         self.areaList = await menuListBridgingCoordinator.menuListController.getTripListFromDatabase(settings: settings, nameList: areaList, phpFile: "menusAndReports.php", isMethodPost: true, postString: "_query_name=trips_in_db_view")
     }
     
-    // To have web browser in-app
+    // To have web browser in-app:
 //    func openSafariInApp(trip: String){
 //        if let url = URL(string: "https://fair.ornl.gov/fielddata/code/html/jarvisWorld.html?jarvisCommand='jarvis show me \(trip.name) trip'") {
 //                                        let config = SFSafariViewController.Configuration()

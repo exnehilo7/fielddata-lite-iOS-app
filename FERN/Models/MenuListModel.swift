@@ -33,7 +33,6 @@ class MenuListController: UIViewController {
         // will be used later if isMethodPost is true
         var request: URLRequest = URLRequest(url: url)
         request.httpMethod = "POST"
-//        let postString = "_query_name=trips_in_db_view"
         let postData = postString.data(using: .utf8)
 
         
