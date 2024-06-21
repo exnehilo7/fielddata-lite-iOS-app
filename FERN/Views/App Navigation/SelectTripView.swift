@@ -14,11 +14,6 @@ import SwiftData
 
 struct SelectTripView: View {
     
-    // Bridging coordinator
-//    @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
-//    @EnvironmentObject var cameraBridgingCoordinator: CameraBridgingCoordinator
-//    @EnvironmentObject var mapBridgingCoordinator: MapBridgingCoordinator
-    
     var map: MapClass
     var gps: GpsClass
     var camera: CameraClass
@@ -40,24 +35,18 @@ struct SelectTripView: View {
                 ForEach(sdTrips) { item in
                     NavigationLink {
                         if !item.isComplete {
-                            if (tripMode == "fast") {
-//                                TripModeFastCameraView(tripName: item.name).navigationTitle("🐇 \(item.name)")//.environmentObject(nmea)
-                            }
-                            else if (tripMode == "thorough") {
+                            if (tripMode == "thorough") {
                                 CameraView(map: map, gps: gps, camera: camera, mapMode: "none", tripOrRouteName: item.name).navigationTitle("🐢 \(item.name)")
-//                                    .environmentObject(gpsBridgingCoordinator)
-//                                    .environmentObject(mapBridgingCoordinator)
-//                                    .environment(gps)
-//                                    .environmentObject(cameraBridgingCoordinator)
                             }
                             else {
                                 MessageView(message: "No trip type selected.")
                             }
                         }
+                        // Go to an upload screen
                         else {
                             // Try to prevent data race by passing swiftdata values(?)
                             CompletedTripView(tripName: item.name, uploadURL: settings[0].uploadScriptURL, cesiumURL: settings[0].cesiumURL)
-                        } // Go to an upload screen instead?
+                        }
                     } label: {
                         HStack{
                             if item.isComplete {
@@ -76,7 +65,7 @@ struct SelectTripView: View {
                     }
                 }
                 .onDelete(perform: deleteTrip)
-                // Notify user that pics and metadata will remain in the trip folder
+                // Notify user that pics and metadata will be in the trip folder
                 .alert("Trip Deleted!", isPresented: $showingDeleteTripAlert) {
                     Button("OK", action: showDeleteTripAlert)
                 } message: {
@@ -98,8 +87,7 @@ struct SelectTripView: View {
                     }
                     // Enter trip name alert
                     .alert("Enter a trip name", isPresented: $showingTripNameAlert) {
-                        TextField("Trip Name", text: $name).foregroundStyle(.purple) // With a black bckground the text is default white
-                        //.textInputAutocapitalization(.never)
+                        TextField("Trip Name", text: $name).foregroundStyle(.purple)
                         Button("OK", action: addItem)
                         Button("Cancel", role: .cancel){name = ""}
                     } message: {
@@ -107,7 +95,7 @@ struct SelectTripView: View {
                     }
                 }
             }
-            Text("Select a trip. To mark a trip as complete, tap on its name.").foregroundStyle(.green) // From app example code.
+            Text("Select a trip. To mark a trip as complete, tap on its name.").foregroundStyle(.green)
         }
     }
     

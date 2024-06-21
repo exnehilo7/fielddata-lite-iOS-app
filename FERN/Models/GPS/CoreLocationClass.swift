@@ -10,13 +10,11 @@ import CoreLocation
 
 
 // Core location functionality from https://www.mongodb.com/developer/products/realm/realm-swiftui-maps-location/
-//class LocationHelper: NSObject, ObservableObject {
 @Observable class LocationHelper: NSObject, ObservableObject {
 
     static let shared = LocationHelper()
     static let DefaultLocation = CLLocationCoordinate2D(latitude: 1.1, longitude: 1.1)
     var lastLocation: CLLocation?
-//    @Published var lastLocation: CLLocation?
 
     static var currentLocation: CLLocationCoordinate2D {
         guard let location = shared.manager.location else {

@@ -25,7 +25,7 @@ class SDTrip {
 }
 
 @Model
-class TripFile { // 14-MAR-2024: No longer required?
+class TripFile { // 14-MAR-2024: No longer required. (Removing will require deletion and reinstallation of the FERN app, unless SwiftData has been fixed for version migration)
     
     var fileName: String
     var isUploaded: Bool

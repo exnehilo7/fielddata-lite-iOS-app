@@ -25,7 +25,7 @@ struct StartScreenView: View {
     @Query var settings: [Settings]
     
     var body: some View {
-        // Toggle splash screen and Main Menu View. (After XCode update, no longer working?)
+        // Toggle splash screen and Main Menu View. (After XCode 15 update, no longer working?)
         if active {
             MainMenuView()
         }
@@ -75,6 +75,6 @@ struct StartScreenView: View {
             }.fullScreenCover(isPresented: $active) {
                 MainMenuView()
             }
-        }// end else
+        }
     }
 }

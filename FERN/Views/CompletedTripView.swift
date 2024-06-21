@@ -16,7 +16,6 @@ import CryptoKit
 struct CompletedTripView: View {
     
     @Environment(\.modelContext) var modelContext
-//    @Query var settings: [Settings]
     @Query var sdTrips: [SDTrip]
     
     // From calling view
@@ -51,7 +50,7 @@ struct CompletedTripView: View {
     // MARK: Main body
     
     var body: some View {
-        ForEach(sdTrips) { item in // There probably is a better way to get just one specific trip
+        ForEach(sdTrips) { item in // (There's probably a better way to get just one specific trip)
             // Focus on the relevant trip
             if (item.name == tripName){
                 VStack {
@@ -66,54 +65,47 @@ struct CompletedTripView: View {
                     Spacer()
                     // If all files not processed & uploaded, show button and bar
                     if (!allFilesProcessed || !item.allFilesUploaded) {
-//                        VStack{
-                            // If all files not uploaded, show bar
-                            if (!item.allFilesUploaded){
-                                ProgressView("File \(totalUploaded) of \(totalFiles) uploaded", value: Double(totalUploaded), total: Double(totalFiles))
-                            }
-                            // Hide upload button if in progress
-                            if (!isLoading) {
-                                Button {
+                        // If all files not uploaded, show bar
+                        if (!item.allFilesUploaded){
+                            ProgressView("File \(totalUploaded) of \(totalFiles) uploaded", value: Double(totalUploaded), total: Double(totalFiles))
+                        }
+                        // Hide upload button if in progress
+                        if (!isLoading) {
+                            Button {
+                                Task {
+                                    // Set counters
+                                    resetVars()
+                                    await beginFileUpload(tripName: tripName, trip: item)
+                                }
+                            } label: {
+                                HStack {
+                                    Image(systemName: "square.and.arrow.up")
+                                        .font(.system(size: 20))
+                                    Text("Upload Trip Files")
+                                        .font(.headline)
+                                }
+                                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+                                .background(Color.orange)
+                                .foregroundColor(.white)
+                                .cornerRadius(20)
+                                .padding(.horizontal)
+                            // Give user option to view trip in Cesium and/or continue with iage uploads
+                            }.alert("Continue with image upload?", isPresented: $showCesiumAndContinueAlert) {
+                                Link("View trip in CesiumJS", destination: URL(string: cesiumURL + "?jarvisCommand='jarvis show me \(tripName) trip'")!)
+                                Button("OK", action: {
+                                    continueImageUpload = true
                                     Task {
-                                        // Set counters
-                                        resetVars()
                                         await beginFileUpload(tripName: tripName, trip: item)
                                     }
-                                } label: {
-                                    HStack {
-                                        Image(systemName: "square.and.arrow.up")
-                                            .font(.system(size: 20))
-                                        Text("Upload Trip Files")
-                                            .font(.headline)
-                                    }
-                                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
-                                    .background(Color.orange)
-                                    .foregroundColor(.white)
-                                    .cornerRadius(20)
-                                    .padding(.horizontal)
-                                // Give user option to view trip in Cesium and/or continue with iage uploads
-                                }.alert("Continue with image upload?", isPresented: $showCesiumAndContinueAlert) {
-                                    Link("View trip in CesiumJS", destination: URL(string: cesiumURL + "?jarvisCommand='jarvis show me \(tripName) trip'")!)
-                                    Button("OK", action: {
-                                        continueImageUpload = true
-                                        Task {
-                                            // Need to fix upload progress bar counter. There should already be a count of 1.
-                                            await beginFileUpload(tripName: tripName, trip: item)
-                                        }
-                                    })
-                                    Button("Cancel", role: .cancel){isLoading = false}
-                                } message: {
-                                    HStack {
-//                                        Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.yellow)
-                                        Text("It is strongly recommended to be connected to a power cable and Wi-Fi when uploading images.")
-                                        Text("NOTE: The app cannot yet run in the background or when the device is locked.")
-//                                        Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.yellow)
-                                    }
+                                })
+                                Button("Cancel", role: .cancel){isLoading = false}
+                            } message: {
+                                HStack {
+                                    Text("It is strongly recommended to be connected to a power cable and Wi-Fi when uploading images.")
+                                    Text("NOTE: The app cannot yet run in the background or when the device is locked.")
                                 }
                             }
-//                        }
-                        // for use elsewhere?
-                        //setResponseMsgToBlank()
+                        }
                     } else {Text("✅ Files uploaded! ✅")}
                     Spacer()
                     // Give feedback. Allow user to select text, but don't edit
@@ -272,7 +264,6 @@ struct CompletedTripView: View {
             // Calculate checksum iOS-side
             let hashed = SHA256.hash(data: NSData(contentsOf: getFile)!)
             let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
-//            print("#️⃣ iOS SHA256: \(hashString)")
             
             // Append hash to params
             let mergeDict = paramDict.merging(["sourceHash":"\(hashString)"]) { (_, new) in new }
@@ -283,8 +274,6 @@ struct CompletedTripView: View {
                                                              boundary: boundary, uploadFilePath: pathAndFile)
             uploadFile(fileName: item, request: request, trip: trip, semaphore: semaphore)
         }
-        
-        // myActivityIndicator.startAnimating();
     }
     
     private func doesFileExist(fileName: String, params: [String:String],
@@ -354,79 +343,55 @@ struct CompletedTripView: View {
                 return
             }
             
-            // You can print out response object
-//            print("******* response = \(String(describing: response))")
+            // Print out response object
+            //            print("******* response = \(String(describing: response))")
             
             // Print out reponse body
             let statusCode = (response as! HTTPURLResponse).statusCode
-                // is 200?
-                if statusCode == 200 {
-                   
-                    // Get response
-                    self.responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
-//                    print("****** response data = \(self.responseString!)")
-                    // Is success?
-                    if (self.responseString ?? "No response string").contains("successfully!") {
-                        upProcessedAndUploadedByOne()
-                        print("🟢 \(fileName) is uploaded!")
-                        appendToTextEditor(text: "🟢 \(fileName) is uploaded!")
-                    }
-                    
-                    // Checksum failed?
-                    else if (self.responseString ?? "No response string").contains("Hashes do not match!") {
-                        self.totalProcessed += 1
-                        print("🔴 Hashes do not match for \(fileName)!")
-                        appendToTextEditor(text: "🔴 Hashes do not match for \(fileName)!")
-                    }
-                    
-                    finalizeResults(trip: trip)
-                    
-                    // signal the for loop to continue
-                    semaphore.signal()
+            // is 200?
+            if statusCode == 200 {
+                
+                // Get response
+                self.responseString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+                //                    print("****** response data = \(self.responseString!)")
+                // Is success?
+                if (self.responseString ?? "No response string").contains("successfully!") {
+                    upProcessedAndUploadedByOne()
+                    print("🟢 \(fileName) is uploaded!")
+                    appendToTextEditor(text: "🟢 \(fileName) is uploaded!")
+                }
+                
+                // Checksum failed?
+                else if (self.responseString ?? "No response string").contains("Hashes do not match!") {
+                    self.totalProcessed += 1
+                    print("🔴 Hashes do not match for \(fileName)!")
+                    appendToTextEditor(text: "🔴 Hashes do not match for \(fileName)!")
+                }
+                
+                finalizeResults(trip: trip)
+                
+                // signal the for loop to continue
+                semaphore.signal()
             } else {
                 print("🟡 Status code: \(statusCode)")
                 appendToTextEditor(text: "🟡 Status code: \(statusCode)")
                 semaphore.signal()
             }
             
-            //                // Display response to user
-            //                self.uploadResponseMessage = UIAlertController(title: "Response", message: responseString! as String, preferredStyle: .alert)
-            //                // Create OK button with action handler
-            //                let ok = UIAlertAction(title: "OK", style: .default, handler: { (action) -> Void in
-            //                    print("Response Ok button tapped")
-            //                 })
-            //                //Add OK button to a dialog message
-            //                self.uploadResponseMessage.addAction(ok)
-            
-            //                        do {
             // For debugging?
+            //                      do {
             //                            let json = try JSONSerialization.jsonObject(with: data!, options: []) as? NSDictionary
             //
             //                            print("-------PRINTING JSON-------")
             //                            print(json as Any)
+            //                      }
             
-            // From original example?
-            // dispatch_async(dispatch_get_main_queue() is Obj-C
-            //                    dispatch_async(dispatch_get_main_queue(),{
-            //                        self.myActivityIndicator.stopAnimating()
-            //                        self.myImageView.image = nil;
-            //                    })
-            //                    DispatchQueue.main.async {
-            //                        // May need to interact with ImagePicker class
-            //                        self.myImageView.image = nil
-            //                    }
-            
-            //                        } catch
-            //                        {
-            //                            print(error)
-            //                        }
         }.resume()
         // Hit pause
         _ = semaphore.wait(timeout: DispatchTime.distantFuture)
     }
     
     private func createBodyWithParameters(parameters: [String: String]?, filePathKey: String?, fileData: NSData, boundary: String, uploadFilePath: String) -> Data {
-//        let body = NSMutableData() // A dynamic byte buffer that bridges to Data; use NSMutableData when you need reference semantics or other Foundation-specific behavior. (Now recomended to use the new Data struct?)
         
         var body = Data()
         var mimetype = ""
@@ -493,8 +458,7 @@ struct CompletedTripView: View {
         self.consoleText.append(contentsOf: "\n" + text)
     }
     
-    
-    
+
     private func insertIntoDatabase() async -> Bool {
    
         var complete = false
@@ -526,13 +490,10 @@ struct CompletedTripView: View {
                 print("🟡 Status code: \(statusCode)")
                 appendToTextEditor(text: "🟡 Status code: \(statusCode)")
             }
-//            semaphore.signal()
           } catch let error as NSError {
               NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
           }
                                                                       
         return complete
-        
     }
-    
 }

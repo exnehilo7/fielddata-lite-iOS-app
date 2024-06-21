@@ -4,6 +4,7 @@
 //
 //  Created by Hopp, Dan on 1/16/24.
 //
+//  APR-2024: SwiftData may still be too immature for version migration
 //  10-JUN-2024: Add hdop threshold
 
 import Foundation

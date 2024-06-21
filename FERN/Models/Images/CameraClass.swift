@@ -7,23 +7,17 @@
 
 import SwiftUI
 
-//@MainActor  // Supposed to prevent "Publishing changes from within view updates is not allowed, this will cause undefined behavior.", but it doesn't.
 @Observable class CameraClass {
-    
-//    @Published var showPicButton = false
+
     var isShowCamera = false
-    var recognizedContent = RecognizedContent()  // Should be in a class? It's own MVC?
-    private var isRecognizing = false
     var isImageSelected = false
     var image = UIImage()
     var showingStoppedNMEAAlert = false
     var showingInvalidSyntaxAlert = false
     var showingHDOPOverLimit = false
     var textNotes = ""
-    private var scrubbedNotes = ""
     private var numofmatches = 0
     var showingCompleteAlert = false
-//    @State private var showPopover = false
     
     
     // Sounds
@@ -38,7 +32,7 @@ import SwiftUI
         }
     }
     
-    func processImage(useBluetooth: Bool, hasBTStreamStopped: Bool, hdopThreshold: Double, imgFile: UIImage, tripOrRouteName: String, uuid: String, gpsUsed: String, hdop: String = "0.00", longitude: String = "0.00000000", latitude: String = "0.00000000", altitude: String = "0.00", scannedText: String, notes: String) -> Bool {  // RETURN BOOL
+    func processImage(useBluetooth: Bool, hasBTStreamStopped: Bool, hdopThreshold: Double, imgFile: UIImage, tripOrRouteName: String, uuid: String, gpsUsed: String, hdop: String = "0.00", longitude: String = "0.00000000", latitude: String = "0.00000000", altitude: String = "0.00", scannedText: String, notes: String) -> Bool {
         
         var savePic = false
         
@@ -118,7 +112,7 @@ import SwiftUI
         setVarsAndViewAfterSuccessfulSave()
     }
     
-    func checkUserData(textNotes: String) -> (isValid: Bool, textNotes: String) {   // MOVE TO MAP MVC (MOVED)
+    func checkUserData(textNotes: String) -> (isValid: Bool, textNotes: String) {
 
         self.textNotes = textNotes
         var isValid = false
@@ -128,10 +122,6 @@ import SwiftUI
         // Remove special characters from user data
         let pattern = "[^A-Za-z0-9,.:;\\s_\\-]+"
         self.textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
-        
-//        // remove any text past the final ;
-//        pattern = "[A-Za-z0-9\\s]*$"
-//        textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
         
         // Count # of proper syntax matches
         let range = NSRange(location: 0, length: self.textNotes.utf16.count)
@@ -160,10 +150,6 @@ import SwiftUI
     func cancelPic() {
         isImageSelected = false
         isShowCamera = true
-//        // Don't clear custom notes, if any
-//        if textNotes.count > 0 {
-//            textNotes = ""
-//        }
     }
     
     func showCompleteAlertToggle() {

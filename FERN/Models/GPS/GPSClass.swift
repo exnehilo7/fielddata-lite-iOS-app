@@ -9,7 +9,6 @@
 import SwiftUI
 import SwiftData
 
-// ViewController which contains functions that need to be called from SwiftUI
 @Observable class GpsClass {
     
     var nmea: NMEA?
@@ -18,14 +17,12 @@ import SwiftData
     func startGPSFeed(settings: [Settings]) {
         if settings[0].useBluetoothDevice {
             // Check NMEA stream? In not running, then start NMEA
-                // Start NMEA
-                if nmea == nil {
-                    nmea = NMEA()
-                    nmea!.startNMEA()
-                }
+            if nmea == nil {
+                nmea = NMEA()
+                nmea!.startNMEA()
+            }
         } else {
             // Check if default GPS is not active? If not then, use default GPS
-            // Use default GPS
             if clLocationHelper == nil {
                 clLocationHelper = LocationHelper()
             }
@@ -40,16 +37,15 @@ import SwiftData
     func stopGPSFeed(settings: [Settings]) {
         
         if settings[0].useBluetoothDevice {
-            // Check NMEA stream?
-                if nmea != nil {
-                    print("Stopping NMEA")
-                    setNmeaVarToNil()
-                }
+            // Check NMEA stream
+            if nmea != nil {
+                print("Stopping NMEA")
+                setNmeaVarToNil()
+            }
         } else {
             // If default GPS is not active
-                // Use default GPS
-                print("Stopping standard GPS")
-                clLocationHelper!.stopUpdatingDefaultCoreLocation()
+            print("Stopping standard GPS")
+            clLocationHelper!.stopUpdatingDefaultCoreLocation()
         }
         
         // Toggle back device feed

@@ -15,7 +15,7 @@ struct SearchByNameView: View {
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
     
-    var areaName: String // THIS is how variables are passed view-to-view. @EnvironmentObject method has issues(?). See https://medium.com/swlh/swiftui-and-the-missing-environment-object-1a4bf8913ba7 for more info.
+    var areaName: String
     var columnName: String
     @State private var organismName = ""
     @State private var hasResults = false
@@ -55,9 +55,8 @@ struct SearchByNameView: View {
                     if hasResults && (resultsCount < 100){
                         VStack{
                             NavigationLink {
-                                // NEED TO FIX VIEW FOR ENVIRONMENTOBJECT NMEA
-                                MapWithNMEAView(tripName: areaName, columnName: columnName, organismName: organismName,
-                                        queryName: "query_search_org_name_by_site")
+//                                MapWithNMEAView(tripName: areaName, columnName: columnName, organismName: organismName,
+//                                        queryName: "query_search_org_name_by_site")
                             } label: {
                                 HStack {
                                     Image(systemName: "globe.americas.fill").bold(false).foregroundColor(.green)
@@ -128,13 +127,5 @@ struct SearchByNameView: View {
             } catch {
                 searchResults = []
             }
-    }// end getMapPoints
-    
- 
-}//end SearchByNameView View
-
-//struct SearchByNameView_Previews: PreviewProvider {
-//     static var previews: some View {
-//         SearchByNameView(areaName: "Davis", columnName: "area_name")
-//     }
-// }
+    }
+}

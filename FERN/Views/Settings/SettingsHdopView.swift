@@ -12,59 +12,48 @@ struct SettingsHdopView: View {
     
     @Environment(\.modelContext) var modelContext
     
-//    @Query var settings: [Settings]
     @Bindable var setting: Settings
     
-    
-//    @State private var hdop: Double = 0
     @State private var min: Double = 0
     @State private var max: Double = 0.9
-//    @State private var useStandardGps = false
 
-        var body: some View {
+    var body: some View {
 
+        Spacer()
+        HStack {
             Spacer()
-            HStack {
-                Spacer()
-                Toggle("Use Bluetooth Device", isOn: $setting.useBluetoothDevice)
-                    .onChange(of: setting.useBluetoothDevice) {
-                        if !setting.useBluetoothDevice {
-                            max = 40.0
-                            setting.hdopThreshold = 10.0
-                        } else {
-                            max = 0.9
-                            setting.hdopThreshold = 0.2
-                        }
-                    }.onAppear(perform: {
-                        if !setting.useBluetoothDevice{
-                            max = 40.0
-                        }
-                        else {
-                            max = 0.9
-                        }
-                    })
-                Spacer()
-            }
-            Spacer()
-            VStack {
-                HStack{
-                    Spacer()
-                    Text("Horizontal position accuracy limit for an image:")
-                    Spacer()
-                }
-                Text("\(setting.hdopThreshold, specifier: "%.03f")m")
-                VStack{
-                    Slider(value: $setting.hdopThreshold, in: min...max)
-                }
-            }
-            Spacer()
+            Toggle("Use Bluetooth Device", isOn: $setting.useBluetoothDevice)
+                .onChange(of: setting.useBluetoothDevice) {
+                    if !setting.useBluetoothDevice {
+                        max = 40.0
+                        setting.hdopThreshold = 10.0
+                    } else {
+                        max = 0.9
+                        setting.hdopThreshold = 0.2
+                    }
+                }.onAppear(perform: {
+                    if !setting.useBluetoothDevice{
+                        max = 40.0
+                    }
+                    else {
+                        max = 0.9
+                    }
+                })
             Spacer()
         }
-    
-//    func addValue() {
-//        // Only add one
-//        if settings.count < 1 {
-//            modelContext.insert(Settings())
-//        }
-//    }
+        Spacer()
+        VStack {
+            HStack{
+                Spacer()
+                Text("Horizontal position accuracy limit for an image:")
+                Spacer()
+            }
+            Text("\(setting.hdopThreshold, specifier: "%.03f")m")
+            VStack{
+                Slider(value: $setting.hdopThreshold, in: min...max)
+            }
+        }
+        Spacer()
+        Spacer()
+    }
 }

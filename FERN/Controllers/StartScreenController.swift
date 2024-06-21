@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// Create a Coordinator
 class StartScreenBridgingCoordinator: ObservableObject {
     var startScreenViewController : StartScreenViewController!
 }

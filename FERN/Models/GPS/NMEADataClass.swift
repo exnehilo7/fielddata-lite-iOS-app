@@ -11,42 +11,7 @@ import CoreLocation
 import nmeaToolKit
 import ExternalAccessory
 
-//// ------12-JUN-2024: was added for Controller view test-------------
-//import SwiftUI
-//// Create a Coordinator
-//class nmeaBridge: ObservableObject {
-//    var vc: NMEA!
-//}
-//
-//// The UIViewControllerRepresentable of the ViewController
-//struct nmeaControllerRepresentation: UIViewControllerRepresentable {
-//    var chikin: nmeaBridge
-//
-//    func makeCoordinator() -> Coordinator {
-//        return Coordinator(self)
-//    }
-//
-//    func makeUIViewController(context: Context) -> some UIViewController {
-//        let vc = NMEA()
-//        vc.bridgingCoordinator = chikin
-//        return vc
-//    }
-//
-//    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
-//        //
-//    }
-//
-//    class Coordinator: NSObject {
-//        let parent: nmeaControllerRepresentation
-//        init(_ view: nmeaControllerRepresentation) {
-//            self.parent = view
-//        }
-//    }
-//}
-////----------- END was added for Controller view test------------------
 
-
-//class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate, ObservableObject {
 @Observable class NMEA : NSObject, CLLocationManagerDelegate, StreamDelegate {
     
     var locationManager = CLLocationManager()

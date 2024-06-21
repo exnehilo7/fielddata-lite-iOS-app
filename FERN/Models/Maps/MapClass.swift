@@ -12,8 +12,6 @@ class MapPointSize {
     let size: CGFloat = 10
 }
 
-
-// ViewController which contains functions that need to be called from SwiftUI
 @Observable class MapClass {
     
     var mapResults: [TempMapPointModel] = []
@@ -33,11 +31,6 @@ class MapPointSize {
     )
     // For map reloadings
     private var currentCameraPosition: MapCameraPosition?
-    private var showAlert = false  // NECESSARY? MOVE TO GPS MVC?
-    
-    // Alerts
-    private var article = Article(title: "Device Feed Error", description: "Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app.") // NECESSARY? MOVE TO GPS MVC?
-    
     // View toggles
     var showPopover = false
 

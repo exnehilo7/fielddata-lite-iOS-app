@@ -10,18 +10,12 @@ import SwiftUI
 import SwiftData
 
 struct CameraView: View {
-    
-    // Bridging coordinator
-//    @EnvironmentObject var G: GpsBridgingCoordinator
-//    @EnvironmentObject var C: CameraBridgingCoordinator
-//    @EnvironmentObject var M: MapBridgingCoordinator
 
     var map: MapClass
     var gps: GpsClass
     @Bindable var camera: CameraClass
     var mapMode: String
     var tripOrRouteName: String
-//    var textNotes: String = ""
     
     // Swift Data
     @Environment(\.modelContext) var modelContext
@@ -29,7 +23,6 @@ struct CameraView: View {
     @Query var sdTrips: [SDTrip]
     
     // View toggles
-//    @State private var showPicButton = false
     @State private var isShowCamera = false
     @State private var isImageSelected = false
     @State private var showingStoppedNMEAAlert = false
@@ -43,30 +36,12 @@ struct CameraView: View {
     
     // Image
     @State private var image = UIImage()
-    
-    // Custom notes
-//    @State private var textNotes = ""
 
     
     // Sounds
     let audio = playSound()
     
-    // MOVE THESE TO A SOME VIEW DECLARATION CONTROLLED BY useBluetoothDevice?
-//    var clLat:String {
-//        return "\(G.gpsController.clLocationHelper?.lastLocation?.coordinate.latitude ?? 0.0000)"
-//    }
-//    var clLong:String {
-//        return "\(G.gpsController.clLocationHelper?.lastLocation?.coordinate.longitude ?? 0.0000)"
-//    }
-//    var clHorzAccuracy:String {
-//        return "\(G.gpsController.clLocationHelper?.lastLocation?.horizontalAccuracy ?? 0.00)"
-//    }
-//    var clVertAccuracy:String {
-//        return "\(G.gpsController.clLocationHelper?.lastLocation?.verticalAccuracy ?? 0.00)"
-//    }
-//    var clAltitude:String {
-//        return "\(G.gpsController.clLocationHelper?.lastLocation?.altitude ?? 0.0000)"
-//    }
+    // Core Location
     var clLat:String {
         return "\(gps.clLocationHelper?.lastLocation?.coordinate.latitude ?? 0.0000)"
     }
@@ -86,51 +61,30 @@ struct CameraView: View {
 
     
     //MARK: Views and Functions
-//    // Get the bridging connector going?
-//    var bridging: some View {
-//        HStack {
-//            CameraViewControllerRepresentable(cameraBridgingCoordinator: C)
-//        }
-//    }
-    
     // GPS Data Display ------------------------------------------------
     // Arrow Gold
-//    var arrowGpsData: some View {
-//        VStack {
-//            
-//            Label("EOS Arrow Gold", systemImage: "antenna.radiowaves.left.and.right").underline().foregroundColor(.yellow)
-//            //            Text("Protocol: ") + Text(G.gpsController.nmea?.protocolText as String)
-//            Text("Latitude: ") + Text(G.gpsController.nmea?.latitude ?? "0.0000")
-//            Text("Longitude: ") + Text(G.gpsController.nmea?.longitude ?? "0.0000")
-//            Text("Altitude (m): ") + Text(G.gpsController.nmea?.altitude ?? "0.00")
-//            Text("Horizontal Accuracy (m): ") + Text(G.gpsController.nmea?.accuracy ?? "0.00")
-//            Text("GPS Used: ") + Text(G.gpsController.nmea?.gpsUsed ?? "No GPS")
-//        }.font(.system(size: 18))//.foregroundColor(.white)
-//    }
     var arrowGpsData: some View {
         VStack {
-            
             Label("EOS Arrow Gold", systemImage: "antenna.radiowaves.left.and.right").underline().foregroundColor(.yellow)
-            //            Text("Protocol: ") + Text(gps.nmea?.protocolText as String)
+            // Text("Protocol: ") + Text(gps.nmea?.protocolText as String)
             Text("Latitude: ") + Text(gps.nmea?.latitude ?? "0.0000")
             Text("Longitude: ") + Text(gps.nmea?.longitude ?? "0.0000")
             Text("Altitude (m): ") + Text(gps.nmea?.altitude ?? "0.00")
             Text("Horizontal Accuracy (m): ") + Text(gps.nmea?.accuracy ?? "0.00").foregroundColor(getColor(text: gps.nmea?.accuracy ?? "0.00"))
             Text("GPS Used: ") + Text(gps.nmea?.gpsUsed ?? "No GPS")
-        }.font(.system(size: 18))//.foregroundColor(.white)
+        }.font(.system(size: 18))
     }
     
     // iOS Core Location
     var coreLocationGpsData: some View {
         VStack {
-            
             Label("Standard GPS",  systemImage: "location.fill").underline().foregroundColor(.blue)
             Text("Latitude: ") + Text("\(clLat)")
             Text("Longitude: ") + Text("\(clLong)")
             Text("Altitude (m): ") + Text("\(clAltitude)")
             Text("Horizontal Accuracy (m): ") + Text("\(clHorzAccuracy)").foregroundColor(getColor(text: clHorzAccuracy))
             Text("Vertical Accuracy (m): ") + Text("\(clVertAccuracy)")
-        }.font(.system(size: 15))//.foregroundColor(.white)
+        }.font(.system(size: 15))
             .padding()
     }
     //------------------------------------------------------------------
@@ -191,12 +145,12 @@ struct CameraView: View {
         let result = camera.checkUserData(textNotes: textNotes)
         
         // if user data is all good, save pic
-        if result.isValid { // MAY NEED TO PASS VARS
+        if result.isValid {
             
             var imageSuccessful = false
             
+            // Bluetooth?
             if settings[0].useBluetoothDevice {
-//                imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: ((G.gpsController.nmea?.hasNMEAStreamStopped) != nil), hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "ArrowGold", hdop: G.gpsController.nmea?.accuracy ?? "0.00", longitude: G.gpsController.nmea?.longitude ?? "0.00000000", latitude: G.gpsController.nmea?.latitude ?? "0.00000000", altitude: G.gpsController.nmea?.altitude ?? "0.00", scannedText: textInPic, notes: result.textNotes)
                 imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: gps.nmea?.hasNMEAStreamStopped ?? false, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "ArrowGold", hdop: gps.nmea?.accuracy ?? "0.00", longitude: gps.nmea?.longitude ?? "0.00000000", latitude: gps.nmea?.latitude ?? "0.00000000", altitude: gps.nmea?.altitude ?? "0.00", scannedText: textInPic, notes: result.textNotes)
                 
             } else {
@@ -208,19 +162,13 @@ struct CameraView: View {
                 map.showPopover = false
             }
             
-            // If above was successful and map mode is Route:
+            // If above was successful and map mode is Route, change annotation's color to blue:
             if imageSuccessful && mapMode == "route" {
-                // Change annotation's color to blue
                 Task {
                     await map.updatePointColor(settings: settings, phpFile: "updateRoutePointColor.php",
                                                            postString:"_route_id=\(map.annotationItems[map.currentAnnoItem].routeID)&_point_order=\(map.annotationItems[map.currentAnnoItem].pointOrder)")
                 }
             }
-            
-//            // Clear displayed image
-//            self.image = UIImage()
-//            // Clear scanned text
-//            recognizedContent.items[0].text = ""
             
             // Clear displayed image
             camera.image = UIImage()
@@ -232,16 +180,13 @@ struct CameraView: View {
             
         } else {
             audio.playError()
-//            showingInvalidSyntaxAlert = true
             camera.showingInvalidSyntaxAlert = true
         }
     }
     
-    // Show the camera button (for if the user cancels a photo)
+    // Show camera button
     var showCameraButton: some View {
         Button {
-//            isShowCamera = true
-//            showingStoppedNMEAAlert = false
             camera.isShowCamera = true
             camera.showingStoppedNMEAAlert = false
         } label: {
@@ -249,10 +194,10 @@ struct CameraView: View {
         }.buttonStyle(.borderedProminent).tint(.blue)
     }
     
-    // Scan for text button  // Have it in its own MVC to select possible matches from a list?
+    // Scan for text button
     var scanForTextButton: some View {
         Button(action: {
-            // WRAP IN FUNCTION AND PLACE CODE IN MODEL? ----------------------------------------------------------------------
+ 
             isRecognizing = true
             
             // Put image in array
@@ -264,14 +209,11 @@ struct CameraView: View {
                             recognizedContent: recognizedContent) {
                 // Text recognition is finished, hide the progress indicator.
                 isRecognizing = false
-            }
-                            .recognizeText(
-                            )
-            // ----------------------------------------------------------------------------------------------------------------
+            }.recognizeText()
         }, label: {
             HStack {
                 Image(systemName: "text.viewfinder")
-                    .font(.system(size: 20))//.foregroundColor(.green)
+                    .font(.system(size: 20))
                 
                 Text("Scan Text")
                     .font(.headline)
@@ -284,6 +226,7 @@ struct CameraView: View {
         })
     }
     
+    // Cancel pic button
     var cancelPicButton: some View {
         Button(action: {
             camera.cancelPic()
@@ -304,9 +247,8 @@ struct CameraView: View {
     var customData: some View {
         VStack {
             HStack {
-                Text("Notes:")//.foregroundColor(.white)
+                Text("Notes:")
                 TextField("",
-//                          text: $textNotes,
                           text: self.$camera.textNotes,
                           prompt: Text("branch count: 42; status: alive;").foregroundColor(.green.opacity(0.5))
                 ).textFieldStyle(.roundedBorder).autocapitalization(.none).foregroundColor(.yellow)
@@ -317,7 +259,6 @@ struct CameraView: View {
     //MARK: Main View
     var body: some View {
         VStack {
-//          if isImageSelected {
             if !camera.isImageSelected {
                 // mark complete button
                 ForEach(sdTrips) { item in
@@ -337,7 +278,6 @@ struct CameraView: View {
                             .foregroundColor(.white)
                             .cornerRadius(20)
                             .padding(.horizontal)
-//                        }.alert("Mark trip as complete?", isPresented: $showingCompleteAlert) {
                         }.alert("Mark trip as complete?", isPresented: $camera.showingCompleteAlert) {
                             Button("OK"){
                                 item.isComplete = true
@@ -360,17 +300,14 @@ struct CameraView: View {
             }
             // No-NMEA alert
             if camera.showingStoppedNMEAAlert {
-//                if showingStoppedNMEAAlert {
                 stoppedNMEA
             }
             
             if camera.showingInvalidSyntaxAlert {
-//                if showingInvalidSyntaxAlert {
                 invalidSyntaxView
             }
             
             if camera.showingHDOPOverLimit {
-//                if showingHDOPOverLimit {
                 hdopOverLimitView
             }
             
@@ -379,12 +316,8 @@ struct CameraView: View {
             Image(uiImage: camera.image)
                 .resizable()
                 .scaledToFit()
-//            Image(uiImage: self.image)
-//                .resizable()
-//                .scaledToFit()
             
             if camera.isImageSelected {
-//                if isImageSelected {
                 customData
             }
             
@@ -393,17 +326,14 @@ struct CameraView: View {
             // Give the user an option to bring back the camera if the ImagePicker was cancelled.
             // Don't show if an image is ready to save
             if !camera.isImageSelected {
-//                if !isImageSelected {
                 // Don't show if the camera is already showing
                 if !camera.isShowCamera {
-//                    if !isShowCamera {
                     showCameraButton
                 }
             }
             
-                // Don't display GPS coords if sheet is displayed.
+            // Don't display GPS coords if camera sheet is displayed.
             if !camera.isShowCamera {
-//                if !isShowCamera {
                 if settings[0].useBluetoothDevice {
                     arrowGpsData
                 }
@@ -412,9 +342,9 @@ struct CameraView: View {
                 }
             }
             
-            // Display recognized text (remove list?)
+            // Display recognized text
             if isRecognizing {
-                ProgressView() // Move to text scan MVC? Text scan class?
+                ProgressView()
                     .progressViewStyle(CircularProgressViewStyle(tint: Color(UIColor.systemIndigo)))
                     .padding(.bottom, 20)
             } else {
@@ -428,7 +358,6 @@ struct CameraView: View {
             }
             
             if camera.isImageSelected {
-//                if isImageSelected {
                 HStack{
                     cancelPicButton
                 }
@@ -438,7 +367,6 @@ struct CameraView: View {
                 
                 // Show the image save button if ImagePicker struct has an image.
                 if camera.isImageSelected {
-//                    if isImageSelected {
                     HStack {
                         scanForTextButton
                     }
@@ -454,12 +382,10 @@ struct CameraView: View {
         })
         .sheet(isPresented:
                 $camera.isShowCamera) {
-//            .sheet(isPresented: $isShowCamera) {
-            // Try to show the GPS data at all times on the bottom half of the screen
+            // Show the GPS data at all times on the bottom half of the screen
             ZStack {
                 Color.black.ignoresSafeArea(.all)
                 VStack {
-//                    ImagePicker(sourceType: .camera, selectedImage: self.$image, imageIsSelected: self.$isImageSelected)
                     ImagePicker(sourceType: .camera, selectedImage: $camera.image, imageIsSelected: $camera.isImageSelected)
                     // GPS data on sheet
                     if settings[0].useBluetoothDevice {

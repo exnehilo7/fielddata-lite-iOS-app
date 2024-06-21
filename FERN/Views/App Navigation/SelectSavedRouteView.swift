@@ -12,9 +12,6 @@ import SwiftData
 struct SelectSavedRouteView: View {
     
     @EnvironmentObject var menuListBridgingCoordinator: MenuListBridgingCoordinator
-//    @EnvironmentObject var gpsBridgingCoordinator: GpsBridgingCoordinator
-//    @EnvironmentObject var mapBridgingCoordinator: MapBridgingCoordinator
-//    @EnvironmentObject var cameraBridgingCoordinator: CameraBridgingCoordinator
     
     var map: MapClass
     var gps: GpsClass
@@ -41,9 +38,6 @@ struct SelectSavedRouteView: View {
                     NavigationLink(route.name) {
                         // Pass var to view. Query for route does not need a column or organism name.
                         MapView(map: map, gps: gps, camera: camera, mapMode: "route", tripOrRouteName: route.name, columnName: "", organismName: "", queryName: "query_get_route_for_app")
-//                            .environmentObject(gpsBridgingCoordinator)
-//                            .environmentObject(mapBridgingCoordinator)
-//                            .environmentObject(cameraBridgingCoordinator)
                     }
                     .bold()
                 }

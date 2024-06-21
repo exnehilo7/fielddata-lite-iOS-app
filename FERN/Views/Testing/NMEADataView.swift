@@ -4,7 +4,7 @@
 //
 //  Created by Hopp, Dan on 5/15/23.
 //
-//  A simple view to see NMEA Arrow Gold Data stream
+//  A simple view to see a GPS Data stream
 
 
 import SwiftUI
@@ -42,7 +42,6 @@ struct NMEADataView: View {
             Button("Start the Arrow Gold stream") {
                 /*nmea.viewDidLoad()*/ // nmea on
                 clLocationHelper.stopUpdatingDefaultCoreLocation() // basic core off
-//                    clLat = "0.0000"  // computed properties are a get-only property??
             }.buttonStyle(.borderedProminent)
             Text("Protocol: ") + Text(nmea.protocolText as String)
             Text("Latitude: ") + Text(nmea.latitude ?? "0.0000")
@@ -75,9 +74,3 @@ struct NMEADataView: View {
         Spacer()
     }
 }
-
-//struct NMEADataView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        NMEADataView()
-//    }
-//}
