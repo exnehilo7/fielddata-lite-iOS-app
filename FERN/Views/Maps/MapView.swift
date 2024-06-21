@@ -89,9 +89,13 @@ struct MapView: View {
     // Take pic button. Use a swipe-up view.
     var popupCameraButton: some View {
         Button {
+            // Reset previously snapped pic if view was swiped down before image was saved
+            camera.resetCamera()
             map.showPopover = true
 //            textNotes = "Organism name:" + self.annotationItems[map.currentAnnoItem].organismName + ";"
-            textNotes = "Organism name:" + map.annotationItems[map.currentAnnoItem].organismName + ";"
+            if (map.annotationItems[map.currentAnnoItem].organismName.trimmingCharacters(in: .whitespaces)).count > 0 {
+                camera.textNotes = "Organism name:" + map.annotationItems[map.currentAnnoItem].organismName + ";"
+            }
         } label: {
             Text("Show Camera")
         }.buttonStyle(.borderedProminent).tint(.orange).popover(isPresented: $map.showPopover) {

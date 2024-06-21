@@ -4,7 +4,7 @@
 //
 //  Created by Hopp, Dan on 5/15/23.
 //
-//  This is a simple view to see NMEA Arrow Gold Data stream
+//  A simple view to see NMEA Arrow Gold Data stream
 
 
 import SwiftUI

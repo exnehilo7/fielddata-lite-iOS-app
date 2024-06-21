@@ -148,6 +148,9 @@ struct MainMenuView: View {
             // Start GPS feed if not already running
             .onAppear(perform: {
                 startGPS()
+                // Reset previously snapped pic if view was swiped down before image was saved
+                camera.clearCustomData()
+                camera.resetCamera()
             })
         
     }

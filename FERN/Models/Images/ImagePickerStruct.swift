@@ -1,5 +1,5 @@
 //
-//  ImagePicker.swift
+//  ImagePickerStruct.swift
 //  FERN
 //
 //  Created by Hopp, Dan on 5/23/23. Code from https://www.appcoda.com/swiftui-camera-photo-library/

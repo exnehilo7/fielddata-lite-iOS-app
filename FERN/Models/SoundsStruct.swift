@@ -1,5 +1,5 @@
 //
-//  Sounds.swift
+//  SoundsStruct.swift
 //  FERN
 //
 //  Created by Hopp, Dan on 12/14/23. Code from https://www.rockhoppertech.com/blog/apple-system-sounds/

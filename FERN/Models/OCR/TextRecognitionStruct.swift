@@ -1,5 +1,5 @@
 //
-//  TextRecognition.swift
+//  TextRecognitionStruct.swift
 //  FERN
 //
 //  Created by Hopp, Dan on 4/4/24.

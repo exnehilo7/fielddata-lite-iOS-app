@@ -4,6 +4,8 @@
 //
 //  Created by Hopp, Dan on 5/14/24.
 //
+//  Whipped-up view to scan the images within a trip's folder.
+//
 //  13-JUN-2024: No need to have the GPS feed running while this view is active.
 
 import SwiftUI

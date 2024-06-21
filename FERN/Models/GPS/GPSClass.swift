@@ -4,6 +4,7 @@
 //
 //  Created by Hopp, Dan on 6/20/24.
 //
+//  Uses CoreLocation and NMEAData classes
 
 import SwiftUI
 import SwiftData
@@ -19,16 +20,15 @@ import SwiftData
             // Check NMEA stream? In not running, then start NMEA
                 // Start NMEA
                 if nmea == nil {
-                    print("--------------------------- INITIALIZING nmea VARIABLE ---------------------------")
                     nmea = NMEA()
                     nmea!.startNMEA()
-                    print("--------------------------- NMEA's startNMEA() called ---------------------------")
-                } else {print("--------------------------- nmea VARIABLE IS NOT NIL ---------------------------")}
+                }
         } else {
             // Check if default GPS is not active? If not then, use default GPS
-                // Use default GPS
-                print("Starting standard GPS")
+            // Use default GPS
+            if clLocationHelper == nil {
                 clLocationHelper = LocationHelper()
+            }
         }
         
         // Don't put device to sleep while GPS is running
@@ -44,7 +44,7 @@ import SwiftData
                 if nmea != nil {
                     print("Stopping NMEA")
                     setNmeaVarToNil()
-                } else {print("--------------------------- nmea VARIABLE IS NIL ---------------------------")}
+                }
         } else {
             // If default GPS is not active
                 // Use default GPS
@@ -57,7 +57,6 @@ import SwiftData
     }
     
     func setNmeaVarToNil(){
-        print("--------------------------- SETTING nmea VARIABLE TO NIL ---------------------------")
         nmea = nil
     }
     

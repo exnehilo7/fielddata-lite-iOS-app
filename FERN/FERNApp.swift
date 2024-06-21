@@ -4,6 +4,7 @@
 //
 //  Created by Hopp, Dan on 2/1/23.
 //
+//  Note that the supplied NMEA toolkit was not compiled with the required arm for a live preview within XCode.
 
 import SwiftUI
 import SwiftData
