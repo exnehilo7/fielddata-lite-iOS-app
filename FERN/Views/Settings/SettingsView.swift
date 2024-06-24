@@ -13,6 +13,8 @@ struct SettingsView: View {
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
     
+    var camera: CameraClass
+    
     var body: some View {
         NavigationStack{
             List {
@@ -48,7 +50,7 @@ struct SettingsView: View {
                 }
                 // HDOP Threshold
                 NavigationLink {
-                    SettingsHdopView(setting: settings[0])
+                    SettingsHdopView(setting: settings[0], camera: camera)
                         .navigationTitle("GPS Settings")
                 } label: {
                     HStack {

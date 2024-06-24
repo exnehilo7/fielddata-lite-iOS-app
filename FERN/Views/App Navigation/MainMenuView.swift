@@ -34,7 +34,7 @@ struct MainMenuView: View {
                 {
                     // Select Trip Mode (new trip acquisition)
                     NavigationLink {
-                        SelectTripModeView(map: map, gps: gps, camera: camera)
+                        SelectTripView(map: map, gps: gps, camera: camera)
                             .environment(gps)
                             .navigationTitle("Select Trip Mode")
                     } label: {
@@ -45,9 +45,9 @@ struct MainMenuView: View {
                     }
                     // QC an Uploaded Trip
                     NavigationLink {
-                        QCSelectMapTypeView(map: map, gps: gps, camera: camera)
+                        SelectMapPlatformView(map: map, gps: gps, camera: camera, mapMode: "View Trip", columnName: "", organismName: "", queryName: "query_get_trip_for_apple_map")
                             .environmentObject(menuListBridgingCoordinator)
-                            .navigationTitle("Select Trip to QC")
+                            .navigationTitle("Select Platform")
                     } label: {
                         HStack {
                             Image(systemName: "mappin.and.ellipse").bold(false).foregroundColor(.gray)
@@ -56,7 +56,7 @@ struct MainMenuView: View {
                     }
                     // Select a saved route
                     NavigationLink {
-                        SelectSavedRouteView(map: map, gps: gps, camera: camera)
+                        ShowListFromDatabaseView(map: map, gps: gps, camera: camera, mapMode: "Traveling Salesman", columnName: "", organismName: "", queryName: "query_get_route_for_app")
                             .environmentObject(menuListBridgingCoordinator)
                             .navigationTitle("Select Saved Route")
                     } label: {
@@ -77,7 +77,7 @@ struct MainMenuView: View {
                     }
                     // App settings
                     NavigationLink {
-                        SettingsView()
+                        SettingsView(camera: camera)
                             .navigationTitle("Settings")
                     } label: {
                         HStack {
@@ -100,7 +100,7 @@ struct MainMenuView: View {
                 {
                     // App settings
                     NavigationLink {
-                        SettingsView()
+                        SettingsView(camera: camera)
                             .navigationTitle("Set Threshold")
                     } label: {
                         HStack {

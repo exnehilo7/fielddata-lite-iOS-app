@@ -89,6 +89,23 @@ struct CameraView: View {
     }
     //------------------------------------------------------------------
     
+    // Show HDOP setting view button
+    var showHdopSettingButton: some View {
+        Button {
+            camera.showHDOPSettingView = true
+        }
+        label: { HStack {Image(systemName: "arrow.up.to.line").font(.system(size: 10))}
+        .frame(minWidth: 0, maxWidth: 25, minHeight: 0, maxHeight: 17)
+        .background(Color.blue)
+        .foregroundColor(.white)
+        .cornerRadius(5).padding(.horizontal)
+        }.popover(isPresented: $camera.showHDOPSettingView) {
+            // Show view
+            SettingsHdopView(setting: settings[0], camera: camera)  // NEED TO HIDE GPS OPTION ON VIEW POPUP (on dissapear?)
+        }
+        
+    }
+    
     // NMEA Alert
     var stoppedNMEA: some View {
         VStack {
@@ -163,7 +180,7 @@ struct CameraView: View {
             }
             
             // If above was successful and map mode is Route, change annotation's color to blue:
-            if imageSuccessful && mapMode == "route" {
+            if imageSuccessful && mapMode == "Traveling Salesman" {
                 Task {
                     await map.updatePointColor(settings: settings, phpFile: "updateRoutePointColor.php",
                                                            postString:"_route_id=\(map.annotationItems[map.currentAnnoItem].routeID)&_point_order=\(map.annotationItems[map.currentAnnoItem].pointOrder)")
@@ -238,7 +255,7 @@ struct CameraView: View {
             .frame(minWidth: 0, maxWidth: 75, minHeight: 0, maxHeight: 30)
             .background(Color.red)
             .foregroundColor(.white)
-            .cornerRadius(20)
+            .cornerRadius(10)
             .padding(.horizontal)
         })
     }

@@ -10,9 +10,10 @@ import SwiftData
 
 struct SettingsHdopView: View {
     
-    @Environment(\.modelContext) var modelContext
-    
     @Bindable var setting: Settings
+    var camera: CameraClass
+    
+    @Environment(\.modelContext) var modelContext
     
     @State private var min: Double = 0
     @State private var max: Double = 0.9
@@ -22,23 +23,25 @@ struct SettingsHdopView: View {
         Spacer()
         HStack {
             Spacer()
-            Toggle("Use Bluetooth Device", isOn: $setting.useBluetoothDevice)
-                .onChange(of: setting.useBluetoothDevice) {
-                    if !setting.useBluetoothDevice {
-                        max = 40.0
-                        setting.hdopThreshold = 10.0
-                    } else {
-                        max = 0.9
-                        setting.hdopThreshold = 0.2
-                    }
-                }.onAppear(perform: {
-                    if !setting.useBluetoothDevice{
-                        max = 40.0
-                    }
-                    else {
-                        max = 0.9
-                    }
-                })
+            if !camera.showHDOPSettingView {
+                Toggle("Use Bluetooth Device", isOn: $setting.useBluetoothDevice)
+                    .onChange(of: setting.useBluetoothDevice) {
+                        if !setting.useBluetoothDevice {
+                            max = 40.0
+                            setting.hdopThreshold = 10.0
+                        } else {
+                            max = 0.9
+                            setting.hdopThreshold = 0.2
+                        }
+                    }.onAppear(perform: {
+                        if !setting.useBluetoothDevice{
+                            max = 40.0
+                        }
+                        else {
+                            max = 0.9
+                        }
+                    })
+            }
             Spacer()
         }
         Spacer()
@@ -51,7 +54,9 @@ struct SettingsHdopView: View {
             Text("\(setting.hdopThreshold, specifier: "%.03f")m")
             VStack{
                 Slider(value: $setting.hdopThreshold, in: min...max)
-            }
+            }.onDisappear(perform: {
+                camera.showHDOPSettingView = false
+            })
         }
         Spacer()
         Spacer()
