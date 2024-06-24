@@ -18,6 +18,7 @@ import SwiftUI
     var textNotes = ""
     private var numofmatches = 0
     var showingCompleteAlert = false
+    var showHDOPSettingView = false
     
     
     // Sounds

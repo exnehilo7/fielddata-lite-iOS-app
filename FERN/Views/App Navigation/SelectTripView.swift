@@ -18,8 +18,6 @@ struct SelectTripView: View {
     var gps: GpsClass
     var camera: CameraClass
     
-    var tripMode:String
-    
     // For add-a-trip popup
     @State private var showingTripNameAlert = false
     @State private var showingDeleteTripAlert = false
@@ -35,12 +33,7 @@ struct SelectTripView: View {
                 ForEach(sdTrips) { item in
                     NavigationLink {
                         if !item.isComplete {
-                            if (tripMode == "thorough") {
-                                CameraView(map: map, gps: gps, camera: camera, mapMode: "none", tripOrRouteName: item.name).navigationTitle("🐢 \(item.name)")
-                            }
-                            else {
-                                MessageView(message: "No trip type selected.")
-                            }
+                                CameraView(map: map, gps: gps, camera: camera, mapMode: "none", tripOrRouteName: item.name).navigationTitle("\(item.name)")
                         }
                         // Go to an upload screen
                         else {
