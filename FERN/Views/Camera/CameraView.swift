@@ -395,7 +395,7 @@ struct CameraView: View {
             }
         }.onAppear(perform: {
             // Create Text File for the Day
-            camera.createTxtFileForTheDay(tripOrRouteName: tripOrRouteName)
+            camera.createImageTxtFileForTheDay(tripOrRouteName: tripOrRouteName)
         })
         .sheet(isPresented:
                 $camera.isShowCamera) {
