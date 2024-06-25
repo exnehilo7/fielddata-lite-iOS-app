@@ -20,7 +20,7 @@ class GetFormattedDateStrings {
     
     func getTimestampSrting_yyyy_MM_dd_HH_mm_ssx() -> String {
         let formatterDateTime = DateFormatter()
-        formatterDateTime.dateFormat = "yyyy-MM-dd HH:mm:ssx"
+        formatterDateTime.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSx"
         return formatterDateTime.string(from: Date())
     }
 }
@@ -148,11 +148,11 @@ class FieldWorkScoringFile {
         let dateString = GetFormattedDateStrings().getDateString_yyyy_MM_dd()
         // Use the unique device ID for the text file name and the folder path.
         if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString {
-            let fileName = "\(dateString)_\(tripOrRouteName)_\(deviceUuid)_Scoring.txt"
+            let fileName = "\(dateString)_\(tripOrRouteName)_\(deviceUuid)_Scoring.csv"
             let path = scoringDir.appendingPathComponent("\(deviceUuid)/trips/\(tripOrRouteName)")
             filePath = ProcessTextfile().createPath(path: path, fileName: fileName)
         } else {
-            let fileName = "\(dateString)_No_Device_UUID_Scoring.txt"
+            let fileName = "\(dateString)_No_Device_UUID_Scoring.csv"
             let path = scoringDir.appendingPathComponent("no_device_uuid/trips/\(tripOrRouteName)")
             filePath = ProcessTextfile().createPath(path: path, fileName: fileName)
         }
