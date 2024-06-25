@@ -42,5 +42,12 @@ struct SelectMapUILayoutView: View {
                 }
             }
         }
+        .onAppear(perform: {
+            // Reset previously snapped pic if view was swiped down before image was saved
+            camera.clearCustomData()
+            camera.resetCamera()
+            
+            
+        })
     }
 }

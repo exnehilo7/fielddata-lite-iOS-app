@@ -33,10 +33,10 @@ struct MapView: View {
     var queryName: String
     var mapUILayout: String
     
-    // For scoring buttons
-    @State private var isSelectedZero = false
-    @State private var isSelectedOne = false
-    @State private var isSelectedTwo = false
+//    // For scoring buttons
+//    @State private var isSelectedZero = false
+//    @State private var isSelectedOne = false
+//    @State private var isSelectedTwo = false
     
     
     //MARK: Views
@@ -144,67 +144,49 @@ struct MapView: View {
     var buttonScoreZero: some View {
         
             Button(action: {
-                if !isSelectedZero {
-                    isSelectedZero = true
-                    isSelectedOne = false
-                    isSelectedTwo = false
-                } else {
-                    isSelectedZero = false
-                }
+                map.setScoreToZero(tripOrRouteName: tripOrRouteName)
             }, label: {
                 Text("0")
             })
             .frame(width: 50, height: 50)
-            .background(self.isSelectedZero ? Color.green : Color(red: 0.5, green: 0.5, blue: 0.5))
-            .foregroundStyle(self.isSelectedZero ? Color.black : Color.white)
+            .background(map.isSelectedZero ? Color.green : Color(red: 0.5, green: 0.5, blue: 0.5))
+            .foregroundStyle(map.isSelectedZero ? Color.black : Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 10.0))
             .overlay(
                     RoundedRectangle(cornerRadius: 10)
-                        .stroke(self.isSelectedZero ? .green : Color(red: 0.5, green: 0.5, blue: 0.5), lineWidth: 2))
+                        .stroke(map.isSelectedZero ? .green : Color(red: 0.5, green: 0.5, blue: 0.5), lineWidth: 2))
         }
         
         var buttonScoreOne: some View {
             
             Button(action: {
-                if !isSelectedOne {
-                    isSelectedZero = false
-                    isSelectedOne = true
-                    isSelectedTwo = false
-                } else {
-                    isSelectedOne = false
-                }
+                map.setScoreToOne(tripOrRouteName: tripOrRouteName)
             }, label: {
                 Text("1")
             })
             .frame(width: 50, height: 50)
-            .background(self.isSelectedOne ? Color.green : Color(red: 0.5, green: 0.5, blue: 0.5))
-            .foregroundStyle(self.isSelectedOne ? Color.black : Color.white)
+            .background(map.isSelectedOne ? Color.green : Color(red: 0.5, green: 0.5, blue: 0.5))
+            .foregroundStyle(map.isSelectedOne ? Color.black : Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 10.0))
             .overlay(
                 RoundedRectangle(cornerRadius: 10)
-                    .stroke(self.isSelectedOne ? .green : Color(red: 0.5, green: 0.5, blue: 0.5), lineWidth: 2))
+                    .stroke(map.isSelectedOne ? .green : Color(red: 0.5, green: 0.5, blue: 0.5), lineWidth: 2))
         }
         
         var buttonScoreTwo: some View {
             
             Button(action: {
-                if !isSelectedTwo {
-                    isSelectedZero = false
-                    isSelectedOne = false
-                    isSelectedTwo = true
-                } else {
-                    isSelectedTwo = false
-                }
+                map.setScoreToTwo(tripOrRouteName: tripOrRouteName)
             }, label: {
                 Text("2")
             })
             .frame(width: 50, height: 50)
-            .background(self.isSelectedTwo ? Color.green : Color(red: 0.5, green: 0.5, blue: 0.5))
-            .foregroundStyle(self.isSelectedTwo ? Color.black : Color.white)
+            .background(map.isSelectedTwo ? Color.green : Color(red: 0.5, green: 0.5, blue: 0.5))
+            .foregroundStyle(map.isSelectedTwo ? Color.black : Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 10.0))
             .overlay(
                 RoundedRectangle(cornerRadius: 10)
-                    .stroke(self.isSelectedTwo ? .green : Color(red: 0.5, green: 0.5, blue: 0.5), lineWidth: 2))
+                    .stroke(map.isSelectedTwo ? .green : Color(red: 0.5, green: 0.5, blue: 0.5), lineWidth: 2))
         }
     
     
@@ -237,22 +219,31 @@ struct MapView: View {
                     }
                     else if mapUILayout == "scoring" {
                         
-                        // Previous / Next Arrows
-                        HStack {
-                            
-                            previousPoint.padding(.leading, 20)
-                            Spacer()
-                            buttonScoreZero
-                            buttonScoreOne
-                            buttonScoreTwo
-                            Spacer()
-                            nextPoint.padding(.trailing, 20)
-                            
-                        }.padding(.bottom, 20)
+                            // Previous / Next Arrows
+                            HStack {
+                                
+                                previousPoint.padding(.leading, 20)
+                                Spacer()
+                                if (map.annotationItems[map.currentAnnoItem].organismName.trimmingCharacters(in: .whitespaces)).count > 0 {
+                                    buttonScoreZero
+                                    buttonScoreOne
+                                    buttonScoreTwo
+                                }
+                                Spacer()
+                                nextPoint.padding(.trailing, 20)
+                            }.padding(.bottom, 20)
                     }
                 } //end selected item info and arrow buttons VStack
            } //end if hasMapPointsResults
         } //end VStack
+        .onAppear(perform: {
+            if mapUILayout == "scoring" {
+                // Clear selection
+                map.resetScoreButtons()
+                // Create Scoring Text File for the Day
+                map.createScoringFileForTheDay(tripOrRouteName: tripOrRouteName)
+            }
+        })
     } //end body view
     
     private func getMapPoints() async {
@@ -274,6 +265,7 @@ struct MapView: View {
             if map.currentAnnoItem < map.totalAnnoItems {
                 map.currentAnnoItem += 1
                 highlightMapAnnotation(offset, offsetColor)
+                map.resetScoreButtons()
             }
         }
         else {
@@ -281,6 +273,7 @@ struct MapView: View {
             if map.currentAnnoItem > 0 {
                 map.currentAnnoItem -= 1
                 highlightMapAnnotation(offset, offsetColor)
+                map.resetScoreButtons()
             }
         }
     }

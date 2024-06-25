@@ -33,7 +33,75 @@ class MapPointSize {
     private var currentCameraPosition: MapCameraPosition?
     // View toggles
     var showPopover = false
-
+    
+    // For scoring buttons
+    var isSelectedZero = false
+    var isSelectedOne = false
+    var isSelectedTwo = false
+    
+    
+    // create Scoring File for the day
+    func createScoringFileForTheDay(tripOrRouteName: String) {
+        do {
+            _ = try FieldWorkScoringFile.writeScoreToTextFile(tripOrRouteName: tripOrRouteName, uuid: "", organismName: "", score: "")
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func saveScoreToTextFile(tripOrRouteName: String, score: String) {
+        
+        // If scoring mode active and organism name is not blank, save score to text file
+        
+        let uuid = UUID().uuidString
+        if (annotationItems[currentAnnoItem].organismName.trimmingCharacters(in: .whitespaces)).count > 0 {
+            do {
+                // Save image to Trip's folder
+                try _ = FieldWorkScoringFile.writeScoreToTextFile(tripOrRouteName: tripOrRouteName, uuid: uuid, organismName: annotationItems[currentAnnoItem].organismName, score: score)
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func setScoreToZero(tripOrRouteName: String) {
+        if !isSelectedZero {
+            isSelectedZero = true
+            isSelectedOne = false
+            isSelectedTwo = false
+            saveScoreToTextFile(tripOrRouteName: tripOrRouteName, score: "0")
+        } else {
+            isSelectedZero = false
+        }
+    }
+    
+    func setScoreToOne(tripOrRouteName: String) {
+        if !isSelectedOne {
+            isSelectedZero = false
+            isSelectedOne = true
+            isSelectedTwo = false
+            saveScoreToTextFile(tripOrRouteName: tripOrRouteName, score: "1")
+        } else {
+            isSelectedOne = false
+        }
+    }
+    
+    func setScoreToTwo(tripOrRouteName: String) {
+        if !isSelectedTwo {
+            isSelectedZero = false
+            isSelectedOne = false
+            isSelectedTwo = true
+            saveScoreToTextFile(tripOrRouteName: tripOrRouteName, score: "2")
+        } else {
+            isSelectedTwo = false
+        }
+    }
+    
+    func resetScoreButtons() {
+        isSelectedZero = false
+        isSelectedOne = false
+        isSelectedTwo = false
+    }
     
     func resetRouteMarkers(settings: [Settings], phpFile: String, postString: String = "") async {
         // remember current map camera position
@@ -42,8 +110,7 @@ class MapPointSize {
         currentAnnoItem = 0
         totalAnnoItems = 0
         annotationItems.removeAll(keepingCapacity: true)
-        _ = await getMapPointsFromDatabase(//annotationItems: annotationItems,
-                                           settings: settings, phpFile: phpFile, postString: postString)
+        _ = await getMapPointsFromDatabase(settings: settings, phpFile: phpFile, postString: postString)
         // move map back to current spot
         cameraPosition = currentCameraPosition!
     }
@@ -52,8 +119,7 @@ class MapPointSize {
         // remember current map camera position
         currentCameraPosition = cameraPosition
         annotationItems.removeAll(keepingCapacity: true)  // or false?
-        _ = await getMapPointsFromDatabase(//annotationItems: annotationItems,
-                                           settings: settings, phpFile: phpFile, postString: postString)
+        _ = await getMapPointsFromDatabase(settings: settings, phpFile: phpFile, postString: postString)
         // move map back to current spot
         cameraPosition = currentCameraPosition!
     }
@@ -71,15 +137,13 @@ class MapPointSize {
         )
     }
     
-    func getMapPointsFromDatabase(//annotationItems: [MapAnnotationItem],
-                                  settings: [Settings], phpFile: String, postString: String = "") async //-> [MapAnnotationItem]
+    func getMapPointsFromDatabase(settings: [Settings], phpFile: String, postString: String = "") async
     {
         
-//        self.annotationItems = annotationItems
         
         guard let url: URL = URL(string: settings[0].databaseURL + "/php/\(phpFile)") else {
             Swift.print("invalid URL")
-            return //self.annotationItems //mapResults!
+            return
         }
         
         var request: URLRequest = URLRequest(url: url)
@@ -122,7 +186,7 @@ class MapPointSize {
                                 span: MKCoordinateSpan(latitudeDelta: 0.015, longitudeDelta: 0.015)
                         ))
                         
-                        // Toggle next and previous arrows(???)
+                        // Toggle next and previous arrows(What was this originally for?)
                         if hasMapPointsResults == false {
                             hasMapPointsResults.toggle()
                         }
@@ -130,7 +194,7 @@ class MapPointSize {
                         // Release memory?
                         mapResults = [TempMapPointModel]()
                         
-                        return //self.annotationItems
+                        return
                     }
                 }
             } else {
@@ -148,7 +212,7 @@ class MapPointSize {
                 //            NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
             }
 
-        return //self.annotationItems
+        return
     }
     
     
