@@ -66,7 +66,7 @@ class FieldWorkGPSFile {
         return documentsDirectory
     }
     
-    static func log(tripOrRouteName: String, uuid: String, gpsUsed: String, hdop: String, longitude: String, latitude: String, altitude: String,
+    static func writePicDataToTxtFile(tripOrRouteName: String, uuid: String, gpsUsed: String, hdop: String, longitude: String, latitude: String, altitude: String,
                     scannedText: String, notes: String) throws -> Bool {
         guard let gpsDir = gpsDir else {
             return false

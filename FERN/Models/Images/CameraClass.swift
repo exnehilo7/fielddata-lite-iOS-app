@@ -24,19 +24,14 @@ import SwiftUI
     // Sounds
     let audio = playSound()
     
+    // create new txt file for the day for GPS data.
     func createImageTxtFileForTheDay(tripOrRouteName: String) {
-        do{
-            // create new txt file for the day for GPS data.
-            _ = try FieldWorkGPSFile.log(tripOrRouteName: tripOrRouteName, uuid: "", gpsUsed: "", hdop: "", longitude: "", latitude: "", altitude: "", scannedText: "", notes: "")
+        do {
+            _ = try FieldWorkGPSFile.writePicDataToTxtFile(tripOrRouteName: tripOrRouteName, uuid: "", gpsUsed: "", hdop: "", longitude: "", latitude: "", altitude: "", scannedText: "", notes: "")
         } catch {
             print(error.localizedDescription)
         }
     }
-    
-    // create Scoring File for the day
-    
-    
-    
     
     func processImage(useBluetooth: Bool, hasBTStreamStopped: Bool, hdopThreshold: Double, imgFile: UIImage, tripOrRouteName: String, uuid: String, gpsUsed: String, hdop: String = "0.00", longitude: String = "0.00000000", latitude: String = "0.00000000", altitude: String = "0.00", scannedText: String, notes: String) -> Bool {
         
@@ -58,8 +53,7 @@ import SwiftUI
         if savePic {
             // Save pic to a folder and write metadata to a text file
             savePicIfUnderThreshold(hdopThreshold: hdopThreshold, imgFile: imgFile, tripOrRouteName: tripOrRouteName, uuid: uuid, gpsUsed: gpsUsed, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude, scannedText: scannedText, notes: notes)
-            
-            // If scoring mode active and organism name is not blank, save score to text file
+
             return true
         }
         
@@ -99,7 +93,7 @@ import SwiftUI
         // Write the pic's info to a .txt file
         do {
             // .txt file header order is uuid, gps, hdop, longitude, latitude, altitude.
-            try _ = FieldWorkGPSFile.log(tripOrRouteName: tripOrRouteName, uuid: uuid, gpsUsed: gpsUsed, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude, scannedText: scannedText, notes: notes)
+            try _ = FieldWorkGPSFile.writePicDataToTxtFile(tripOrRouteName: tripOrRouteName, uuid: uuid, gpsUsed: gpsUsed, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude, scannedText: scannedText, notes: notes)
             // Play a success noise
             audio.playSuccess()
         } catch {
