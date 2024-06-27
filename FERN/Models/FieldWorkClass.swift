@@ -137,14 +137,13 @@ class FieldWorkScoringFile {
         return documentsDirectory
     }
     
-    static func writeScoreToTextFile(tripOrRouteName: String, uuid: String, organismName: String, score: String) throws -> Bool {
+    static func writeScoreToCSVFile(tripOrRouteName: String, uuid: String, organismName: String, score: String) throws -> Bool {
         guard let scoringDir = scoringDir else {
             return false
         }
 
         var filePath: URL
         
-        // Make the file name date_tripName_deviceUUID.txt
         let dateString = GetFormattedDateStrings().getDateString_yyyy_MM_dd()
         // Use the unique device ID for the text file name and the folder path.
         if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString {

@@ -45,7 +45,7 @@ struct MainMenuView: View {
                     }
                     // QC an Uploaded Trip
                     NavigationLink {
-                        SelectMapPlatformView(map: map, gps: gps, camera: camera, mapMode: "View Trip", columnName: "", organismName: "", queryName: "query_get_trip_for_apple_map")
+                        SelectMapPlatformView(map: map, gps: gps, camera: camera, mapMode: "View Trip", columnName: "", organismName: "", mapQuery: "query_get_trip_for_apple_map")
                             .environmentObject(menuListBridgingCoordinator)
                             .navigationTitle("Select Platform")
                     } label: {
@@ -56,7 +56,7 @@ struct MainMenuView: View {
                     }
                     // Select a saved route
                     NavigationLink {
-                        ShowListFromDatabaseView(map: map, gps: gps, camera: camera, mapMode: "Traveling Salesman", columnName: "", organismName: "", queryName: "query_get_route_for_app")
+                        ShowListFromDatabaseView(map: map, gps: gps, camera: camera, mapMode: "Traveling Salesman", columnName: "", organismName: "", mapQuery: "query_get_route_for_app", tripType: "")
                             .environmentObject(menuListBridgingCoordinator)
                             .navigationTitle("Select Saved Route")
                     } label: {
