@@ -47,7 +47,8 @@ struct SelectMapUILayoutView: View {
             camera.clearCustomData()
             camera.resetCamera()
             
-            
+            // Need to reset vars in MapModel
+            map.resetMapModelVariables()
         })
     }
 }

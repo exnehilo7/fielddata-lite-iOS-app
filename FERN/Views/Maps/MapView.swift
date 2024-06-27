@@ -300,6 +300,14 @@ struct MapView: View {
                 map.annotationItems[map.currentAnnoItem + offset].highlightColor = Color(red: 0, green: 0, blue: 1)
             }
         }
+        // If map is a trip, color the previous item blue
+        else if mapMode == "View Trip" {
+            // If moving forward, color the previous item blue
+            if offset == -1 {
+                map.annotationItems[map.currentAnnoItem + offset].highlightColor = Color(red: 0, green: 0, blue: 1)
+            }
+        }
+        
     }
     
 }//end MapView view
