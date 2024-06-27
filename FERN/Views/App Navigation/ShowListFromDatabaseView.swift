@@ -52,9 +52,6 @@ struct ShowListFromDatabaseView: View {
     
     private func getListItems() async {
         
-        // Need to reset vars in MapModel
-        map.resetMapModelVariables()
-        
         if mapMode == "View Trip" {
             await getListOfTripsInDatabase()
         } else if mapMode == "Traveling Salesman" {
