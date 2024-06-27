@@ -52,6 +52,7 @@
 		D16FA6512C29D9040090E756 /* SelectMapPlatformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA6502C29D9040090E756 /* SelectMapPlatformView.swift */; };
 		D16FA6532C29DB7E0090E756 /* SelectMapUILayoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA6522C29DB7E0090E756 /* SelectMapUILayoutView.swift */; };
 		D16FA6552C29E9D20090E756 /* ShowListFromDatabaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA6542C29E9D20090E756 /* ShowListFromDatabaseView.swift */; };
+		D16FA6572C2DE0340090E756 /* SelectTripTypeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA6562C2DE0330090E756 /* SelectTripTypeView.swift */; };
 		D1766C9D298DB978002F594D /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766C9C298DB978002F594D /* MainMenuView.swift */; };
 		D1766C9F298DB9B2002F594D /* SearchByNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766C9E298DB9B2002F594D /* SearchByNameView.swift */; };
 		D1766CA1298DB9C6002F594D /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766CA0298DB9C6002F594D /* MapView.swift */; };
@@ -133,6 +134,7 @@
 		D16FA6502C29D9040090E756 /* SelectMapPlatformView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectMapPlatformView.swift; sourceTree = "<group>"; };
 		D16FA6522C29DB7E0090E756 /* SelectMapUILayoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectMapUILayoutView.swift; sourceTree = "<group>"; };
 		D16FA6542C29E9D20090E756 /* ShowListFromDatabaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowListFromDatabaseView.swift; sourceTree = "<group>"; };
+		D16FA6562C2DE0330090E756 /* SelectTripTypeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripTypeView.swift; sourceTree = "<group>"; };
 		D1766C9C298DB978002F594D /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuView.swift; sourceTree = "<group>"; };
 		D1766C9E298DB9B2002F594D /* SearchByNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchByNameView.swift; sourceTree = "<group>"; };
 		D1766CA0298DB9C6002F594D /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
@@ -346,10 +348,11 @@
 			children = (
 				D1766C9C298DB978002F594D /* MainMenuView.swift */,
 				D16FA6502C29D9040090E756 /* SelectMapPlatformView.swift */,
+				D16FA6522C29DB7E0090E756 /* SelectMapUILayoutView.swift */,
 				D16FA64E2C29D86C0090E756 /* SelectTripAcqModeView.swift */,
 				D16796422BE02CFF00561875 /* SelectTripForCesiumView.swift */,
+				D16FA6562C2DE0330090E756 /* SelectTripTypeView.swift */,
 				D1A56E802B051DB300AC8291 /* SelectTripView.swift */,
-				D16FA6522C29DB7E0090E756 /* SelectMapUILayoutView.swift */,
 				D16FA6542C29E9D20090E756 /* ShowListFromDatabaseView.swift */,
 			);
 			path = "App Navigation";
@@ -505,6 +508,7 @@
 				D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */,
 				D11B2D902BF3BC81004FEE0B /* ScanPhotosInFolderForText.swift in Sources */,
 				D1036C0F2C1B519E00E2E266 /* StartScreenModel.swift in Sources */,
+				D16FA6572C2DE0340090E756 /* SelectTripTypeView.swift in Sources */,
 				D127B37E2A12ED3D00F6287A /* NMEADataClass.swift in Sources */,
 				D16FA6472C25E3920090E756 /* CoreLocationClass.swift in Sources */,
 				D16FA6122C1CB7A50090E756 /* MenuListModel.swift in Sources */,

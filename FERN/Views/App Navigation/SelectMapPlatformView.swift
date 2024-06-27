@@ -17,7 +17,7 @@ struct SelectMapPlatformView: View {
     var mapMode: String
     var columnName: String
     var organismName: String
-    var queryName: String
+    var mapQuery: String
     
     var body: some View {
         
@@ -25,9 +25,9 @@ struct SelectMapPlatformView: View {
             NavigationStack {
                 List {
                     NavigationLink {
-                        ShowListFromDatabaseView(map: map, gps: gps, camera: camera, mapMode: mapMode, columnName: columnName, organismName: organismName, queryName: queryName)
+                        SelectTripTypeView(map: map, gps: gps, camera: camera, mapMode: mapMode, columnName: columnName, organismName: organismName, mapQuery: mapQuery)
                             .environmentObject(menuListBridgingCoordinator)
-                            .navigationTitle("Apple Map")
+                            .navigationTitle("Select Trip Type")
                     } label: {
                         HStack {
                             Image(systemName: "mappin.and.ellipse").bold(false).foregroundColor(.gray)
