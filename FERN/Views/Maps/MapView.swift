@@ -26,6 +26,7 @@ struct MapView: View {
     @Bindable var map: MapClass
     var gps: GpsClass
     var camera: CameraClass
+    @Bindable var upload: FileUploadClass
     var mapMode: String
     var tripOrRouteName: String
     var columnName: String
@@ -117,6 +118,8 @@ struct MapView: View {
         // backward
         Button(action: {
             cycleAnnotations(forward: false, 1)
+            // Hide upload button
+            upload.showUploadButton = false
         }, label: {
             VStack {
                 Image(systemName: "arrowshape.backward.fill")
@@ -131,6 +134,16 @@ struct MapView: View {
         // forward
         Button(action:  {
             cycleAnnotations(forward: true, -1)
+            // If map mode is Scoring and at the last point, show upload button
+            if mapUILayout == "scoring" {
+                if map.currentAnnoItem == map.totalAnnoItems {
+                    // if a score is selected
+                    if map.isSelectedOne == true || map.isSelectedTwo == true || map.isSelectedZero == true {
+                        upload.showUploadButton = true
+                    }
+                    else { upload.showUploadButton = false }
+                }
+            }
         }, label: {
             VStack {
                 Image(systemName: "arrowshape.forward.fill")
@@ -138,6 +151,28 @@ struct MapView: View {
                 Text("Next")
             }
         })
+    }
+    
+    //UPLOAD BUTTON
+    var uploadScoreButton: some View {
+        Button {
+            Task {
+                upload.resetVars()
+                upload.showPopover = true
+            }
+        } label: {
+            HStack {
+               Text("Upload Scores").font(.system(size:12))
+           }
+           .frame(minWidth: 0, maxWidth: 100, minHeight: 0, maxHeight: 50)
+           .background(Color.orange)
+           .foregroundColor(.white)
+           .cornerRadius(10)
+           .padding(.horizontal)
+           .popover(isPresented: $upload.showPopover) {
+               CompletedTripView(tripName: tripOrRouteName, uploadURL: settings[0].uploadScriptURL, cesiumURL: settings[0].cesiumURL, upload: upload, mapUILayout: mapUILayout)
+           }
+        }
     }
     
     // SCORING BUTTONS
@@ -230,7 +265,12 @@ struct MapView: View {
                                     buttonScoreTwo
                                 }
                                 Spacer()
-                                nextPoint.padding(.trailing, 20)
+                                if !upload.showUploadButton {
+                                    nextPoint.padding(.trailing, 20)
+                                }
+                                else {
+                                    uploadScoreButton
+                                }
                             }.padding(.bottom, 20)
                     }
                 } //end selected item info and arrow buttons VStack
@@ -240,6 +280,7 @@ struct MapView: View {
             if mapUILayout == "scoring" {
                 // Clear selection
                 map.resetScoreButtons()
+                upload.showUploadButton = false
                 // Create Scoring Text File for the Day
                 map.createScoringFileForTheDay(tripOrRouteName: tripOrRouteName)
             }
@@ -307,7 +348,8 @@ struct MapView: View {
                 map.annotationItems[map.currentAnnoItem + offset].highlightColor = Color(red: 0, green: 0, blue: 1)
             }
         }
-        
     }
+    
+    
     
 }//end MapView view

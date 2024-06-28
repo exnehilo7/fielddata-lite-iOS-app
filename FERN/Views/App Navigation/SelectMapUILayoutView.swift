@@ -13,6 +13,7 @@ struct SelectMapUILayoutView: View {
     var map: MapClass
     var gps: GpsClass
     var camera: CameraClass
+    var upload: FileUploadClass
     var mapMode: String
     var tripOrRouteName: String
     var columnName: String
@@ -23,7 +24,7 @@ struct SelectMapUILayoutView: View {
         NavigationStack{
             List {
                 NavigationLink {
-                    MapView(map: map, gps: gps, camera: camera, mapMode: mapMode, tripOrRouteName: tripOrRouteName, columnName: columnName, organismName: organismName, queryName: queryName, mapUILayout: "standard")
+                    MapView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, tripOrRouteName: tripOrRouteName, columnName: columnName, organismName: organismName, queryName: queryName, mapUILayout: "standard")
                         .navigationTitle(tripOrRouteName).font(.subheadline)
                 } label: {
                     HStack {
@@ -32,7 +33,7 @@ struct SelectMapUILayoutView: View {
                     }
                 }
                 NavigationLink {
-                    MapView(map: map, gps: gps, camera: camera, mapMode: mapMode, tripOrRouteName: tripOrRouteName, columnName: columnName, organismName: organismName, queryName: queryName, mapUILayout: "scoring")
+                    MapView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, tripOrRouteName: tripOrRouteName, columnName: columnName, organismName: organismName, queryName: queryName, mapUILayout: "scoring")
                         .navigationTitle(tripOrRouteName).font(.subheadline)
                 } label: {
                     HStack {
