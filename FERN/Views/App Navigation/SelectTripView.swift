@@ -17,6 +17,7 @@ struct SelectTripView: View {
     var map: MapClass
     var gps: GpsClass
     var camera: CameraClass
+    var upload: FileUploadClass
     
     // For add-a-trip popup
     @State private var showingTripNameAlert = false
@@ -38,7 +39,7 @@ struct SelectTripView: View {
                         // Go to an upload screen
                         else {
                             // Try to prevent data race by passing swiftdata values(?)
-                            CompletedTripView(tripName: item.name, uploadURL: settings[0].uploadScriptURL, cesiumURL: settings[0].cesiumURL)
+                            CompletedTripView(tripName: item.name, uploadURL: settings[0].uploadScriptURL, cesiumURL: settings[0].cesiumURL, upload: upload)
                         }
                     } label: {
                         HStack{

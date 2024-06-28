@@ -13,6 +13,7 @@ struct SelectTripAcqModeView: View {
     var map: MapClass
     var gps: GpsClass
     var camera: CameraClass
+    var upload: FileUploadClass
     
     
     var body: some View {
@@ -21,7 +22,7 @@ struct SelectTripAcqModeView: View {
             List {
                 // Thorough Acquisition
                 NavigationLink {
-                    SelectTripView(map: map, gps: gps, camera: camera) //, tripMode: "thorough")
+                    SelectTripView(map: map, gps: gps, camera: camera, upload: upload) //, tripMode: "thorough")
                         .navigationTitle("🐢 Select or Create a Trip")
                 } label: {
                     HStack {

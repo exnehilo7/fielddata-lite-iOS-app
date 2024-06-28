@@ -53,6 +53,7 @@
 		D16FA6532C29DB7E0090E756 /* SelectMapUILayoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA6522C29DB7E0090E756 /* SelectMapUILayoutView.swift */; };
 		D16FA6552C29E9D20090E756 /* ShowListFromDatabaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA6542C29E9D20090E756 /* ShowListFromDatabaseView.swift */; };
 		D16FA6572C2DE0340090E756 /* SelectTripTypeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA6562C2DE0330090E756 /* SelectTripTypeView.swift */; };
+		D16FA6592C2F0DCA0090E756 /* FileUploadClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA6582C2F0DCA0090E756 /* FileUploadClass.swift */; };
 		D1766C9D298DB978002F594D /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766C9C298DB978002F594D /* MainMenuView.swift */; };
 		D1766C9F298DB9B2002F594D /* SearchByNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766C9E298DB9B2002F594D /* SearchByNameView.swift */; };
 		D1766CA1298DB9C6002F594D /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766CA0298DB9C6002F594D /* MapView.swift */; };
@@ -135,6 +136,7 @@
 		D16FA6522C29DB7E0090E756 /* SelectMapUILayoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectMapUILayoutView.swift; sourceTree = "<group>"; };
 		D16FA6542C29E9D20090E756 /* ShowListFromDatabaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowListFromDatabaseView.swift; sourceTree = "<group>"; };
 		D16FA6562C2DE0330090E756 /* SelectTripTypeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripTypeView.swift; sourceTree = "<group>"; };
+		D16FA6582C2F0DCA0090E756 /* FileUploadClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUploadClass.swift; sourceTree = "<group>"; };
 		D1766C9C298DB978002F594D /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuView.swift; sourceTree = "<group>"; };
 		D1766C9E298DB9B2002F594D /* SearchByNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchByNameView.swift; sourceTree = "<group>"; };
 		D1766CA0298DB9C6002F594D /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
@@ -182,6 +184,7 @@
 				D16FA6442C25E2F70090E756 /* AlertsAndStrings.swift */,
 				D16FA63E2C25E1760090E756 /* CapstoneModels.swift */,
 				D16FA6482C25E3FF0090E756 /* FieldWorkClass.swift */,
+				D16FA6582C2F0DCA0090E756 /* FileUploadClass.swift */,
 				D16FA6112C1CB7A50090E756 /* MenuListModel.swift */,
 				D16FA6402C25E1F50090E756 /* SoundsStruct.swift */,
 				D1036C0E2C1B519E00E2E266 /* StartScreenModel.swift */,
@@ -524,6 +527,7 @@
 				D16FA6382C25CA380090E756 /* MapStruct.swift in Sources */,
 				D1CEED8E2B44C43C00569520 /* CompletedTripView.swift in Sources */,
 				D16FA63F2C25E1760090E756 /* CapstoneModels.swift in Sources */,
+				D16FA6592C2F0DCA0090E756 /* FileUploadClass.swift in Sources */,
 				D16A6C88299AF32600835B5E /* ReportRoutes.swift in Sources */,
 				D16FA63B2C25DC0B0090E756 /* TextRecognitionStruct.swift in Sources */,
 				D19FF3712C17542F00B54B7E /* SettingsHdopView.swift in Sources */,
@@ -709,7 +713,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.3.1;
+				MARKETING_VERSION = 2.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -748,7 +752,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.3.1;
+				MARKETING_VERSION = 2.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

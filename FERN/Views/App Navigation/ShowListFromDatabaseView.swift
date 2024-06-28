@@ -16,6 +16,7 @@ struct ShowListFromDatabaseView: View {
     var map: MapClass
     var gps: GpsClass
     var camera: CameraClass
+    var upload: FileUploadClass
     var mapMode: String
     var columnName: String
     var organismName: String
@@ -41,7 +42,7 @@ struct ShowListFromDatabaseView: View {
                 List (self.list) { (item) in
                     NavigationLink(item.name) {
                         // Pass var to view. Query for route does not need a column or organism name.
-                        SelectMapUILayoutView(map: map, gps: gps, camera: camera, mapMode: mapMode, tripOrRouteName: item.name, columnName: columnName, organismName: organismName, queryName: mapQuery)
+                        SelectMapUILayoutView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, tripOrRouteName: item.name, columnName: columnName, organismName: organismName, queryName: mapQuery)
                             .navigationTitle("Select UI Layout")
                     }
                 }

@@ -18,7 +18,7 @@ class GetFormattedDateStrings {
         return formatterDate.string(from: Date())
     }
     
-    func getTimestampSrting_yyyy_MM_dd_HH_mm_ssx() -> String {
+    func getTimestampSrting_yyyy_MM_dd_HH_mm_ssSSSx() -> String {
         let formatterDateTime = DateFormatter()
         formatterDateTime.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSx"
         return formatterDateTime.string(from: Date())
@@ -78,17 +78,17 @@ class FieldWorkGPSFile {
         let dateString = GetFormattedDateStrings().getDateString_yyyy_MM_dd()
         // Use the unique device ID for the text file name and the folder path.
         if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString {
-            let fileName = "\(dateString)_\(tripOrRouteName)_\(deviceUuid).txt"
+            let fileName = "\(dateString)_\(tripOrRouteName)_\(deviceUuid).csv"
             let path = gpsDir.appendingPathComponent("\(deviceUuid)/trips/\(tripOrRouteName)")
             filePath = ProcessTextfile().createPath(path: path, fileName: fileName)
         } else {
-            let fileName = "\(dateString)_\(tripOrRouteName)_No_Device_UUID.txt"
+            let fileName = "\(dateString)_\(tripOrRouteName)_No_Device_UUID.csv"
             let path = gpsDir.appendingPathComponent("no_device_uuid/trips/\(tripOrRouteName)")
             filePath = ProcessTextfile().createPath(path: path, fileName: fileName)
         }
         
         
-        let timestamp = GetFormattedDateStrings().getTimestampSrting_yyyy_MM_dd_HH_mm_ssx()
+        let timestamp = GetFormattedDateStrings().getTimestampSrting_yyyy_MM_dd_HH_mm_ssSSSx()
         let message = "\(uuid),\(gpsUsed),\(hdop),\(longitude),\(latitude),\(altitude),\(scannedText),\(timestamp),\(notes)"
         guard let data = (message + "\n").data(using: String.Encoding.utf8) else { return false}
     
@@ -157,7 +157,7 @@ class FieldWorkScoringFile {
         }
         
         
-        let timestamp = GetFormattedDateStrings().getTimestampSrting_yyyy_MM_dd_HH_mm_ssx()
+        let timestamp = GetFormattedDateStrings().getTimestampSrting_yyyy_MM_dd_HH_mm_ssSSSx()
         let message = "\(timestamp),\(organismName),\(score)"
         guard let data = (message + "\n").data(using: String.Encoding.utf8) else { return false}
     
