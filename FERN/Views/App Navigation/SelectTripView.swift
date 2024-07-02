@@ -39,7 +39,7 @@ struct SelectTripView: View {
                         // Go to an upload screen
                         else {
                             // Try to prevent data race by passing swiftdata values(?)
-                            CompletedTripView(tripName: item.name, uploadURL: settings[0].uploadScriptURL, cesiumURL: settings[0].cesiumURL, upload: upload)
+                            UploadFilesView(tripName: item.name, uploadURL: settings[0].uploadScriptURL, cesiumURL: settings[0].cesiumURL, upload: upload)
                         }
                     } label: {
                         HStack{
