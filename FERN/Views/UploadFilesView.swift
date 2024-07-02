@@ -1,5 +1,5 @@
 //
-//  CompletedTripView.swift
+//  UploadFilesView.swift
 //  FERN
 //
 //  Created by Hopp, Dan on 1/2/24.
@@ -10,11 +10,11 @@
 //  15-MAR-2024: Add checksum. Change array of model objects to array of strings.
 //  28-JUN-2024: Move code to MV. Break up view components into their own vars to make it easier to have different view layouts.
 
+
 import SwiftUI
 import SwiftData
-//import CryptoKit
 
-struct CompletedTripView: View {
+struct UploadFilesView: View {
     
     @Environment(\.modelContext) var modelContext
     @Query var sdTrips: [SDTrip]
@@ -43,27 +43,6 @@ struct CompletedTripView: View {
             .frame(minHeight: 300, maxHeight: 300)
             .fixedSize(horizontal: false, vertical: true)
     }
-//    var fileLocationDirections: some View {
-//        VStack {
-//            if mapUILayout == "none" {
-//                Text("Trip \(tripName) is complete!")
-//                Text("")
-//                VStack {
-//                    Text("The images are stored in:")
-//                    Text("Files -> On My [Device] -> FERN ->")
-//                    Text ("UUID -> trips -> \(tripName).")
-//                }.font(.system(size: 15))
-//            }
-//            else if mapUILayout == "scoring" {
-//                VStack {
-////                    Text("The images are stored in:")
-////                    Text("Files -> On My [Device] -> FERN ->")
-////                    Text ("UUID -> trips -> \(tripName).")
-//                }.font(.system(size: 15))
-//            }
-//            else {Text("No UI layout specified.")}
-//        }
-//    }
     
     var initalTripUploads: some View {
         ForEach(sdTrips) { item in // (There's probably a better way to get just one specific trip)
@@ -179,7 +158,7 @@ struct CompletedTripView: View {
     } // end body view
     
     private func startInitalTripUpload(trip: SDTrip) async {
-        
+        print("Starting file upload")
         // Show bar
         trip.allFilesUploaded = false
         

@@ -31,6 +31,9 @@ import CryptoKit
     }
     
     func beginFileUpload(tripName: String, uploadURL: String, mapUILayout: String) async {
+        
+        print("beginFileUpload is firing!")
+        
         // Funciton to upload files. Upload needs to know where it left off if there was an error? Alert user if no signal; don't initiate upload? (Don't show button if no signal?)
         await myFileUploadRequest(tripName: tripName, uploadURL: uploadURL, mapUILayout: mapUILayout)
     }
@@ -38,27 +41,33 @@ import CryptoKit
     func myFileUploadRequest(tripName: String, uploadURL: String, mapUILayout: String) async
     {
         
+        print("myFileUploadRequest is firing!")
+        
         // Set var
         isLoading = true
-
+        print("1")
         // Set endpoint
         let myUrl = NSURL(string: uploadURL)
-        
+        print("2")
         let request = NSMutableURLRequest(url:myUrl! as URL)
         request.httpMethod = "POST"
-        
+        print("3")
         let boundary = self.generateBoundaryString()
-        
+        print("4")
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-        
+        print("5")
         // FILE LOOP
         let fm = FileManager.default
-        
+        print("6")
         // Get app's root dir
         var rootDir: URL? {
+            print("7")
             guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
+            print("8")
             return documentsDirectory
         }
+        
+        print("Got local root dir")
         
         var path: URL
         var uploadFilePath: String
@@ -81,8 +90,10 @@ import CryptoKit
             
             // Populate array with filenames
             for item in items {
+                print(item)
                 // If uploading scoring files, get only those
                 if mapUILayout == "none" {
+                    print("mapUILayout is none")
                     fileList.append(item)
                 }
                 else if mapUILayout == "scoring" {
@@ -96,8 +107,14 @@ import CryptoKit
             print("Directory loop error")
         }
         
+        print("list of all files acquired.")
+        
         // get total number of files
         self.totalFiles = fileList.count
+        
+        print(self.totalFiles)
+        
+        print(continueImageUpload)
         
         if !continueImageUpload {
             // upload txt file first
@@ -132,9 +149,13 @@ import CryptoKit
         if continueImageUpload {
             for item in fileList {
                 if !item.contains(".csv") {
+                    print("Item does not contain .csv")
                     await processFile(item: item, uploadFilePath: uploadFilePath,
                                       boundary: boundary, request: request,
                                       path: path, uploadURL: uploadURL)
+                }
+                else {
+                    print(item)
                 }
             }
             print("ℹ️ Trip file array loop complete.")
@@ -173,9 +194,10 @@ import CryptoKit
         
         // If file is a scoring CSV, go ahead and re-upload if it already exists
         if !item.contains("Scoring") {
+            print("item does not contain 'Scoring'")
             // Is uploaded?
             if await !doesFileExist(fileName: item, params: paramDict, semaphore: semaphore, uploadURL: uploadURL) {
-                
+                print("File does not exist, calling calcChecksumAndUploadFile.")
                 calcChecksumAndUploadFile(fileName: item, boundary: boundary, request: request, getFile: getFile, pathAndFile: pathAndFile, paramDict: paramDict, semaphore: semaphore)
                 
 //                // Calculate checksum iOS-side
@@ -215,6 +237,8 @@ import CryptoKit
     }
     
     func doesFileExist(fileName: String, params: [String:String], semaphore: DispatchSemaphore, uploadURL: String) async -> Bool {
+        
+        print("doesFileExist is firing!")
         
         var exists = false
         
@@ -271,6 +295,8 @@ import CryptoKit
         // Upload file
         URLSession.shared.dataTask(with: request as URLRequest) {
             data, response, error in
+            
+            print("URL session in uploadFile stating ")
             
             if error != nil {
                 print("🔴 error=\(String(describing: error))")

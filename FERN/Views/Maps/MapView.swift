@@ -52,6 +52,12 @@ struct MapView: View {
                     .symbolRenderingMode(.palette)
                     .foregroundStyle(.white, item.highlightColor).font(.system(size: item.size))}
                 }
+                // Add temp ppoints?
+                ForEach(map.tempMapPoints) { item in
+                    Annotation(item.organismName, coordinate: item.coordinate) {Image(systemName: item.systemName)
+                    .symbolRenderingMode(.palette)
+                    .foregroundStyle(.orange, item.highlightColor).font(.system(size: item.size))}
+                }
             }.mapStyle(.standard)//(.hybrid(elevation: .realistic))
             .mapControls {
                 MapCompass()
@@ -60,6 +66,17 @@ struct MapView: View {
             }
         }.task { await getMapPoints()}
     }
+    
+//    var refreshMapButton: some View {
+//        HStack {
+//            Spacer()
+//            Button ("Refresh Map Points"){
+//                Task {
+//                    await refreshMapPoints()
+//                }
+//            }.buttonStyle(.borderedProminent).tint(.blue)//.padding(.trailing, 25)
+//        }
+//    }
     
     // Take pic button. Use a swipe-up view.
     var popupCameraButton: some View {
@@ -87,19 +104,19 @@ struct MapView: View {
             // Show organism name of the selected point
             Text("Current Point:").font(.system(size:15))//.underline()
             
-            Text(map.annotationItems[map.currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold)
-            // Mark first point on map
-                .onAppear(perform: {
-                    map.annotationItems[map.currentAnnoItem].size = 20
-                    if mapMode == "Traveling Salesman" {
-                        // If currentAnnoItem is blue, make it light blue. Else make it red
-                        if map.annotationItems[map.currentAnnoItem].highlightColor == Color(red: 0, green: 0, blue: 1) {
-                            map.annotationItems[map.currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
-                        } else {
-                            map.annotationItems[map.currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
-                        }
-                    }
-                })
+//            Text(map.annotationItems[map.currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold)
+//            // Mark first point on map
+//                .onAppear(perform: {
+//                    map.annotationItems[map.currentAnnoItem].size = 20
+//                    if mapMode == "Traveling Salesman" {
+//                        // If currentAnnoItem is blue, make it light blue. Else make it red
+//                        if map.annotationItems[map.currentAnnoItem].highlightColor == Color(red: 0, green: 0, blue: 1) {
+//                            map.annotationItems[map.currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
+//                        } else {
+//                            map.annotationItems[map.currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
+//                        }
+//                    }
+//                })
         }
     }
     
@@ -107,8 +124,8 @@ struct MapView: View {
     var currentPointCoordinates: some View {
         // Show organism's lat and long
         HStack{
-            Text("\(map.annotationItems[map.currentAnnoItem].latitude)").font(.system(size:15)).padding(.bottom, 25)
-            Text("\(map.annotationItems[map.currentAnnoItem].longitude)").font(.system(size:15)).padding(.bottom, 25)
+//            Text("\(map.annotationItems[map.currentAnnoItem].latitude)").font(.system(size:15)).padding(.bottom, 25)
+//            Text("\(map.annotationItems[map.currentAnnoItem].longitude)").font(.system(size:15)).padding(.bottom, 25)
         }
     }
     
@@ -170,7 +187,7 @@ struct MapView: View {
            .cornerRadius(10)
            .padding(.horizontal)
            .popover(isPresented: $upload.showPopover) {
-               CompletedTripView(tripName: tripOrRouteName, uploadURL: settings[0].uploadScriptURL, cesiumURL: settings[0].cesiumURL, upload: upload, mapUILayout: mapUILayout)
+               UploadFilesView(tripName: tripOrRouteName, uploadURL: settings[0].uploadScriptURL, cesiumURL: settings[0].cesiumURL, upload: upload, mapUILayout: mapUILayout)
            }
         }
     }
@@ -230,7 +247,12 @@ struct MapView: View {
         
         VStack{
             
-            popupCameraButton
+//            HStack {
+//                refreshMapButton
+//                Spacer()
+                popupCameraButton
+//                Spacer()
+//            }
 
             Spacer()
 
@@ -291,6 +313,10 @@ struct MapView: View {
         
         await map.getMapPointsFromDatabase(settings: settings, phpFile: "getMapItemsForApp.php", postString: "_column_name=\(columnName)&_column_value=\(tripOrRouteName)&_org_name=\(organismName)&_query_name=\(queryName)")
 
+    }
+    
+    private func refreshMapPoints() async {
+        await map.refreshMap(settings: settings, phpFile: "getMapItemsForApp.php", postString: "_column_name=\(columnName)&_column_value=\(tripOrRouteName)&_org_name=\(organismName)&_query_name=\(queryName)")
     }
     
     // Make sure forward and backward cycling will stay within the annotation's item count.

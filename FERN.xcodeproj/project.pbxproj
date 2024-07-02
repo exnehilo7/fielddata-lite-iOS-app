@@ -54,13 +54,13 @@
 		D16FA6552C29E9D20090E756 /* ShowListFromDatabaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA6542C29E9D20090E756 /* ShowListFromDatabaseView.swift */; };
 		D16FA6572C2DE0340090E756 /* SelectTripTypeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA6562C2DE0330090E756 /* SelectTripTypeView.swift */; };
 		D16FA6592C2F0DCA0090E756 /* FileUploadClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA6582C2F0DCA0090E756 /* FileUploadClass.swift */; };
+		D16FA65B2C2F57B70090E756 /* UploadFilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA65A2C2F57B70090E756 /* UploadFilesView.swift */; };
 		D1766C9D298DB978002F594D /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766C9C298DB978002F594D /* MainMenuView.swift */; };
 		D1766C9F298DB9B2002F594D /* SearchByNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766C9E298DB9B2002F594D /* SearchByNameView.swift */; };
 		D1766CA1298DB9C6002F594D /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766CA0298DB9C6002F594D /* MapView.swift */; };
 		D18B59D32C07C16B005A58DB /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D18B59D22C07C16B005A58DB /* MessageView.swift */; };
 		D19FF3712C17542F00B54B7E /* SettingsHdopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19FF3702C17542F00B54B7E /* SettingsHdopView.swift */; };
 		D1A56E812B051DB300AC8291 /* SelectTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E802B051DB300AC8291 /* SelectTripView.swift */; };
-		D1CEED8E2B44C43C00569520 /* CompletedTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1CEED8D2B44C43C00569520 /* CompletedTripView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -137,13 +137,13 @@
 		D16FA6542C29E9D20090E756 /* ShowListFromDatabaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowListFromDatabaseView.swift; sourceTree = "<group>"; };
 		D16FA6562C2DE0330090E756 /* SelectTripTypeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripTypeView.swift; sourceTree = "<group>"; };
 		D16FA6582C2F0DCA0090E756 /* FileUploadClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUploadClass.swift; sourceTree = "<group>"; };
+		D16FA65A2C2F57B70090E756 /* UploadFilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadFilesView.swift; sourceTree = "<group>"; };
 		D1766C9C298DB978002F594D /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuView.swift; sourceTree = "<group>"; };
 		D1766C9E298DB9B2002F594D /* SearchByNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchByNameView.swift; sourceTree = "<group>"; };
 		D1766CA0298DB9C6002F594D /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		D18B59D22C07C16B005A58DB /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		D19FF3702C17542F00B54B7E /* SettingsHdopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHdopView.swift; sourceTree = "<group>"; };
 		D1A56E802B051DB300AC8291 /* SelectTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripView.swift; sourceTree = "<group>"; };
-		D1CEED8D2B44C43C00569520 /* CompletedTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletedTripView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -372,8 +372,8 @@
 				D107EF192B571C610020F0A2 /* Settings */,
 				D16FA63C2C25DC400090E756 /* Testing */,
 				D16FA63D2C25DEF70090E756 /* TextRecognition */,
-				D1CEED8D2B44C43C00569520 /* CompletedTripView.swift */,
 				D18B59D22C07C16B005A58DB /* MessageView.swift */,
+				D16FA65A2C2F57B70090E756 /* UploadFilesView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -513,6 +513,7 @@
 				D1036C0F2C1B519E00E2E266 /* StartScreenModel.swift in Sources */,
 				D16FA6572C2DE0340090E756 /* SelectTripTypeView.swift in Sources */,
 				D127B37E2A12ED3D00F6287A /* NMEADataClass.swift in Sources */,
+				D16FA65B2C2F57B70090E756 /* UploadFilesView.swift in Sources */,
 				D16FA6472C25E3920090E756 /* CoreLocationClass.swift in Sources */,
 				D16FA6122C1CB7A50090E756 /* MenuListModel.swift in Sources */,
 				D107EF182B5716F60020F0A2 /* Settings.swift in Sources */,
@@ -525,7 +526,6 @@
 				D16FA6102C1CB74C0090E756 /* MenuListController.swift in Sources */,
 				D16A6C7C2995D18100835B5E /* StartScreenView.swift in Sources */,
 				D16FA6382C25CA380090E756 /* MapStruct.swift in Sources */,
-				D1CEED8E2B44C43C00569520 /* CompletedTripView.swift in Sources */,
 				D16FA63F2C25E1760090E756 /* CapstoneModels.swift in Sources */,
 				D16FA6592C2F0DCA0090E756 /* FileUploadClass.swift in Sources */,
 				D16A6C88299AF32600835B5E /* ReportRoutes.swift in Sources */,
@@ -713,7 +713,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.4.0;
+				MARKETING_VERSION = 2.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -752,7 +752,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.4.0;
+				MARKETING_VERSION = 2.5.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

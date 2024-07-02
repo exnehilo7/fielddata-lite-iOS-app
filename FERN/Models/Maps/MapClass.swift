@@ -22,6 +22,8 @@ class MapPointSize {
     var totalAnnoItems = 0
     // For annotated Map Point Models
     var annotationItems = [MapAnnotationItem]()
+    // For additional temporary map points when a pic is taken and the map mode is "View Trip"
+    var tempMapPoints = [MapAnnotationItem]()
     // Create camera position var
     var cameraPosition = MapCameraPosition.region(
         MKCoordinateRegion(
@@ -129,6 +131,7 @@ class MapPointSize {
         totalAnnoItems = 0
         hasMapPointsResults = false
         annotationItems = [MapAnnotationItem]()
+        tempMapPoints = [MapAnnotationItem]()
         cameraPosition = MapCameraPosition.region(
             MKCoordinateRegion(
                 center: CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0),

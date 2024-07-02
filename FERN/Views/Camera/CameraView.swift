@@ -161,6 +161,10 @@ struct CameraView: View {
         
         let result = camera.checkUserData(textNotes: textNotes)
         
+        var long: String
+        var lat: String
+        var organismName: String
+        
         // if user data is all good, save pic
         if result.isValid {
             
@@ -169,9 +173,16 @@ struct CameraView: View {
             // Bluetooth?
             if settings[0].useBluetoothDevice {
                 imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: gps.nmea?.hasNMEAStreamStopped ?? false, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "ArrowGold", hdop: gps.nmea?.accuracy ?? "0.00", longitude: gps.nmea?.longitude ?? "0.00000000", latitude: gps.nmea?.latitude ?? "0.00000000", altitude: gps.nmea?.altitude ?? "0.00", scannedText: textInPic, notes: result.textNotes)
+                long = gps.nmea?.longitude ?? "0.00000000"
+                lat = gps.nmea?.latitude ?? "0.00000000"
+                organismName = textInPic
                 
             } else {
                 imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: true, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "iOS", hdop: clHorzAccuracy, longitude: clLong, latitude: clLat, altitude: clAltitude, scannedText: textInPic, notes: result.textNotes)
+                
+                long = clLong
+                lat = clLat
+                organismName = textInPic
             }
             
             // pop view back down
@@ -179,12 +190,30 @@ struct CameraView: View {
                 map.showPopover = false
             }
             
-            // If above was successful and map mode is Route, change annotation's color to blue:
+            // If image save and file write was successful, and map mode is Route, change annotation's color to blue:
             if imageSuccessful && mapMode == "Traveling Salesman" {
                 Task {
                     await map.updatePointColor(settings: settings, phpFile: "updateRoutePointColor.php",
                                                            postString:"_route_id=\(map.annotationItems[map.currentAnnoItem].routeID)&_point_order=\(map.annotationItems[map.currentAnnoItem].pointOrder)")
                 }
+            }
+            
+            // If image save and file write was successful, and mapMode is "View Trip", add a temp point to the map
+            if imageSuccessful && mapMode == "View Trip" {
+                map.tempMapPoints.append(MapAnnotationItem(
+                    latitude: Double(lat) ?? 0,
+                    longitude: Double(long) ?? 0,
+                    routeID: "0",
+                    pointOrder: "0",
+                    organismName: organismName,
+                    systemName: "mappin",
+                    size: 20,
+                    highlightColor: Color (
+                        red: 1,
+                        green: 0.35,
+                        blue: 0
+                    )
+                ))
             }
             
             // Clear displayed image
