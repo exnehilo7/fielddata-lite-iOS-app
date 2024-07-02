@@ -24,7 +24,7 @@ struct CameraView: View {
     
     // View toggles
     @State private var isShowCamera = false
-    @State private var isImageSelected = false
+//    @State private var isImageSelected = false
     @State private var showingStoppedNMEAAlert = false
     @State private var showingInvalidSyntaxAlert = false
     @State private var showingHDOPOverLimit = false
@@ -198,8 +198,8 @@ struct CameraView: View {
                 }
             }
             
-            // If image save and file write was successful, and mapMode is "View Trip", add a temp point to the map
-            if imageSuccessful && mapMode == "View Trip" {
+            // If image save and file write was successful, (and mapMode is "View Trip"?), add a temp point to the map
+            if imageSuccessful /*&& mapMode == "View Trip" */{
                 map.tempMapPoints.append(MapAnnotationItem(
                     latitude: Double(lat) ?? 0,
                     longitude: Double(long) ?? 0,

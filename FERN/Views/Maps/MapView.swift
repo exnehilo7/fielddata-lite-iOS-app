@@ -52,7 +52,7 @@ struct MapView: View {
                     .symbolRenderingMode(.palette)
                     .foregroundStyle(.white, item.highlightColor).font(.system(size: item.size))}
                 }
-                // Add temp ppoints?
+                // Add temp points?
                 ForEach(map.tempMapPoints) { item in
                     Annotation(item.organismName, coordinate: item.coordinate) {Image(systemName: item.systemName)
                     .symbolRenderingMode(.palette)
@@ -64,7 +64,11 @@ struct MapView: View {
                 MapScaleView()
                 MapUserLocationButton()
             }
-        }.task { await getMapPoints()}
+        }.task {
+            print("Calling getMapPoints() from MapView")
+            await getMapPoints()
+            print(map.currentAnnoItem)
+        }
     }
     
 //    var refreshMapButton: some View {
@@ -104,19 +108,20 @@ struct MapView: View {
             // Show organism name of the selected point
             Text("Current Point:").font(.system(size:15))//.underline()
             
-//            Text(map.annotationItems[map.currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold)
-//            // Mark first point on map
-//                .onAppear(perform: {
-//                    map.annotationItems[map.currentAnnoItem].size = 20
-//                    if mapMode == "Traveling Salesman" {
-//                        // If currentAnnoItem is blue, make it light blue. Else make it red
-//                        if map.annotationItems[map.currentAnnoItem].highlightColor == Color(red: 0, green: 0, blue: 1) {
-//                            map.annotationItems[map.currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
-//                        } else {
-//                            map.annotationItems[map.currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
-//                        }
-//                    }
-//                })
+            Text(map.annotationItems[map.currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold)
+            // Mark first point on map
+                .onAppear(perform: {
+                    print(map.currentAnnoItem)
+                    map.annotationItems[map.currentAnnoItem].size = 20
+                    if mapMode == "Traveling Salesman" {
+                        // If currentAnnoItem is blue, make it light blue. Else make it red
+                        if map.annotationItems[map.currentAnnoItem].highlightColor == Color(red: 0, green: 0, blue: 1) {
+                            map.annotationItems[map.currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
+                        } else {
+                            map.annotationItems[map.currentAnnoItem].highlightColor = Color(red: 1, green: 0, blue: 0)
+                        }
+                    }
+                })
         }
     }
     
@@ -124,8 +129,8 @@ struct MapView: View {
     var currentPointCoordinates: some View {
         // Show organism's lat and long
         HStack{
-//            Text("\(map.annotationItems[map.currentAnnoItem].latitude)").font(.system(size:15)).padding(.bottom, 25)
-//            Text("\(map.annotationItems[map.currentAnnoItem].longitude)").font(.system(size:15)).padding(.bottom, 25)
+            Text("\(map.annotationItems[map.currentAnnoItem].latitude)").font(.system(size:15)).padding(.bottom, 25)
+            Text("\(map.annotationItems[map.currentAnnoItem].longitude)").font(.system(size:15)).padding(.bottom, 25)
         }
     }
     
