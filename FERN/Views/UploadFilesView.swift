@@ -62,7 +62,8 @@ struct UploadFilesView: View {
                     if (!upload.allFilesProcessed || !item.allFilesUploaded) {
                         // If all files not uploaded, show bar
                         if (!item.allFilesUploaded){
-                            ProgressView("File \(upload.totalUploaded) of \(upload.totalFiles) uploaded", value: Double(upload.totalUploaded), total: Double(upload.totalFiles))
+                            // progressViewStyle needs to be defined else the bar will have a spinner above it on view load.
+                            ProgressView("File \(upload.totalUploaded) of \(upload.totalFiles) uploaded", value: Double(upload.totalUploaded), total: Double(upload.totalFiles)).progressViewStyle(.linear)
                         }
                         // Hide upload button if in progress
                         if (!upload.isLoading) {
@@ -164,6 +165,7 @@ struct UploadFilesView: View {
         
         await upload.beginFileUpload(tripName: tripName, uploadURL: uploadURL, mapUILayout: mapUILayout)
         
+        // To make FileUploadClass more universal, the SDTrip function passes were removed from FileUploadClass and func finalizeResults's code was moved to this view.
         // If all files uploaded, set allFilesUploaded = true
         if (upload.totalFiles == upload.totalUploaded) {
             trip.allFilesUploaded = true

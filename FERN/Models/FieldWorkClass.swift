@@ -76,17 +76,9 @@ class FieldWorkGPSFile {
         
         // Make the file name date_tripName_deviceUUID.txt
         let dateString = GetFormattedDateStrings().getDateString_yyyy_MM_dd()
-        // Use the unique device ID for the text file name and the folder path.
-        if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString {
-            let fileName = "\(dateString)_\(tripOrRouteName)_\(deviceUuid).csv"
-            let path = gpsDir.appendingPathComponent("\(deviceUuid)/trips/\(tripOrRouteName)")
-            filePath = ProcessTextfile().createPath(path: path, fileName: fileName)
-        } else {
-            let fileName = "\(dateString)_\(tripOrRouteName)_No_Device_UUID.csv"
-            let path = gpsDir.appendingPathComponent("no_device_uuid/trips/\(tripOrRouteName)")
-            filePath = ProcessTextfile().createPath(path: path, fileName: fileName)
-        }
-        
+        let fileName = "\(dateString)_\(tripOrRouteName)_\(DeviceUUID().deviceUUID).csv"
+        let path = gpsDir.appendingPathComponent("\(DeviceUUID().deviceUUID)/trips/\(tripOrRouteName)")
+        filePath = ProcessTextfile().createPath(path: path, fileName: fileName)
         
         let timestamp = GetFormattedDateStrings().getTimestampSrting_yyyy_MM_dd_HH_mm_ssSSSx()
         let message = "\(uuid),\(gpsUsed),\(hdop),\(longitude),\(latitude),\(altitude),\(scannedText),\(timestamp),\(notes)"
@@ -112,14 +104,8 @@ class FieldWorkImageFile {
         var filePath: URL
         
         let fileName = "\(uuid).heic"
-        // Use the unique device ID for the text file name and the folder path.
-        if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString {
-            let path = imageDir.appendingPathComponent("\(deviceUuid)/trips/\(tripOrRouteName)")
-            filePath = ProcessTextfile().createPath(path: path, fileName: fileName)
-        } else {
-            let path = imageDir.appendingPathComponent("no_device_uuid/trips/\(tripOrRouteName)")
-            filePath = ProcessTextfile().createPath(path: path, fileName: fileName)
-        }
+        let path = imageDir.appendingPathComponent("\(DeviceUUID().deviceUUID)/trips/\(tripOrRouteName)")
+        filePath = ProcessTextfile().createPath(path: path, fileName: fileName)
     
             do {
                 if let imageData = imgFile.jpegData(compressionQuality: 1) {
@@ -145,17 +131,9 @@ class FieldWorkScoringFile {
         var filePath: URL
         
         let dateString = GetFormattedDateStrings().getDateString_yyyy_MM_dd()
-        // Use the unique device ID for the text file name and the folder path.
-        if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString {
-            let fileName = "\(dateString)_\(tripOrRouteName)_\(deviceUuid)_Scoring.csv"
-            let path = scoringDir.appendingPathComponent("\(deviceUuid)/trips/\(tripOrRouteName)")
-            filePath = ProcessTextfile().createPath(path: path, fileName: fileName)
-        } else {
-            let fileName = "\(dateString)_No_Device_UUID_Scoring.csv"
-            let path = scoringDir.appendingPathComponent("no_device_uuid/trips/\(tripOrRouteName)")
-            filePath = ProcessTextfile().createPath(path: path, fileName: fileName)
-        }
-        
+        let fileName = "\(dateString)_\(tripOrRouteName)_\(DeviceUUID().deviceUUID)_Scoring.csv"
+        let path = scoringDir.appendingPathComponent("\(DeviceUUID().deviceUUID)/trips/\(tripOrRouteName)")
+        filePath = ProcessTextfile().createPath(path: path, fileName: fileName)
         
         let timestamp = GetFormattedDateStrings().getTimestampSrting_yyyy_MM_dd_HH_mm_ssSSSx()
         let message = "\(timestamp),\(organismName),\(score)"

@@ -65,9 +65,7 @@ struct MapView: View {
                 MapUserLocationButton()
             }
         }.task {
-            print("Calling getMapPoints() from MapView")
             await getMapPoints()
-            print(map.currentAnnoItem)
         }
     }
     
@@ -111,7 +109,6 @@ struct MapView: View {
             Text(map.annotationItems[map.currentAnnoItem].organismName).font(.system(size:20)).fontWeight(.bold)
             // Mark first point on map
                 .onAppear(perform: {
-                    print(map.currentAnnoItem)
                     map.annotationItems[map.currentAnnoItem].size = 20
                     if mapMode == "Traveling Salesman" {
                         // If currentAnnoItem is blue, make it light blue. Else make it red

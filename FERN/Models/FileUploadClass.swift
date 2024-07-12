@@ -22,6 +22,12 @@ import CryptoKit
     var consoleText = ""
     var showUploadButton = false
     var showPopover = false
+    var MetadataFileList: [String] = []
+    var ImageFileList: [String] = []
+    var ScoringFileList: [String] = []
+//    let boundary = "Boundary-\(NSUUID().uuidString)"
+    
+    // Move into an init or class initialization any vars that will never change on class creation, such as myUrl = NSURL(string: uploadURL)
     
     func resetVars(){
         consoleText = ""
@@ -30,59 +36,25 @@ import CryptoKit
         totalProcessed = 0
     }
     
-    func beginFileUpload(tripName: String, uploadURL: String, mapUILayout: String) async {
+    func getLocalFilePaths(tripName: String) {
         
-        print("beginFileUpload is firing!")
-        
-        // Funciton to upload files. Upload needs to know where it left off if there was an error? Alert user if no signal; don't initiate upload? (Don't show button if no signal?)
-        await myFileUploadRequest(tripName: tripName, uploadURL: uploadURL, mapUILayout: mapUILayout)
-    }
-    
-    func myFileUploadRequest(tripName: String, uploadURL: String, mapUILayout: String) async
-    {
-        
-        print("myFileUploadRequest is firing!")
-        
-        // Set var
-        isLoading = true
-        print("1")
-        // Set endpoint
-        let myUrl = NSURL(string: uploadURL)
-        print("2")
-        let request = NSMutableURLRequest(url:myUrl! as URL)
-        request.httpMethod = "POST"
-        print("3")
-        let boundary = self.generateBoundaryString()
-        print("4")
-        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-        print("5")
-        // FILE LOOP
         let fm = FileManager.default
-        print("6")
-        // Get app's root dir
-        var rootDir: URL? {
-            print("7")
-            guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
-            print("8")
-            return documentsDirectory
-        }
-        
-        print("Got local root dir")
-        
         var path: URL
         var uploadFilePath: String
         
-        var fileList: [String] = []
+        var rootDir: URL? {
+            guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
+            return documentsDirectory
+        }
+        
+        // Clear vars
+        MetadataFileList = []
+        ImageFileList = []
+        ScoringFileList = []
         
         // Get device ID and make path
-        if let deviceUuid = await UIDevice.current.identifierForVendor?.uuidString
-        {
-            uploadFilePath = "\(deviceUuid)/trips/\(tripName)"
-            path = (rootDir?.appendingPathComponent(uploadFilePath))!
-        } else {
-            uploadFilePath = "no_device_uuid/trips/\(tripName)"
-            path = (rootDir?.appendingPathComponent(uploadFilePath))!
-        }
+        uploadFilePath = "\(DeviceUUID().deviceUUID)/trips/\(tripName)"
+        path = (rootDir?.appendingPathComponent(uploadFilePath))!
         
         // Get a list of all trip files: loop through filenames
         do {
@@ -90,24 +62,86 @@ import CryptoKit
             
             // Populate array with filenames
             for item in items {
-                print(item)
-                // If uploading scoring files, get only those
-                if mapUILayout == "none" {
-                    print("mapUILayout is none")
-                    fileList.append(item)
+                if item.contains("Scoring") {
+                    ScoringFileList.append(item)
                 }
-                else if mapUILayout == "scoring" {
-                    if item.contains("Scoring") {
-                        fileList.append(item)
-                    }
+                else
+                if item.contains(".heic") || item.contains(".jpg") || item.contains(".jpeg") {
+                    ImageFileList.append(item)
+                }
+                else {
+                    MetadataFileList.append(item)
                 }
             }
         } catch {
             // failed to read directory – bad permissions, perhaps?
             print("Directory loop error")
         }
+    }
+    
+    // Create the first part of the request. Data and closing boundaries will be added later on.
+    func createBaseFileUploadRequest(uploadURL: String) {
+        let myUrl = NSURL(string: uploadURL)
+     
+        let request = NSMutableURLRequest(url:myUrl! as URL)
+        request.httpMethod = "POST"
+
+        let boundary = "Boundary-\(NSUUID().uuidString)"
+
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+    }
+    
+    
+    // HAVE SEVERAL UPLOAD FUNCTIONS, EACH FOR ITS OWN FILETYPE? That way an upload can be called at any point in the app's business flow.
+    func beginFileUpload(tripName: String, uploadURL: String, mapUILayout: String) async
+    {
         
-        print("list of all files acquired.")
+        // Set var
+        isLoading = true
+
+        // ---- WRAPPED IN A FUNCTION, NEED TO REPLACE WITH THE FUNCTION --------------------------------
+        // Set endpoint
+        let myUrl = NSURL(string: uploadURL)
+        let request = NSMutableURLRequest(url:myUrl! as URL)
+        request.httpMethod = "POST"
+        let boundary = self.generateBoundaryString()
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        // ----------------------------------------------------------------------------------------------
+
+        // ---- WRAPPED IN A FUNCTION, NEED TO REPLACE WITH THE FUNCTION --------------------------------
+            // FILE LOOP
+            let fm = FileManager.default
+            // Get app's root dir
+            var rootDir: URL? {
+                guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
+                return documentsDirectory
+            }
+            var path: URL
+            var uploadFilePath: String
+            var fileList: [String] = []
+            // Get device ID and make path
+            uploadFilePath = "\(DeviceUUID().deviceUUID)/trips/\(tripName)"
+            path = (rootDir?.appendingPathComponent(uploadFilePath))!
+            // Get a list of all trip files: loop through filenames
+            do {
+                let items = try fm.contentsOfDirectory(atPath: path.path)
+                // Populate array with filenames
+                for item in items {
+                    // If uploading scoring files, get only those
+                    if mapUILayout == "none" {
+                        fileList.append(item)
+                    }
+                    else if mapUILayout == "scoring" {
+                        if item.contains("Scoring") {
+                            fileList.append(item)
+                        }
+                    }
+                }
+            } catch {
+                // failed to read directory – bad permissions, perhaps?
+                print("Directory loop error")
+            }
+        // ----------------------------------------------------------------------------------------------
         
         // get total number of files
         self.totalFiles = fileList.count
@@ -131,7 +165,7 @@ import CryptoKit
                         appendToTextEditor(text: "ℹ️ Scoring files are uploaded/re-uploaded.")
                     }
                     else {
-                        if await !insertIntoDatabase(uploadURL: uploadURL){
+                        if await !insertUploadedFileDataIntoDatabase(uploadURL: uploadURL){
                             print("🔵 Database insert complete. Check the database for results.")
                             appendToTextEditor(text: "🔵 Database insert complete. Check the database for results.")
                         }
@@ -199,19 +233,6 @@ import CryptoKit
             if await !doesFileExist(fileName: item, params: paramDict, semaphore: semaphore, uploadURL: uploadURL) {
                 print("File does not exist, calling calcChecksumAndUploadFile.")
                 calcChecksumAndUploadFile(fileName: item, boundary: boundary, request: request, getFile: getFile, pathAndFile: pathAndFile, paramDict: paramDict, semaphore: semaphore)
-                
-//                // Calculate checksum iOS-side
-//                let hashed = SHA256.hash(data: NSData(contentsOf: getFile)!)
-//                let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
-//                
-//                // Append hash to params
-//                let mergeDict = paramDict.merging(["sourceHash":"\(hashString)"]) { (_, new) in new }
-//                
-//                // Upload file
-//                request.httpBody = self.createBodyWithParameters(parameters: mergeDict, filePathKey: "file",
-//                                                                 fileData: NSData(contentsOf: getFile)!,
-//                                                                 boundary: boundary, uploadFilePath: pathAndFile)
-//                uploadFile(fileName: item, request: request, trip: trip, semaphore: semaphore)
             }
         }
         // Contine upload if already exists
@@ -341,14 +362,6 @@ import CryptoKit
                 semaphore.signal()
             }
             
-            // For debugging?
-            //                      do {
-            //                            let json = try JSONSerialization.jsonObject(with: data!, options: []) as? NSDictionary
-            //
-            //                            print("-------PRINTING JSON-------")
-            //                            print(json as Any)
-            //                      }
-            
         }.resume()
         // Hit pause
         _ = semaphore.wait(timeout: DispatchTime.distantFuture)
@@ -393,6 +406,7 @@ import CryptoKit
         return "Boundary-\(NSUUID().uuidString)"
     }
     
+    // Not used anywhere atm:
     func setResponseMsgToBlank() {
             DispatchQueue.main.async { [self] in
                 self.responseString = "None"
@@ -404,6 +418,7 @@ import CryptoKit
         self.totalUploaded += 1
     }
     
+    // To make FileUploadClass more universal, the SDTrip function passes were removed and this code was moved to UploadFilesView.
 //    func finalizeResults(trip: SDTrip){
 //        // If all files uploaded, set allFilesUploaded = true
 //        if (totalFiles == totalUploaded) {
@@ -422,7 +437,7 @@ import CryptoKit
     }
     
 
-    func insertIntoDatabase(uploadURL: String) async -> Bool {
+    func insertUploadedFileDataIntoDatabase(uploadURL: String) async -> Bool {
    
         var complete = false
         
