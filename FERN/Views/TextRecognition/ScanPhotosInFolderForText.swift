@@ -49,15 +49,15 @@ struct ScanPhotosInFolderForText: View {
             }
         }
         if showGetNextPic {
-            Button("Get next pic"){
-                getNextPic(tripName: selectedTrip)
-                showAcceptScannedText = false
-            }
-            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(20)
-            .padding(.horizontal)
+//            Button("Get next pic"){
+//                getNextPic(tripName: selectedTrip)
+//                showAcceptScannedText = false
+//            }
+//            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+//            .background(Color.blue)
+//            .foregroundColor(.white)
+//            .cornerRadius(20)
+//            .padding(.horizontal)
         }
         Image(uiImage: self.image)
         .resizable()
@@ -130,14 +130,8 @@ struct ScanPhotosInFolderForText: View {
         var path: URL
         
         // Get device ID and path
-        if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString
-        {
-            textFilePath = "\(deviceUuid)/trips/\(tripName)"
-            path = (rootDir?.appendingPathComponent(textFilePath))!
-        } else {
-            textFilePath = "no_device_uuid/trips/\(tripName)"
-            path = (rootDir?.appendingPathComponent(textFilePath))!
-        }
+        textFilePath = "\(DeviceUUID().deviceUUID)/trips/\(tripName)"
+        path = (rootDir?.appendingPathComponent(textFilePath))!
         
         // Get a list of all trip files: loop through filenames
         do {
@@ -185,14 +179,9 @@ struct ScanPhotosInFolderForText: View {
             var textFilePath: String
             
             // Get device ID and make path
-            if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString
-            {
-                textFilePath = "\(deviceUuid)/trips/\(tripName)"
-                path = (rootDir?.appendingPathComponent(textFilePath))!
-            } else {
-                textFilePath = "no_device_uuid/trips/\(tripName)"
-                path = (rootDir?.appendingPathComponent(textFilePath))!
-            }
+            textFilePath = "\(DeviceUUID().deviceUUID)/trips/\(tripName)"
+            path = (rootDir?.appendingPathComponent(textFilePath))!
+ 
             let getFile = path.appendingPathComponent(fileList[counter])
             image = UIImage(contentsOfFile: getFile.path)!
         } else {
@@ -237,20 +226,11 @@ struct ScanPhotosInFolderForText: View {
         // Make the file name Scanned_Text.txt
         let fileName = "Scanned_Text.txt"
         // Use the unique device ID for the text file name and the folder path.
-        if let deviceUuid = UIDevice.current.identifierForVendor?.uuidString
-        {
-            let path = scannedTextFile.appendingPathComponent("\(deviceUuid)")
-            do {
-                try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true, attributes: nil)
-            } catch {}
-            filePath = path.appendingPathComponent(fileName)
-        } else {
-            let path = scannedTextFile.appendingPathComponent("no_device_uuid")
-            do {
-                try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true, attributes: nil)
-            } catch {}
-            filePath = path.appendingPathComponent(fileName)
-        }
+        let path = scannedTextFile.appendingPathComponent("\(DeviceUUID().deviceUUID)")
+        do {
+            try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true, attributes: nil)
+        } catch {}
+        filePath = path.appendingPathComponent(fileName)
         
         let message = "\(tripName),\(uuid),\(scannedText)"
         guard let data = (message + "\n").data(using: String.Encoding.utf8) else { return}

@@ -63,8 +63,10 @@ struct StartScreenView: View {
                 StartScreenViewControllerRepresentable(startScreenBridgingCoordinator: bridgingCoordinator)
                 
             }.onAppear {
-                
-                bridgingCoordinator.startScreenViewController.createSettings(settings: settings, modelContext: modelContext)
+                let serialQueue = DispatchQueue(label: "StartScreenView.bridgingCoordinator.createSettings")
+                serialQueue.async {
+                    bridgingCoordinator.startScreenViewController.createSettings(settings: settings, modelContext: modelContext)
+                }
                 
                 // Set timer for splashscreen fadeout
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
