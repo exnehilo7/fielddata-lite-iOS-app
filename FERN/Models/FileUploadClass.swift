@@ -22,9 +22,11 @@ import CryptoKit
     var consoleText = ""
     var showUploadButton = false
     var showPopover = false
+    var fileList: [String] = []
     var MetadataFileList: [String] = []
     var ImageFileList: [String] = []
     var ScoringFileList: [String] = []
+    var parameters: [String:String]?
 //    let boundary = "Boundary-\(NSUUID().uuidString)"
     
     // Move into an init or class initialization any vars that will never change on class creation, such as myUrl = NSURL(string: uploadURL)
@@ -36,7 +38,7 @@ import CryptoKit
         totalProcessed = 0
     }
     
-    func getLocalFilePaths(tripName: String) {
+    func getLocalFilePaths(tripName: String, folderName: String) {
         
         let fm = FileManager.default
         var path: URL
@@ -48,12 +50,13 @@ import CryptoKit
         }
         
         // Clear vars
-        MetadataFileList = []
-        ImageFileList = []
-        ScoringFileList = []
+//        MetadataFileList = []
+//        ImageFileList = []
+//        ScoringFileList = []
+        fileList = []
         
         // Get device ID and make path
-        uploadFilePath = "\(DeviceUUID().deviceUUID)/trips/\(tripName)"
+        uploadFilePath = "\(DeviceUUID().deviceUUID)/trips/\(tripName)/\(folderName)"
         path = (rootDir?.appendingPathComponent(uploadFilePath))!
         
         // Get a list of all trip files: loop through filenames
@@ -62,20 +65,26 @@ import CryptoKit
             
             // Populate array with filenames
             for item in items {
-                if item.contains("Scoring") {
-                    ScoringFileList.append(item)
-                }
-                else
-                if item.contains(".heic") || item.contains(".jpg") || item.contains(".jpeg") {
-                    ImageFileList.append(item)
-                }
-                else {
-                    MetadataFileList.append(item)
-                }
+                
+                fileList.append(item)
+//                // Scoring CSVs
+//                if item.contains("Scoring") {
+//                    ScoringFileList.append(item)
+//                }
+//                else
+//                // Image files
+//                if item.contains(".heic") || item.contains(".jpg") || item.contains(".jpeg") {
+//                    ImageFileList.append(item)
+//                }
+//                else {
+//                    // Standard image metadata in a CSV
+//                    MetadataFileList.append(item)
+//                }
             }
+            print(fileList)
         } catch {
             // failed to read directory – bad permissions, perhaps?
-            print("Directory loop error")
+            print("Directory loop error. Most likely does not exist.")
         }
     }
     
@@ -200,6 +209,11 @@ import CryptoKit
         isLoading = false
     }
     
+    // TRY SEPERATE MAIN FUNCTION FOR IMAGE METADATA
+    func processImageMetadataCSV() {
+        
+    }
+    
     func processFile(item: String, uploadFilePath: String,
                              boundary: String, request: NSMutableURLRequest,
                              path: URL, uploadURL: String) async {
@@ -208,7 +222,7 @@ import CryptoKit
         print("Processing next...")
         appendToTextEditor(text: "Processing next...")
         
-        //KeyValuePairs
+        //KeyValuePairs  // IS THIS REQUIRED?
         let paramDict = [
             "firstName"     : "FERN",
             "lastName"      : "Demo",

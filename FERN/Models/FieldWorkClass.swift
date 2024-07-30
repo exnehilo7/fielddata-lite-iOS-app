@@ -77,7 +77,7 @@ class FieldWorkGPSFile {
         // Make the file name date_tripName_deviceUUID.txt
         let dateString = GetFormattedDateStrings().getDateString_yyyy_MM_dd()
         let fileName = "\(dateString)_\(tripOrRouteName)_\(DeviceUUID().deviceUUID).csv"
-        let path = gpsDir.appendingPathComponent("\(DeviceUUID().deviceUUID)/trips/\(tripOrRouteName)")
+        let path = gpsDir.appendingPathComponent("\(DeviceUUID().deviceUUID)/trips/\(tripOrRouteName)/metadata")
         filePath = ProcessTextfile().createPath(path: path, fileName: fileName)
         
         let timestamp = GetFormattedDateStrings().getTimestampSrting_yyyy_MM_dd_HH_mm_ssSSSx()
@@ -104,7 +104,7 @@ class FieldWorkImageFile {
         var filePath: URL
         
         let fileName = "\(uuid).heic"
-        let path = imageDir.appendingPathComponent("\(DeviceUUID().deviceUUID)/trips/\(tripOrRouteName)")
+        let path = imageDir.appendingPathComponent("\(DeviceUUID().deviceUUID)/trips/\(tripOrRouteName)/images")
         filePath = ProcessTextfile().createPath(path: path, fileName: fileName)
     
             do {
@@ -132,7 +132,7 @@ class FieldWorkScoringFile {
         
         let dateString = GetFormattedDateStrings().getDateString_yyyy_MM_dd()
         let fileName = "\(dateString)_\(tripOrRouteName)_\(DeviceUUID().deviceUUID)_Scoring.csv"
-        let path = scoringDir.appendingPathComponent("\(DeviceUUID().deviceUUID)/trips/\(tripOrRouteName)")
+        let path = scoringDir.appendingPathComponent("\(DeviceUUID().deviceUUID)/trips/\(tripOrRouteName)/scoring")
         filePath = ProcessTextfile().createPath(path: path, fileName: fileName)
         
         let timestamp = GetFormattedDateStrings().getTimestampSrting_yyyy_MM_dd_HH_mm_ssSSSx()

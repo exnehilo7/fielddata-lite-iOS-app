@@ -48,7 +48,7 @@ class SearchOrganismName : ObservableObject {
     var organismName = ""
 }
 
-// Get device's ID. NOTE: As of this writing, there is a bug where if an app is deleted and it (or a new version?) is reinstalled, the device UUID will be a different thann previous.
+// Get device's ID. NOTE: As of this writing, there is a bug where if an app is deleted and it (or a new version?) is reinstalled, the device UUID will be different than previous.
 final class DeviceUUID: Sendable {
     let deviceUUID = UIDevice.current.identifierForVendor?.uuidString ?? "no_device_uuid"
 }
