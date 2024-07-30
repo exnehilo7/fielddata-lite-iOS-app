@@ -88,16 +88,16 @@ struct MainMenuView: View {
                                 Text("Settings")
                             }
                         }
-                        //                    // Testing
-                        //                    NavigationLink {
-                        //                        RandoTestingView()
-                        //                            .navigationTitle("Testing")
-                        //                    } label: {
-                        //                        HStack {
-                        //                            Image(systemName: "testtube.2").bold(false).foregroundColor(.gray)
-                        //                            Text("Testing")
-                        //                        }
-                        //                    }
+                        // Testing
+                        NavigationLink {
+                            SelectTripForTestingView(map: map, gps: gps, camera: camera, upload: upload)
+                                .navigationTitle("Testing")
+                        } label: {
+                            HStack {
+                                Image(systemName: "testtube.2").bold(false).foregroundColor(.gray)
+                                Text("Testing")
+                            }
+                        }
                     }
                     else
                     {
