@@ -28,7 +28,6 @@
 		D162E6EA2C59482600E419A5 /* FileUploadTestingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D162E6E92C59482600E419A5 /* FileUploadTestingView.swift */; };
 		D162E6EC2C59495500E419A5 /* SelectTripForTestingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D162E6EB2C59495500E419A5 /* SelectTripForTestingView.swift */; };
 		D162E6EF2C596B4C00E419A5 /* FileUploadActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D162E6EE2C596B4C00E419A5 /* FileUploadActor.swift */; };
-		D162E6F12C597F5200E419A5 /* PrepFilesForUploadActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D162E6F02C597F5200E419A5 /* PrepFilesForUploadActor.swift */; };
 		D167963B2BD9B78A00561875 /* SettingsCesiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D167963A2BD9B78A00561875 /* SettingsCesiumView.swift */; };
 		D167963F2BDAEF2200561875 /* RandoTestingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D167963E2BDAEF2200561875 /* RandoTestingView.swift */; };
 		D16796432BE02CFF00561875 /* SelectTripForCesiumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16796422BE02CFF00561875 /* SelectTripForCesiumView.swift */; };
@@ -115,7 +114,6 @@
 		D162E6E92C59482600E419A5 /* FileUploadTestingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUploadTestingView.swift; sourceTree = "<group>"; };
 		D162E6EB2C59495500E419A5 /* SelectTripForTestingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripForTestingView.swift; sourceTree = "<group>"; };
 		D162E6EE2C596B4C00E419A5 /* FileUploadActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUploadActor.swift; sourceTree = "<group>"; };
-		D162E6F02C597F5200E419A5 /* PrepFilesForUploadActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrepFilesForUploadActor.swift; sourceTree = "<group>"; };
 		D167963A2BD9B78A00561875 /* SettingsCesiumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCesiumView.swift; sourceTree = "<group>"; };
 		D167963E2BDAEF2200561875 /* RandoTestingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandoTestingView.swift; sourceTree = "<group>"; };
 		D16796422BE02CFF00561875 /* SelectTripForCesiumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripForCesiumView.swift; sourceTree = "<group>"; };
@@ -276,7 +274,6 @@
 			isa = PBXGroup;
 			children = (
 				D162E6EE2C596B4C00E419A5 /* FileUploadActor.swift */,
-				D162E6F02C597F5200E419A5 /* PrepFilesForUploadActor.swift */,
 			);
 			path = Actors;
 			sourceTree = "<group>";
@@ -535,7 +532,6 @@
 				D16FA6572C2DE0340090E756 /* SelectTripTypeView.swift in Sources */,
 				D162E6EC2C59495500E419A5 /* SelectTripForTestingView.swift in Sources */,
 				D127B37E2A12ED3D00F6287A /* NMEADataClass.swift in Sources */,
-				D162E6F12C597F5200E419A5 /* PrepFilesForUploadActor.swift in Sources */,
 				D16FA65B2C2F57B70090E756 /* UploadFilesView.swift in Sources */,
 				D16FA6472C25E3920090E756 /* CoreLocationClass.swift in Sources */,
 				D16FA6122C1CB7A50090E756 /* MenuListModel.swift in Sources */,
@@ -737,7 +733,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5.1;
+				MARKETING_VERSION = 2.5.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -776,7 +772,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5.1;
+				MARKETING_VERSION = 2.5.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
