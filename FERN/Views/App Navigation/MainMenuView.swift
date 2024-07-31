@@ -68,16 +68,16 @@ struct MainMenuView: View {
                                 Text("Routes (Traveling Salesman)")
                             }
                         }
-                        // Scan photos in folder for text
-                        NavigationLink {
-                            ScanPhotosInFolderForText()
-                                .navigationTitle("Select Trip")
-                        } label: {
-                            HStack {
-                                Image(systemName: "scanner").bold(false).foregroundColor(.gray)
-                                Text("Post-trip Image OCR")
-                            }
-                        }
+//                        // Scan photos in folder for text
+//                        NavigationLink {
+//                            ScanPhotosInFolderForText()
+//                                .navigationTitle("Select Trip")
+//                        } label: {
+//                            HStack {
+//                                Image(systemName: "scanner").bold(false).foregroundColor(.gray)
+//                                Text("Post-trip Image OCR")
+//                            }
+//                        }
                         // App settings
                         NavigationLink {
                             SettingsView(camera: camera)
