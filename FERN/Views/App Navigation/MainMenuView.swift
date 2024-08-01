@@ -17,6 +17,7 @@ struct MainMenuView: View {
     @State private var camera = CameraClass()
     @State private var gps = GpsClass()
     @State private var upload = FileUploadClass()
+//    @State private var networkMonitor = NetworkMonitorClass()
 //    @State private var upload = FileUploadActor()
     
     init() {
