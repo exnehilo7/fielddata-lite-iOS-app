@@ -30,6 +30,8 @@ import SwiftData
         
         // Don't put device to sleep while GPS is running
         UIApplication.shared.isIdleTimerDisabled = true
+        // Activate battery monitoring
+        UIDevice.current.isBatteryMonitoringEnabled = true
         
     }
     
@@ -50,6 +52,7 @@ import SwiftData
         
         // Toggle back device feed
         UIApplication.shared.isIdleTimerDisabled = false
+        UIDevice.current.isBatteryMonitoringEnabled = false
     }
     
     func setNmeaVarToNil(){
