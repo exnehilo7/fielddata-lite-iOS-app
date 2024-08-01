@@ -14,14 +14,12 @@ actor FileUploadActor {
     var localFilePath: URL?
     
     var totalFiles = 0
-    var totalProcessed = 0
+    var totalUploaded = 0
     var uploadFilePath = ""
     
     func getLocalFilePaths(tripName: String, folderName: String) {
         
         let fm = FileManager.default
-//        var path: URL
-//        var uploadFilePath: String
         
         var rootDir: URL? {
             guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
@@ -148,6 +146,7 @@ actor FileUploadActor {
     //                    self.upProcessedAndUploadedByOne()
                         print("🟢 \(item) is uploaded!")
     //                    self.appendToTextEditor(text: "🟢 \(fileName) is uploaded!")
+                        self.totalUploaded += 1
                     }
                     
                     // Checksum failed?

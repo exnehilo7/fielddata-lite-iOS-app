@@ -26,6 +26,9 @@ struct UploadFilesView: View {
     @Bindable var upload: FileUploadClass
     var mapUILayout: String = "none"
     
+    @State var consoleText = ""
+//    var tryUpload = FileUploadActor()
+    
     // MARK: Views
     // Get a message from Upload Image
     var responseMessage: some View {
@@ -59,25 +62,71 @@ struct UploadFilesView: View {
                     }.font(.system(size: 15))
                     Spacer()
                     // If all files not processed & uploaded, show button and bar
-                    if (!upload.allFilesProcessed || !item.allFilesUploaded) {
+//                    if (!upload.allFilesProcessed || !item.allFilesUploaded) {
                         // If all files not uploaded, show bar
-                        if (!item.allFilesUploaded){
+//                        if (!item.allFilesUploaded){
                             // progressViewStyle needs to be defined else the bar will have a spinner above it on view load.
-                            ProgressView("File \(upload.totalUploaded) of \(upload.totalFiles) uploaded", value: Double(upload.totalUploaded), total: Double(upload.totalFiles)).progressViewStyle(.linear)
-                        }
+//                            ProgressView("File \(upload.totalUploaded) of \(upload.totalFiles) uploaded", value: Double(upload.totalUploaded), total: Double(upload.totalFiles)).progressViewStyle(.linear)
+                    ProgressView("File \(upload.totalUploaded) of \(upload.totalFiles) uploaded", value: Double(upload.totalUploaded), total: Double(upload.totalFiles)).progressViewStyle(.linear)
+//                        }
                         // Hide upload button if in progress
                         if (!upload.isLoading) {
                             Button {
-                                Task {
-                                    // Set counters
+                                Task.detached {
                                     upload.resetVars()
-                                    await startInitalTripUpload(trip: item)
+                                    await upload.getLocalFilePaths(tripName: tripName, folderName: "metadata")
+                                    await upload.uploadAndShowError(uploadURL: uploadURL)
                                 }
                             } label: {
                                 HStack {
                                     Image(systemName: "square.and.arrow.up")
                                         .font(.system(size: 20))
-                                    Text("Upload Trip Files")
+                                    Text("Upload Metadata CSVs")
+                                        .font(.headline)
+                                }
+                                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+                                .background(Color.blue)
+                                .foregroundColor(.white)
+                                .cornerRadius(20)
+                                .padding(.horizontal)
+                            }
+                            Button {
+                                Task.detached {
+                                    upload.resetVars()
+                                    await upload.getLocalFilePaths(tripName: tripName, folderName: "scores")
+                                    await upload.uploadAndShowError(uploadURL: uploadURL)
+                                }
+                            } label: {
+                                HStack {
+                                    Image(systemName: "square.and.arrow.up")
+                                        .font(.system(size: 20))
+                                    Text("Upload Scoring CSVs")
+                                        .font(.headline)
+                                }
+                                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+                                .background(Color.green)
+                                .foregroundColor(.white)
+                                .cornerRadius(20)
+                                .padding(.horizontal)
+                            }
+                            Button {
+                                Task.detached {
+                                    // Set counters
+                                    upload.resetVars()
+//                                    await startInitalTripUpload(trip: item)
+                                    await upload.getLocalFilePaths(tripName: tripName, folderName: "images")
+                                    await upload.uploadAndShowError(uploadURL: uploadURL)
+//                                    Task.detached {
+//                                        await tryUpload.getLocalFilePaths(tripName: tripName, folderName: "images")
+//                                        await tryUpload.uploadAndShowError(uploadURL: uploadURL)
+//                                    }
+                                    
+                                }
+                            } label: {
+                                HStack {
+                                    Image(systemName: "square.and.arrow.up")
+                                        .font(.system(size: 20))
+                                    Text("Upload Images")
                                         .font(.headline)
                                 }
                                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
@@ -86,26 +135,26 @@ struct UploadFilesView: View {
                                 .cornerRadius(20)
                                 .padding(.horizontal)
                                 // Give user option to view trip in Cesium and/or continue with iage uploads
-                            }.alert("Continue with image upload?", isPresented: $upload.showCesiumAndContinueAlert) {
-                                Link("View trip in CesiumJS", destination: URL(string: cesiumURL + "?jarvisCommand='jarvis show me \(tripName) trip'")!)
-                                Button("OK", action: {
-                                    upload.continueImageUpload = true
-                                    Task {
-                                        await startInitalTripUpload(trip: item)
-                                    }
-                                })
-                                Button("Cancel", role: .cancel){upload.isLoading = false}
-                            } message: {
-                                HStack {
-                                    Text("It is strongly recommended to be connected to a power cable and Wi-Fi when uploading images.")
-                                    Text("NOTE: The app cannot yet run in the background or when the device is locked.")
-                                }
-                            }
+                            }//.alert("Continue with image upload?", isPresented: $upload.showCesiumAndContinueAlert) {
+//                                Link("View trip in CesiumJS", destination: URL(string: cesiumURL + "?jarvisCommand='jarvis show me \(tripName) trip'")!)
+//                                Button("OK", action: {
+//                                    upload.continueImageUpload = true
+//                                    Task {
+//                                        await startInitalTripUpload(trip: item)
+//                                    }
+//                                })
+//                                Button("Cancel", role: .cancel){upload.isLoading = false}
+//                            } message: {
+//                                HStack {
+//                                    Text("It is strongly recommended to be connected to a power cable and Wi-Fi when uploading images.")
+//                                    Text("NOTE: The app cannot yet run in the background or when the device is locked.")
+//                                }
+//                            }
                         }
-                    } else {Text("✅ Files uploaded! ✅")}
+//                    } else {Text("✅ Files uploaded! ✅")}
                     Spacer()
                     uploadFeedback
-                }
+                }.onAppear() {upload.resetVars()}
             }
         }
     }
