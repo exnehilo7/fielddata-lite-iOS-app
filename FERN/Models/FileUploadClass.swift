@@ -29,6 +29,9 @@ import CryptoKit
     var parameters: [String:String]?
 //    let boundary = "Boundary-\(NSUUID().uuidString)"
     
+    var uploadFilePath = ""
+    var localFilePath: URL?
+    
     // Move into an init or class initialization any vars that will never change on class creation, such as myUrl = NSURL(string: uploadURL)
     
     func resetVars(){
@@ -38,53 +41,86 @@ import CryptoKit
         totalProcessed = 0
     }
     
-    func getLocalFilePaths(tripName: String, folderName: String) {
+//    func getLocalFilePaths(tripName: String, folderName: String) {
+//        
+//        let fm = FileManager.default
+//        var path: URL
+//        var uploadFilePath: String
+//        
+//        var rootDir: URL? {
+//            guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
+//            return documentsDirectory
+//        }
+//        
+//        // Clear vars
+////        MetadataFileList = []
+////        ImageFileList = []
+////        ScoringFileList = []
+//        fileList = []
+//        
+//        // Get device ID and make path
+//        uploadFilePath = "\(DeviceUUID().deviceUUID)/trips/\(tripName)/\(folderName)"
+//        path = (rootDir?.appendingPathComponent(uploadFilePath))!
+//        
+//        // Get a list of all trip files: loop through filenames
+//        do {
+//            let items = try fm.contentsOfDirectory(atPath: path.path)
+//            
+//            // Populate array with filenames
+//            for item in items {
+//                
+//                fileList.append(item)
+////                // Scoring CSVs
+////                if item.contains("Scoring") {
+////                    ScoringFileList.append(item)
+////                }
+////                else
+////                // Image files
+////                if item.contains(".heic") || item.contains(".jpg") || item.contains(".jpeg") {
+////                    ImageFileList.append(item)
+////                }
+////                else {
+////                    // Standard image metadata in a CSV
+////                    MetadataFileList.append(item)
+////                }
+//            }
+//            print(fileList)
+//        } catch {
+//            // failed to read directory – bad permissions, perhaps?
+//            print("Directory loop error. Most likely does not exist.")
+//        }
+//    }
+    
+    func getLocalFilePaths(tripName: String, folderName: String) async {
         
         let fm = FileManager.default
-        var path: URL
-        var uploadFilePath: String
         
         var rootDir: URL? {
             guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
             return documentsDirectory
         }
         
-        // Clear vars
-//        MetadataFileList = []
-//        ImageFileList = []
-//        ScoringFileList = []
+        // Clear var
         fileList = []
         
         // Get device ID and make path
         uploadFilePath = "\(DeviceUUID().deviceUUID)/trips/\(tripName)/\(folderName)"
-        path = (rootDir?.appendingPathComponent(uploadFilePath))!
+        localFilePath = (rootDir?.appendingPathComponent(uploadFilePath))!
         
         // Get a list of all trip files: loop through filenames
         do {
-            let items = try fm.contentsOfDirectory(atPath: path.path)
+            let items = try fm.contentsOfDirectory(atPath: localFilePath!.path)
             
             // Populate array with filenames
             for item in items {
-                
                 fileList.append(item)
-//                // Scoring CSVs
-//                if item.contains("Scoring") {
-//                    ScoringFileList.append(item)
-//                }
-//                else
-//                // Image files
-//                if item.contains(".heic") || item.contains(".jpg") || item.contains(".jpeg") {
-//                    ImageFileList.append(item)
-//                }
-//                else {
-//                    // Standard image metadata in a CSV
-//                    MetadataFileList.append(item)
-//                }
             }
+            totalFiles = fileList.count
             print(fileList)
         } catch {
             // failed to read directory – bad permissions, perhaps?
             print("Directory loop error. Most likely does not exist.")
+            appendToTextEditor(text: "No files found.")
         }
     }
     
@@ -488,4 +524,126 @@ import CryptoKit
                                                                       
         return complete
     }
+    
+    // ASYNC TESTING
+    // This function runs on the main thread
+    @MainActor func uploadAndShowError(uploadURL: String) async {
+        if fileList.count == 0 {return}
+        do {
+            // Try to download files from the urls
+            // The function is suspended here, but the main thread is Not blocked.
+            try await uploadTest(fileList: fileList, uploadURL: uploadURL)
+        } catch {
+            // Show error if occurred, this will run on the main thread
+            print("error occurred: \(error.localizedDescription)")
+        }
+    }
+    
+    // This function asynchronously uploads data for all passed URLs.
+    func uploadTest(fileList: [String], uploadURL: String) async throws {
+        isLoading = true
+        let session = URLSession(configuration: .default)
+        for item in fileList {
+            
+            let boundary = "Boundary-\(NSUUID().uuidString)"
+            
+            let myUrl = NSURL(string: uploadURL)
+         
+            var request = URLRequest(url:myUrl! as URL)
+            request.httpMethod = "POST"
+
+            request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+            
+            //KeyValuePairs  // IS THIS REQUIRED?
+            let paramDict = [
+                "firstName"     : "FERN",
+                "lastName"      : "Demo",
+                "userId"        : "0",
+                "fileSavePath"  : "\(uploadFilePath)",
+                "fileName"      : "\(item)"
+            ]
+            
+            // path to save the file:
+            let pathAndFile = "\(uploadFilePath)/\(item)"
+            
+            // path to get the file:
+            let getFile = self.localFilePath!.appendingPathComponent(item)
+            
+            // Calculate checksum iOS-side
+            let hashed = SHA256.hash(data: NSData(contentsOf: getFile)!)
+            let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
+            
+            // Append hash to params
+            let mergeDict = paramDict.merging(["sourceHash":"\(hashString)"]) { (_, new) in new }
+            
+            // Upload file
+            request.httpBody = self.createBodyWithParameters(parameters: mergeDict, filePathKey: "file",
+                                                             fileData: NSData(contentsOf: getFile)!,
+                                                             boundary: boundary, uploadFilePath: pathAndFile) as Data
+    //        var responseString: NSString?
+            
+            print("Uploading \(item)...")
+            appendToTextEditor(text: "Uploading \(item)...")
+            
+            // If an error occurs, then it will throw, loop will break and function throws,
+            // caller must deal with the error.
+            do {
+                let (data, response) = try await session.data(for: request)
+                // Do something with data, response
+                // You can even throw from here if you don't like the response...
+                print("URL session in test 1x1 starting")
+                
+                // Print out response object
+                //            print("******* response = \(String(describing: response))")
+                
+                // Print out reponse body
+                let statusCode = (response as! HTTPURLResponse).statusCode
+                // is 200?
+                if statusCode == 200 {
+                    
+                    // Get response
+                    let responseString = NSString(data: data, encoding: NSUTF8StringEncoding)
+    //                                    print("****** response data = \(self.responseString!)")
+                    // Is success?
+                    if (responseString ?? "No response string").contains("successfully!") {
+    //                    self.upProcessedAndUploadedByOne()
+                        print("🟢 \(item) is uploaded!")
+                        appendToTextEditor(text: "🟢 \(item) is uploaded!")
+                        self.totalUploaded += 1
+                    }
+                    
+                    // Checksum failed?
+                    else if (responseString ?? "No response string").contains("Hashes do not match!") {
+    //                    self.totalProcessed += 1
+                        print("🔴 Hashes do not match for \(item)!")
+                        appendToTextEditor(text: "🔴 Hashes do not match for \(item)!")
+                    } else if (responseString ?? "No response string").contains("file exists!") {
+                        print("🟡 File already exists.")
+                        self.totalUploaded += 1
+                        appendToTextEditor(text: "🟡 File already exists.")
+                    } else {
+                        print(responseString ?? "Response string does not contain 'successfully!' or 'Hashes do not match!' or 'file exists!'")
+                        appendToTextEditor(text: (responseString ?? "Response string does not contain 'successfully!' or 'Hashes do not match!' or 'file exists!'") as String)
+                    }
+                    
+    //                self.finalizeResults(trip: trip)
+                    
+                    // signal the for loop to continue
+    //                semaphore.signal()
+                } else {
+                    print("🟡 Status code: \(statusCode)")
+                    appendToTextEditor(text: "🟡 Status code: \(statusCode)")
+    //                semaphore.signal()
+                }
+                
+            } catch {
+                print(error)
+            }
+        }
+        print("🔵 File loop complete.")
+        appendToTextEditor(text: "🔵 File loop complete.")
+        isLoading = false
+    }
+    
+    
 }
