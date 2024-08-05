@@ -528,14 +528,22 @@ import CryptoKit
     // ASYNC TESTING
     // This function runs on the main thread
     @MainActor func uploadAndShowError(tripName: String, uploadURL: String) async {
+        // No files in list, don't do
         if fileList.count == 0 {return}
+        // Create file for upload history, if not exists
         do {
-            // Try to download files from the urls
-            // The function is suspended here, but the main thread is Not blocked.
-            try await uploadTest(tripName: tripName, fileList: fileList, uploadURL: uploadURL)
+            if try UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: "", fileNameUUID: "", filePathAndName: "", checksum: "") {
+                do {
+                    // Try to download files from the urls
+                    // The function is suspended here, but the main thread is Not blocked.
+                    try await uploadTest(tripName: tripName, fileList: fileList, uploadURL: uploadURL)
+                } catch {
+                    // Show error if occurred, this will run on the main thread
+                    print("error occurred: \(error.localizedDescription)")
+                }
+            }
         } catch {
-            // Show error if occurred, this will run on the main thread
-            print("error occurred: \(error.localizedDescription)")
+            print("Error creating Upload History file.")
         }
     }
     
@@ -544,107 +552,118 @@ import CryptoKit
         isLoading = true
         currentTripUploading = tripName
         let session = URLSession(configuration: .default)
+        
+        // Try uploading files that don't exist in an array
+        var filesInDatabase = ["2024-07-10_iPad-Test-Trip_F1E9777B-01D5-47C1-8489-9AB6BEDED53C.csv", "2024-07-20_iPad-Test-Trip_F1E9777B-01D5-47C1-8489-9AB6BEDED53C.csv", "2024-07-21_iPad-Test-Trip_F1E9777B-01D5-47C1-8489-9AB6BEDED53C.csv", "2024-07-22_iPad-Test-Trip_F1E9777B-01D5-47C1-8489-9AB6BEDED53C.csv"]
+        
         for item in fileList {
-            
-            let boundary = "Boundary-\(NSUUID().uuidString)"
-            
-            let myUrl = NSURL(string: uploadURL)
-         
-            var request = URLRequest(url:myUrl! as URL)
-            request.httpMethod = "POST"
-
-            request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-            
-            // Don't upload if Low Data Mode is enabled
-//            request.allowsConstrainedNetworkAccess = false
-            
-            //KeyValuePairs  // IS THIS REQUIRED?
-            let paramDict = [
-                "firstName"     : "FERN",
-                "lastName"      : "Demo",
-                "userId"        : "0",
-                "fileSavePath"  : "\(uploadFilePath)",
-                "fileName"      : "\(item)"
-            ]
-            
-            // path to save the file:
-            let pathAndFile = "\(uploadFilePath)/\(item)"
-            
-            // path to get the file:
-            let getFile = self.localFilePath!.appendingPathComponent(item)
-            
-            // Calculate checksum iOS-side
-            let hashed = SHA256.hash(data: NSData(contentsOf: getFile)!)
-            let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
-            
-            // Append hash to params
-            let mergeDict = paramDict.merging(["sourceHash":"\(hashString)"]) { (_, new) in new }
-            
-            // Upload file
-            request.httpBody = self.createBodyWithParameters(parameters: mergeDict, filePathKey: "file",
-                                                             fileData: NSData(contentsOf: getFile)!,
-                                                             boundary: boundary, uploadFilePath: pathAndFile) as Data
-    //        var responseString: NSString?
-            
-            print("Uploading \(item)...")
-            appendToTextEditor(text: "Uploading \(item)...")
-            
-            // If an error occurs, then it will throw, loop will break and function throws,
-            // caller must deal with the error.
-            do {
-                let (data, response) = try await session.data(for: request)
-                // Do something with data, response
-                // You can even throw from here if you don't like the response...
-                print("URL session in test 1x1 starting")
+            if !filesInDatabase.contains(item) {
                 
-                // Print out response object
-                //            print("******* response = \(String(describing: response))")
+                let boundary = "Boundary-\(NSUUID().uuidString)"
                 
-                // Print out reponse body
-                let statusCode = (response as! HTTPURLResponse).statusCode
-                // is 200?
-                if statusCode == 200 {
+                let myUrl = NSURL(string: uploadURL)
+                
+                var request = URLRequest(url:myUrl! as URL)
+                request.httpMethod = "POST"
+                
+                request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+                
+                // Don't upload if Low Data Mode is enabled
+                //            request.allowsConstrainedNetworkAccess = false
+                
+                //KeyValuePairs  // IS THIS REQUIRED?
+                let paramDict = [
+                    "firstName"     : "FERN",
+                    "lastName"      : "Demo",
+                    "userId"        : "0",
+                    "fileSavePath"  : "\(uploadFilePath)",
+                    "fileName"      : "\(item)"
+                ]
+                
+                // path to save the file:
+                let pathAndFile = "\(uploadFilePath)/\(item)"
+                
+                // path to get the file:
+                let getFile = self.localFilePath!.appendingPathComponent(item)
+                
+                // Calculate checksum iOS-side
+                let hashed = SHA256.hash(data: NSData(contentsOf: getFile)!)
+                let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
+                
+                // Append hash to params
+                let mergeDict = paramDict.merging(["sourceHash":"\(hashString)"]) { (_, new) in new }
+                
+                // Upload file
+                request.httpBody = self.createBodyWithParameters(parameters: mergeDict, filePathKey: "file",
+                                                                 fileData: NSData(contentsOf: getFile)!,
+                                                                 boundary: boundary, uploadFilePath: pathAndFile) as Data
+                //        var responseString: NSString?
+                
+                print("Uploading \(item)...")
+                appendToTextEditor(text: "Uploading \(item)...")
+                
+                // If an error occurs, then it will throw, loop will break and function throws,
+                // caller must deal with the error.
+                do {
+                    let (data, response) = try await session.data(for: request)
+                    // Do something with data, response
+                    // You can even throw from here if you don't like the response...
+                    print("URL session in test 1x1 starting")
                     
-                    // Get response
-                    let responseString = NSString(data: data, encoding: NSUTF8StringEncoding)
-    //                                    print("****** response data = \(self.responseString!)")
-                    // Is success?
-                    if (responseString ?? "No response string").contains("successfully!") {
-    //                    self.upProcessedAndUploadedByOne()
-                        print("🟢 \(item) is uploaded!")
-                        appendToTextEditor(text: "🟢 \(item) is uploaded!")
-                        self.totalUploaded += 1
-                    }
+                    // Print out response object
+                    //            print("******* response = \(String(describing: response))")
                     
-                    // Checksum failed?
-                    else if (responseString ?? "No response string").contains("Hashes do not match!") {
-    //                    self.totalProcessed += 1
-                        print("🔴 Hashes do not match for \(item)!")
-                        appendToTextEditor(text: "🔴 Hashes do not match for \(item)!")
-                    } else if (responseString ?? "No response string").contains("file exists!") {
-                        print("🟡 File already exists.")
-                        self.totalUploaded += 1
-                        appendToTextEditor(text: "🟡 File already exists.")
+                    // Print out reponse body
+                    let statusCode = (response as! HTTPURLResponse).statusCode
+                    // is 200?
+                    if statusCode == 200 {
+                        
+                        // Get response
+                        let responseString = NSString(data: data, encoding: NSUTF8StringEncoding)
+                        //                                    print("****** response data = \(self.responseString!)")
+                        // Is success?
+                        if (responseString ?? "No response string").contains("successfully!") {
+                            //                    self.upProcessedAndUploadedByOne()
+                            // Write time, checksum, and file path & name to upload history file.
+                            do {
+                                _ = try UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripName, fileNameUUID: "No uuid", filePathAndName: pathAndFile, checksum: hashString)
+                            }
+                            
+                            print("🟢 \(item) is uploaded!")
+                            appendToTextEditor(text: "🟢 \(item) is uploaded!")
+                            self.totalUploaded += 1
+                        }
+                        
+                        // Checksum failed?
+                        else if (responseString ?? "No response string").contains("Hashes do not match!") {
+                            //                    self.totalProcessed += 1
+                            print("🔴 Hashes do not match for \(item)!")
+                            appendToTextEditor(text: "🔴 Hashes do not match for \(item)!")
+                        } else if (responseString ?? "No response string").contains("file exists!") {
+                            print("🟡 File already exists.")
+                            self.totalUploaded += 1
+                            appendToTextEditor(text: "🟡 File already exists.")
+                        } else {
+                            print(responseString ?? "Response string does not contain 'successfully!' or 'Hashes do not match!' or 'file exists!'")
+                            appendToTextEditor(text: (responseString ?? "Response string does not contain 'successfully!' or 'Hashes do not match!' or 'file exists!'") as String)
+                        }
+                        
+                        //                self.finalizeResults(trip: trip)
+                        
                     } else {
-                        print(responseString ?? "Response string does not contain 'successfully!' or 'Hashes do not match!' or 'file exists!'")
-                        appendToTextEditor(text: (responseString ?? "Response string does not contain 'successfully!' or 'Hashes do not match!' or 'file exists!'") as String)
+                        print("🟡 Status code: \(statusCode)")
+                        appendToTextEditor(text: "🟡 Status code: \(statusCode)")
                     }
                     
-    //                self.finalizeResults(trip: trip)
-                    
-                } else {
-                    print("🟡 Status code: \(statusCode)")
-                    appendToTextEditor(text: "🟡 Status code: \(statusCode)")
-                }
-                
-            } catch {
-//                if let error = error as? URLError, error.networkUnavailableReason == .constrained {
-//                    print("Low Data Mode is active. This request could not be satisfied.")
-//                    appendToTextEditor(text: "Low Data Mode is active. This request could not be satisfied.")
-//                } else {
+                } catch {
+                    //                if let error = error as? URLError, error.networkUnavailableReason == .constrained {
+                    //                    print("Low Data Mode is active. This request could not be satisfied.")
+                    //                    appendToTextEditor(text: "Low Data Mode is active. This request could not be satisfied.")
+                    //                } else {
                     print(error)
                     appendToTextEditor(text: "\(error)")
-//                }
+                    //                }
+                }
             }
         }
         print("🔵 File loop complete.")
