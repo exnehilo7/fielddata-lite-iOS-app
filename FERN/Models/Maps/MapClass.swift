@@ -45,7 +45,7 @@ class MapPointSize {
     // create Scoring File for the day
     func createScoringFileForTheDay(tripOrRouteName: String) {
         do {
-            _ = try FieldWorkScoringFile.writeScoreToCSVFile(tripOrRouteName: tripOrRouteName, uuid: "", organismName: "", score: "")
+            _ = try FieldWorkScoringFile.writeScoreToCSVFile(tripOrRouteName: tripOrRouteName, fileNameUUID: "", organismName: "", score: "")
         } catch {
             print(error.localizedDescription)
         }
@@ -59,7 +59,7 @@ class MapPointSize {
         if (annotationItems[currentAnnoItem].organismName.trimmingCharacters(in: .whitespaces)).count > 0 {
             do {
                 // Save image to Trip's folder
-                try _ = FieldWorkScoringFile.writeScoreToCSVFile(tripOrRouteName: tripOrRouteName, uuid: uuid, organismName: annotationItems[currentAnnoItem].organismName, score: score)
+                try _ = FieldWorkScoringFile.writeScoreToCSVFile(tripOrRouteName: tripOrRouteName, fileNameUUID: uuid, organismName: annotationItems[currentAnnoItem].organismName, score: score)
             } catch {
                 print(error.localizedDescription)
             }

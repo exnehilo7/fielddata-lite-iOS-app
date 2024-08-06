@@ -144,11 +144,12 @@ class FieldWorkScoringFile {
 
 class UploadHistoryFile {
     
-    static func writeUploadToTextFile(tripOrRouteName: String, fileNameUUID: String, filePathAndName: String, checksum: String) throws -> Bool {
+    static func writeUploadToTextFile(tripOrRouteName: String, fileNameUUID: String, filePathAndName: String, checksum: String) async throws -> Bool {
         
         let timestamp = GetFormattedDateStrings().getTimestampSrting_yyyy_MM_dd_HH_mm_ssSSSx()
-        let dateString = GetFormattedDateStrings().getDateString_yyyy_MM_dd()
         let fileName = "\(tripOrRouteName)_\(DeviceUUID().deviceUUID)_Upload_History.txt"
+        
+        print ("Trying write to upload history...")
         
         return try CreateOrWriteToFile.createOrWriteToFile(tripOrRouteName: tripOrRouteName, fileNameUUID: fileNameUUID, fileName: fileName, folderName: "upload_history", message: "\(timestamp),\(filePathAndName),\(checksum)", header: "uploaded_on,file_path_and_name,checksum\n")
     }
@@ -171,12 +172,9 @@ class CreateOrWriteToFile {
         
         var filePath: URL
         
-//        let dateString = GetFormattedDateStrings().getDateString_yyyy_MM_dd()
-//        let fileName = "\(dateString)_\(tripOrRouteName)_\(DeviceUUID().deviceUUID)\(fileSuffix)"
         let path = dir.appendingPathComponent("\(DeviceUUID().deviceUUID)/trips/\(tripOrRouteName)/\(folderName)")
         filePath = ProcessTextfile.createPath(path: path, fileName: fileName)
         
-        let timestamp = GetFormattedDateStrings().getTimestampSrting_yyyy_MM_dd_HH_mm_ssSSSx()
         let msg = "\(message)"
         guard let data = (msg + "\n").data(using: String.Encoding.utf8) else { return false}
     

@@ -27,7 +27,7 @@ import SwiftUI
     // create new txt file for the day for GPS data.
     func createImageTxtFileForTheDay(tripOrRouteName: String) {
         do {
-            _ = try FieldWorkGPSFile.writePicDataToTxtFile(tripOrRouteName: tripOrRouteName, uuid: "", gpsUsed: "", hdop: "", longitude: "", latitude: "", altitude: "", scannedText: "", notes: "")
+            _ = try FieldWorkGPSFile.writePicDataToTxtFile(tripOrRouteName: tripOrRouteName, fileNameUUID: "", gpsUsed: "", hdop: "", longitude: "", latitude: "", altitude: "", scannedText: "", notes: "")
         } catch {
             print(error.localizedDescription)
         }
@@ -84,7 +84,7 @@ import SwiftUI
         
         do {
             // Save image to Trip's folder
-            try _ = FieldWorkImageFile.saveToFolder(imgFile: imgFile, tripOrRouteName: tripOrRouteName, uuid: uuid, gpsUsed: gpsUsed, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude)
+            try _ = FieldWorkImageFile.saveToFolder(imgFile: imgFile, tripOrRouteName: tripOrRouteName, fileNameUUID: uuid, gpsUsed: gpsUsed, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude)
         } catch {
             print(error.localizedDescription)
             audio.playError()
@@ -93,7 +93,7 @@ import SwiftUI
         // Write the pic's info to a .txt file
         do {
             // .txt file header order is uuid, gps, hdop, longitude, latitude, altitude.
-            try _ = FieldWorkGPSFile.writePicDataToTxtFile(tripOrRouteName: tripOrRouteName, uuid: uuid, gpsUsed: gpsUsed, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude, scannedText: scannedText, notes: notes)
+            try _ = FieldWorkGPSFile.writePicDataToTxtFile(tripOrRouteName: tripOrRouteName, fileNameUUID: uuid, gpsUsed: gpsUsed, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude, scannedText: scannedText, notes: notes)
             // Play a success noise
             audio.playSuccess()
         } catch {
