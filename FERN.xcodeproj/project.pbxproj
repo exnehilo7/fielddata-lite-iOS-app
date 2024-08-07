@@ -65,6 +65,7 @@
 		D18B59D32C07C16B005A58DB /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D18B59D22C07C16B005A58DB /* MessageView.swift */; };
 		D19FF3712C17542F00B54B7E /* SettingsHdopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19FF3702C17542F00B54B7E /* SettingsHdopView.swift */; };
 		D1A56E812B051DB300AC8291 /* SelectTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E802B051DB300AC8291 /* SelectTripView.swift */; };
+		D1E260D42C64087300C9CFF7 /* LocalFileProcessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E260D32C64087300C9CFF7 /* LocalFileProcessing.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -152,6 +153,7 @@
 		D18B59D22C07C16B005A58DB /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		D19FF3702C17542F00B54B7E /* SettingsHdopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHdopView.swift; sourceTree = "<group>"; };
 		D1A56E802B051DB300AC8291 /* SelectTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripView.swift; sourceTree = "<group>"; };
+		D1E260D32C64087300C9CFF7 /* LocalFileProcessing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFileProcessing.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -198,6 +200,7 @@
 				D1036C0E2C1B519E00E2E266 /* StartScreenModel.swift */,
 				D16FA6332C25C7FC0090E756 /* URLSessionsClass.swift */,
 				D1807ABC2C5C22DC004EB245 /* NetworkMonitorClass.swift */,
+				D1E260D32C64087300C9CFF7 /* LocalFileProcessing.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -520,6 +523,7 @@
 				D107EF1D2B571CAA0020F0A2 /* SettingsUploadView.swift in Sources */,
 				D16FA6512C29D9040090E756 /* SelectMapPlatformView.swift in Sources */,
 				D1766CA1298DB9C6002F594D /* MapView.swift in Sources */,
+				D1E260D42C64087300C9CFF7 /* LocalFileProcessing.swift in Sources */,
 				D1766C9D298DB978002F594D /* MainMenuView.swift in Sources */,
 				D16FA6432C25E23F0090E756 /* ImagePickerStruct.swift in Sources */,
 				D162E6EA2C59482600E419A5 /* FileUploadTestingView.swift in Sources */,

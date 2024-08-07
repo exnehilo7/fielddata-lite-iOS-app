@@ -122,6 +122,18 @@ struct MainMenuView: View {
                 
             }
         
+        VStack {
+            if upload.isLoading {
+                Text("Upload is currently in progress for \(upload.currentTripUploading).").font(.system(size: 15))
+            }
+            // Give feedback. Allow user to select text, but don't edit
+            TextEditor(text: .constant(upload.consoleText))
+                .foregroundStyle(.secondary)
+                .font(.system(size: 12)).padding(.horizontal)
+                .frame(minHeight: 300, maxHeight: 300)
+                .fixedSize(horizontal: false, vertical: true)
+            }
+        
             // Get the bridging connectors going in the parent view
             HStack {
                 MenuListViewControllerRepresentable(menuListBridgingCoordinator: menuListBridgingCoordinator)
@@ -135,6 +147,9 @@ struct MainMenuView: View {
                 // Reset previously snapped pic if view was swiped down before image was saved
                 camera.clearCustomData()
                 camera.resetCamera()
+                
+                // Check for uploads
+                upload.getUploadHistories()
             })
     }
     
