@@ -23,11 +23,12 @@ import CryptoKit
     var showUploadButton = false
     var showPopover = false
     var fileList: [String] = []
+    var uploadHistoryFileList: [String] = []
 //    var MetadataFileList: [String] = []
 //    var ImageFileList: [String] = []
 //    var ScoringFileList: [String] = []
     var parameters: [String:String]?
-    var uploadFilePath = ""
+    var tripFolderPath = ""
     var localFilePath: URL?
     var currentTripUploading = ""
     
@@ -104,8 +105,8 @@ import CryptoKit
         fileList = []
         
         // Get device ID and make path
-        uploadFilePath = "\(DeviceUUID().deviceUUID)/trips/\(tripName)/\(folderName)"
-        localFilePath = (rootDir?.appendingPathComponent(uploadFilePath))!
+        tripFolderPath = "\(DeviceUUID().deviceUUID)/trips/\(tripName)/\(folderName)"
+        localFilePath = (rootDir?.appendingPathComponent(tripFolderPath))!
         
         // Get a list of all trip files: loop through filenames
         do {
@@ -532,7 +533,7 @@ import CryptoKit
         if fileList.count == 0 {return}
         // Create file for upload history, if not exists
         do {
-            _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripName, fileNameUUID: "", filePathAndName: "", checksum: "")
+            _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripName, fileNameUUID: "", fileName: "", checksum: "")
             do {
                 // Try to download files from the urls
                 // The function is suspended here, but the main thread is Not blocked.
@@ -571,12 +572,12 @@ import CryptoKit
                 "firstName"     : "FERN",
                 "lastName"      : "Demo",
                 "userId"        : "0",
-                "fileSavePath"  : "\(uploadFilePath)",
+                "fileSavePath"  : "\(tripFolderPath)",
                 "fileName"      : "\(item)"
             ]
             
             // path to save the file:
-            let pathAndFile = "\(uploadFilePath)/\(item)"
+            let pathAndFile = "\(tripFolderPath)/\(item)"
             
             // path to get the file:
             let getFile = self.localFilePath!.appendingPathComponent(item)
@@ -621,7 +622,7 @@ import CryptoKit
                         //                    self.upProcessedAndUploadedByOne()
                         // Write time, checksum, and file path & name to upload history file.
                         do {
-                            _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripName, fileNameUUID: "No uuid", filePathAndName: pathAndFile, checksum: hashString)
+                            _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripName, fileNameUUID: "No uuid", fileName: item, checksum: hashString)
                         } catch { print ("Error writing to upload history after a sucessful save to server.")}
                         
                         print("🟢 \(item) is uploaded!")
@@ -665,5 +666,103 @@ import CryptoKit
         isLoading = false
     }
     
+    func getUploadHistories() {
+        // Run through local folders and make a list of filenames.
+        let fm = FileManager.default
+        
+        var rootDir: URL? {
+            guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
+            return documentsDirectory
+        }
+        
+        // Clear var
+        uploadHistoryFileList = []
+        
+        // Get device ID and make path
+        let appRootPath = "\(DeviceUUID().deviceUUID)/trips"
+        localFilePath = (rootDir?.appendingPathComponent(appRootPath))!
+//        print(localFilePath)
+        
+        let path = Bundle.main.resourcePath!
+
+        // Loop through trips
+        do {
+            let tripPaths = try fm.contentsOfDirectory(atPath: localFilePath!.path)
+
+            for trip in tripPaths {
+//                print("Found \(trip)")
+                let tripPath = appRootPath + "/\(trip)"
+//                print(tripFolderPath)
+                // Loop through trip subfolders
+                do {
+                    let tempPath = (rootDir?.appendingPathComponent(tripPath))!
+//                    print(tempPath)
+                    let tripSubfolders = try fm.contentsOfDirectory(atPath: tempPath.path)
+                    for sub in tripSubfolders {
+                        // If trip subfolder is upload history, loop through files within and write file_name to array
+                        if sub == "upload_history" {
+//                            print(tripPath)
+//                            print(sub)
+                            let uploadHistoryPath = tripPath + "/\(sub)"
+                            do {
+                                let uploadHistFilePath = (rootDir?.appendingPathComponent(uploadHistoryPath))!
+                                print(uploadHistFilePath)
+                                let historyFiles = try fm.contentsOfDirectory(atPath: uploadHistFilePath.path)
+                                for f in historyFiles {
+                                    print("\(uploadHistFilePath)\(f)")
+                                    writeUploadedFileToArray(fileName: URL(string: "\(uploadHistFilePath)\(f)")!)
+                                }
+                            } catch { // Yet another folder error (a YAFE!)
+                            }
+                        }
+                    }
+                } catch { // 'Nuther folder error
+                }
+            }
+        } catch {
+            // failed to read directory – bad permissions, perhaps?
+        }
+    }
+    
+    func writeUploadedFileToArray(fileName: URL) {
+        
+        var allLines = [String]()
+            
+        print(fileName)
+        
+        // Open file and split lines into an array
+        if let lines = try? String(contentsOf: fileName) {
+            allLines = lines.components(separatedBy: "\n")
+        }
+        
+        print(allLines)
+        
+        // Code help from https://stackoverflow.com/questions/59758407/swift-5-reading-a-text-file-into-a-2d-array-of-int-doubles
+//        enum CustomError: Error {
+//          case notAnItOrADouble(String)
+//        }
+//
+//        do {
+//          let numberRows = try text
+//            .split(separator: "\n")
+//            .map { line in
+//              try line.split(separator: ",").map { substring -> Any in
+//                let token = String(substring)
+//                guard let value: Any = Int(token) ?? Double(token) else {
+//                  throw CustomError.notAnItOrADouble(token)
+//                }
+//                return value
+//              }
+//          }
+//
+//          numberRows.forEach { row in
+//            row.forEach { number in
+//              print("\(number) is \(type(of: number))")
+//            }
+//          }
+//        } catch (let error) {
+//          print(error)
+//        }
+    }
     
 }
