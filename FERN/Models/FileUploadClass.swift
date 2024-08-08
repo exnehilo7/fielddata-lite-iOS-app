@@ -40,6 +40,7 @@ import CryptoKit
         totalUploaded = 0
         totalFiles = 0
         totalProcessed = 0
+        fileList = []
     }
     
 //    func getLocalFilePaths(tripName: String, folderName: String) {
@@ -92,50 +93,17 @@ import CryptoKit
 //        }
 //    }
     
-    func getLocalFilePaths(tripName: String, folderName: String) async {
-        
-        let fm = FileManager.default
-        
-        var rootDir: URL? {
-            guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
-            return documentsDirectory
-        }
-        
-        // Clear var
-        fileList = []
-        
-        // Get device ID and make path
-        tripFolderPath = "\(DeviceUUID().deviceUUID)/trips/\(tripName)/\(folderName)"
-        localFilePath = (rootDir?.appendingPathComponent(tripFolderPath))!
-        
-        // Get a list of all trip files: loop through filenames
-        do {
-            let items = try fm.contentsOfDirectory(atPath: localFilePath!.path)
-            
-            // Populate array with filenames
-            for item in items {
-                fileList.append(item)
-            }
-            totalFiles = fileList.count
-            print(fileList)
-        } catch {
-            // failed to read directory – bad permissions, perhaps?
-            print("Directory loop error. Most likely does not exist.")
-            appendToTextEditor(text: "No files found.")
-        }
-    }
-    
     // Create the first part of the request. Data and closing boundaries will be added later on.
-    func createBaseFileUploadRequest(uploadURL: String) {
-        let myUrl = NSURL(string: uploadURL)
-     
-        let request = NSMutableURLRequest(url:myUrl! as URL)
-        request.httpMethod = "POST"
-
-        let boundary = "Boundary-\(NSUUID().uuidString)"
-
-        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-    }
+//    func createBaseFileUploadRequest(uploadURL: String) {
+//        let myUrl = NSURL(string: uploadURL)
+//     
+//        let request = NSMutableURLRequest(url:myUrl! as URL)
+//        request.httpMethod = "POST"
+//
+//        let boundary = "Boundary-\(NSUUID().uuidString)"
+//
+//        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+//    }
     
     
     // HAVE SEVERAL UPLOAD FUNCTIONS, EACH FOR ITS OWN FILETYPE? That way an upload can be called at any point in the app's business flow.
@@ -526,14 +494,54 @@ import CryptoKit
         return complete
     }
     
-    // ASYNC TESTING
+    // ASYNC TESTING ---------------------------------------------------------------------------------------------
+    func getLocalFilePaths(tripName: String, folderName: String) async {
+        
+        let fm = FileManager.default
+        
+        var rootDir: URL? {
+            guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
+            return documentsDirectory
+        }
+        
+        // Get device ID and make path
+        tripFolderPath = "\(DeviceUUID().deviceUUID)/trips/\(tripName)/\(folderName)"
+        localFilePath = (rootDir?.appendingPathComponent(tripFolderPath))!
+        
+        // Get a list of all trip files: loop through filenames
+        do {
+            let items = try fm.contentsOfDirectory(atPath: localFilePath!.path)
+            
+            // Populate array with filenames
+            for item in items {
+                fileList.append(item)
+            }
+            totalFiles = fileList.count
+//            print(fileList)
+        } catch {
+            // failed to read directory – bad permissions, perhaps?
+            print("Directory loop error. Most likely does not exist.")
+            appendToTextEditor(text: "No files found.")
+        }
+    }
+    
+//    func anyFilesToUpload() -> Bool {
+//        for tripfile in fileList {
+//            if !uploadHistoryFileList.contains(tripfile) {
+//                print (tripfile)
+//                return true
+//            }
+//        }
+//        return false
+//    }
+    
     // This function runs on the main thread
     @MainActor func uploadAndShowError(tripName: String, uploadURL: String) async {
         // No files in list, don't do
         if fileList.count == 0 {return}
         // Create file for upload history, if not exists
         do {
-            _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripName, fileNameUUID: "", fileName: "", checksum: "")
+            _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripName, fileNameUUID: "", fileName: "")
             do {
                 // Try to download files from the urls
                 // The function is suspended here, but the main thread is Not blocked.
@@ -594,10 +602,7 @@ import CryptoKit
                                                              fileData: NSData(contentsOf: getFile)!,
                                                              boundary: boundary, uploadFilePath: pathAndFile) as Data
             //        var responseString: NSString?
-            
-            print("Uploading \(item)...")
-            appendToTextEditor(text: "Uploading \(item)...")
-            
+
             // If an error occurs, then it will throw, loop will break and function throws,
             // caller must deal with the error.
             do {
@@ -606,51 +611,56 @@ import CryptoKit
                 // You can even throw from here if you don't like the response...
                 print("URL session in test 1x1 starting")
                 
-                // Print out response object
-                //            print("******* response = \(String(describing: response))")
-                
-                // Print out reponse body
-                let statusCode = (response as! HTTPURLResponse).statusCode
-                // is 200?
-                if statusCode == 200 {
+                if !uploadHistoryFileList.contains(item) {
+                    print("Uploading \(item)...")
+                    appendToTextEditor(text: "Uploading \(item)...")
+                    // Print out response object
+                    //            print("******* response = \(String(describing: response))")
                     
-                    // Get response
-                    let responseString = NSString(data: data, encoding: NSUTF8StringEncoding)
-                    //                                    print("****** response data = \(self.responseString!)")
-                    // Is success?
-                    if (responseString ?? "No response string").contains("successfully!") {
-                        //                    self.upProcessedAndUploadedByOne()
-                        // Write time, checksum, and file path & name to upload history file.
-                        do {
-                            _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripName, fileNameUUID: "No uuid", fileName: item, checksum: hashString)
-                        } catch { print ("Error writing to upload history after a sucessful save to server.")}
+                    // Print out reponse body
+                    let statusCode = (response as! HTTPURLResponse).statusCode
+                    // is 200?
+                    if statusCode == 200 {
                         
-                        print("🟢 \(item) is uploaded!")
-                        appendToTextEditor(text: "🟢 \(item) is uploaded!")
-                        self.totalUploaded += 1
-                    }
-                    
-                    // Checksum failed?
-                    else if (responseString ?? "No response string").contains("Hashes do not match!") {
-                        //                    self.totalProcessed += 1
-                        print("🔴 Hashes do not match for \(item)!")
-                        appendToTextEditor(text: "🔴 Hashes do not match for \(item)!")
-                    } else if (responseString ?? "No response string").contains("file exists!") {
-                        print("🟡 File already exists.")
-                        self.totalUploaded += 1
-                        appendToTextEditor(text: "🟡 File already exists.")
+                        // Get response
+                        let responseString = NSString(data: data, encoding: NSUTF8StringEncoding)
+                        //                                    print("****** response data = \(self.responseString!)")
+                        // Is success?
+                        if (responseString ?? "No response string").contains("successfully!") {
+                            //                    self.upProcessedAndUploadedByOne()
+                            // Write time, checksum, and file path & name to upload history file.
+                            do {
+                                print("item before filewrite call:")
+                                print(item)
+                                _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripName, fileNameUUID: "No uuid", fileName: item)
+                            } catch { print ("Error writing to upload history after a sucessful save to server.")}
+                            
+                            print("🟢 \(item) is uploaded!")
+                            appendToTextEditor(text: "🟢 \(item) is uploaded!")
+                            self.totalUploaded += 1
+                        }
+                        
+                        // Checksum failed?
+                        else if (responseString ?? "No response string").contains("Hashes do not match!") {
+                            //                    self.totalProcessed += 1
+                            print("🔴 Hashes do not match for \(item)!")
+                            appendToTextEditor(text: "🔴 Hashes do not match for \(item)!")
+                        } else if (responseString ?? "No response string").contains("file exists!") {
+                            print("🟡 File already exists.")
+                            self.totalUploaded += 1
+                            appendToTextEditor(text: "🟡 File already exists.")
+                        } else {
+                            print(responseString ?? "Response string does not contain 'successfully!' or 'Hashes do not match!' or 'file exists!'")
+                            appendToTextEditor(text: (responseString ?? "Response string does not contain text for a successful save, matching hash, or an existing file.") as String)
+                        }
+                        
+                        //                self.finalizeResults(trip: trip)
+                        
                     } else {
-                        print(responseString ?? "Response string does not contain 'successfully!' or 'Hashes do not match!' or 'file exists!'")
-                        appendToTextEditor(text: (responseString ?? "Response string does not contain text for a successful save, matching hash, or an existing file.") as String)
+                        print("🟡 Status code: \(statusCode)")
+                        appendToTextEditor(text: "🟡 Status code: \(statusCode)")
                     }
-                    
-                    //                self.finalizeResults(trip: trip)
-                    
-                } else {
-                    print("🟡 Status code: \(statusCode)")
-                    appendToTextEditor(text: "🟡 Status code: \(statusCode)")
-                }
-                
+                } else { print("🟠 Filename exists in upload history.")}
             } catch {
                 //                if let error = error as? URLError, error.networkUnavailableReason == .constrained {
                 //                    print("Low Data Mode is active. This request could not be satisfied.")
@@ -666,7 +676,7 @@ import CryptoKit
         isLoading = false
     }
     
-    func getUploadHistories() {
+    func getUploadHistories() async {
         // Run through local folders and make a list of filenames.
         let fm = FileManager.default
         
@@ -683,7 +693,7 @@ import CryptoKit
         localFilePath = (rootDir?.appendingPathComponent(appRootPath))!
 //        print(localFilePath)
         
-        let path = Bundle.main.resourcePath!
+//        let path = Bundle.main.resourcePath!
 
         // Loop through trips
         do {
@@ -706,11 +716,17 @@ import CryptoKit
                             let uploadHistoryPath = tripPath + "/\(sub)"
                             do {
                                 let uploadHistFilePath = (rootDir?.appendingPathComponent(uploadHistoryPath))!
-                                print(uploadHistFilePath)
+//                                print(uploadHistFilePath)
                                 let historyFiles = try fm.contentsOfDirectory(atPath: uploadHistFilePath.path)
                                 for f in historyFiles {
-                                    print("\(uploadHistFilePath)\(f)")
-                                    writeUploadedFileToArray(fileName: URL(string: "\(uploadHistFilePath)\(f)")!)
+//                                    print("\(uploadHistFilePath)\(f)")
+                                    // Open file and split lines into an array
+                                    if let lines = try? String(contentsOf: URL(string: "\(uploadHistFilePath)\(f)")!) {
+                                        uploadHistoryFileList = lines.components(separatedBy: "\n")
+                                        print("Upload History array:")
+                                        print(uploadHistoryFileList)
+                                        
+                                    }
                                 }
                             } catch { // Yet another folder error (a YAFE!)
                             }
@@ -722,47 +738,6 @@ import CryptoKit
         } catch {
             // failed to read directory – bad permissions, perhaps?
         }
-    }
-    
-    func writeUploadedFileToArray(fileName: URL) {
-        
-        var allLines = [String]()
-            
-        print(fileName)
-        
-        // Open file and split lines into an array
-        if let lines = try? String(contentsOf: fileName) {
-            allLines = lines.components(separatedBy: "\n")
-        }
-        
-        print(allLines)
-        
-        // Code help from https://stackoverflow.com/questions/59758407/swift-5-reading-a-text-file-into-a-2d-array-of-int-doubles
-//        enum CustomError: Error {
-//          case notAnItOrADouble(String)
-//        }
-//
-//        do {
-//          let numberRows = try text
-//            .split(separator: "\n")
-//            .map { line in
-//              try line.split(separator: ",").map { substring -> Any in
-//                let token = String(substring)
-//                guard let value: Any = Int(token) ?? Double(token) else {
-//                  throw CustomError.notAnItOrADouble(token)
-//                }
-//                return value
-//              }
-//          }
-//
-//          numberRows.forEach { row in
-//            row.forEach { number in
-//              print("\(number) is \(type(of: number))")
-//            }
-//          }
-//        } catch (let error) {
-//          print(error)
-//        }
     }
     
 }

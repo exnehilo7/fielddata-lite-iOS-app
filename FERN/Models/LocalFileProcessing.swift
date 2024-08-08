@@ -144,14 +144,11 @@ class FieldWorkScoringFile {
 
 class UploadHistoryFile {
     
-    static func writeUploadToTextFile(tripOrRouteName: String, fileNameUUID: String, fileName: String, checksum: String) async throws -> Bool {
+    static func writeUploadToTextFile(tripOrRouteName: String, fileNameUUID: String, fileName: String) async throws -> Bool {
         
-        let timestamp = GetFormattedDateStrings().getTimestampSrting_yyyy_MM_dd_HH_mm_ssSSSx()
-        let fileName = "\(tripOrRouteName)_\(DeviceUUID().deviceUUID)_Upload_History.txt"
+        let fileSaveName = "\(tripOrRouteName)_\(DeviceUUID().deviceUUID)_Upload_History.txt"
         
-        print ("Trying write to upload history...")
-        
-        return try CreateOrWriteToFile.createOrWriteToFile(tripOrRouteName: tripOrRouteName, fileNameUUID: fileNameUUID, fileName: fileName, folderName: "upload_history", message: "\(timestamp),\(fileName),\(checksum)", header: "uploaded_on,file_path,file_name,checksum\n")
+        return try CreateOrWriteToFile.createOrWriteToFile(tripOrRouteName: tripOrRouteName, fileNameUUID: fileNameUUID, fileName: fileSaveName, folderName: "upload_history", message: "\(fileName)", header: "file_name\n")
     }
     
 }
