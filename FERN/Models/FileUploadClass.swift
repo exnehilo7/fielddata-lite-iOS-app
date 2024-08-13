@@ -9,6 +9,19 @@ import Foundation
 import SwiftUI
 import CryptoKit
 
+//actor FileUploadVars {
+//    var currentTripUploading = ""
+//    init(currentTripUploading: String = "") {
+//        self.currentTripUploading = currentTripUploading
+//    }
+//    
+//    func yermom() {
+//        currentTripUploading = ""
+//    }
+//    
+//}
+
+@MainActor
 @Observable class FileUploadClass {
     
     var isLoading = false
@@ -32,15 +45,28 @@ import CryptoKit
     var localFilePath: URL?
     var currentTripUploading = ""
     
+    var network = NetworkMonitorClass()
+    var showUnpluggedBatteryAlert = false
+    var showNoNetworkAlert = false
+    var showExpensiveNetworkAlert = false
+    var showConstrainedNetworkAlert = false
+    var networkIsGoodToGo = false
+//    var fileUploadVars: FileUploadVars!
+//    init() {
+//        self.fileUploadVars = FileUploadVars()
+//    }
+    
     // Move into an init or class initialization any vars that will never change on class creation, such as myUrl = NSURL(string: uploadURL)
     
-    func resetVars(){
+    func resetVars() async {
         consoleText = ""
         currentTripUploading = ""
         totalUploaded = 0
         totalFiles = 0
         totalProcessed = 0
         fileList = []
+        
+//        await fileUploadVars.yermom()
     }
     
 //    func getLocalFilePaths(tripName: String, folderName: String) {
@@ -437,6 +463,16 @@ import CryptoKit
         self.totalUploaded += 1
     }
     
+    func setShowUploadButtonToFalse() {
+        showUploadButton = false
+    }
+    func setShowUploadButtonToTrue() {
+        showUploadButton = true
+    }
+    func setShowPopoverToTrue(){
+        showPopover = true
+    }
+    
     // To make FileUploadClass more universal, the SDTrip function passes were removed and this code was moved to UploadFilesView.
 //    func finalizeResults(trip: SDTrip){
 //        // If all files uploaded, set allFilesUploaded = true
@@ -455,6 +491,10 @@ import CryptoKit
         self.consoleText.append(contentsOf: "\n" + text)
     }
     
+    func clearUploadHistoryList() async {
+        // Clear var
+        uploadHistoryFileList = []
+    }
 
     func insertUploadedFileDataIntoDatabase(uploadURL: String) async -> Bool {
    
@@ -495,6 +535,7 @@ import CryptoKit
     }
     
     // ASYNC TESTING ---------------------------------------------------------------------------------------------
+//    @MainActor func getLocalFilePaths(tripName: String, folderName: String) async {
     func getLocalFilePaths(tripName: String, folderName: String) async {
         
         let fm = FileManager.default
@@ -510,14 +551,15 @@ import CryptoKit
         
         // Get a list of all trip files: loop through filenames
         do {
-            let items = try fm.contentsOfDirectory(atPath: localFilePath!.path)
+//            let items = try fm.contentsOfDirectory(atPath: localFilePath!.path)
+//            
+//            // Populate array with filenames
+//            for item in items {
+//                fileList.append(item)
+//            }
+//            totalFiles = fileList.count
             
-            // Populate array with filenames
-            for item in items {
-                fileList.append(item)
-            }
-            totalFiles = fileList.count
-//            print(fileList)
+            try await makeFileList(localFilePath: localFilePath!)
         } catch {
             // failed to read directory – bad permissions, perhaps?
             print("Directory loop error. Most likely does not exist.")
@@ -525,18 +567,70 @@ import CryptoKit
         }
     }
     
-//    func anyFilesToUpload() -> Bool {
-//        for tripfile in fileList {
-//            if !uploadHistoryFileList.contains(tripfile) {
-//                print (tripfile)
-//                return true
-//            }
-//        }
-//        return false
-//    }
+    func makeFileList(localFilePath: URL) async throws {
+        
+        let fm = FileManager.default
+        let items = try fm.contentsOfDirectory(atPath: localFilePath.path)
+        
+        // Populate array with filenames
+        for item in items {
+            fileList.append(item)
+        }
+        totalFiles = fileList.count
+    }
+    
+     func anyFilesToUpload() async -> Bool {
+        for tripfile in fileList {
+            if !uploadHistoryFileList.contains(tripfile) {
+                print (tripfile)
+                return true
+            }
+        }
+        return false
+    }
+    
+    func isNetworkGood(sdTrips: [SDTrip], uploadURL: String) async {
+        // Check network connections
+        if network.isActive {
+            appendToTextEditor(text: "Network is active.")
+            switch UIDevice.current.batteryState {
+            case .unplugged:
+                showUnpluggedBatteryAlert = true
+            default:
+                await checkForExpensiveNetwork(sdTrips: sdTrips, uploadURL: uploadURL)
+            }
+        } else {
+            showNoNetworkAlert = true
+        }
+    }
+    
+    func checkForExpensiveNetwork(sdTrips: [SDTrip], uploadURL: String) async {
+        showUnpluggedBatteryAlert = false
+        if network.isExpensive {
+            appendToTextEditor(text: "Network is expensive.")
+            showExpensiveNetworkAlert = true
+        } else {await loopThroughTripsAndUpload(sdTrips: sdTrips, uploadURL: uploadURL)}
+    }
+    
+    func loopThroughTripsAndUpload(sdTrips: [SDTrip], uploadURL: String) async {
+        // Loop through trips and upload any new/missed files
+        for trip in sdTrips {
+            await resetVars()
+            await getLocalFilePaths(tripName: trip.name, folderName: "metadata")
+            await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL)
+            await resetVars()
+            await getLocalFilePaths(tripName: trip.name, folderName: "scores")
+            await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL)
+            await resetVars()
+            await getLocalFilePaths(tripName: trip.name, folderName: "images")
+            await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL)
+        }
+
+    }
     
     // This function runs on the main thread
-    @MainActor func uploadAndShowError(tripName: String, uploadURL: String) async {
+//    @MainActor func uploadAndShowError(tripName: String, uploadURL: String) async {
+    func uploadAndShowError(tripName: String, uploadURL: String) async {
         // No files in list, don't do
         if fileList.count == 0 {return}
         // Create file for upload history, if not exists
@@ -562,6 +656,9 @@ import CryptoKit
         let session = URLSession(configuration: .default)
         
         for item in fileList {
+            if !uploadHistoryFileList.contains(item) {
+                print("Uploading \(item)...")
+                appendToTextEditor(text: "Uploading \(item)...")
 
             let boundary = "Boundary-\(NSUUID().uuidString)"
             
@@ -611,9 +708,9 @@ import CryptoKit
                 // You can even throw from here if you don't like the response...
                 print("URL session in test 1x1 starting")
                 
-                if !uploadHistoryFileList.contains(item) {
-                    print("Uploading \(item)...")
-                    appendToTextEditor(text: "Uploading \(item)...")
+//                if !uploadHistoryFileList.contains(item) {
+//                    print("Uploading \(item)...")
+//                    appendToTextEditor(text: "Uploading \(item)...")
                     // Print out response object
                     //            print("******* response = \(String(describing: response))")
                     
@@ -630,8 +727,8 @@ import CryptoKit
                             //                    self.upProcessedAndUploadedByOne()
                             // Write time, checksum, and file path & name to upload history file.
                             do {
-                                print("item before filewrite call:")
-                                print(item)
+//                                print("item before filewrite call:")
+//                                print(item)
                                 _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripName, fileNameUUID: "No uuid", fileName: item)
                             } catch { print ("Error writing to upload history after a sucessful save to server.")}
                             
@@ -660,7 +757,7 @@ import CryptoKit
                         print("🟡 Status code: \(statusCode)")
                         appendToTextEditor(text: "🟡 Status code: \(statusCode)")
                     }
-                } else { print("🟠 Filename exists in upload history.")}
+//                } else { print("🟠 Filename exists in upload history.")}
             } catch {
                 //                if let error = error as? URLError, error.networkUnavailableReason == .constrained {
                 //                    print("Low Data Mode is active. This request could not be satisfied.")
@@ -670,6 +767,7 @@ import CryptoKit
                 appendToTextEditor(text: "\(error)")
                 //                }
             }
+            } else { print("🟠 Filename exists in upload history.")}
         }
         print("🔵 File loop complete.")
         appendToTextEditor(text: "🔵 File loop complete.")
@@ -685,8 +783,8 @@ import CryptoKit
             return documentsDirectory
         }
         
-        // Clear var
-        uploadHistoryFileList = []
+//        // Clear var
+//        uploadHistoryFileList = []
         
         // Get device ID and make path
         let appRootPath = "\(DeviceUUID().deviceUUID)/trips"
@@ -722,7 +820,7 @@ import CryptoKit
 //                                    print("\(uploadHistFilePath)\(f)")
                                     // Open file and split lines into an array
                                     if let lines = try? String(contentsOf: URL(string: "\(uploadHistFilePath)\(f)")!) {
-                                        uploadHistoryFileList = lines.components(separatedBy: "\n")
+                                        uploadHistoryFileList.append(contentsOf: lines.components(separatedBy: "\n"))
                                         print("Upload History array:")
                                         print(uploadHistoryFileList)
                                         
