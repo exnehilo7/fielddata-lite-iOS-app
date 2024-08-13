@@ -90,7 +90,7 @@ struct UploadFilesView: View {
 //                                    await upload.getLocalFilePaths(tripName: tripName, folderName: "metadata")
 //                                    await upload.uploadAndShowError(tripName: tripName, uploadURL: uploadURL)
                                 if network.isActive {
-                                    uploadImages(fileType: "metadata")
+                                    uploadFiles(fileType: "metadata")
                                 } else {showNoNetworkAlert = true}
 //                                }
                             } label: {
@@ -112,7 +112,7 @@ struct UploadFilesView: View {
 //                                    await upload.getLocalFilePaths(tripName: tripName, folderName: "scores")
 //                                    await upload.uploadAndShowError(tripName: tripName, uploadURL: uploadURL)
                                 if network.isActive {
-                                    uploadImages(fileType: "scores")
+                                    uploadFiles(fileType: "scores")
                                 } else {showNoNetworkAlert = true}
 //                                }
                             } label: {
@@ -173,7 +173,7 @@ struct UploadFilesView: View {
                                         showConstrainedNetworkAlert = true
                                     } else {
                                         showExpensiveNetworkAlert = false
-                                        uploadImages(fileType: "images")
+                                        uploadFiles(fileType: "images")
                                     }
                                 })
                                 Button("Cancel", role: .cancel){showExpensiveNetworkAlert = false}
@@ -189,7 +189,11 @@ struct UploadFilesView: View {
 //                    } else {Text("✅ Files uploaded! ✅")}
                     Spacer()
                     uploadFeedback
-                }.onAppear() {if !upload.isLoading {upload.resetVars()}}
+                }.onAppear() {if !upload.isLoading {
+                    Task.detached {
+                        await upload.resetVars()
+                    }
+                }}
 //            }
 //        }
     }
@@ -202,7 +206,7 @@ struct UploadFilesView: View {
                 Button {
                     Task {
                         // Set counters
-                        upload.resetVars()
+                        await upload.resetVars()
                         await startScoringFilesUpload()
                     }
                 } label: {
@@ -262,11 +266,12 @@ struct UploadFilesView: View {
 //        }
 //    }
     
-    private func uploadImages(fileType: String){
+    private func uploadFiles(fileType: String){
         Task.detached {
             // Set counters
             await upload.resetVars()
-//                                    await startInitalTripUpload(trip: item)
+            
+            // Upload History array should still be populated from the Main Menu View load
             await upload.getLocalFilePaths(tripName: tripName, folderName: fileType)
             await upload.uploadAndShowError(tripName: tripName, uploadURL: uploadURL)
 //                                    Task.detached {
@@ -280,7 +285,7 @@ struct UploadFilesView: View {
         showUnpluggedBatteryAlert = false
         if network.isExpensive {
             showExpensiveNetworkAlert = true
-        } else {uploadImages(fileType: "images")}
+        } else {uploadFiles(fileType: "images")}
     }
     
     private func startScoringFilesUpload() async {

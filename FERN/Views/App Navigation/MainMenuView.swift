@@ -19,7 +19,7 @@ struct MainMenuView: View {
     @State private var upload = FileUploadClass()
 //    @State private var networkMonitor = NetworkMonitorClass()
 //    @State private var upload = FileUploadActor()
-    @ObservedObject var network = NetworkMonitorClass()
+//    @ObservedObject var network = NetworkMonitorClass()
     
     init() {
         let menuListCoordinator = MenuListBridgingCoordinator()
@@ -30,11 +30,11 @@ struct MainMenuView: View {
     @Query var settings: [Settings]
     @Query var sdTrips: [SDTrip]
     
-    @State var showUnpluggedBatteryAlert = false
-    @State var showNoNetworkAlert = false
-    @State var showExpensiveNetworkAlert = false
-    @State var showConstrainedNetworkAlert = false
-    @State var networkIsGoodToGo = false
+//    @State var showUnpluggedBatteryAlert = false
+//    @State var showNoNetworkAlert = false
+//    @State var showExpensiveNetworkAlert = false
+//    @State var showConstrainedNetworkAlert = false
+//    @State var networkIsGoodToGo = false
     
     var body: some View {
         
@@ -163,29 +163,31 @@ struct MainMenuView: View {
                 
                 
             })
-//            .alert("Charge Cable Not Connected", isPresented: $showUnpluggedBatteryAlert) {
-//                Button("OK", action: {checkForExpensiveNetwork()})
-//                Button("Cancel", role: .cancel){showUnpluggedBatteryAlert = false}
-//            } message: {HStack {Text("Continue with upload?")}
-//            }.alert("Device Not Connected to Wi-Fi", isPresented: $showExpensiveNetworkAlert) {
-//                Button("OK", action: {
-//                    if network.isConstrained {
-//                        showExpensiveNetworkAlert = false
-//                        showConstrainedNetworkAlert = true
-//                    } else {
-//                        showExpensiveNetworkAlert = false
-//                        loopThroughTripsAndUpload()
-//                    }
-//                })
-//                Button("Cancel", role: .cancel){showExpensiveNetworkAlert = false}
-//            } message: {HStack {Text("Continue with upload?")}
-//            }.alert("Low Data Mode is Active", isPresented: $showConstrainedNetworkAlert) {
-//                Button("OK", action: {showConstrainedNetworkAlert = false})
-//            } message: { HStack {Text("Low Data Mode can be disabled in iOS settings.")}
-//            }.alert("Network is Not Connected to the Device", isPresented: $showNoNetworkAlert) {
-//                Button("OK", action: {showNoNetworkAlert = false})
-//            } message: { HStack {Text("Is the device connected to Wi-Fi, Cellular, or Ethernet?")}
-//            }
+            .alert("Charge Cable Not Connected", isPresented: $upload.showUnpluggedBatteryAlert) {
+                Button("OK", action: {Task.detached {await upload.checkForExpensiveNetwork(sdTrips: sdTrips, uploadURL: settings[0].uploadScriptURL)}})
+                Button("Cancel", role: .cancel){upload.showUnpluggedBatteryAlert = false}
+            } message: {HStack {Text("Continue with upload?")}
+            }.alert("Device Not Connected to Wi-Fi", isPresented: $upload.showExpensiveNetworkAlert) {
+                Button("OK", action: {
+                    if upload.network.isConstrained {
+                        upload.showExpensiveNetworkAlert = false
+                        upload.showConstrainedNetworkAlert = true
+                    } else {
+                        upload.showExpensiveNetworkAlert = false
+                        Task.detached {
+                            await upload.loopThroughTripsAndUpload(sdTrips: sdTrips, uploadURL: settings[0].uploadScriptURL)
+                        }
+                    }
+                })
+                Button("Cancel", role: .cancel){upload.showExpensiveNetworkAlert = false}
+            } message: {HStack {Text("Continue with upload?")}
+            }.alert("Low Data Mode is Active", isPresented: $upload.showConstrainedNetworkAlert) {
+                Button("OK", action: {upload.showConstrainedNetworkAlert = false})
+            } message: { HStack {Text("Low Data Mode can be disabled in iOS settings.")}
+            }.alert("Network is Not Connected to the Device", isPresented: $upload.showNoNetworkAlert) {
+                Button("OK", action: {upload.showNoNetworkAlert = false})
+            } message: { HStack {Text("Is the device connected to Wi-Fi, Cellular, or Ethernet?")}
+            }
     }
     
     private func startGPS() {
@@ -196,6 +198,7 @@ struct MainMenuView: View {
         Task.detached {
             await upload.resetVars()
             // Get upload history
+            await upload.clearUploadHistoryList()
             await upload.getUploadHistories()
             // Make list of trip files
             for trip in await sdTrips {
@@ -204,52 +207,58 @@ struct MainMenuView: View {
                 await upload.getLocalFilePaths(tripName: trip.name, folderName: "images")
             }
             // See if a file doesn't exist in Upload History
-            if await anyFilesToUpload() {
+            if await upload.anyFilesToUpload() {
                   print("There are files to upload!")
-                  // Check network connections
-//                     await isNetworkGood()
-              } else {print("No new files to upload.")}
-        }
-
-
-    }
-    
-    private func anyFilesToUpload() async -> Bool {
-        for tripfile in upload.fileList {
-            if !upload.uploadHistoryFileList.contains(tripfile) {
-                print (tripfile)
-                return true
+                await upload.appendToTextEditor(text: "There are files to upload!")
+                Task.detached {
+                    // Check network connections
+                    await upload.isNetworkGood(sdTrips: sdTrips, uploadURL: settings[0].uploadScriptURL)
+                }
+            } else {
+                print("No new files to upload.")
+                await upload.appendToTextEditor(text: "No new files to upload.")
             }
         }
-        return false
     }
     
-    private func isNetworkGood() {
-        // Check network connections
-        if network.isActive {
-            switch UIDevice.current.batteryState {
-            case .unplugged:
-                showUnpluggedBatteryAlert = true
-            default:
-                checkForExpensiveNetwork()
-            }
-        } else {
-            showNoNetworkAlert = true
-        }
-    }
-    
-    private func checkForExpensiveNetwork() {
-        showUnpluggedBatteryAlert = false
-        if network.isExpensive {
-            showExpensiveNetworkAlert = true
-        } else {loopThroughTripsAndUpload()}
-    }
-    
-    private func loopThroughTripsAndUpload() {
-        // Loop through trips and upload any new/missed files
-        //            upload.resetVars()
-
-    }
+//    private func anyFilesToUpload() async -> Bool {
+//        for tripfile in upload.fileList {
+//            if !upload.uploadHistoryFileList.contains(tripfile) {
+//                print (tripfile)
+//                return true
+//            }
+//        }
+//        return false
+//    }
+//    
+//    private func isNetworkGood() {
+//        // Check network connections
+//        if network.isActive {
+//            upload.appendToTextEditor(text: "Network is active.")
+//            switch UIDevice.current.batteryState {
+//            case .unplugged:
+//                showUnpluggedBatteryAlert = true
+//            default:
+//                checkForExpensiveNetwork()
+//            }
+//        } else {
+//            showNoNetworkAlert = true
+//        }
+//    }
+//    
+//    private func checkForExpensiveNetwork() {
+//        showUnpluggedBatteryAlert = false
+//        if network.isExpensive {
+//            upload.appendToTextEditor(text: "Network is expensive.")
+//            showExpensiveNetworkAlert = true
+//        } else {loopThroughTripsAndUpload()}
+//    }
+//    
+//    private func loopThroughTripsAndUpload() {
+//        // Loop through trips and upload any new/missed files
+//        //            upload.resetVars()
+//
+//    }
     
     private func uploadFiles(tripName: String, fileType: String){
         Task.detached {

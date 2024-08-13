@@ -28,7 +28,7 @@ struct FileUploadTestingView: View {
             Task.detached {
                 await tryUpload.getLocalFilePaths(tripName: tripName, folderName: "metadata")
 //                await tryUpload.beginFileUpload(tripName: tripName, uploadURL: settings[0].uploadScriptURL)
-                await tryUpload.uploadAndShowError(uploadURL: settings[0].uploadScriptURL)
+                await tryUpload.uploadAndShowError(tripName: tripName, uploadURL: settings[0].uploadScriptURL)
             }
         },
         label: {HStack {
@@ -64,7 +64,7 @@ struct FileUploadTestingView: View {
             Task.detached {
                 await tryUpload.getLocalFilePaths(tripName: tripName, folderName: "images")
 //                await tryUpload.beginFileUpload(tripName: tripName, uploadURL: settings[0].uploadScriptURL)
-                await tryUpload.uploadAndShowError(uploadURL: settings[0].uploadScriptURL)
+                await tryUpload.uploadAndShowError(tripName: tripName, uploadURL: settings[0].uploadScriptURL)
             }
         },
         label: {HStack {

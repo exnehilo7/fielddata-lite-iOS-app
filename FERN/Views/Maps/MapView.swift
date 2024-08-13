@@ -138,7 +138,9 @@ struct MapView: View {
         Button(action: {
             cycleAnnotations(forward: false, 1)
             // Hide upload button
-            upload.showUploadButton = false
+            Task {
+                await upload.setShowUploadButtonToFalse()
+            }
         }, label: {
             VStack {
                 Image(systemName: "arrowshape.backward.fill")
@@ -158,9 +160,11 @@ struct MapView: View {
                 if map.currentAnnoItem == map.totalAnnoItems {
                     // if a score is selected
                     if map.isSelectedOne == true || map.isSelectedTwo == true || map.isSelectedZero == true {
-                        upload.showUploadButton = true
+                        Task {
+                            await upload.setShowUploadButtonToTrue()
+                        }
                     }
-                    else { upload.showUploadButton = false }
+                    else { Task {await upload.setShowUploadButtonToFalse()} }
                 }
             }
         }, label: {
@@ -176,8 +180,8 @@ struct MapView: View {
     var uploadScoreButton: some View {
         Button {
             Task {
-                upload.resetVars()
-                upload.showPopover = true
+                await upload.resetVars()
+                await upload.setShowPopoverToTrue()
             }
         } label: {
             HStack {
