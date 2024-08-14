@@ -59,7 +59,7 @@ import CryptoKit
     // Move into an init or class initialization any vars that will never change on class creation, such as myUrl = NSURL(string: uploadURL)
     
     func resetVars() async {
-        consoleText = ""
+//        consoleText = ""
         currentTripUploading = ""
         totalUploaded = 0
         totalFiles = 0
@@ -67,6 +67,9 @@ import CryptoKit
         fileList = []
         
 //        await fileUploadVars.yermom()
+    }
+    func resetConsoleText() async {
+        consoleText = ""
     }
     
 //    func getLocalFilePaths(tripName: String, folderName: String) {
@@ -535,10 +538,38 @@ import CryptoKit
     }
     
     // ASYNC TESTING ---------------------------------------------------------------------------------------------
+    func checkForUploads(sdTrips: [SDTrip], uploadURL: String) async {
+//         Task.detached {
+         await resetVars()
+        await resetConsoleText()
+         // Get upload history
+         await clearUploadHistoryList()
+         await getUploadHistories()
+         // Make list of trip files
+         for trip in sdTrips {
+             await getLocalFilePaths(tripName: trip.name, folderName: "metadata")
+             await getLocalFilePaths(tripName: trip.name, folderName: "scores")
+             await getLocalFilePaths(tripName: trip.name, folderName: "images")
+         }
+         // See if a file doesn't exist in Upload History
+         if await anyFilesToUpload() {
+               print("There are files to upload!")
+             appendToTextEditor(text: "There are files to upload!")
+//                 Task.detached {
+                 // Check network connections
+                 await isNetworkGood(sdTrips: sdTrips, uploadURL: uploadURL)
+//                 }
+         } else {
+             print("No new files to upload")
+            appendToTextEditor(text: "No new files to upload.")
+         }
+//         }
+     }
+    
 //    @MainActor func getLocalFilePaths(tripName: String, folderName: String) async {
     func getLocalFilePaths(tripName: String, folderName: String) async {
         
-        let fm = FileManager.default
+//        let fm = FileManager.default
         
         var rootDir: URL? {
             guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
@@ -563,7 +594,7 @@ import CryptoKit
         } catch {
             // failed to read directory – bad permissions, perhaps?
             print("Directory loop error. Most likely does not exist.")
-            appendToTextEditor(text: "No files found.")
+//            appendToTextEditor(text: "No files found.")
         }
     }
     
@@ -617,20 +648,21 @@ import CryptoKit
         for trip in sdTrips {
             await resetVars()
             await getLocalFilePaths(tripName: trip.name, folderName: "metadata")
-            await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL)
+            await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "metadata")
             await resetVars()
             await getLocalFilePaths(tripName: trip.name, folderName: "scores")
-            await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL)
+            await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "scores")
             await resetVars()
             await getLocalFilePaths(tripName: trip.name, folderName: "images")
-            await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL)
+            await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "images")
         }
-
+        print("🟣 Trip loop complete.")
+        appendToTextEditor(text: "🟣 Trip loop complete.")
     }
     
     // This function runs on the main thread
 //    @MainActor func uploadAndShowError(tripName: String, uploadURL: String) async {
-    func uploadAndShowError(tripName: String, uploadURL: String) async {
+    func uploadAndShowError(tripName: String, uploadURL: String, folderName: String) async {
         // No files in list, don't do
         if fileList.count == 0 {return}
         // Create file for upload history, if not exists
@@ -639,7 +671,7 @@ import CryptoKit
             do {
                 // Try to download files from the urls
                 // The function is suspended here, but the main thread is Not blocked.
-                try await uploadTest(tripName: tripName, fileList: fileList, uploadURL: uploadURL)
+                try await uploadTest(tripName: tripName, fileList: fileList, uploadURL: uploadURL, folderName: folderName)
             } catch {
                 // Show error if occurred, this will run on the main thread
                 print("error occurred: \(error.localizedDescription)")
@@ -650,7 +682,7 @@ import CryptoKit
     }
     
     // This function asynchronously uploads data for all passed URLs.
-    func uploadTest(tripName: String, fileList: [String], uploadURL: String) async throws {
+    func uploadTest(tripName: String, fileList: [String], uploadURL: String, folderName: String) async throws {
         isLoading = true
         currentTripUploading = tripName
         let session = URLSession(configuration: .default)
@@ -767,10 +799,13 @@ import CryptoKit
                 appendToTextEditor(text: "\(error)")
                 //                }
             }
-            } else { print("🟠 Filename exists in upload history.")}
+            } else { 
+                self.totalUploaded += 1
+                print("🟠 Filename exists in upload history.")
+            }
         }
-        print("🔵 File loop complete.")
-        appendToTextEditor(text: "🔵 File loop complete.")
+        print("🔵 \(tripName) \(folderName) processed.")
+        appendToTextEditor(text: "🔵 \(tripName) \(folderName) processed.")
         isLoading = false
     }
     

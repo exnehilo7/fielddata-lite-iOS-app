@@ -151,9 +151,12 @@ struct MainMenuView: View {
         
         Text("Version: \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Cannot get version #")").font(.footnote)
             .onAppear(perform: {
-                // Upload pics and any missed files.
+                // Upload any non-uploaded files.
                 if !upload.isLoading {
-                    checkForUploads()
+                    Task.detached {
+                        await upload.checkForUploads(sdTrips: sdTrips, uploadURL: settings[0].uploadScriptURL)
+                    }
+//                    checkForUploads()
                 }
                 // Start GPS feed if not already running
                 startGPS()
@@ -194,32 +197,35 @@ struct MainMenuView: View {
         gps.startGPSFeed(settings: settings)
     }
     
-   private func checkForUploads() {
-        Task.detached {
-            await upload.resetVars()
-            // Get upload history
-            await upload.clearUploadHistoryList()
-            await upload.getUploadHistories()
-            // Make list of trip files
-            for trip in await sdTrips {
-                await upload.getLocalFilePaths(tripName: trip.name, folderName: "metadata")
-                await upload.getLocalFilePaths(tripName: trip.name, folderName: "scores")
-                await upload.getLocalFilePaths(tripName: trip.name, folderName: "images")
-            }
-            // See if a file doesn't exist in Upload History
-            if await upload.anyFilesToUpload() {
-                  print("There are files to upload!")
-                await upload.appendToTextEditor(text: "There are files to upload!")
-                Task.detached {
-                    // Check network connections
-                    await upload.isNetworkGood(sdTrips: sdTrips, uploadURL: settings[0].uploadScriptURL)
-                }
-            } else {
-                print("No new files to upload.")
-                await upload.appendToTextEditor(text: "No new files to upload.")
-            }
-        }
-    }
+//   private func checkForUploads() {
+//       Task.detached {
+//           await upload.checkForUploads(sdTrips: sdTrips, uploadURL: settings[0].uploadScriptURL)
+//       }
+//        Task.detached {
+//            await upload.resetVars()
+//            // Get upload history
+//            await upload.clearUploadHistoryList()
+//            await upload.getUploadHistories()
+//            // Make list of trip files
+//            for trip in await sdTrips {
+//                await upload.getLocalFilePaths(tripName: trip.name, folderName: "metadata")
+//                await upload.getLocalFilePaths(tripName: trip.name, folderName: "scores")
+//                await upload.getLocalFilePaths(tripName: trip.name, folderName: "images")
+//            }
+//            // See if a file doesn't exist in Upload History
+//            if await upload.anyFilesToUpload() {
+//                  print("There are files to upload!")
+//                await upload.appendToTextEditor(text: "There are files to upload!")
+//                Task.detached {
+//                    // Check network connections
+//                    await upload.isNetworkGood(sdTrips: sdTrips, uploadURL: settings[0].uploadScriptURL)
+//                }
+//            } else {
+//                print("No new files to upload.")
+//                await upload.appendToTextEditor(text: "No new files to upload.")
+//            }
+//        }
+//    }
     
 //    private func anyFilesToUpload() async -> Bool {
 //        for tripfile in upload.fileList {
@@ -260,17 +266,17 @@ struct MainMenuView: View {
 //
 //    }
     
-    private func uploadFiles(tripName: String, fileType: String){
-        Task.detached {
-            // Set counters
-            await upload.resetVars()
-//                                    await startInitalTripUpload(trip: item)
-            await upload.getLocalFilePaths(tripName: tripName, folderName: fileType)
-            await upload.uploadAndShowError(tripName: tripName, uploadURL: settings[0].uploadScriptURL)
-//                                    Task.detached {
-//                                        await tryUpload.getLocalFilePaths(tripName: tripName, folderName: "images")
-//                                        await tryUpload.uploadAndShowError(uploadURL: uploadURL)
-//                                    }
-        }
-    }
+//    private func uploadFiles(tripName: String, fileType: String){
+//        Task.detached {
+//            // Set counters
+//            await upload.resetVars()
+////                                    await startInitalTripUpload(trip: item)
+//            await upload.getLocalFilePaths(tripName: tripName, folderName: fileType)
+//            await upload.uploadAndShowError(tripName: tripName, uploadURL: settings[0].uploadScriptURL)
+////                                    Task.detached {
+////                                        await tryUpload.getLocalFilePaths(tripName: tripName, folderName: "images")
+////                                        await tryUpload.uploadAndShowError(uploadURL: uploadURL)
+////                                    }
+//        }
+//    }
 }
