@@ -613,7 +613,7 @@ import CryptoKit
      func anyFilesToUpload() async -> Bool {
         for tripfile in fileList {
             if !uploadHistoryFileList.contains(tripfile) {
-                print (tripfile)
+//                print (tripfile)
                 return true
             }
         }
@@ -646,32 +646,35 @@ import CryptoKit
     func loopThroughTripsAndUpload(sdTrips: [SDTrip], uploadURL: String) async {
         // Loop through trips and upload any new/missed files
         for trip in sdTrips {
+            print("--- Processing \(trip.name)'s files. ---")
+            appendToTextEditor(text: "--- Processing \(trip.name)'s files. ---")
             await resetVars()
             await getLocalFilePaths(tripName: trip.name, folderName: "metadata")
-            await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "metadata")
+            await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "metadata", tripIsComplete: trip.isComplete)
             await resetVars()
             await getLocalFilePaths(tripName: trip.name, folderName: "scores")
-            await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "scores")
+            await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "scores", tripIsComplete: trip.isComplete)
             await resetVars()
             await getLocalFilePaths(tripName: trip.name, folderName: "images")
-            await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "images")
+            await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "images", tripIsComplete: trip.isComplete)
+            print("--- \(trip.name) files complete. ---")
+            appendToTextEditor(text: "--- \(trip.name) files complete. ---\n")
         }
-        print("🟣 Trip loop complete.")
-        appendToTextEditor(text: "🟣 Trip loop complete.")
+        print("🔵 Trips loop complete.")
+        appendToTextEditor(text: "🔵 Trips loop complete.")
     }
     
     // This function runs on the main thread
 //    @MainActor func uploadAndShowError(tripName: String, uploadURL: String) async {
-    func uploadAndShowError(tripName: String, uploadURL: String, folderName: String) async {
+    func uploadAndShowError(tripName: String, uploadURL: String, folderName: String, tripIsComplete: Bool) async {
         // No files in list, don't do
         if fileList.count == 0 {return}
         // Create file for upload history, if not exists
         do {
             _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripName, fileNameUUID: "", fileName: "")
             do {
-                // Try to download files from the urls
                 // The function is suspended here, but the main thread is Not blocked.
-                try await uploadTest(tripName: tripName, fileList: fileList, uploadURL: uploadURL, folderName: folderName)
+                try await uploadTest(tripName: tripName, fileList: fileList, uploadURL: uploadURL, folderName: folderName, tripIsComplete: tripIsComplete)
             } catch {
                 // Show error if occurred, this will run on the main thread
                 print("error occurred: \(error.localizedDescription)")
@@ -682,130 +685,139 @@ import CryptoKit
     }
     
     // This function asynchronously uploads data for all passed URLs.
-    func uploadTest(tripName: String, fileList: [String], uploadURL: String, folderName: String) async throws {
+    func uploadTest(tripName: String, fileList: [String], uploadURL: String, folderName: String, tripIsComplete: Bool) async throws {
         isLoading = true
         currentTripUploading = tripName
         let session = URLSession(configuration: .default)
+        
+        /*  If a trip is NOT complete, do not add CSVs to a Upload History file. (Keep uploading/reuploading (Also handled in the PHP script)). If a trip is complete, add CSV files to Upload History.
+            Always upload new pics and write to Upload History.
+            */
+        var writeToUploadHistory = false
+        if tripIsComplete || folderName == "images" {
+            writeToUploadHistory = true
+        }
+        
         
         for item in fileList {
             if !uploadHistoryFileList.contains(item) {
                 print("Uploading \(item)...")
                 appendToTextEditor(text: "Uploading \(item)...")
 
-            let boundary = "Boundary-\(NSUUID().uuidString)"
-            
-            let myUrl = NSURL(string: uploadURL)
-            
-            var request = URLRequest(url:myUrl! as URL)
-            request.httpMethod = "POST"
-            
-            request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-            
-            // Don't upload if Low Data Mode is enabled
-            //            request.allowsConstrainedNetworkAccess = false
-            
-            //KeyValuePairs  // IS THIS REQUIRED?
-            let paramDict = [
-                "firstName"     : "FERN",
-                "lastName"      : "Demo",
-                "userId"        : "0",
-                "fileSavePath"  : "\(tripFolderPath)",
-                "fileName"      : "\(item)"
-            ]
-            
-            // path to save the file:
-            let pathAndFile = "\(tripFolderPath)/\(item)"
-            
-            // path to get the file:
-            let getFile = self.localFilePath!.appendingPathComponent(item)
-            
-            // Calculate checksum iOS-side
-            let hashed = SHA256.hash(data: NSData(contentsOf: getFile)!)
-            let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
-            
-            // Append hash to params
-            let mergeDict = paramDict.merging(["sourceHash":"\(hashString)"]) { (_, new) in new }
-            
-            // Upload file
-            request.httpBody = self.createBodyWithParameters(parameters: mergeDict, filePathKey: "file",
-                                                             fileData: NSData(contentsOf: getFile)!,
-                                                             boundary: boundary, uploadFilePath: pathAndFile) as Data
-            //        var responseString: NSString?
-
-            // If an error occurs, then it will throw, loop will break and function throws,
-            // caller must deal with the error.
-            do {
-                let (data, response) = try await session.data(for: request)
-                // Do something with data, response
-                // You can even throw from here if you don't like the response...
-                print("URL session in test 1x1 starting")
+                let boundary = "Boundary-\(NSUUID().uuidString)"
                 
-//                if !uploadHistoryFileList.contains(item) {
-//                    print("Uploading \(item)...")
-//                    appendToTextEditor(text: "Uploading \(item)...")
-                    // Print out response object
-                    //            print("******* response = \(String(describing: response))")
+                let myUrl = NSURL(string: uploadURL)
+                
+                var request = URLRequest(url:myUrl! as URL)
+                request.httpMethod = "POST"
+                
+                request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+                
+                // Don't upload if Low Data Mode is enabled
+                //            request.allowsConstrainedNetworkAccess = false
+                
+                //KeyValuePairs  // IS THIS REQUIRED?
+                let paramDict = [
+                    "firstName"     : "FERN",
+                    "lastName"      : "Demo",
+                    "userId"        : "0",
+                    "fileSavePath"  : "\(tripFolderPath)",
+                    "fileName"      : "\(item)"
+                ]
+                
+                // path to save the file:
+                let pathAndFile = "\(tripFolderPath)/\(item)"
+                
+                // path to get the file:
+                let getFile = self.localFilePath!.appendingPathComponent(item)
+                
+                // Calculate checksum iOS-side
+                let hashed = SHA256.hash(data: NSData(contentsOf: getFile)!)
+                let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
+                
+                // Append hash to params
+                let mergeDict = paramDict.merging(["sourceHash":"\(hashString)"]) { (_, new) in new }
+                
+                // Upload file
+                request.httpBody = self.createBodyWithParameters(parameters: mergeDict, filePathKey: "file",
+                                                                 fileData: NSData(contentsOf: getFile)!,
+                                                                 boundary: boundary, uploadFilePath: pathAndFile) as Data
+                //        var responseString: NSString?
+
+                // If an error occurs, then it will throw, loop will break and function throws,
+                // caller must deal with the error.
+                do {
+                    let (data, response) = try await session.data(for: request)
+                    // Do something with data, response
+                    // You can even throw from here if you don't like the response...
+                    print("URL session in test 1x1 starting")
                     
-                    // Print out reponse body
-                    let statusCode = (response as! HTTPURLResponse).statusCode
-                    // is 200?
-                    if statusCode == 200 {
+    //                if !uploadHistoryFileList.contains(item) {
+    //                    print("Uploading \(item)...")
+    //                    appendToTextEditor(text: "Uploading \(item)...")
+                        // Print out response object
+                        //            print("******* response = \(String(describing: response))")
                         
-                        // Get response
-                        let responseString = NSString(data: data, encoding: NSUTF8StringEncoding)
-                        //                                    print("****** response data = \(self.responseString!)")
-                        // Is success?
-                        if (responseString ?? "No response string").contains("successfully!") {
-                            //                    self.upProcessedAndUploadedByOne()
-                            // Write time, checksum, and file path & name to upload history file.
-                            do {
-//                                print("item before filewrite call:")
-//                                print(item)
-                                _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripName, fileNameUUID: "No uuid", fileName: item)
-                            } catch { print ("Error writing to upload history after a sucessful save to server.")}
+                        // Print out reponse body
+                        let statusCode = (response as! HTTPURLResponse).statusCode
+                        // is 200?
+                        if statusCode == 200 {
                             
-                            print("🟢 \(item) is uploaded!")
-                            appendToTextEditor(text: "🟢 \(item) is uploaded!")
-                            self.totalUploaded += 1
-                        }
-                        
-                        // Checksum failed?
-                        else if (responseString ?? "No response string").contains("Hashes do not match!") {
-                            //                    self.totalProcessed += 1
-                            print("🔴 Hashes do not match for \(item)!")
-                            appendToTextEditor(text: "🔴 Hashes do not match for \(item)!")
-                        } else if (responseString ?? "No response string").contains("file exists!") {
-                            print("🟡 File already exists.")
-                            self.totalUploaded += 1
-                            appendToTextEditor(text: "🟡 File already exists.")
+                            // Get response
+                            let responseString = NSString(data: data, encoding: NSUTF8StringEncoding)
+                            //                                    print("****** response data = \(self.responseString!)")
+                            // Is success?
+                            if (responseString ?? "No response string").contains("successfully!") {
+                                //                    self.upProcessedAndUploadedByOne()
+                                // Write file name to upload history file.
+                                if writeToUploadHistory {
+                                    do {
+                                        _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripName, fileNameUUID: "No uuid", fileName: item)
+                                    } catch { print ("Error writing to upload history after a sucessful save to server.")}
+                                }
+                                
+                                print("🟢 \(item) is uploaded!")
+                                appendToTextEditor(text: "🟢 \(item) is uploaded!")
+                                self.totalUploaded += 1
+                            }
+                            
+                            // Checksum failed?
+                            else if (responseString ?? "No response string").contains("Hashes do not match!") {
+                                //                    self.totalProcessed += 1
+                                print("🔴 Hashes do not match for \(item)!")
+                                appendToTextEditor(text: "🔴 Hashes do not match for \(item)!")
+                            } else if (responseString ?? "No response string").contains("file exists!") {
+                                print("🟡 File already exists.")
+                                self.totalUploaded += 1
+                                appendToTextEditor(text: "🟡 File already exists.")
+                            } else {
+                                print(responseString ?? "Response string does not contain 'successfully!' or 'Hashes do not match!' or 'file exists!'")
+                                appendToTextEditor(text: (responseString ?? "Response string does not contain text for a successful save, matching hash, or an existing file.") as String)
+                            }
+                            
+                            //                self.finalizeResults(trip: trip)
+                            
                         } else {
-                            print(responseString ?? "Response string does not contain 'successfully!' or 'Hashes do not match!' or 'file exists!'")
-                            appendToTextEditor(text: (responseString ?? "Response string does not contain text for a successful save, matching hash, or an existing file.") as String)
+                            print("🟡 Status code: \(statusCode)")
+                            appendToTextEditor(text: "🟡 Status code: \(statusCode)")
                         }
-                        
-                        //                self.finalizeResults(trip: trip)
-                        
-                    } else {
-                        print("🟡 Status code: \(statusCode)")
-                        appendToTextEditor(text: "🟡 Status code: \(statusCode)")
-                    }
-//                } else { print("🟠 Filename exists in upload history.")}
-            } catch {
-                //                if let error = error as? URLError, error.networkUnavailableReason == .constrained {
-                //                    print("Low Data Mode is active. This request could not be satisfied.")
-                //                    appendToTextEditor(text: "Low Data Mode is active. This request could not be satisfied.")
-                //                } else {
-                print(error)
-                appendToTextEditor(text: "\(error)")
-                //                }
-            }
+    //                } else { print("🟠 Filename exists in upload history.")}
+                } catch {
+                    //                if let error = error as? URLError, error.networkUnavailableReason == .constrained {
+                    //                    print("Low Data Mode is active. This request could not be satisfied.")
+                    //                    appendToTextEditor(text: "Low Data Mode is active. This request could not be satisfied.")
+                    //                } else {
+                    print(error)
+                    appendToTextEditor(text: "\(error)")
+                    //                }
+                }
             } else { 
                 self.totalUploaded += 1
                 print("🟠 Filename exists in upload history.")
             }
         }
-        print("🔵 \(tripName) \(folderName) processed.")
-        appendToTextEditor(text: "🔵 \(tripName) \(folderName) processed.")
+        print("  \(tripName) \(folderName) processed.")
+        appendToTextEditor(text: "  \(tripName) \(folderName) processed.")
         isLoading = false
     }
     

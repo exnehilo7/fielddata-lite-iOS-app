@@ -123,7 +123,9 @@ struct UploadFilesView: View {
 //                        if (!item.allFilesUploaded){
                             // progressViewStyle needs to be defined else the bar will have a spinner above it on view load.
 //                            ProgressView("File \(upload.totalUploaded) of \(upload.totalFiles) uploaded", value: Double(upload.totalUploaded), total: Double(upload.totalFiles)).progressViewStyle(.linear)
-                    ProgressView("File \(upload.totalUploaded) of \(upload.totalFiles) uploaded", value: Double(upload.totalUploaded), total: Double(upload.totalFiles)).progressViewStyle(.linear)
+                    if upload.isLoading {
+                        ProgressView("File \(upload.totalUploaded) of \(upload.totalFiles) uploaded", value: Double(upload.totalUploaded), total: Double(upload.totalFiles)).progressViewStyle(.linear)
+                    }
 //                        }
                         // Hide upload button if in progress
 //                        if (!upload.isLoading) {
