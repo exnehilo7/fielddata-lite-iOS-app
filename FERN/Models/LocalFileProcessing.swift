@@ -69,24 +69,6 @@ class FieldWorkGPSFile {
         let fileName = "\(dateString)_\(tripOrRouteName)_\(DeviceUUID().deviceUUID).csv"
         
         return try CreateOrWriteToFile.createOrWriteToFile(tripOrRouteName: tripOrRouteName, fileNameUUID: fileNameUUID, fileName: fileName, folderName: "metadata", message: "\(fileNameUUID),\(gpsUsed),\(hdop),\(longitude),\(latitude),\(altitude),\(scannedText),\(timestamp),\(notes)", header: "pic_uuid,gps,hdop,longitude,latitude,altitude,scanned_text,line_written_on,notes\n")
-        
-//        guard let gpsDir = DocumentsDirectory.dir else {
-//            return false
-//        }
-//
-//        var filePath: URL
-//
-//        // Make the file name date_tripName_deviceUUID.txt
-//        let dateString = GetFormattedDateStrings().getDateString_yyyy_MM_dd()
-//        let fileName = "\(dateString)_\(tripOrRouteName)_\(DeviceUUID().deviceUUID).csv"
-//        let path = gpsDir.appendingPathComponent("\(DeviceUUID().deviceUUID)/trips/\(tripOrRouteName)/metadata")
-//        filePath = ProcessTextfile.createPath(path: path, fileName: fileName)
-//
-//        let timestamp = GetFormattedDateStrings().getTimestampSrting_yyyy_MM_dd_HH_mm_ssSSSx()
-//        let message = "\(uuid),\(gpsUsed),\(hdop),\(longitude),\(latitude),\(altitude),\(scannedText),\(timestamp),\(notes)"
-//        guard let data = (message + "\n").data(using: String.Encoding.utf8) else { return false}
-//
-//        return ProcessTextfile.writeToTextfile(data: data, filePath: filePath, uuid: uuid, header: "pic_uuid,gps,hdop,longitude,latitude,altitude,scanned_text,line_written_on,notes\n")
     }
 }
 
@@ -122,23 +104,6 @@ class FieldWorkScoringFile {
         let fileName = "\(dateString)_\(tripOrRouteName)_\(DeviceUUID().deviceUUID)_Scoring.csv"
         
         return try CreateOrWriteToFile.createOrWriteToFile(tripOrRouteName: tripOrRouteName, fileNameUUID: fileNameUUID, fileName: fileName, folderName: "scoring", message: "\(timestamp),\(organismName),\(score)", header: "line_written_on,organism_name,score\n")
-        
-//        guard let scoringDir = DocumentsDirectory.dir else {
-//            return false
-//        }
-//
-//        var filePath: URL
-//
-//        let dateString = GetFormattedDateStrings().getDateString_yyyy_MM_dd()
-//        let fileName = "\(dateString)_\(tripOrRouteName)_\(DeviceUUID().deviceUUID)_Scoring.csv"
-//        let path = scoringDir.appendingPathComponent("\(DeviceUUID().deviceUUID)/trips/\(tripOrRouteName)/scoring")
-//        filePath = ProcessTextfile.createPath(path: path, fileName: fileName)
-//
-//        let timestamp = GetFormattedDateStrings().getTimestampSrting_yyyy_MM_dd_HH_mm_ssSSSx()
-//        let message = "\(timestamp),\(organismName),\(score)"
-//        guard let data = (message + "\n").data(using: String.Encoding.utf8) else { return false}
-//
-//        return ProcessTextfile.writeToTextfile(data: data, filePath: filePath, uuid: uuid, header: "line_written_on,organism_name,score\n")
     }
 }
 

@@ -69,7 +69,6 @@ struct TextRecognition {
             observations.forEach { observation in
                 guard let recognizedText = observation.topCandidates(1).first else { return }
                 textItem.text += recognizedText.string
-//                textItem.text += "\n"
             }
         }
         

@@ -29,7 +29,7 @@ class StartScreenViewController: UIViewController {
         }
     }
     
-    func setActiveToTrue(active: Bool) { //-> Bool{
+    func setActiveToTrue(active: Bool) {
         
         self.active = active
         self.active = true

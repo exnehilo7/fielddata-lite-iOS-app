@@ -77,6 +77,7 @@ struct SearchByNameView: View {
         Spacer()
     } //end view body
     
+    // IF VIEW IS USED AGAIN, WILL NEED TO USE THE UPDATED getMapPointsFromDatabase FUNCITON IN THE MAP CLASS.
     // call PHP POST and get query results. Pass area/plot name, org name
     private func getMapPoints () async {
         

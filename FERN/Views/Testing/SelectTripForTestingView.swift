@@ -4,6 +4,7 @@
 //
 //  Created by Hopp, Dan on 7/30/24.
 //
+//  Simple view to list trips in SwiftData
 
 import SwiftUI
 import SwiftData
@@ -28,8 +29,7 @@ struct SelectTripForTestingView: View {
             List {
                 ForEach(sdTrips) { item in
                     NavigationLink {
-                        // Try to prevent data race by passing swiftdata values(?)
-                        FileUploadTestingView(tripName: item.name, upload: upload)
+//                        FileUploadTestingView(tripName: item.name, upload: upload)
                     } label: {
                         HStack{
                             Text(item.name)

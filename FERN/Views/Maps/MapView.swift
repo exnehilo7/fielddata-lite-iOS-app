@@ -34,11 +34,6 @@ struct MapView: View {
     var queryName: String
     var mapUILayout: String
     
-//    // For scoring buttons
-//    @State private var isSelectedZero = false
-//    @State private var isSelectedOne = false
-//    @State private var isSelectedTwo = false
-    
     
     //MARK: Views
     // Map
@@ -68,17 +63,6 @@ struct MapView: View {
             await getMapPoints()
         }
     }
-    
-//    var refreshMapButton: some View {
-//        HStack {
-//            Spacer()
-//            Button ("Refresh Map Points"){
-//                Task {
-//                    await refreshMapPoints()
-//                }
-//            }.buttonStyle(.borderedProminent).tint(.blue)//.padding(.trailing, 25)
-//        }
-//    }
     
     // Take pic button. Use a swipe-up view.
     var popupCameraButton: some View {
@@ -253,12 +237,7 @@ struct MapView: View {
         
         VStack{
             
-//            HStack {
-//                refreshMapButton
-//                Spacer()
-                popupCameraButton
-//                Spacer()
-//            }
+            popupCameraButton
 
             Spacer()
 
@@ -316,9 +295,7 @@ struct MapView: View {
     } //end body view
     
     private func getMapPoints() async {
-        
         await map.getMapPointsFromDatabase(settings: settings, phpFile: "getMapItemsForApp.php", postString: "_column_name=\(columnName)&_column_value=\(tripOrRouteName)&_org_name=\(organismName)&_query_name=\(queryName)")
-
     }
     
     private func refreshMapPoints() async {
@@ -381,7 +358,4 @@ struct MapView: View {
             }
         }
     }
-    
-    
-    
 }//end MapView view
