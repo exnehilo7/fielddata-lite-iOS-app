@@ -4,7 +4,7 @@
 //
 //  Created by Hopp, Dan on 6/24/24.
 //
-//  Generic view to show lists from a database table. For starters, show trips and routes.
+//  Generic view to show lists from a database table.
 
 import SwiftUI
 import SwiftData

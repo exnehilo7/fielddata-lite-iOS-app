@@ -24,14 +24,13 @@ struct CameraView: View {
     
     // View toggles
     @State private var isShowCamera = false
-//    @State private var isImageSelected = false
     @State private var showingStoppedNMEAAlert = false
     @State private var showingInvalidSyntaxAlert = false
     @State private var showingHDOPOverLimit = false
     @State private var showingCompleteAlert = false
     
     // Text scanning
-    @State private var recognizedContent = RecognizedContent()  // Should be in a class? It's own MVC?
+    @State private var recognizedContent = RecognizedContent()
     @State private var isRecognizing = false
     
     // Image
@@ -199,7 +198,7 @@ struct CameraView: View {
             }
             
             // If image save and file write was successful, (and mapMode is "View Trip"?), add a temp point to the map
-            if imageSuccessful /*&& mapMode == "View Trip" */{
+            if imageSuccessful {
                 map.tempMapPoints.append(MapAnnotationItem(
                     latitude: Double(lat) ?? 0,
                     longitude: Double(long) ?? 0,

@@ -16,7 +16,6 @@ class SDTrip {
     @Relationship(deleteRule: .cascade) var files: [TripFile]?
     
     init(name: String = "", isComplete: Bool = false, allFilesUploaded: Bool = false, files: [TripFile] = []){
-//    init(name: String = "", isComplete: Bool = false, allFilesUploaded: Bool = false){
         self.name = name
         self.isComplete = isComplete
         self.allFilesUploaded = allFilesUploaded

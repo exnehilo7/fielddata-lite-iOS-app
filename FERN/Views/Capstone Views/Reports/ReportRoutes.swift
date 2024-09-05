@@ -38,6 +38,7 @@ struct ReportRoutes: View {
     }
     
     
+    // IF VIEW IS USED AGAIN, WILL NEED TO USE THE UPDATED POST FUNCTIONS
     // Process DML and get reports
     private func qryTotalDistanceReport() async {
         

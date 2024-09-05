@@ -4,7 +4,6 @@
 //
 //  Created by Hopp, Dan on 11/15/23.
 //
-// On clicking a trip name: [API] Failed to create 0x88 image slot (alpha=1 wide=1) (client=0x77d3c009) [0x5 (os/kern) failure]  ??
 // 19-JAN-2024: Edit -> Delete has alert appear and immediately disappear
 // 19-JAN-2024: Switch to SwiftData
 
@@ -24,7 +23,7 @@ struct SelectTripView: View {
     @State private var showingDeleteTripAlert = false
     @State private var name = ""
     
-    @Environment(\.modelContext) var modelContext // swift data
+    @Environment(\.modelContext) var modelContext
     @Query var sdTrips: [SDTrip]
     @Query var settings: [Settings]
     
@@ -71,7 +70,7 @@ struct SelectTripView: View {
                     Text("""
                          NOTE! If pictures were added to the trip, they will still remain within its folder. The folder can be found in: Files -> On My [Device] -> FERN -> [Unique UUID] -> trips.
                          
-                         To undo a delete, the trip can be recreated using its original name.
+                         To undo a delete, the trip can be recreated using its EXACT case-sensitive original name. 
                          """)
                 }
             }

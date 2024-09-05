@@ -13,7 +13,7 @@ class NetworkMonitorClass: ObservableObject {
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "Monitor")
     
-    /* Whether it’s active (do we have access to the network?), whether it’s expensive (cellular or WiFi using a cellular hotspot), whether it’s constrained (restricted by low data mode), and the exact connection type we have (WiFi, cellular, etc)
+    /* See whether it’s active (do we have access to the network?), whether it’s expensive (cellular or WiFi using a cellular hotspot), whether it’s constrained (restricted by low data mode), and the exact connection type we have (WiFi, cellular, etc)
      */
     var isActive = false
     var isExpensive = false

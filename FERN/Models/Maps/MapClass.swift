@@ -202,17 +202,6 @@ class MapPointSize {
                 }
             } else {
                 print("MapModel Logger messages to go here")
-                // Call a function to handle all the below?
-                //        } catch DecodingError.keyNotFound(let key, let context) {
-                //            Swift.print("could not find key \(key) in JSON: \(context.debugDescription)")
-                //        } catch DecodingError.valueNotFound(let type, let context) {
-                //            Swift.print("could not find type \(type) in JSON: \(context.debugDescription)")
-                //        } catch DecodingError.typeMismatch(let type, let context) {
-                //            Swift.print("type mismatch for type \(type) in JSON: \(context.debugDescription)")
-                //        } catch DecodingError.dataCorrupted(let context) {
-                //            Swift.print("data found to be corrupted in JSON: \(context.debugDescription)")
-                //        } catch let error as NSError {
-                //            NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
             }
 
         return
@@ -235,8 +224,6 @@ class MapPointSize {
             annotationItems[currentAnnoItem].highlightColor = Color(red: 0.5, green: 0.5, blue: 1)
         } else {
             print("MapModel Logger messages to go here")
-            // Call a function to handle all the below?
-            // NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
         }
         
     }
@@ -246,7 +233,7 @@ class MapPointSize {
 
         self.mapResults = mapResults
         
-        // Are these strategies necessary?
+        // (Are these necessary?)
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .useDefaultKeys
         decoder.dataDecodingStrategy = .deferredToData

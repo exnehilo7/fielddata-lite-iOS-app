@@ -21,7 +21,7 @@ public struct playSound {
         let url = URL(fileURLWithPath: fileName)
 
         let osstatus = AudioServicesCreateSystemSoundID(url as CFURL, &mySysSound)
-        if osstatus != noErr { // or kAudioServicesNoError. same thing.
+        if osstatus != noErr {
             print("could not create system sound")
             print("osstatus: \(osstatus)")
         }

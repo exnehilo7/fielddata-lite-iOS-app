@@ -82,6 +82,5 @@ struct SelectReportView: View {
             } catch {
                 reportList = []
             }
-    }// end qryReports
-    
+    }
 }

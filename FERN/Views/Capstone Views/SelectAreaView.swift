@@ -42,6 +42,7 @@ struct SelectAreaView: View {
         }.task {await qryAreas()}
     }
     
+    // IF VIEW IS USED AGAIN, WILL NEED TO USE THE UPDATED ShowListFromDatabaseView
     // Process DML and get reports
     private func qryAreas() async {
         
