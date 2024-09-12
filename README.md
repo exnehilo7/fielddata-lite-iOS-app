@@ -3,7 +3,7 @@ FERN (Field Expedition Routing and Navigation) is an application designed to sol
 
 Apple Map performance declines if there are more than 100 displayed annotations. Later versions of the application will hopefully use clustering to allow for more annotations. Until then, the number of items in a saved route or area and plot searches are limited.
 
-This application was initially built for a school project. Additional functions currently in progress: Connectivity to an EOS Arrow Gold GPS device. Use of the camera and insertion of custom Exif data.
+This application was initially built for a school project. The app can use a device's default GPS or an Arrow Gold GPS. Other 3rd party GPS can be used with an appropriate library.
 
 
 ## iOS App and XCode Settings
@@ -14,18 +14,12 @@ When using XCode 14.2’s simulator, be sure **Allow Location Simulation** is ch
 If a physical device is used, in the Debug area you may see this message:
 > Publishing changes from within view updates is not allowed, this will cause undefined behavior.
 
-It appears that this message is a bug: https://developer.apple.com/forums/thread/717478. Memory usage also remained level when tested with a device.
-
-### Setting up the Project in XCode
-1. Clone the repo to a non-iCloud folder.
-2. Open XCode and open the project in the folder that the repo was cloned to.
-3. Select **iPad Pro (12.9-inch) (6th generation)** as the device.
-4. If you are using your own backend, the URL of the server will first need to be added/updated in the project’s **Info.plist** file, under **NSAppTransportSecurity** -> **NSExceptionDomains**, and added/updated in the **htmlRoot** variable under the **HTMLRootModel** class in the **Models.swift** file.
-5. Click the **Play** button.
+It appears that this message is a bug: https://developer.apple.com/forums/thread/717478. Memory usage remained steady when tested with a device.
 
 
 ## New Project Setup
 Only necessary when starting from scratch.
+
 ### Set iOS App Security Settings
 	1. Xcode
 		a. Click the Project name in the Project Navigator.
