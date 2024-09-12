@@ -7,14 +7,13 @@ This application was initially built for a school project. The app can use a dev
 
 
 ## iOS App and XCode Settings
-The Apple Developer account that was used to develop this app was part of a group that is only used for internal organization applications. As a result, this app is not currently available on the App Store. It can, however, be run in a simulator with Xcode on MacOS or on a device attached to a MacOS machine. If run on a device, you may need to be a part of an Apple Development Group, set the project’s Signing & Capabilities accordingly, and enable Developer Mode under the device’s Privacy and Security setting.
+The Apple Developer account that was used to develop this app was part of a group that is only used for internal organization applications. As a result, this app is not currently available on the App Store. It can, however, be run on a device attached to a MacOS machine. Note that you may need to be a part of an Apple Development Group, set the project’s Signing & Capabilities accordingly, and enable Developer Mode under the device’s Privacy and Security setting.
 
-When using XCode 14.2’s simulator, be sure **Allow Location Simulation** is checked and a **Default Location** is selected under **Product** -> **Scheme** -> **Edit Scheme** -> **Options** tab.
-
-If a physical device is used, in the Debug area you may see this message:
+In the Debug area you may see this message:
 > Publishing changes from within view updates is not allowed, this will cause undefined behavior.
-
 It appears that this message is a bug: https://developer.apple.com/forums/thread/717478. Memory usage remained steady when tested with a device.
+
+Because the toolkit for the Arrow Gold GPS was not originally compiled with the required ARM for a simulated device, XCode will not be able to run the app in its virtual devices.
 
 
 ## New Project Setup
