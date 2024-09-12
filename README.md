@@ -11,6 +11,7 @@ The Apple Developer account that was used to develop this app was part of a grou
 
 In the Debug area you may see this message:
 > Publishing changes from within view updates is not allowed, this will cause undefined behavior.
+
 It appears that this message is a bug: https://developer.apple.com/forums/thread/717478. Memory usage remained steady when tested with a device.
 
 Because the toolkit for the Arrow Gold GPS was not originally compiled with the required ARM for a simulated device, XCode will not be able to run the app in its virtual devices.
