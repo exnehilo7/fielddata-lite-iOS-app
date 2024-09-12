@@ -6,7 +6,8 @@ Apple Map performance declines if there are more than 100 displayed annotations.
 This application was initially built for a school project. The app can use a device's default GPS or an Arrow Gold GPS. Other 3rd party GPS can be used with an appropriate library.
 
 
-## iOS App and XCode Settings
+## iOS App and XCode Behaviors
+
 The Apple Developer account that was used to develop this app was part of a group that is only used for internal organization applications. As a result, this app is not currently available on the App Store. It can, however, be run on a device attached to a MacOS machine. Note that you may need to be a part of an Apple Development Group, set the project’s Signing & Capabilities accordingly, and enable Developer Mode under the device’s Privacy and Security setting.
 
 
