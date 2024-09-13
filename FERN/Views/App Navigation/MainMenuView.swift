@@ -88,16 +88,16 @@ struct MainMenuView: View {
 //                            Text("Post-trip Image OCR")
 //                        }
 //                    }
-//                    // Testing
-//                    NavigationLink {
-//                        SelectTripForTestingView(map: map, gps: gps, camera: camera, upload: upload)
-//                            .navigationTitle("Testing")
-//                    } label: {
-//                        HStack {
-//                            Image(systemName: "testtube.2").bold(false).foregroundColor(.gray)
-//                            Text("Testing")
-//                        }
-//                    }
+                    // Testing
+                    NavigationLink {
+                        ScoringView()
+                            .navigationTitle("Testing")
+                    } label: {
+                        HStack {
+                            Image(systemName: "testtube.2").bold(false).foregroundColor(.gray)
+                            Text("Testing")
+                        }
+                    }
                 }
                 else
                 {
@@ -129,7 +129,7 @@ struct MainMenuView: View {
             TextEditor(text: .constant(upload.consoleText))
                 .foregroundStyle(.secondary)
                 .font(.system(size: 12)).padding(.horizontal)
-                .frame(minHeight: 300, maxHeight: 300)
+                .frame(minHeight: 200, maxHeight: 200)
                 .fixedSize(horizontal: false, vertical: true)
             }
         

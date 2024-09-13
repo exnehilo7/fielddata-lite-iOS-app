@@ -62,6 +62,7 @@
 		D19FF3712C17542F00B54B7E /* SettingsHdopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19FF3702C17542F00B54B7E /* SettingsHdopView.swift */; };
 		D1A56E812B051DB300AC8291 /* SelectTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E802B051DB300AC8291 /* SelectTripView.swift */; };
 		D1E260D42C64087300C9CFF7 /* LocalFileProcessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E260D32C64087300C9CFF7 /* LocalFileProcessing.swift */; };
+		D1E815042C94CB9E004E0475 /* ScoringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E815032C94CB9E004E0475 /* ScoringView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -146,6 +147,7 @@
 		D19FF3702C17542F00B54B7E /* SettingsHdopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHdopView.swift; sourceTree = "<group>"; };
 		D1A56E802B051DB300AC8291 /* SelectTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripView.swift; sourceTree = "<group>"; };
 		D1E260D32C64087300C9CFF7 /* LocalFileProcessing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFileProcessing.swift; sourceTree = "<group>"; };
+		D1E815032C94CB9E004E0475 /* ScoringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoringView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -367,6 +369,7 @@
 		D1A56E942B07D05E00AC8291 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				D1E815022C94CB8C004E0475 /* Scoring */,
 				D16A6C7B2995D18100835B5E /* StartScreenView.swift */,
 				D16FA6392C25DABF0090E756 /* Camera */,
 				D16FA6172C2082C20090E756 /* Maps */,
@@ -396,6 +399,14 @@
 				D130BAD92B5ADEAE00F0C47C /* Trip.swift */,
 			);
 			path = Persistence;
+			sourceTree = "<group>";
+		};
+		D1E815022C94CB8C004E0475 /* Scoring */ = {
+			isa = PBXGroup;
+			children = (
+				D1E815032C94CB9E004E0475 /* ScoringView.swift */,
+			);
+			path = Scoring;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -504,6 +515,7 @@
 				D16FA6512C29D9040090E756 /* SelectMapPlatformView.swift in Sources */,
 				D1766CA1298DB9C6002F594D /* MapView.swift in Sources */,
 				D1E260D42C64087300C9CFF7 /* LocalFileProcessing.swift in Sources */,
+				D1E815042C94CB9E004E0475 /* ScoringView.swift in Sources */,
 				D1766C9D298DB978002F594D /* MainMenuView.swift in Sources */,
 				D16FA6432C25E23F0090E756 /* ImagePickerStruct.swift in Sources */,
 				D127B3802A12EDF600F6287A /* NMEADataView.swift in Sources */,
@@ -717,7 +729,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -756,7 +768,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
