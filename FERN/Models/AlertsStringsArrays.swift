@@ -92,15 +92,21 @@ class Measurements : ObservableObject {
        }
     }
     private func exchangeScoreValues(dir: Int) {
-       // Assign score to current type's variable
-       scoresToSave[currMeasureLabel] = score
-       unitsToSave[currMeasureLabel] = selectedUnit
+        
+        scoresToSave[currMeasureLabel] = score
+        unitsToSave[currMeasureLabel] = selectedUnit
        
-       // Move to the next score
-       currMeasureLabel = currMeasureLabel + dir
-       scoreType = measurementLables[currMeasureLabel]
-       score = scoresToSave[currMeasureLabel]
-       selectedUnit = unitsToSave[currMeasureLabel]
+        // Move to the next score
+        currMeasureLabel = currMeasureLabel + dir
+        scoreType = measurementLables[currMeasureLabel]
+        score = scoresToSave[currMeasureLabel]
+        selectedUnit = unitsToSave[currMeasureLabel]
+    }
+    
+    func assignCurrentScoreForSave() {
+        // Assign score to current type's variable
+        scoresToSave[currMeasureLabel] = score
+        unitsToSave[currMeasureLabel] = selectedUnit
     }
     
     func setMeasurementVars() {
@@ -114,6 +120,7 @@ class Measurements : ObservableObject {
         score = ""
         scoreType = "No type"
         scoresToSave = ["", ""]
+        currMeasureLabel = 0
     }
     
 }

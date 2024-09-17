@@ -54,7 +54,7 @@ struct MainMenuView: View {
                     } label: {
                         HStack {
                             Image(systemName: "mappin.and.ellipse").bold(false).foregroundColor(.gray)
-                            Text("View a Trip on a Map")
+                            Text("View New Trip")
                         }
                     }
                     // Select a saved route
@@ -65,7 +65,7 @@ struct MainMenuView: View {
                     } label: {
                         HStack {
                             Image(systemName: "map").bold(false).foregroundColor(.gray)
-                            Text("Routes (Traveling Salesman)")
+                            Text("Routes")
                         }
                     }
                     // App settings
