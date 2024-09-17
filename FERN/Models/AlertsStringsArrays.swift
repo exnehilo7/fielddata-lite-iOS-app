@@ -54,11 +54,11 @@ final class DeviceUUID: Sendable {
 }
 
 
-final struct Measurements : ObservableObject {
+class Measurements : ObservableObject {
     
-    var score = ""
-    var scoreType = "No type"
-    var selectedUnit = "cm"
+    @Published var score = ""
+    @Published var scoreType = "No type"
+    @Published var selectedUnit = "cm"
     var currMeasureLabel = 0
     
     // When adding another measurement type, REMEMBER TO ADD AN INDEX TO ALL ARRAYS:
@@ -103,14 +103,14 @@ final struct Measurements : ObservableObject {
        selectedUnit = unitsToSave[currMeasureLabel]
     }
     
-    func setMeasurementVars(){
+    func setMeasurementVars() {
         // Pull array's current index value into variables
         scoreType = measurementLables[currMeasureLabel]
         score = scoresToSave[currMeasureLabel]
         selectedUnit = unitsToSave[currMeasureLabel]
     }
     
-    func clearMeasurementVars(){
+    func clearMeasurementVars() {
         score = ""
         scoreType = "No type"
         scoresToSave = ["", ""]

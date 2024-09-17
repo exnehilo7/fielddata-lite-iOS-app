@@ -30,7 +30,6 @@ struct MapView: View {
     @Query var sdTrips: [SDTrip]
     
     @State private var textNotes = ""
-    var scoringView = ScoringView()
     
     // From calling view
     @Bindable var map: MapClass
@@ -138,13 +137,9 @@ struct MapView: View {
         Button(action: {
             withAnimation {
                 if isScoringActive {
-                    cycleAnnotations(forward: false, 1)
-                    // Hide upload button
-                    Task {
-                        await upload.setShowUploadButtonToFalse()
-                    }
+                    measurements.cycleScoringTypes(forward: false)
                 } else {
-                    cycleScoringTypes(forward: false)
+                    cycleAnnotations(forward: false, 1)
                 }
             }
         }, label: {
@@ -162,14 +157,9 @@ struct MapView: View {
         Button(action:  {
             withAnimation {
                 if isScoringActive {
-                    cycleAnnotations(forward: true, -1)
-
-//                    Task {
-//                        await upload.setShowUploadButtonToTrue()
-//                    }
-
+                    measurements.cycleScoringTypes(forward: true)
                 } else {
-                    cycleScoringTypes(forward: true)
+                    cycleAnnotations(forward: true, -1)
                 }
             }
         }, label: {
@@ -203,57 +193,7 @@ struct MapView: View {
 //        }
 //    }
     
-//  SCORING
-    var scoringView: some View {
-        // Score and numberpad
-//        if showScoreTextField {
-            // Score, label, and type
-            HStack {
-                Text("\(scoreType):").padding().padding()
-                Text(score)
-                Button {
-                    showMeasurementSelect.toggle()
-                } label: {
-                    HStack {
-                        Text("\(selectedUnit)")
-                        Image(systemName: "arrow.up.and.down").bold(false).foregroundColor(.white)//.font(.system(size:35))//arrow.up.and.down
-                    }
-                    .frame(minWidth: 20, maxWidth: 60, minHeight: 20, maxHeight: 23)
-                    .background(Color.gray)
-                    .foregroundColor(.white)
-                    .padding(.horizontal)
-                }.popover(isPresented: $showMeasurementSelect) { lengthTypePicker }
-            }
-            // Numberpad
-            VStack {
-                // 7 - 9
-                HStack {
-                    numberpadButton(labelAndValue: "7", width: 50, height: 50, score: $score, isBackspace: false)
-                    numberpadButton(labelAndValue: "8", width: 50, height: 50, score: $score, isBackspace: false)
-                    numberpadButton(labelAndValue: "9", width: 50, height: 50, score: $score, isBackspace: false)
-                }
-                // 4 - 6
-                HStack {
-                    numberpadButton(labelAndValue: "4", width: 50, height: 50, score: $score, isBackspace: false)
-                    numberpadButton(labelAndValue: "5", width: 50, height: 50, score: $score, isBackspace: false)
-                    numberpadButton(labelAndValue: "6", width: 50, height: 50, score: $score, isBackspace: false)
-                }
-                // 1 - 3
-                HStack {
-                    numberpadButton(labelAndValue: "1", width: 50, height: 50, score: $score, isBackspace: false)
-                    numberpadButton(labelAndValue: "2", width: 50, height: 50, score: $score, isBackspace: false)
-                    numberpadButton(labelAndValue: "3", width: 50, height: 50, score: $score, isBackspace: false)
-                }
-                // ., 0, backspace
-                HStack {
-                    numberpadButton(labelAndValue: ".", width: 50, height: 50, score: $score, isBackspace: false)
-                    numberpadButton(labelAndValue: "0", width: 50, height: 50, score: $score, isBackspace: false)
-                    numberpadButton(labelAndValue: "", width: 50, height: 50, score: $score, isBackspace: true)
-                }.padding(.bottom, 20)
-            }
-//        }
-    }
-    
+    // SCORING
     // Scoring Button
     var scoringButton: some View {
         Button {
@@ -320,14 +260,14 @@ struct MapView: View {
     // length type picker
     var lengthTypePicker: some View {
         Form {
-            
             Section {
                 HStack {
                     Image(systemName: "chevron.compact.down").bold(false).foregroundColor(.white)
                     Text("Swipe down when finished").bold(false)
+                    Image(systemName: "chevron.compact.down").bold(false).foregroundColor(.white)
                 }
-                Picker("Unit", selection: $selectedUnit) {
-                    ForEach(units, id: \.self) {
+                Picker("Unit", selection: $measurements.selectedUnit) {
+                    ForEach(measurements.units, id: \.self) {
                         Text($0)
                     }
                 }
@@ -391,7 +331,49 @@ struct MapView: View {
                         
                     // Scoring view main view
                     if showScoreTextField {
-                        scoringView
+                        HStack {
+                            Text("\(measurements.scoreType):").padding().padding()
+                            Text(measurements.score)
+                            Button {
+                                showMeasurementSelect.toggle()
+                            } label: {
+                                HStack {
+                                    Text("\(measurements.selectedUnit)")
+                                    Image(systemName: "arrow.up.and.down").bold(false).foregroundColor(.white)//.font(.system(size:35))//arrow.up.and.down
+                                }
+                                .frame(minWidth: 20, maxWidth: 60, minHeight: 20, maxHeight: 23)
+                                .background(Color.gray)
+                                .foregroundColor(.white)
+                                .padding(.horizontal)
+                            }.popover(isPresented: $showMeasurementSelect) { lengthTypePicker }
+                        }
+                        // Numberpad
+                        VStack {
+                            // 7 - 9
+                            HStack {
+                                numberpadButton(labelAndValue: "7", width: 50, height: 50, score: $measurements.score, isBackspace: false)
+                                numberpadButton(labelAndValue: "8", width: 50, height: 50, score: $measurements.score, isBackspace: false)
+                                numberpadButton(labelAndValue: "9", width: 50, height: 50, score: $measurements.score, isBackspace: false)
+                            }
+                            // 4 - 6
+                            HStack {
+                                numberpadButton(labelAndValue: "4", width: 50, height: 50, score: $measurements.score, isBackspace: false)
+                                numberpadButton(labelAndValue: "5", width: 50, height: 50, score: $measurements.score, isBackspace: false)
+                                numberpadButton(labelAndValue: "6", width: 50, height: 50, score: $measurements.score, isBackspace: false)
+                            }
+                            // 1 - 3
+                            HStack {
+                                numberpadButton(labelAndValue: "1", width: 50, height: 50, score: $measurements.score, isBackspace: false)
+                                numberpadButton(labelAndValue: "2", width: 50, height: 50, score: $measurements.score, isBackspace: false)
+                                numberpadButton(labelAndValue: "3", width: 50, height: 50, score: $measurements.score, isBackspace: false)
+                            }
+                            // ., 0, backspace
+                            HStack {
+                                numberpadButton(labelAndValue: ".", width: 50, height: 50, score: $measurements.score, isBackspace: false)
+                                numberpadButton(labelAndValue: "0", width: 50, height: 50, score: $measurements.score, isBackspace: false)
+                                numberpadButton(labelAndValue: "", width: 50, height: 50, score: $measurements.score, isBackspace: true)
+                            }.padding(.bottom, 20)
+                        }
                     }
                     // Previous / Next Arrows with Scoring button
                     HStack {

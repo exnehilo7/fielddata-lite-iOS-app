@@ -88,16 +88,16 @@ struct MainMenuView: View {
 //                            Text("Post-trip Image OCR")
 //                        }
 //                    }
-                    // Testing
-                    NavigationLink {
-                        ScoringView()
-                            .navigationTitle("Testing")
-                    } label: {
-                        HStack {
-                            Image(systemName: "testtube.2").bold(false).foregroundColor(.gray)
-                            Text("Testing")
-                        }
-                    }
+//                    // Testing
+//                    NavigationLink {
+//                        ScoringView()
+//                            .navigationTitle("Testing")
+//                    } label: {
+//                        HStack {
+//                            Image(systemName: "testtube.2").bold(false).foregroundColor(.gray)
+//                            Text("Testing")
+//                        }
+//                    }
                 }
                 else
                 {
