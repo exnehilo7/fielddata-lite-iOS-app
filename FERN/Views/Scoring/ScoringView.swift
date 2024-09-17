@@ -4,6 +4,7 @@
 //
 //  Created by Hopp, Dan on 9/13/24.
 //
+// Intended to be called/created within other views
 
 import SwiftUI
 
@@ -18,24 +19,58 @@ extension AnyTransition {
 
 struct ScoringView: View {
     
-    @State private var dbh = ""
-    @State private var height = ""
+    // When adding another score type, REMEMBER TO ADD TO THE THREE ARRAYS BELOW
+    @State private var scoresToSave = ["", ""]
+    @State private var unitsToSave = ["cm", "cm"]
+    let measurementLables = ["DBH", "Height"]
+    @State private var currMeasureLabel = 0
     
-    @State private var showDBHScore = false
-    @State private var showHeightScore = false
     @State private var showSelectMeasurement = false
     
-    @State private var isScoringActive = false
-    @State private var isSelectMeasuremntActive = false
+    @State var isScoringActive = false
     
-    @State private var selectedLength = "cm"
-    let lengths = ["cm", "mm", "ft", "in"]
+    @State private var selectedUnit = "cm"
+    let units = ["cm", "mm", "ft", "in"]
     
     
     // For custom numberpad
     @State var score = ""
     @State private var showScoreTextField = false
     @State private var scoreType = "The score type"
+    
+    // Scoring measurement type navigation
+    func cycleScoringTypes(forward: Bool) {
+           
+       let count = measurementLables.count
+
+       if forward {
+           // Is end reached?
+           if count == currMeasureLabel + 1 {
+               // do nothing
+           } else {
+               exchangeScoreValues(dir: 1)
+           }
+           
+       } else {
+           // Is start reached?
+           if currMeasureLabel == 0 {
+               // do nothing
+           } else {
+               exchangeScoreValues(dir: -1)
+           }
+       }
+    }
+    private func exchangeScoreValues(dir: Int) {
+       // Assign score to current type's variable
+       scoresToSave[currMeasureLabel] = score
+       unitsToSave[currMeasureLabel] = selectedUnit
+       
+       // Move to the next score
+       currMeasureLabel = currMeasureLabel + dir
+       scoreType = measurementLables[currMeasureLabel]
+       score = scoresToSave[currMeasureLabel]
+       selectedUnit = unitsToSave[currMeasureLabel]
+    }
     
     //Numberpad Button
     struct numberpadButton: View {
@@ -74,16 +109,12 @@ struct ScoringView: View {
     // ARROW NAVIGATION
     // Previous Point
     var previousPoint: some View {
-        //        HStack {
         // backward
         Button(action: {
             withAnimation {
                 // actions for when scoring is active
                 if isScoringActive {
-                    if showHeightScore {
-                        showHeightScore = false
-                        showDBHScore = true
-                    }
+                    cycleScoringTypes(forward: false)
                 }
             }
         }, label: {
@@ -96,17 +127,13 @@ struct ScoringView: View {
     
     // Next Point
     var nextPoint: some View {
-        //        HStack {
         // forward
         Button(action:  {
             withAnimation {
                 // actions for when scoring is active
-                if isScoringActive {
-                    if showDBHScore {
-                        showHeightScore = true
-                        showDBHScore = false
-                    }
-                }
+                   if isScoringActive {
+                       cycleScoringTypes(forward: true)
+                   }
             }
         }, label: {
             VStack {
@@ -120,12 +147,18 @@ struct ScoringView: View {
     var scoringButton: some View {
         Button {
             Task {
+                print("Toggling scoring!")
                 isScoringActive.toggle()
                 if isScoringActive {
+                    scoreType = measurementLables[currMeasureLabel]
+                    score = scoresToSave[currMeasureLabel]
+                    selectedUnit = unitsToSave[currMeasureLabel]
                     showScoreTextField = true
                 } else {
+                    // Assign score to current type's variable, write vars to CSV, reset vars (except score type units)
+                    
+                    // Hide
                     showScoreTextField = false
-                    showSelectMeasurement = false
                 }
             }
         } label: {
@@ -134,7 +167,7 @@ struct ScoringView: View {
                     Text("Done")//.font(.system(size:12))
                 } else { Text("Score")}
             }
-            .frame(minWidth: 0, maxWidth: 150, minHeight: 50, maxHeight: 50)
+            .frame(minWidth: 0, maxWidth: 150, minHeight: 0, maxHeight: 50)
             .background(Color.orange)
             .foregroundColor(.white)
             .cornerRadius(10)
@@ -142,37 +175,17 @@ struct ScoringView: View {
         }
     }
     
-//    // Select measurement unit Button
-//    var selectMeasurementUnitButton: some View {
-//        Button {
-//            Task {
-//                isSelectMeasuremntActive.toggle()
-//                if isSelectMeasuremntActive {
-//                    showSelectMeasurement = true
-//                } else {showSelectMeasurement = false}
-//            }
-//        } label: {
-//            HStack {
-//                if isSelectMeasuremntActive {
-//                    Text("Done")
-//                } else {
-//                    Text("Select Measurement")
-//                }
-//            }
-//            .frame(minWidth: 0, maxWidth: 150, minHeight: 0, maxHeight: 50)
-//            .background(Color.blue)
-//            .foregroundColor(.white)
-//            .cornerRadius(10)
-//            .padding(.horizontal)
-//        }
-//    }
-    
     // length type picker
     var lengthTypePicker: some View {
         Form {
+            
             Section {
-                Picker("Unit", selection: $selectedLength) {
-                    ForEach(lengths, id: \.self) {
+                HStack {
+                    Image(systemName: "chevron.compact.down").bold(false).foregroundColor(.white)
+                    Text("Swipe down when finished").bold(false)
+                }
+                Picker("Unit", selection: $selectedUnit) {
+                    ForEach(units, id: \.self) {
                         Text($0)
                     }
                 }
@@ -184,13 +197,9 @@ struct ScoringView: View {
     
     var body: some View {
         
-        Rectangle()
-            .fill(.green)
-            .frame(minWidth: 300, maxWidth: 300, minHeight: 10, maxHeight: 300)
-        
-//        if isScoringActive {
-//            selectMeasurementUnitButton
-//        }
+//        Rectangle()
+//            .fill(.green)
+//            .frame(minWidth: 300, maxWidth: 300, minHeight: 10, maxHeight: 300)
         
         // Score and numberpad
         if showScoreTextField {
@@ -198,8 +207,17 @@ struct ScoringView: View {
             HStack {
                 Text("\(scoreType):").padding().padding()
                 Text(score)
-                Text(selectedLength).padding().padding().onTapGesture {
+                Button {
                     showSelectMeasurement.toggle()
+                } label: {
+                    HStack {
+                        Text("\(selectedUnit)")
+                        Image(systemName: "arrow.up.and.down").bold(false).foregroundColor(.white)//.font(.system(size:35))//arrow.up.and.down
+                    }
+                    .frame(minWidth: 20, maxWidth: 60, minHeight: 20, maxHeight: 23)
+                    .background(Color.gray)
+                    .foregroundColor(.white)
+                    .padding(.horizontal)
                 }.popover(isPresented: $showSelectMeasurement) { lengthTypePicker }
             }
             // Numberpad
@@ -227,33 +245,15 @@ struct ScoringView: View {
                     numberpadButton(labelAndValue: ".", width: 50, height: 50, score: $score, isBackspace: false)
                     numberpadButton(labelAndValue: "0", width: 50, height: 50, score: $score, isBackspace: false)
                     numberpadButton(labelAndValue: "", width: 50, height: 50, score: $score, isBackspace: true)
-                }
+                }.padding(.bottom, 20)
             }
         }
         
-        // DBH
-//        if showDBHScore {
-//            HStack {
-//                Text("DBH:").padding().padding()
-//                TextField("Enter DBH", text: $dbh).keyboardType(.decimalPad)
-//                Text(selectedLength).padding().padding()
-//            }.transition(.moveAndFade)
-//        }
-//
-//        // height
-//        if showHeightScore {
-//            HStack {
-//                Text("Height:").padding().padding()
-//                TextField("Enter Height", text: $height).keyboardType(.decimalPad)
-//                Text(selectedLength).padding().padding()
-//            }.transition(.moveAndFade)
-//        }
-        
-        HStack {
-            previousPoint.padding(.trailing, 20)
-            scoringButton
-            nextPoint.padding(.leading, 20)
-        }.padding(.bottom, 20)
+//        HStack {
+//            previousPoint.padding(.trailing, 20)
+//            scoringButton
+//            nextPoint.padding(.leading, 20)
+//        }.padding(.bottom, 20)
         
     }
 }

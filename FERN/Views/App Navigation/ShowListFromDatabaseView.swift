@@ -42,11 +42,22 @@ struct ShowListFromDatabaseView: View {
                 List (self.list) { (item) in
                     NavigationLink(item.name) {
                         // Pass var to view. Query for route does not need a column or organism name.
-                        SelectMapUILayoutView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, tripOrRouteName: item.name, columnName: columnName, organismName: organismName, queryName: mapQuery)
-                            .navigationTitle("Select UI Layout")
+//                        SelectMapUILayoutView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, tripOrRouteName: item.name, columnName: columnName, organismName: organismName, queryName: mapQuery)
+//                            .navigationTitle("Select UI Layout")
+                        
+                        // Pass var to view. Query for route does not need a column or organism name.
+                        MapView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, tripOrRouteName: item.name, columnName: columnName, organismName: organismName, queryName: mapQuery)
+                            .navigationTitle(item.name).font(.subheadline)
                     }
                 }
-            }
+            }.onAppear(perform: {
+                // Reset previously snapped pic if view was swiped down before image was saved
+                camera.clearCustomData()
+                camera.resetCamera()
+                
+                // Need to reset vars in MapModel
+                map.resetMapModelVariables()
+            })
             // query routes. Call PHP GET
         }.task { await getListItems()}
     }

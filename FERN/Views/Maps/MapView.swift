@@ -12,6 +12,15 @@ import SwiftUI
 import MapKit
 import SwiftData
 
+//extension AnyTransition {
+//    static var moveAndFade: AnyTransition {
+//        .asymmetric(
+//            insertion: .scale.combined(with: .opacity),
+//            removal: .scale.combined(with: .opacity)
+//        )
+//    }
+//}
+
 struct MapView: View {
     
     // MARK: Vars
@@ -21,6 +30,7 @@ struct MapView: View {
     @Query var sdTrips: [SDTrip]
     
     @State private var textNotes = ""
+    var scoringView = ScoringView()
     
     // From calling view
     @Bindable var map: MapClass
@@ -32,7 +42,13 @@ struct MapView: View {
     var columnName: String
     var organismName: String
     var queryName: String
-    var mapUILayout: String
+//    var mapUILayout: String
+    
+    // scoring
+    @State private var isScoringActive = false
+    @State private var showScoreTextField = false
+    @State private var showMeasurementSelect = false
+    @ObservedObject var measurements = Measurements()
     
     
     //MARK: Views
@@ -58,7 +74,7 @@ struct MapView: View {
                 MapCompass()
                 MapScaleView()
                 MapUserLocationButton()
-            }
+            }//.frame(minHeight: 50) // Make map height dynamic
         }.task {
             await getMapPoints()
         }
@@ -120,16 +136,22 @@ struct MapView: View {
     var previousPoint: some View {
         // backward
         Button(action: {
-            cycleAnnotations(forward: false, 1)
-            // Hide upload button
-            Task {
-                await upload.setShowUploadButtonToFalse()
+            withAnimation {
+                if isScoringActive {
+                    cycleAnnotations(forward: false, 1)
+                    // Hide upload button
+                    Task {
+                        await upload.setShowUploadButtonToFalse()
+                    }
+                } else {
+                    cycleScoringTypes(forward: false)
+                }
             }
         }, label: {
             VStack {
                 Image(systemName: "arrowshape.backward.fill")
                     .font(.system(size: 50))
-                Text("Previous")
+//                Text("Previous")
             }
         })
     }
@@ -138,99 +160,216 @@ struct MapView: View {
     var nextPoint: some View {
         // forward
         Button(action:  {
-            cycleAnnotations(forward: true, -1)
-            // If map mode is Scoring and at the last point, show upload button
-            if mapUILayout == "scoring" {
-                if map.currentAnnoItem == map.totalAnnoItems {
-                    // if a score is selected
-                    if map.isSelectedOne == true || map.isSelectedTwo == true || map.isSelectedZero == true {
-                        Task {
-                            await upload.setShowUploadButtonToTrue()
-                        }
-                    }
-                    else { Task {await upload.setShowUploadButtonToFalse()} }
+            withAnimation {
+                if isScoringActive {
+                    cycleAnnotations(forward: true, -1)
+
+//                    Task {
+//                        await upload.setShowUploadButtonToTrue()
+//                    }
+
+                } else {
+                    cycleScoringTypes(forward: true)
                 }
             }
         }, label: {
             VStack {
                 Image(systemName: "arrowshape.forward.fill")
                     .font(.system(size: 50))
-                Text("Next")
+//                Text("Next")
             }
         })
     }
     
-    //UPLOAD BUTTON
-    var uploadScoreButton: some View {
+//    //UPLOAD BUTTON
+//    var uploadScoreButton: some View {
+//        Button {
+//            Task {
+//                await upload.resetVars()
+//                await upload.setShowPopoverToTrue()
+//            }
+//        } label: {
+//            HStack {
+//               Text("Upload Scores").font(.system(size:12))
+//           }
+//           .frame(minWidth: 0, maxWidth: 100, minHeight: 0, maxHeight: 50)
+//           .background(Color.orange)
+//           .foregroundColor(.white)
+//           .cornerRadius(10)
+//           .padding(.horizontal)
+//           .popover(isPresented: $upload.showPopover) {
+//               UploadFilesView(tripName: tripOrRouteName, uploadURL: settings[0].uploadScriptURL, cesiumURL: settings[0].cesiumURL, upload: upload)
+//           }
+//        }
+//    }
+    
+//  SCORING
+    var scoringView: some View {
+        // Score and numberpad
+//        if showScoreTextField {
+            // Score, label, and type
+            HStack {
+                Text("\(scoreType):").padding().padding()
+                Text(score)
+                Button {
+                    showMeasurementSelect.toggle()
+                } label: {
+                    HStack {
+                        Text("\(selectedUnit)")
+                        Image(systemName: "arrow.up.and.down").bold(false).foregroundColor(.white)//.font(.system(size:35))//arrow.up.and.down
+                    }
+                    .frame(minWidth: 20, maxWidth: 60, minHeight: 20, maxHeight: 23)
+                    .background(Color.gray)
+                    .foregroundColor(.white)
+                    .padding(.horizontal)
+                }.popover(isPresented: $showMeasurementSelect) { lengthTypePicker }
+            }
+            // Numberpad
+            VStack {
+                // 7 - 9
+                HStack {
+                    numberpadButton(labelAndValue: "7", width: 50, height: 50, score: $score, isBackspace: false)
+                    numberpadButton(labelAndValue: "8", width: 50, height: 50, score: $score, isBackspace: false)
+                    numberpadButton(labelAndValue: "9", width: 50, height: 50, score: $score, isBackspace: false)
+                }
+                // 4 - 6
+                HStack {
+                    numberpadButton(labelAndValue: "4", width: 50, height: 50, score: $score, isBackspace: false)
+                    numberpadButton(labelAndValue: "5", width: 50, height: 50, score: $score, isBackspace: false)
+                    numberpadButton(labelAndValue: "6", width: 50, height: 50, score: $score, isBackspace: false)
+                }
+                // 1 - 3
+                HStack {
+                    numberpadButton(labelAndValue: "1", width: 50, height: 50, score: $score, isBackspace: false)
+                    numberpadButton(labelAndValue: "2", width: 50, height: 50, score: $score, isBackspace: false)
+                    numberpadButton(labelAndValue: "3", width: 50, height: 50, score: $score, isBackspace: false)
+                }
+                // ., 0, backspace
+                HStack {
+                    numberpadButton(labelAndValue: ".", width: 50, height: 50, score: $score, isBackspace: false)
+                    numberpadButton(labelAndValue: "0", width: 50, height: 50, score: $score, isBackspace: false)
+                    numberpadButton(labelAndValue: "", width: 50, height: 50, score: $score, isBackspace: true)
+                }.padding(.bottom, 20)
+            }
+//        }
+    }
+    
+    // Scoring Button
+    var scoringButton: some View {
         Button {
             Task {
-                await upload.resetVars()
-                await upload.setShowPopoverToTrue()
+                isScoringActive.toggle()
+                if isScoringActive {
+                    measurements.setMeasurementVars()
+                    showScoreTextField = true
+                } else {
+                    // Assign score to current type's variable, write vars to CSV, reset vars (except score type units)
+                    
+                    // Hide
+                    showScoreTextField = false
+                }
             }
         } label: {
             HStack {
-               Text("Upload Scores").font(.system(size:12))
-           }
-           .frame(minWidth: 0, maxWidth: 100, minHeight: 0, maxHeight: 50)
-           .background(Color.orange)
-           .foregroundColor(.white)
-           .cornerRadius(10)
-           .padding(.horizontal)
-           .popover(isPresented: $upload.showPopover) {
-               UploadFilesView(tripName: tripOrRouteName, uploadURL: settings[0].uploadScriptURL, cesiumURL: settings[0].cesiumURL, upload: upload, mapUILayout: mapUILayout)
-           }
+                if isScoringActive {
+                    Text("Done")//.font(.system(size:12))
+                } else { Text("Score")}
+            }
+            .frame(minWidth: 0, maxWidth: 150, minHeight: 0, maxHeight: 50)
+            .background(Color.orange)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+            .padding(.horizontal)
         }
     }
     
-    // SCORING BUTTONS
-    var buttonScoreZero: some View {
+    //Numberpad Button
+    struct numberpadButton: View {
+        var labelAndValue: String
+        var width: CGFloat
+        var height: CGFloat
+        @Binding var score: String
+        var isBackspace: Bool
         
+        var body: some View {
             Button(action: {
-                map.setScoreToZero(tripOrRouteName: tripOrRouteName)
+                if isBackspace {
+                    if score != "" {
+                        score.removeLast()
+                    }
+                } else {
+                    score.append(labelAndValue)
+                }
             }, label: {
-                Text("0")
+                if isBackspace {
+                    Image(systemName: "arrow.left").bold(false).foregroundColor(.white).font(.system(size:35))
+                } else {
+                    Text(labelAndValue).font(.system(size:40))
+                }
             })
-            .frame(width: 50, height: 50)
-            .background(map.isSelectedZero ? Color.green : Color(red: 0.5, green: 0.5, blue: 0.5))
-            .foregroundStyle(map.isSelectedZero ? Color.black : Color.white)
-            .clipShape(RoundedRectangle(cornerRadius: 10.0))
-            .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(map.isSelectedZero ? .green : Color(red: 0.5, green: 0.5, blue: 0.5), lineWidth: 2))
-        }
-        
-        var buttonScoreOne: some View {
-            
-            Button(action: {
-                map.setScoreToOne(tripOrRouteName: tripOrRouteName)
-            }, label: {
-                Text("1")
-            })
-            .frame(width: 50, height: 50)
-            .background(map.isSelectedOne ? Color.green : Color(red: 0.5, green: 0.5, blue: 0.5))
-            .foregroundStyle(map.isSelectedOne ? Color.black : Color.white)
-            .clipShape(RoundedRectangle(cornerRadius: 10.0))
-            .overlay(
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(map.isSelectedOne ? .green : Color(red: 0.5, green: 0.5, blue: 0.5), lineWidth: 2))
-        }
-        
-        var buttonScoreTwo: some View {
-            
-            Button(action: {
-                map.setScoreToTwo(tripOrRouteName: tripOrRouteName)
-            }, label: {
-                Text("2")
-            })
-            .frame(width: 50, height: 50)
-            .background(map.isSelectedTwo ? Color.green : Color(red: 0.5, green: 0.5, blue: 0.5))
-            .foregroundStyle(map.isSelectedTwo ? Color.black : Color.white)
+            .frame(width: width, height: height)
+            .background(Color(red: 0.5, green: 0.5, blue: 0.5))
+            .foregroundStyle(Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 10.0))
             .overlay(
                 RoundedRectangle(cornerRadius: 10)
-                    .stroke(map.isSelectedTwo ? .green : Color(red: 0.5, green: 0.5, blue: 0.5), lineWidth: 2))
+                    .stroke(Color(red: 0.5, green: 0.5, blue: 0.5), lineWidth: 2))
         }
+    }
     
+    // length type picker
+    var lengthTypePicker: some View {
+        Form {
+            
+            Section {
+                HStack {
+                    Image(systemName: "chevron.compact.down").bold(false).foregroundColor(.white)
+                    Text("Swipe down when finished").bold(false)
+                }
+                Picker("Unit", selection: $selectedUnit) {
+                    ForEach(units, id: \.self) {
+                        Text($0)
+                    }
+                }
+                .pickerStyle(.wheel)
+            }
+        }
+        .navigationTitle("Select unit of measurement")
+    }
+    
+//    // Scoring measurement type navigation
+//    func cycleScoringTypes(forward: Bool) {
+//           
+//       let count = measurementLables.count
+//
+//       if forward {
+//           // Is end reached?
+//           if count == currMeasureLabel + 1 {
+//               // do nothing
+//           } else {
+//               exchangeScoreValues(dir: 1)
+//           }
+//           
+//       } else {
+//           // Is start reached?
+//           if currMeasureLabel == 0 {
+//               // do nothing
+//           } else {
+//               exchangeScoreValues(dir: -1)
+//           }
+//       }
+//    }
+//    private func exchangeScoreValues(dir: Int) {
+//       // Assign score to current type's variable
+//       scoresToSave[currMeasureLabel] = score
+//       unitsToSave[currMeasureLabel] = selectedUnit
+//       
+//       // Move to the next score
+//       currMeasureLabel = currMeasureLabel + dir
+//       scoreType = measurementLables[currMeasureLabel]
+//       score = scoresToSave[currMeasureLabel]
+//       selectedUnit = unitsToSave[currMeasureLabel]
+//    }
     
     // MARK: Body
     var body: some View {
@@ -241,7 +380,7 @@ struct MapView: View {
 
             Spacer()
 
-            appleMap
+            appleMap.frame(minWidth: 300, maxWidth: .infinity, minHeight: 50, maxHeight: .infinity)
             
             // If no results, don't display navigation buttons
             if map.hasMapPointsResults {
@@ -249,48 +388,26 @@ struct MapView: View {
                     currentPointOrganismName
                     
                     currentPointCoordinates
-                    
-                    if mapUILayout == "standard" {
-                        // Previous / Next Arrows
-                        HStack {
-                            previousPoint.padding(.trailing, 20)
-                            
-                            nextPoint.padding(.leading, 20)
-                            
-                        }.padding(.bottom, 20)
-                    }
-                    else if mapUILayout == "scoring" {
                         
-                            // Previous / Next Arrows
-                            HStack {
-                                
-                                previousPoint.padding(.leading, 20)
-                                Spacer()
-                                if (map.annotationItems[map.currentAnnoItem].organismName.trimmingCharacters(in: .whitespaces)).count > 0 {
-                                    buttonScoreZero
-                                    buttonScoreOne
-                                    buttonScoreTwo
-                                }
-                                Spacer()
-                                if !upload.showUploadButton {
-                                    nextPoint.padding(.trailing, 20)
-                                }
-                                else {
-                                    uploadScoreButton
-                                }
-                            }.padding(.bottom, 20)
+                    // Scoring view main view
+                    if showScoreTextField {
+                        scoringView
                     }
+                    // Previous / Next Arrows with Scoring button
+                    HStack {
+                        
+                        previousPoint.padding(.leading, 20)
+                        Spacer()
+                        scoringButton
+                        Spacer()
+                        nextPoint.padding(.trailing, 20)
+
+                    }.padding(.bottom, 20)
                 } //end selected item info and arrow buttons VStack
            } //end if hasMapPointsResults
         } //end VStack
         .onAppear(perform: {
-            if mapUILayout == "scoring" {
-                // Clear selection
-                map.resetScoreButtons()
-                upload.showUploadButton = false
-                // Create Scoring Text File for the Day
-                map.createScoringFileForTheDay(tripOrRouteName: tripOrRouteName)
-            }
+                map.createScoringFileForTheDay(tripOrRouteName: tripOrRouteName) // NEED TO NOT CREATE IF NOT NEEDED?
         })
     } //end body view
     
@@ -315,7 +432,8 @@ struct MapView: View {
             if map.currentAnnoItem < map.totalAnnoItems {
                 map.currentAnnoItem += 1
                 highlightMapAnnotation(offset, offsetColor)
-                map.resetScoreButtons()
+//                map.resetScoreButtons()
+                // clear score vars
             }
         }
         else {
@@ -323,7 +441,8 @@ struct MapView: View {
             if map.currentAnnoItem > 0 {
                 map.currentAnnoItem -= 1
                 highlightMapAnnotation(offset, offsetColor)
-                map.resetScoreButtons()
+//                map.resetScoreButtons()
+                // clear score vars
             }
         }
     }
