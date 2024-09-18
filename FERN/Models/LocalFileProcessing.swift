@@ -61,7 +61,7 @@ class ProcessTextfile {
 // File create and append from https://stackoverflow.com/questions/27327067/append-text-or-data-to-text-file-in-swift
 class FieldWorkGPSFile {
     
-    static func writePicDataToTxtFile(tripOrRouteName: String, fileNameUUID: String, gpsUsed: String, hdop: String, longitude: String, latitude: String, altitude: String,
+    static func writePicDataToCsvFile(tripOrRouteName: String, fileNameUUID: String, gpsUsed: String, hdop: String, longitude: String, latitude: String, altitude: String,
                     scannedText: String, notes: String) throws -> Bool {
         
         let timestamp = GetFormattedDateStrings().getTimestampSrting_yyyy_MM_dd_HH_mm_ssSSSx()

@@ -72,7 +72,7 @@ struct MapView: View {
                 MapCompass()
                 MapScaleView()
                 MapUserLocationButton()
-            }//.frame(minHeight: 50) // Make map height dynamic
+            }
         }.task {
             await getMapPoints()
         }
@@ -206,7 +206,7 @@ struct MapView: View {
         }
     }
     
-    //Numberpad Button
+    // Numberpad Button
     struct numberpadButton: View {
         var labelAndValue: String
         var width: CGFloat
@@ -337,7 +337,7 @@ struct MapView: View {
                     
                     currentPointCoordinates
                         
-                    // Scoring view main view
+                    // Scoring view
                     if showScoreTextField {
                         measurementsAndNumberpad.transition(.scale.combined(with: .opacity))
                     }
