@@ -86,17 +86,17 @@ struct MapView: View {
             map.showPopover = true
             // Use organism name if exists
             if (map.annotationItems[map.currentAnnoItem].organismName.trimmingCharacters(in: .whitespaces)).count > 0 {
-                camera.textNotes = "Organism name:" + map.annotationItems[map.currentAnnoItem].organismName + ";"
+                camera.textNotes = map.annotationItems[map.currentAnnoItem].organismName
             }
         } label: {
             Text("Show Camera")
         }.buttonStyle(.borderedProminent).tint(.orange).popover(isPresented: $map.showPopover) {
             // Show view
-            CameraView(map: map, gps: gps, camera: camera, mapMode: mapMode, tripOrRouteName: tripOrRouteName)
+            CameraView(map: map, gps: gps, camera: camera, mapMode: mapMode, tripOrRouteName: tripOrRouteName, openedFromMapView: true)
         }
     }
     
-    // CURRENT POINT
+    // MARK: CURRENT POINT
     // Current Point Organism Name
     var currentPointOrganismName: some View {
         VStack {
@@ -129,7 +129,7 @@ struct MapView: View {
         }
     }
     
-    // ARROW NAVIGATION
+    // MARK: ARROW NAVIGATION
     // Previous Item
     var previousItem: some View {
         // backward
@@ -169,7 +169,7 @@ struct MapView: View {
     }
     
     
-    // SCORING
+    // MARK: SCORING
     // Scoring Button
     var scoringButton: some View {
         Button {
@@ -180,10 +180,12 @@ struct MapView: View {
                         measurements.setMeasurementVars()
                         showScoreTextField = true
                     } else {
-                        // Write last seen measurement to vars
+                        // Write current measurement to vars
                         measurements.assignCurrentScoreForSave()
                         
-                        // Assign score to current type's variable, write vars to CSV
+                        // Put scores into JSON format, write to CSV
+                        let scoresJSON = measurements.createScoreJSON()
+                        map.saveScoreToTextFile(tripOrRouteName: tripOrRouteName, longitude: "\(map.annotationItems[map.currentAnnoItem].longitude)", latitude: "\(map.annotationItems[map.currentAnnoItem].latitude)", score: scoresJSON)
                         
                         // Hide
                         showScoreTextField = false
@@ -197,7 +199,7 @@ struct MapView: View {
                 } else { Text("Score")}
             }
             .frame(width: 150, height: 50)
-            .background(Color.orange)
+            .background(Color.green)
             .foregroundColor(.white)
             .cornerRadius(10)
             .padding(.horizontal)
@@ -238,8 +240,8 @@ struct MapView: View {
         }
     }
     
-    // length type picker
-    var lengthTypePicker: some View {
+    // unit type picker
+    var unitTypePicker: some View {
         Form {
             Section {
                 HStack {
@@ -258,6 +260,7 @@ struct MapView: View {
         .navigationTitle("Select unit of measurement")
     }
     
+    // Measurements/scoring displayed values
     var measurementsView: some View {
         HStack {
             Text("\(measurements.scoreType):").padding().padding()
@@ -273,10 +276,11 @@ struct MapView: View {
                 .background(Color.gray)
                 .foregroundColor(.white)
                 .padding(.horizontal)
-            }.popover(isPresented: $showMeasurementSelect) { lengthTypePicker }
+            }.popover(isPresented: $showMeasurementSelect) { unitTypePicker }
         }
     }
     
+    // Numberpad layout
     var numberpad: some View {
         // Numberpad
         return VStack {
@@ -307,6 +311,7 @@ struct MapView: View {
         }
     }
     
+    // Combine the two to workaround that pesky return
     var measurementsAndNumberpad: some View {
         VStack {
             measurementsView
@@ -348,7 +353,7 @@ struct MapView: View {
            } //end if hasMapPointsResults
         } //end VStack
         .onAppear(perform: {
-                map.createScoringFileForTheDay(tripOrRouteName: tripOrRouteName) // NEED TO NOT CREATE IF NOT NEEDED?
+                map.createScoringFileForTheDay(tripOrRouteName: tripOrRouteName)
         })
     } //end body view
     

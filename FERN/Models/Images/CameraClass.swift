@@ -84,7 +84,7 @@ import SwiftUI
         
         do {
             // Save image to Trip's folder
-            try _ = FieldWorkImageFile.saveToFolder(imgFile: imgFile, tripOrRouteName: tripOrRouteName, fileNameUUID: uuid, gpsUsed: gpsUsed, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude)
+            try _ = FieldWorkImageFile.saveToFolder(imgFile: imgFile, tripOrRouteName: tripOrRouteName, fileNameUUID: uuid)
         } catch {
             print(error.localizedDescription)
             audio.playError()

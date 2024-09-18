@@ -16,6 +16,7 @@ struct CameraView: View {
     @Bindable var camera: CameraClass
     var mapMode: String
     var tripOrRouteName: String
+    var openedFromMapView: Bool = false
     
     // Swift Data
     @Environment(\.modelContext) var modelContext
@@ -140,6 +141,8 @@ struct CameraView: View {
             var textInPic = recognizedContent.items[0].text
             textInPic = textInPic.replacingOccurrences(of: ScannedTextPattern().pattern, with: "", options: [.regularExpression])
             savePic(upperUUID: upperUUID, textInPic: textInPic, textNotes: camera.textNotes)
+            // If score/measurement exists, write to score CSV
+            
         }, label: {
             HStack {
                 Image(systemName: "photo")
@@ -301,9 +304,18 @@ struct CameraView: View {
         }
     }
     
+    // Swipe down chevron
+    var swipeDownChevron: some View {
+        Image(systemName: "chevron.compact.down").bold(false).foregroundColor(.white).font(.system(size:32))
+    }
+    
     //MARK: Main View
     var body: some View {
         VStack {
+            if openedFromMapView {
+                swipeDownChevron
+            }
+            
             if !camera.isImageSelected {
                 // mark complete button
                 ForEach(sdTrips) { item in
