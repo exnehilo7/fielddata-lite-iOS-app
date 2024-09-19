@@ -17,6 +17,7 @@ struct MainMenuView: View {
     @State private var camera = CameraClass()
     @State private var gps = GpsClass()
     @State private var upload = FileUploadClass()
+    @State private var measurements = MeasurementsClass()
     
     init() {
         let menuListCoordinator = MenuListBridgingCoordinator()
@@ -37,7 +38,7 @@ struct MainMenuView: View {
                 {
                     // Select Trip Mode (new trip acquisition)
                     NavigationLink {
-                        SelectTripView(map: map, gps: gps, camera: camera, upload: upload)
+                        SelectTripView(map: map, gps: gps, camera: camera, upload: upload, measurements: measurements)
                             .environment(gps)
                             .navigationTitle("Select Trip Mode")
                     } label: {
@@ -48,7 +49,7 @@ struct MainMenuView: View {
                     }
                     // QC an Uploaded Trip
                     NavigationLink {
-                        SelectMapPlatformView(map: map, gps: gps, camera: camera, upload: upload, mapMode: "View Trip", columnName: "", organismName: "", mapQuery: "query_get_trip_for_apple_map")
+                        SelectMapPlatformView(map: map, gps: gps, camera: camera, upload: upload, mapMode: "View Trip", columnName: "", organismName: "", mapQuery: "query_get_trip_for_apple_map", measurements: measurements)
                             .environmentObject(menuListBridgingCoordinator)
                             .navigationTitle("Select Platform")
                     } label: {
@@ -59,7 +60,7 @@ struct MainMenuView: View {
                     }
                     // Select a saved route
                     NavigationLink {
-                        ShowListFromDatabaseView(map: map, gps: gps, camera: camera, upload: upload, mapMode: "Traveling Salesman", columnName: "", organismName: "", mapQuery: "query_get_route_for_app", tripType: "")
+                        ShowListFromDatabaseView(map: map, gps: gps, camera: camera, upload: upload, mapMode: "Traveling Salesman", columnName: "", organismName: "", mapQuery: "query_get_route_for_app", tripType: "", measurements: measurements)
                             .environmentObject(menuListBridgingCoordinator)
                             .navigationTitle("Select Saved Route")
                     } label: {

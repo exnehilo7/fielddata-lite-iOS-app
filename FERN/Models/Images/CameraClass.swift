@@ -19,6 +19,10 @@ import SwiftUI
     private var numofmatches = 0
     var showingCompleteAlert = false
     var showHDOPSettingView = false
+    var snapshotLatitude = "0"
+    var snapshotLongitude = "0"
+    var snapshotAltitude = "0"
+    var snapshotHorzAccuracy = "9999.99"
     
     
     // Sounds
@@ -33,11 +37,11 @@ import SwiftUI
         }
     }
     
-    func saveScoreToTextFile(tripOrRouteName: String, fileNameUUID: String, longitude: String, latitude: String, score: String) {
+    func saveScoreToTextFile(tripOrRouteName: String, fileNameUUID: String, longitude: String, latitude: String, organismName: String, score: String) {
         
 //        let uuid = UUID().uuidString
             do {
-                try _ = FieldWorkScoringFile.writeScoreToCSVFile(tripOrRouteName: tripOrRouteName, fileNameUUID: fileNameUUID, fromView: "Camera", longitude: longitude, latitude: latitude, organismName: "", score: score)
+                try _ = FieldWorkScoringFile.writeScoreToCSVFile(tripOrRouteName: tripOrRouteName, fileNameUUID: fileNameUUID, fromView: "Camera", longitude: longitude, latitude: latitude, organismName: organismName, score: score)
             } catch {
                 print(error.localizedDescription)
             }
@@ -54,6 +58,7 @@ import SwiftUI
                 audio.playError()
                 isImageSelected = false
                 showingStoppedNMEAAlert = true
+                resetSnaphotCords()
             } else {
                 savePic = true
             }
@@ -63,6 +68,34 @@ import SwiftUI
         if savePic {
             // Save pic to a folder and write metadata to a text file
             savePicIfUnderThreshold(hdopThreshold: hdopThreshold, imgFile: imgFile, tripOrRouteName: tripOrRouteName, uuid: uuid, gpsUsed: gpsUsed, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude, scannedText: scannedText, notes: notes)
+
+            return true
+        }
+        
+        return false
+    }
+    
+    func processImageTEST(useBluetooth: Bool, hasBTStreamStopped: Bool, hdopThreshold: Double, imgFile: UIImage, tripOrRouteName: String, uuid: String, gpsUsed: String, scannedText: String, notes: String) -> Bool {
+        
+        var savePic = false
+        
+        if useBluetooth {
+            // Alert user if feed has stopped or values are zero
+            if hasBTStreamStopped || (snapshotHorzAccuracy == "0.00" || snapshotLongitude == "0.00000000" || snapshotLatitude == "0.00000000" || snapshotAltitude == "0.00")
+            {
+                audio.playError()
+                isImageSelected = false
+                showingStoppedNMEAAlert = true
+                resetSnaphotCords()
+            } else {
+                savePic = true
+            }
+        } else {
+            savePic = true
+        }
+        if savePic {
+            // Save pic to a folder and write metadata to a text file
+            savePicIfUnderThreshold(hdopThreshold: hdopThreshold, imgFile: imgFile, tripOrRouteName: tripOrRouteName, uuid: uuid, gpsUsed: gpsUsed, hdop: snapshotHorzAccuracy, longitude: snapshotLongitude, latitude: snapshotLatitude, altitude: snapshotAltitude, scannedText: scannedText, notes: notes)
 
             return true
         }
@@ -82,6 +115,7 @@ import SwiftUI
             setVarsAndViewAfterSuccessfulSave()
             
         } else {
+            resetSnaphotCords()
             audio.playError()
             // Display hdop over threshold message
             showingHDOPOverLimit = true
@@ -172,6 +206,13 @@ import SwiftUI
     
     func clearCustomData() {
         textNotes = ""
+    }
+    
+    func resetSnaphotCords() {
+        snapshotLatitude = "0"
+        snapshotLongitude = "0"
+        snapshotAltitude = "0"
+        snapshotHorzAccuracy = "9999.99"
     }
     
 }

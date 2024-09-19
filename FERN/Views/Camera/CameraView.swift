@@ -10,12 +10,13 @@ import SwiftUI
 import SwiftData
 
 struct CameraView: View {
-
+    
     var map: MapClass
     var gps: GpsClass
     @Bindable var camera: CameraClass
     var mapMode: String
     var tripOrRouteName: String
+    @Bindable var measurements: MeasurementsClass
     var openedFromMapView: Bool = false
     
     // Swift Data
@@ -38,17 +39,17 @@ struct CameraView: View {
     @State private var image = UIImage()
     
     // Vars to snapshot GPS data
-    @State private var snapshotLatitude = ""
-    @State private var snapshotLongitude = ""
-    @State private var snapshotAltitude = ""
-    @State private var snapshotHorzAccuracy = ""
+    //    @State private var snapshotLatitude = ""
+    //    @State private var snapshotLongitude = ""
+    //    @State private var snapshotAltitude = ""
+    //    @State private var snapshotHorzAccuracy = "9999.99"
     
     // scoring
     @State private var isScoringActive = false
     @State private var showScoreTextField = false
     @State private var showMeasurementSelect = false
-    @ObservedObject var measurements = Measurements()
-
+    //    @ObservedObject var measurements = Measurements()
+    
     
     // Sounds
     let audio = playSound()
@@ -70,7 +71,7 @@ struct CameraView: View {
         return "\(gps.clLocationHelper?.lastLocation?.altitude ?? 0.0000)"
     }
     //------------------------------------------------------------------
-
+    
     
     // MARK: Views
     // MARK: Text Fields
@@ -105,14 +106,14 @@ struct CameraView: View {
     var snapshotCoordinates: some View {
         VStack {
             Label("Captured Coordinates", systemImage: "globe").underline().foregroundColor(.orange)
-            Text("Latitude: ") + Text("\(snapshotLatitude)")
-            Text("Longitude: ") + Text("\(snapshotLongitude)")
-            Text("Altitude (m): ") + Text("\(snapshotAltitude)")
-            Text("Horizontal Accuracy (m): ") + Text("\(snapshotHorzAccuracy)").foregroundColor(getColor(text: snapshotHorzAccuracy))
+            Text("Latitude: ") + Text("\(camera.snapshotLatitude)").foregroundColor(snapshotColoring(text: camera.snapshotLatitude))
+            Text("Longitude: ") + Text("\(camera.snapshotLongitude)").foregroundColor(snapshotColoring(text: camera.snapshotLongitude))
+            Text("Altitude (m): ") + Text("\(camera.snapshotAltitude)").foregroundColor(snapshotColoring(text: camera.snapshotAltitude))
+            Text("Horizontal Accuracy (m): ") + Text("\(camera.snapshotHorzAccuracy)").foregroundColor(getColor(text: camera.snapshotHorzAccuracy))
         }.font(.system(size: 18)).foregroundColor(.blue)
     }
     //------------------------------------------------------------------
-
+    
     // Field for user to add custom metadata.
     var customData: some View {
         VStack {
@@ -137,20 +138,20 @@ struct CameraView: View {
     }
     
     // Invalid Syntax Alert
-     var invalidSyntaxView: some View {
-         VStack {
-             Spacer()
-             Text("Invalid Syntax").bold().foregroundStyle(.red)
-             Text("The syntax for the Notes field is invalid!")
-         }
-     }
+    var invalidSyntaxView: some View {
+        VStack {
+            Spacer()
+            Text("Invalid Syntax").bold().foregroundStyle(.red)
+            Text("The syntax for the Notes field is invalid!")
+        }
+    }
     
     // HDOP Over Threshold Alert
     var hdopOverLimitView: some View {
         VStack {
             Spacer()
             Text("HDOP Over Limit").bold().foregroundStyle(.red)
-            Text("The horizontal position accuracy was over the limit of \(settings[0].hdopThreshold)!")
+            Text("The horizontal position accuracy of \(camera.snapshotHorzAccuracy) was over the limit of \(settings[0].hdopThreshold)!")
         }
     }
     
@@ -161,10 +162,10 @@ struct CameraView: View {
             camera.showHDOPSettingView = true
         }
         label: { HStack {Image(systemName: "arrow.up.to.line").font(.system(size: 10))}
-        .frame(minWidth: 0, maxWidth: 25, minHeight: 0, maxHeight: 17)
-        .background(Color.blue)
-        .foregroundColor(.white)
-        .cornerRadius(5).padding(.horizontal)
+                .frame(minWidth: 0, maxWidth: 25, minHeight: 0, maxHeight: 17)
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(5).padding(.horizontal)
         }.popover(isPresented: $camera.showHDOPSettingView) {
             // Show view
             SettingsHdopView(setting: settings[0], camera: camera)  // NEED TO HIDE GPS OPTION ON VIEW POPUP (on dissapear?)
@@ -209,7 +210,7 @@ struct CameraView: View {
     // Scan for text button
     var scanForTextButton: some View {
         Button(action: {
- 
+            
             isRecognizing = true
             
             // Put image in array
@@ -243,15 +244,15 @@ struct CameraView: View {
         Button(action: {
             camera.cancelPic()
         },
-        label: {HStack {
+               label: {HStack {
             Image(systemName: "arrow.triangle.2.circlepath.camera").font(.system(size: 15))
-                Text("Redo").font(.system(size: 15))
+            Text("Redo").font(.system(size: 15))
         }
-            .frame(minWidth: 0, maxWidth: 75, minHeight: 0, maxHeight: 30)
-            .background(Color.red)
-            .foregroundColor(.white)
-            .cornerRadius(10)
-            .padding().padding()
+               .frame(minWidth: 0, maxWidth: 75, minHeight: 0, maxHeight: 30)
+               .background(Color.red)
+               .foregroundColor(.white)
+               .cornerRadius(10)
+               .padding().padding()
         })
     }
     
@@ -528,12 +529,12 @@ struct CameraView: View {
             if !showScoreTextField {
                 if !camera.isShowCamera {
                     snapshotCoordinates
-//                    if settings[0].useBluetoothDevice {
-//                        arrowGpsData.transition(.scale.combined(with: .opacity))
-//                    }
-//                    else {
-//                        coreLocationGpsData.transition(.scale.combined(with: .opacity))
-//                    }
+                    //                    if settings[0].useBluetoothDevice {
+                    //                        arrowGpsData.transition(.scale.combined(with: .opacity))
+                    //                    }
+                    //                    else {
+                    //                        coreLocationGpsData.transition(.scale.combined(with: .opacity))
+                    //                    }
                 }
             }
             
@@ -571,23 +572,23 @@ struct CameraView: View {
                 
                 // Show the image save button if ImagePicker struct has an image.
                 if camera.isImageSelected {
-//                    HStack {
+                    //                    HStack {
                     if !showScoreTextField {
                         scanForTextButton.transition(.scale.combined(with: .opacity))
                     } else {
                         previousItem.transition(.scale.combined(with: .opacity))
                     }
-//                    }
+                    //                    }
                     if !openedFromMapView {
                         scoringButton
                     } else { Spacer()}
-//                    HStack {
+                    //                    HStack {
                     if !showScoreTextField {
                         savePicButton.transition(.scale.combined(with: .opacity))
                     } else {
                         nextItem.transition(.scale.combined(with: .opacity))
                     }
-//                    }
+                    //                    }
                 }
             }
         }.onAppear(perform: {
@@ -596,6 +597,9 @@ struct CameraView: View {
             
             // Create Scoring file
             map.createScoringFileForTheDay(tripOrRouteName: tripOrRouteName)
+            
+            // Clear snapshot GPS vals
+            camera.resetSnaphotCords()
             
         })
         .sheet(isPresented: $camera.isShowCamera) {
@@ -611,20 +615,20 @@ struct CameraView: View {
                     else {
                         coreLocationGpsData
                     }
-                // Snapshot GPS data on dissappear
+                    // Snapshot GPS data on dissappear
                 }.onDisappear {
-//                    if settings[0].useBluetoothDevice {
-                        snapshotLatitude =
-                        snapshotLongitude =
-                        snapshotAltitude =
-                        snapshotHorzAccuracy = gps.nmea?.accuracy ?? "0.00"
-//                    }
-//                    else {
-                        snapshotLatitude = clLat
-                        snapshotLongitude = clLong
-                        snapshotAltitude = clAltitude
-                        snapshotHorzAccuracy = clHorzAccuracy
-//                    }
+                    //                    if settings[0].useBluetoothDevice {
+                    //                        snapshotLatitude = gps.nmea?.latitude ?? "0.00000000"
+                    //                        snapshotLongitude = gps.nmea?.longitude ?? "0.00000000"
+                    //                        snapshotAltitude = gps.nmea?.altitude ?? "0.00"
+                    //                        snapshotHorzAccuracy = gps.nmea?.accuracy ?? "0.00"
+                    //                    }
+                    //                    else {
+                    camera.snapshotLatitude = clLat
+                    camera.snapshotLongitude = clLong
+                    camera.snapshotAltitude = clAltitude
+                    camera.snapshotHorzAccuracy = clHorzAccuracy
+                    //                    }
                 }
             }
         }.animation(.easeInOut, value: true)
@@ -652,10 +656,10 @@ struct CameraView: View {
                 lat = gps.nmea?.latitude ?? "0.00000000"
                 organismName = textInPic
             } else {
-//                imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: true, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "iOS", hdop: clHorzAccuracy, longitude: clLong, latitude: clLat, altitude: clAltitude, scannedText: textInPic, notes: result.textNotes)
-                imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: true, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "iOS", hdop: snapshotHorzAccuracy, longitude: snapshotLongitude, latitude: snapshotLatitude, altitude: snapshotAltitude, scannedText: textInPic, notes: result.textNotes)
-                long = snapshotLongitude
-                lat = snapshotLatitude
+                //                imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: true, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "iOS", hdop: clHorzAccuracy, longitude: clLong, latitude: clLat, altitude: clAltitude, scannedText: textInPic, notes: result.textNotes)
+                imageSuccessful = camera.processImageTEST(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: true, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "iOS", scannedText: textInPic, notes: result.textNotes)
+                long = camera.snapshotLongitude
+                lat = camera.snapshotLatitude
                 organismName = textInPic
             }
             
@@ -668,7 +672,7 @@ struct CameraView: View {
             if imageSuccessful && mapMode == "Traveling Salesman" {
                 Task {
                     await map.updatePointColor(settings: settings, phpFile: "updateRoutePointColor.php",
-                                                           postString:"_route_id=\(map.annotationItems[map.currentAnnoItem].routeID)&_point_order=\(map.annotationItems[map.currentAnnoItem].pointOrder)")
+                                               postString:"_route_id=\(map.annotationItems[map.currentAnnoItem].routeID)&_point_order=\(map.annotationItems[map.currentAnnoItem].pointOrder)")
                 }
             }
             
@@ -701,8 +705,8 @@ struct CameraView: View {
             // If image save was successful, Write scores to file, clear scores / measurements
             if imageSuccessful {
                 // Put scores into JSON format, write to CSV
-//                        let scoresJSON = measurements.createScoreJSON()
-//                        camera.saveScoreToTextFile(tripOrRouteName: tripOrRouteName, fileNameUUID: upperUUID, longitude: snapshotLongitude, latitude: snapshotLatitude, score: scoresJSON)
+                let scoresJSON = measurements.createScoreJSON()
+                camera.saveScoreToTextFile(tripOrRouteName: tripOrRouteName, fileNameUUID: upperUUID, longitude: camera.snapshotLongitude, latitude: camera.snapshotLatitude, organismName: textInPic, score: scoresJSON)
                 measurements.clearMeasurementVars()
             }
             
@@ -723,5 +727,17 @@ struct CameraView: View {
             return Color.green
         }
         return Color.white
+    }
+    
+    // If value is 0, color red
+    func snapshotColoring(text: String) -> Color {
+        
+        guard let value = Double(text) else { return Color.blue }
+        
+        if value == 0 {
+            return Color.red
+        }
+        
+        return Color.blue
     }
 }

@@ -41,12 +41,13 @@ struct MapView: View {
     var columnName: String
     var organismName: String
     var queryName: String
+    @Bindable var measurements: MeasurementsClass
     
     // scoring
     @State private var isScoringActive = false
     @State private var showScoreTextField = false
     @State private var showMeasurementSelect = false
-    @ObservedObject var measurements = Measurements()
+//    @ObservedObject var measurements = Measurements()
     
     
     //MARK: Views
@@ -92,7 +93,7 @@ struct MapView: View {
             Text("Show Camera")
         }.buttonStyle(.borderedProminent).tint(.orange).popover(isPresented: $map.showPopover) {
             // Show view
-            CameraView(map: map, gps: gps, camera: camera, mapMode: mapMode, tripOrRouteName: tripOrRouteName, openedFromMapView: true)
+            CameraView(map: map, gps: gps, camera: camera, mapMode: mapMode, tripOrRouteName: tripOrRouteName, measurements: measurements, openedFromMapView: true)
         }
     }
     

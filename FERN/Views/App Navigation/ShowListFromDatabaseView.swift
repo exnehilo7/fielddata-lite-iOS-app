@@ -22,6 +22,7 @@ struct ShowListFromDatabaseView: View {
     var organismName: String
     var mapQuery: String
     var tripType: String
+    var measurements: MeasurementsClass
 
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
@@ -46,7 +47,7 @@ struct ShowListFromDatabaseView: View {
 //                            .navigationTitle("Select UI Layout")
                         
                         // Pass var to view. Query for route does not need a column or organism name.
-                        MapView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, tripOrRouteName: item.name, columnName: columnName, organismName: organismName, queryName: mapQuery)
+                        MapView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, tripOrRouteName: item.name, columnName: columnName, organismName: organismName, queryName: mapQuery, measurements: measurements)
                             .navigationTitle(item.name).font(.subheadline)
                     }
                 }
@@ -57,6 +58,9 @@ struct ShowListFromDatabaseView: View {
                 
                 // Need to reset vars in MapModel
                 map.resetMapModelVariables()
+                
+                // Reset measurement / scoring vars
+                measurements.clearMeasurementVars()
             })
             // query routes. Call PHP GET
         }.task { await getListItems()}

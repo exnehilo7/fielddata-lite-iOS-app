@@ -50,7 +50,7 @@ class MapPointSize {
         
 //        let uuid = UUID().uuidString
             do {
-                try _ = FieldWorkScoringFile.writeScoreToCSVFile(tripOrRouteName: tripOrRouteName, fileNameUUID: "", fromView: "Map", longitude: longitude, latitude: latitude, organismName: annotationItems[currentAnnoItem].organismName, score: score)
+                try _ = FieldWorkScoringFile.writeScoreToCSVFile(tripOrRouteName: tripOrRouteName, fileNameUUID: "No UUID", fromView: "Map", longitude: longitude, latitude: latitude, organismName: annotationItems[currentAnnoItem].organismName, score: score)
             } catch {
                 print(error.localizedDescription)
             }

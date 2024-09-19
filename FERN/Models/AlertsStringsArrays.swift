@@ -54,11 +54,11 @@ final class DeviceUUID: Sendable {
 }
 
 
-class Measurements : ObservableObject {
+@Observable class MeasurementsClass {
     
-    @Published var score = ""
-    @Published var scoreType = "No type"
-    @Published var selectedUnit = "cm"
+    var score = ""
+    var scoreType = "No type"
+    var selectedUnit = "cm"
     var currMeasureLabel = 0
     
     /* When adding another measurement type, REMEMBER TO ADD AN INDEX ITEM TO ALL ARRAYS.
