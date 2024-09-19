@@ -617,18 +617,18 @@ struct CameraView: View {
                     }
                     // Snapshot GPS data on dissappear
                 }.onDisappear {
-                    //                    if settings[0].useBluetoothDevice {
-                    //                        snapshotLatitude = gps.nmea?.latitude ?? "0.00000000"
-                    //                        snapshotLongitude = gps.nmea?.longitude ?? "0.00000000"
-                    //                        snapshotAltitude = gps.nmea?.altitude ?? "0.00"
-                    //                        snapshotHorzAccuracy = gps.nmea?.accuracy ?? "0.00"
-                    //                    }
-                    //                    else {
-                    camera.snapshotLatitude = clLat
-                    camera.snapshotLongitude = clLong
-                    camera.snapshotAltitude = clAltitude
-                    camera.snapshotHorzAccuracy = clHorzAccuracy
-                    //                    }
+                    if settings[0].useBluetoothDevice {
+                        camera.snapshotLatitude = gps.nmea?.latitude ?? "0.00000000"
+                        camera.snapshotLongitude = gps.nmea?.longitude ?? "0.00000000"
+                        camera.snapshotAltitude = gps.nmea?.altitude ?? "0.00"
+                        camera.snapshotHorzAccuracy = gps.nmea?.accuracy ?? "0.00"
+                    }
+                    else {
+                        camera.snapshotLatitude = clLat
+                        camera.snapshotLongitude = clLong
+                        camera.snapshotAltitude = clAltitude
+                        camera.snapshotHorzAccuracy = clHorzAccuracy
+                    }
                 }
             }
         }.animation(.easeInOut, value: true)
@@ -651,17 +651,21 @@ struct CameraView: View {
             
             // Bluetooth?
             if settings[0].useBluetoothDevice {
-                imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: gps.nmea?.hasNMEAStreamStopped ?? false, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "ArrowGold", hdop: gps.nmea?.accuracy ?? "0.00", longitude: gps.nmea?.longitude ?? "0.00000000", latitude: gps.nmea?.latitude ?? "0.00000000", altitude: gps.nmea?.altitude ?? "0.00", scannedText: textInPic, notes: result.textNotes)
-                long = gps.nmea?.longitude ?? "0.00000000"
-                lat = gps.nmea?.latitude ?? "0.00000000"
-                organismName = textInPic
+//                imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: gps.nmea?.hasNMEAStreamStopped ?? false, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "ArrowGold", hdop: gps.nmea?.accuracy ?? "0.00", longitude: gps.nmea?.longitude ?? "0.00000000", latitude: gps.nmea?.latitude ?? "0.00000000", altitude: gps.nmea?.altitude ?? "0.00", scannedText: textInPic, notes: result.textNotes)
+                imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: gps.nmea?.hasNMEAStreamStopped ?? false, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "ArrowGold", scannedText: textInPic, notes: result.textNotes)
+//                long = camera.snapshotLongitude
+//                lat = camera.snapshotLatitude
+//                organismName = textInPic
             } else {
                 //                imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: true, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "iOS", hdop: clHorzAccuracy, longitude: clLong, latitude: clLat, altitude: clAltitude, scannedText: textInPic, notes: result.textNotes)
-                imageSuccessful = camera.processImageTEST(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: true, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "iOS", scannedText: textInPic, notes: result.textNotes)
-                long = camera.snapshotLongitude
-                lat = camera.snapshotLatitude
-                organismName = textInPic
+                imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: true, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "iOS", scannedText: textInPic, notes: result.textNotes)
+//                long = camera.snapshotLongitude
+//                lat = camera.snapshotLatitude
+//                organismName = textInPic
             }
+            long = camera.snapshotLongitude
+            lat = camera.snapshotLatitude
+            organismName = textInPic
             
             // pop view back down
             if imageSuccessful && mapMode != "none"{
@@ -706,7 +710,7 @@ struct CameraView: View {
             if imageSuccessful {
                 // Put scores into JSON format, write to CSV
                 let scoresJSON = measurements.createScoreJSON()
-                camera.saveScoreToTextFile(tripOrRouteName: tripOrRouteName, fileNameUUID: upperUUID, longitude: camera.snapshotLongitude, latitude: camera.snapshotLatitude, organismName: textInPic, score: scoresJSON)
+                camera.saveScoreToTextFile(tripOrRouteName: tripOrRouteName, fileNameUUID: upperUUID, longitude: camera.snapshotLongitude, latitude: camera.snapshotLatitude, organismName: upperUUID, score: scoresJSON)
                 measurements.clearMeasurementVars()
             }
             

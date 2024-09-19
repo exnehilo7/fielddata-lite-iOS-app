@@ -324,8 +324,9 @@ struct MapView: View {
     var body: some View {
         
         VStack{
-            
-            popupCameraButton
+            if !showScoreTextField {
+                popupCameraButton.transition(.move(edge: .top))
+            }
 
             Spacer()
 
