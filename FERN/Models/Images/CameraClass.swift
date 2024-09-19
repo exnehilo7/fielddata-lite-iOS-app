@@ -115,7 +115,6 @@ import SwiftUI
             setVarsAndViewAfterSuccessfulSave()
             
         } else {
-            resetSnaphotCords()
             audio.playError()
             // Display hdop over threshold message
             showingHDOPOverLimit = true
