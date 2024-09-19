@@ -38,12 +38,6 @@ struct CameraView: View {
     // Image
     @State private var image = UIImage()
     
-    // Vars to snapshot GPS data
-    //    @State private var snapshotLatitude = ""
-    //    @State private var snapshotLongitude = ""
-    //    @State private var snapshotAltitude = ""
-    //    @State private var snapshotHorzAccuracy = "9999.99"
-    
     // scoring
     @State private var isScoringActive = false
     @State private var showScoreTextField = false
@@ -184,10 +178,8 @@ struct CameraView: View {
             
         }, label: {
             HStack {
-//                if openedFromMapView {
-                    Image(systemName: "checkmark").font(.system(size: 20)) //"photo"  square.and.arrow.down
-//                }
-                    Text("Done").font(.headline)
+                Image(systemName: "checkmark").font(.system(size: 20)) //"photo"  square.and.arrow.down
+                Text("Done").font(.headline)
             }
             .frame(minWidth: 95, maxWidth: 100, minHeight: 0, maxHeight: 50)
             .background(Color.orange)
@@ -225,10 +217,8 @@ struct CameraView: View {
             }.recognizeText()
         }, label: {
             HStack {
-//                if openedFromMapView {
-                    Image(systemName: "text.viewfinder").font(.system(size: 20))
-//                }
-                    Text("Scan")//.font(.headline)
+                Image(systemName: "text.viewfinder").font(.system(size: 20))
+                Text("Scan")//.font(.headline)
             }
             .frame(minWidth: 95, maxWidth: 100, minHeight: 0, maxHeight: 50)
             .background(Color.purple)
@@ -528,12 +518,6 @@ struct CameraView: View {
             if !showScoreTextField {
                 if !camera.isShowCamera {
                     snapshotCoordinates
-                    //                    if settings[0].useBluetoothDevice {
-                    //                        arrowGpsData.transition(.scale.combined(with: .opacity))
-                    //                    }
-                    //                    else {
-                    //                        coreLocationGpsData.transition(.scale.combined(with: .opacity))
-                    //                    }
                 }
             }
             
@@ -571,23 +555,21 @@ struct CameraView: View {
                 
                 // Show the image save button if ImagePicker struct has an image.
                 if camera.isImageSelected {
-                    //                    HStack {
                     if !showScoreTextField {
                         scanForTextButton.transition(.scale.combined(with: .opacity))
                     } else {
                         previousItem.transition(.scale.combined(with: .opacity))
                     }
-                    //                    }
+                    
                     if !openedFromMapView {
                         scoringButton
                     } else { Spacer()}
-                    //                    HStack {
+
                     if !showScoreTextField {
                         savePicButton.transition(.scale.combined(with: .opacity))
                     } else {
                         nextItem.transition(.scale.combined(with: .opacity))
                     }
-                    //                    }
                 }
             }
         }.onAppear(perform: {
@@ -650,18 +632,11 @@ struct CameraView: View {
             
             // Bluetooth?
             if settings[0].useBluetoothDevice {
-//                imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: gps.nmea?.hasNMEAStreamStopped ?? false, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "ArrowGold", hdop: gps.nmea?.accuracy ?? "0.00", longitude: gps.nmea?.longitude ?? "0.00000000", latitude: gps.nmea?.latitude ?? "0.00000000", altitude: gps.nmea?.altitude ?? "0.00", scannedText: textInPic, notes: result.textNotes)
                 imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: gps.nmea?.hasNMEAStreamStopped ?? false, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "ArrowGold", scannedText: textInPic, notes: result.textNotes)
-//                long = camera.snapshotLongitude
-//                lat = camera.snapshotLatitude
-//                organismName = textInPic
             } else {
-                //                imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: true, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "iOS", hdop: clHorzAccuracy, longitude: clLong, latitude: clLat, altitude: clAltitude, scannedText: textInPic, notes: result.textNotes)
                 imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: true, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "iOS", scannedText: textInPic, notes: result.textNotes)
-//                long = camera.snapshotLongitude
-//                lat = camera.snapshotLatitude
-//                organismName = textInPic
             }
+            
             long = camera.snapshotLongitude
             lat = camera.snapshotLatitude
             organismName = textInPic

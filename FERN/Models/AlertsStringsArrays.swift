@@ -73,16 +73,16 @@ final class DeviceUUID: Sendable {
     
     // Create JSON string from measurementLables, scoresToSave, and unitsToSave
     func createScoreJSON() -> String {
-        var scoresJSON = "\"{"
+        var scoresJSON = "{"
                         
         for (i, element) in measurementLables.enumerated() {
-            scoresJSON.append("\"\(element)\": {\"Score\": \"\(scoresToSave[i])\", \"Unit\": \"\(unitsToSave[i])\"}, ")
+            scoresJSON.append("\"\(element)\": {\"Score\": \"\(scoresToSave[i])\"; \"Unit\": \"\(unitsToSave[i])\"}; ")
         }
         // Axe trailing , and space
         scoresJSON.removeLast()
         scoresJSON.removeLast()
         // Close JSON
-        scoresJSON.append("}\"")
+        scoresJSON.append("}")
         
         return scoresJSON
     }

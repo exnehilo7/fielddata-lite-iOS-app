@@ -48,7 +48,6 @@ class MapPointSize {
     
     func saveScoreToTextFile(tripOrRouteName: String, longitude: String, latitude: String, score: String) {
         
-//        let uuid = UUID().uuidString
             do {
                 try _ = FieldWorkScoringFile.writeScoreToCSVFile(tripOrRouteName: tripOrRouteName, fileNameUUID: "No UUID", fromView: "Map", longitude: longitude, latitude: latitude, organismName: annotationItems[currentAnnoItem].organismName, score: score)
             } catch {
@@ -71,7 +70,7 @@ class MapPointSize {
     func refreshMap(settings: [Settings], phpFile: String, postString: String = "") async {
         // remember current map camera position
         currentCameraPosition = cameraPosition
-        annotationItems.removeAll(keepingCapacity: true)  // or false?
+        annotationItems.removeAll(keepingCapacity: true)  // or false for a refresh?
         _ = await getMapPointsFromDatabase(settings: settings, phpFile: phpFile, postString: postString)
         // move map back to current spot
         cameraPosition = currentCameraPosition!

@@ -169,28 +169,6 @@ import SwiftUI
         let pattern = "[^A-Za-z0-9.:;\\s_\\-]+"
         self.textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
         
-        // 18-SEP-2024: Allow free-form Camera View custom notes.
-//        // Count # of proper syntax matches
-//        let range = NSRange(location: 0, length: self.textNotes.utf16.count)
-//        let regex = try! NSRegularExpression(pattern: "[\\s\\d\\w,._\\-]+\\s*:\\s*[\\s\\d\\w,._\\-]+\\s*;\\s*")
-//        numofmatches = regex.numberOfMatches(in: self.textNotes, range: range)
-//        
-//        // Are both ; : more than 0? Are ; : counts equal? Is : equal to match count? Or is the field blank?
-//        let colonCount = self.textNotes.filter({ $0 == ":"}).count
-//        let semicolonCount = self.textNotes.filter({ $0 == ";"}).count
-//        
-//        if (
-//            (
-//                (colonCount > 0 && semicolonCount > 0)
-//                && colonCount == semicolonCount
-//                && colonCount == numofmatches
-//                && self.textNotes.count > 0
-//                && numofmatches > 0
-//            ) || self.textNotes.count == 0
-//        ) {
-//            isValid = true
-//        }
-        
         return (isValid: isValid, textNotes: self.textNotes)
     }
     
@@ -213,5 +191,4 @@ import SwiftUI
         snapshotAltitude = "0"
         snapshotHorzAccuracy = "9999.99"
     }
-    
 }

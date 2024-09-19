@@ -12,15 +12,6 @@ import SwiftUI
 import MapKit
 import SwiftData
 
-//extension AnyTransition {
-//    static var moveAndFade: AnyTransition {
-//        .asymmetric(
-//            insertion: .scale.combined(with: .opacity),
-//            removal: .scale.combined(with: .opacity)
-//        )
-//    }
-//}
-
 struct MapView: View {
     
     // MARK: Vars
@@ -47,7 +38,6 @@ struct MapView: View {
     @State private var isScoringActive = false
     @State private var showScoreTextField = false
     @State private var showMeasurementSelect = false
-//    @ObservedObject var measurements = Measurements()
     
     
     //MARK: Views

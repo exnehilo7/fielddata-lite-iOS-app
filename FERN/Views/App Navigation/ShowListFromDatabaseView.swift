@@ -41,11 +41,7 @@ struct ShowListFromDatabaseView: View {
             }
             NavigationStack {
                 List (self.list) { (item) in
-                    NavigationLink(item.name) {
-                        // Pass var to view. Query for route does not need a column or organism name.
-//                        SelectMapUILayoutView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, tripOrRouteName: item.name, columnName: columnName, organismName: organismName, queryName: mapQuery)
-//                            .navigationTitle("Select UI Layout")
-                        
+                    NavigationLink(item.name) {                        
                         // Pass var to view. Query for route does not need a column or organism name.
                         MapView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, tripOrRouteName: item.name, columnName: columnName, organismName: organismName, queryName: mapQuery, measurements: measurements)
                             .navigationTitle(item.name).font(.subheadline)
