@@ -133,7 +133,7 @@ struct CameraView: View {
         VStack {
             Spacer()
             Text("Device Feed Error").bold().foregroundStyle(.red)
-            Text("Photo was not saved. Check the Bluetooth or satellite connection. If both are OK, try killing and restarting the app.")
+            Text("Photo was not saved. Check the Bluetooth and the device's satellite connections. If both OK, close and restart the app. (Swipe up from the bottom of the screen and pause 1/4 of the way up, release, then swipe up on the app's preview.)")
         }
     }
     
@@ -184,12 +184,12 @@ struct CameraView: View {
             
         }, label: {
             HStack {
-                Image(systemName: "square.and.arrow.down").font(.system(size: 20)) //"photo"
-                if openedFromMapView {
-                    Text("Save").font(.headline)
-                }
+//                if openedFromMapView {
+                    Image(systemName: "checkmark").font(.system(size: 20)) //"photo"  square.and.arrow.down
+//                }
+                    Text("Done").font(.headline)
             }
-            .frame(minWidth: 75, maxWidth: 100, minHeight: 0, maxHeight: 50)
+            .frame(minWidth: 95, maxWidth: 100, minHeight: 0, maxHeight: 50)
             .background(Color.orange)
             .foregroundColor(.white)
             .cornerRadius(20)
@@ -225,13 +225,12 @@ struct CameraView: View {
             }.recognizeText()
         }, label: {
             HStack {
-                Image(systemName: "text.viewfinder")
-                    .font(.system(size: 20))
-                if openedFromMapView {
+//                if openedFromMapView {
+                    Image(systemName: "text.viewfinder").font(.system(size: 20))
+//                }
                     Text("Scan")//.font(.headline)
-                }
             }
-            .frame(minWidth: 75, maxWidth: 100, minHeight: 0, maxHeight: 50)
+            .frame(minWidth: 95, maxWidth: 100, minHeight: 0, maxHeight: 50)
             .background(Color.purple)
             .foregroundColor(.white)
             .cornerRadius(20)
@@ -290,7 +289,7 @@ struct CameraView: View {
             .background(Color.green)
             .foregroundColor(.white)
             .cornerRadius(10)
-            .padding(.horizontal)
+//            .padding(.horizontal)
         }
     }
     
