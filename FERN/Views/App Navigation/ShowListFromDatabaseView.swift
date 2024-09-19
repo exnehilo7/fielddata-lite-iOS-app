@@ -22,6 +22,7 @@ struct ShowListFromDatabaseView: View {
     var organismName: String
     var mapQuery: String
     var tripType: String
+    var measurements: MeasurementsClass
 
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
@@ -40,13 +41,23 @@ struct ShowListFromDatabaseView: View {
             }
             NavigationStack {
                 List (self.list) { (item) in
-                    NavigationLink(item.name) {
+                    NavigationLink(item.name) {                        
                         // Pass var to view. Query for route does not need a column or organism name.
-                        SelectMapUILayoutView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, tripOrRouteName: item.name, columnName: columnName, organismName: organismName, queryName: mapQuery)
-                            .navigationTitle("Select UI Layout")
+                        MapView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, tripOrRouteName: item.name, columnName: columnName, organismName: organismName, queryName: mapQuery, measurements: measurements)
+                            .navigationTitle(item.name).font(.subheadline)
                     }
                 }
-            }
+            }.onAppear(perform: {
+                // Reset previously snapped pic if view was swiped down before image was saved
+                camera.clearCustomData()
+                camera.resetCamera()
+                
+                // Need to reset vars in MapModel
+                map.resetMapModelVariables()
+                
+                // Reset measurement / scoring vars
+                measurements.clearMeasurementVars()
+            })
             // query routes. Call PHP GET
         }.task { await getListItems()}
     }

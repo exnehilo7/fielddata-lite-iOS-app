@@ -20,6 +20,7 @@ struct SelectTripTypeView: View {
     var columnName: String
     var organismName: String
     var mapQuery: String
+    var measurements: MeasurementsClass
 
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
@@ -40,7 +41,7 @@ struct SelectTripTypeView: View {
                 List (self.list) { (item) in
                     NavigationLink(item.name) {
                         // Pass var to view. Query for route does not need a column or organism name.
-                        ShowListFromDatabaseView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, columnName: columnName, organismName: organismName, mapQuery: mapQuery, tripType: item.name)
+                        ShowListFromDatabaseView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, columnName: columnName, organismName: organismName, mapQuery: mapQuery, tripType: item.name, measurements: measurements)
                             .navigationTitle("Apple Map")
                             .environmentObject(menuListBridgingCoordinator)
                     }

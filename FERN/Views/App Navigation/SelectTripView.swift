@@ -17,6 +17,7 @@ struct SelectTripView: View {
     var gps: GpsClass
     var camera: CameraClass
     var upload: FileUploadClass
+    var measurements: MeasurementsClass
     
     // For add-a-trip popup
     @State private var showingTripNameAlert = false
@@ -33,7 +34,7 @@ struct SelectTripView: View {
                 ForEach(sdTrips) { item in
                     NavigationLink {
                         if !item.isComplete {
-                                CameraView(map: map, gps: gps, camera: camera, mapMode: "none", tripOrRouteName: item.name).navigationTitle("\(item.name)")
+                            CameraView(map: map, gps: gps, camera: camera, mapMode: "none", tripOrRouteName: item.name, measurements: measurements).navigationTitle("\(item.name)")
                         }
                         // Go to an upload screen
                         else {
@@ -60,7 +61,10 @@ struct SelectTripView: View {
                             }
                             Text(item.name)
                         }
-                    }
+                    }.onAppear(perform: {
+                        // Reset measurement / scoring vars
+                        measurements.clearMeasurementVars()
+                    })
                 }
                 .onDelete(perform: deleteTrip)
                 // Notify user that pics and metadata will be in the trip folder

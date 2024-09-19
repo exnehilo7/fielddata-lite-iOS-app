@@ -25,7 +25,7 @@ struct UploadFilesView: View {
     var cesiumURL: String
     @Bindable var upload: FileUploadClass
     @ObservedObject var network = NetworkMonitorClass()
-    var mapUILayout: String = "none"
+//    var mapUILayout: String = "none"
     
     // MARK: Views
     // Get a message from Upload Image

@@ -19,6 +19,7 @@ struct SelectMapPlatformView: View {
     var columnName: String
     var organismName: String
     var mapQuery: String
+    var measurements: MeasurementsClass
     
     var body: some View {
         
@@ -26,7 +27,7 @@ struct SelectMapPlatformView: View {
             NavigationStack {
                 List {
                     NavigationLink {
-                        SelectTripTypeView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, columnName: columnName, organismName: organismName, mapQuery: mapQuery)
+                        SelectTripTypeView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, columnName: columnName, organismName: organismName, mapQuery: mapQuery, measurements: measurements)
                             .environmentObject(menuListBridgingCoordinator)
                             .navigationTitle("Select Trip Type")
                     } label: {

@@ -36,73 +36,23 @@ class MapPointSize {
     // View toggles
     var showPopover = false
     
-    // For scoring buttons
-    var isSelectedZero = false
-    var isSelectedOne = false
-    var isSelectedTwo = false
-    
     
     // create Scoring File for the day
     func createScoringFileForTheDay(tripOrRouteName: String) {
         do {
-            _ = try FieldWorkScoringFile.writeScoreToCSVFile(tripOrRouteName: tripOrRouteName, fileNameUUID: "", organismName: "", score: "")
+            _ = try FieldWorkScoringFile.writeScoreToCSVFile(tripOrRouteName: tripOrRouteName, fileNameUUID: "", fromView: "", longitude: "", latitude: "", organismName: "", score: "")
         } catch {
             print(error.localizedDescription)
         }
     }
     
-    func saveScoreToTextFile(tripOrRouteName: String, score: String) {
+    func saveScoreToTextFile(tripOrRouteName: String, longitude: String, latitude: String, score: String) {
         
-        // If scoring mode active and organism name is not blank, save score to CSV file
-        
-        let uuid = UUID().uuidString
-        if (annotationItems[currentAnnoItem].organismName.trimmingCharacters(in: .whitespaces)).count > 0 {
             do {
-                // Save image to Trip's folder
-                try _ = FieldWorkScoringFile.writeScoreToCSVFile(tripOrRouteName: tripOrRouteName, fileNameUUID: uuid, organismName: annotationItems[currentAnnoItem].organismName, score: score)
+                try _ = FieldWorkScoringFile.writeScoreToCSVFile(tripOrRouteName: tripOrRouteName, fileNameUUID: "No UUID", fromView: "Map", longitude: longitude, latitude: latitude, organismName: annotationItems[currentAnnoItem].organismName, score: score)
             } catch {
                 print(error.localizedDescription)
             }
-        }
-    }
-    
-    func setScoreToZero(tripOrRouteName: String) {
-        if !isSelectedZero {
-            isSelectedZero = true
-            isSelectedOne = false
-            isSelectedTwo = false
-            saveScoreToTextFile(tripOrRouteName: tripOrRouteName, score: "0")
-        } else {
-            isSelectedZero = false
-        }
-    }
-    
-    func setScoreToOne(tripOrRouteName: String) {
-        if !isSelectedOne {
-            isSelectedZero = false
-            isSelectedOne = true
-            isSelectedTwo = false
-            saveScoreToTextFile(tripOrRouteName: tripOrRouteName, score: "1")
-        } else {
-            isSelectedOne = false
-        }
-    }
-    
-    func setScoreToTwo(tripOrRouteName: String) {
-        if !isSelectedTwo {
-            isSelectedZero = false
-            isSelectedOne = false
-            isSelectedTwo = true
-            saveScoreToTextFile(tripOrRouteName: tripOrRouteName, score: "2")
-        } else {
-            isSelectedTwo = false
-        }
-    }
-    
-    func resetScoreButtons() {
-        isSelectedZero = false
-        isSelectedOne = false
-        isSelectedTwo = false
     }
     
     func resetRouteMarkers(settings: [Settings], phpFile: String, postString: String = "") async {
@@ -120,7 +70,7 @@ class MapPointSize {
     func refreshMap(settings: [Settings], phpFile: String, postString: String = "") async {
         // remember current map camera position
         currentCameraPosition = cameraPosition
-        annotationItems.removeAll(keepingCapacity: true)  // or false?
+        annotationItems.removeAll(keepingCapacity: true)  // or false for a refresh?
         _ = await getMapPointsFromDatabase(settings: settings, phpFile: phpFile, postString: postString)
         // move map back to current spot
         cameraPosition = currentCameraPosition!

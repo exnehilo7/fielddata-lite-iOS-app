@@ -19,21 +19,35 @@ import SwiftUI
     private var numofmatches = 0
     var showingCompleteAlert = false
     var showHDOPSettingView = false
+    var snapshotLatitude = "0"
+    var snapshotLongitude = "0"
+    var snapshotAltitude = "0"
+    var snapshotHorzAccuracy = "9999.99"
     
     
     // Sounds
     let audio = playSound()
     
     // create new txt file for the day for GPS data.
-    func createImageTxtFileForTheDay(tripOrRouteName: String) {
+    func createImageCsvFileForTheDay(tripOrRouteName: String) {
         do {
-            _ = try FieldWorkGPSFile.writePicDataToTxtFile(tripOrRouteName: tripOrRouteName, fileNameUUID: "", gpsUsed: "", hdop: "", longitude: "", latitude: "", altitude: "", scannedText: "", notes: "")
+            _ = try FieldWorkGPSFile.writePicDataToCsvFile(tripOrRouteName: tripOrRouteName, fileNameUUID: "", gpsUsed: "", hdop: "", longitude: "", latitude: "", altitude: "", scannedText: "", notes: "")
         } catch {
             print(error.localizedDescription)
         }
     }
     
-    func processImage(useBluetooth: Bool, hasBTStreamStopped: Bool, hdopThreshold: Double, imgFile: UIImage, tripOrRouteName: String, uuid: String, gpsUsed: String, hdop: String = "0.00", longitude: String = "0.00000000", latitude: String = "0.00000000", altitude: String = "0.00", scannedText: String, notes: String) -> Bool {
+    func saveScoreToTextFile(tripOrRouteName: String, fileNameUUID: String, longitude: String, latitude: String, organismName: String, score: String) {
+        
+//        let uuid = UUID().uuidString
+            do {
+                try _ = FieldWorkScoringFile.writeScoreToCSVFile(tripOrRouteName: tripOrRouteName, fileNameUUID: fileNameUUID, fromView: "Camera", longitude: longitude, latitude: latitude, organismName: organismName, score: score)
+            } catch {
+                print(error.localizedDescription)
+            }
+    }
+    
+    func processImageOLD(useBluetooth: Bool, hasBTStreamStopped: Bool, hdopThreshold: Double, imgFile: UIImage, tripOrRouteName: String, uuid: String, gpsUsed: String, hdop: String = "0.00", longitude: String = "0.00000000", latitude: String = "0.00000000", altitude: String = "0.00", scannedText: String, notes: String) -> Bool {
         
         var savePic = false
         
@@ -44,6 +58,7 @@ import SwiftUI
                 audio.playError()
                 isImageSelected = false
                 showingStoppedNMEAAlert = true
+                resetSnaphotCords()
             } else {
                 savePic = true
             }
@@ -53,6 +68,34 @@ import SwiftUI
         if savePic {
             // Save pic to a folder and write metadata to a text file
             savePicIfUnderThreshold(hdopThreshold: hdopThreshold, imgFile: imgFile, tripOrRouteName: tripOrRouteName, uuid: uuid, gpsUsed: gpsUsed, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude, scannedText: scannedText, notes: notes)
+
+            return true
+        }
+        
+        return false
+    }
+    
+    func processImage(useBluetooth: Bool, hasBTStreamStopped: Bool, hdopThreshold: Double, imgFile: UIImage, tripOrRouteName: String, uuid: String, gpsUsed: String, scannedText: String, notes: String) -> Bool {
+        
+        var savePic = false
+        
+        if useBluetooth {
+            // Alert user if feed has stopped or values are zero
+            if hasBTStreamStopped || (snapshotHorzAccuracy == "0.00" || snapshotLongitude == "0.00000000" || snapshotLatitude == "0.00000000" || snapshotAltitude == "0.00")
+            {
+                audio.playError()
+                isImageSelected = false
+                showingStoppedNMEAAlert = true
+                resetSnaphotCords()
+            } else {
+                savePic = true
+            }
+        } else {
+            savePic = true
+        }
+        if savePic {
+            // Save pic to a folder and write metadata to a text file
+            savePicIfUnderThreshold(hdopThreshold: hdopThreshold, imgFile: imgFile, tripOrRouteName: tripOrRouteName, uuid: uuid, gpsUsed: gpsUsed, hdop: snapshotHorzAccuracy, longitude: snapshotLongitude, latitude: snapshotLatitude, altitude: snapshotAltitude, scannedText: scannedText, notes: notes)
 
             return true
         }
@@ -84,7 +127,7 @@ import SwiftUI
         
         do {
             // Save image to Trip's folder
-            try _ = FieldWorkImageFile.saveToFolder(imgFile: imgFile, tripOrRouteName: tripOrRouteName, fileNameUUID: uuid, gpsUsed: gpsUsed, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude)
+            try _ = FieldWorkImageFile.saveToFolder(imgFile: imgFile, tripOrRouteName: tripOrRouteName, fileNameUUID: uuid)
         } catch {
             print(error.localizedDescription)
             audio.playError()
@@ -93,7 +136,7 @@ import SwiftUI
         // Write the pic's info to a .txt file
         do {
             // .txt file header order is uuid, gps, hdop, longitude, latitude, altitude.
-            try _ = FieldWorkGPSFile.writePicDataToTxtFile(tripOrRouteName: tripOrRouteName, fileNameUUID: uuid, gpsUsed: gpsUsed, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude, scannedText: scannedText, notes: notes)
+            try _ = FieldWorkGPSFile.writePicDataToCsvFile(tripOrRouteName: tripOrRouteName, fileNameUUID: uuid, gpsUsed: gpsUsed, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude, scannedText: scannedText, notes: notes)
             // Play a success noise
             audio.playSuccess()
         } catch {
@@ -118,34 +161,13 @@ import SwiftUI
     func checkUserData(textNotes: String) -> (isValid: Bool, textNotes: String) {
 
         self.textNotes = textNotes
-        var isValid = false
+        let isValid = true
         
         numofmatches = 0
         
         // Remove special characters from user data
-        let pattern = "[^A-Za-z0-9,.:;\\s_\\-]+"
+        let pattern = "[^A-Za-z0-9.:;\\s_\\-]+"
         self.textNotes = textNotes.replacingOccurrences(of: pattern, with: "", options: [.regularExpression])
-        
-        // Count # of proper syntax matches
-        let range = NSRange(location: 0, length: self.textNotes.utf16.count)
-        let regex = try! NSRegularExpression(pattern: "[\\s\\d\\w,._\\-]+\\s*:\\s*[\\s\\d\\w,._\\-]+\\s*;\\s*")
-        numofmatches = regex.numberOfMatches(in: self.textNotes, range: range)
-        
-        // Are both ; : more than 0? Are ; : counts equal? Is : equal to match count? Or is the field blank?
-        let colonCount = self.textNotes.filter({ $0 == ":"}).count
-        let semicolonCount = self.textNotes.filter({ $0 == ";"}).count
-        
-        if (
-            (
-                (colonCount > 0 && semicolonCount > 0)
-                && colonCount == semicolonCount
-                && colonCount == numofmatches
-                && self.textNotes.count > 0
-                && numofmatches > 0
-            ) || self.textNotes.count == 0
-        ) {
-            isValid = true
-        }
         
         return (isValid: isValid, textNotes: self.textNotes)
     }
@@ -163,4 +185,10 @@ import SwiftUI
         textNotes = ""
     }
     
+    func resetSnaphotCords() {
+        snapshotLatitude = "0"
+        snapshotLongitude = "0"
+        snapshotAltitude = "0"
+        snapshotHorzAccuracy = "9999.99"
+    }
 }

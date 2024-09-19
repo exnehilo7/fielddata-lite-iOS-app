@@ -61,7 +61,7 @@ class ProcessTextfile {
 // File create and append from https://stackoverflow.com/questions/27327067/append-text-or-data-to-text-file-in-swift
 class FieldWorkGPSFile {
     
-    static func writePicDataToTxtFile(tripOrRouteName: String, fileNameUUID: String, gpsUsed: String, hdop: String, longitude: String, latitude: String, altitude: String,
+    static func writePicDataToCsvFile(tripOrRouteName: String, fileNameUUID: String, gpsUsed: String, hdop: String, longitude: String, latitude: String, altitude: String,
                     scannedText: String, notes: String) throws -> Bool {
         
         let timestamp = GetFormattedDateStrings().getTimestampSrting_yyyy_MM_dd_HH_mm_ssSSSx()
@@ -74,8 +74,7 @@ class FieldWorkGPSFile {
 
 class FieldWorkImageFile {
     
-    static func saveToFolder(imgFile: UIImage, tripOrRouteName: String, fileNameUUID: String, gpsUsed: String,
-                             hdop: String, longitude: String, latitude: String, altitude: String) throws -> Bool {
+    static func saveToFolder(imgFile: UIImage, tripOrRouteName: String, fileNameUUID: String) throws -> Bool {
         guard let imageDir = DocumentsDirectory.dir else {
             return false
         }
@@ -97,13 +96,16 @@ class FieldWorkImageFile {
 
 class FieldWorkScoringFile {
     
-    static func writeScoreToCSVFile(tripOrRouteName: String, fileNameUUID: String, organismName: String, score: String) throws -> Bool {
+    // If the score/measurement was done on the camera view, the fileNameUUID is the same as the picture's.
+    // The score is JSON.
+    
+    static func writeScoreToCSVFile(tripOrRouteName: String, fileNameUUID: String, fromView: String, longitude: String, latitude: String, organismName: String, score: String) throws -> Bool {
         
         let timestamp = GetFormattedDateStrings().getTimestampSrting_yyyy_MM_dd_HH_mm_ssSSSx()
         let dateString = GetFormattedDateStrings().getDateString_yyyy_MM_dd()
         let fileName = "\(dateString)_\(tripOrRouteName)_\(DeviceUUID().deviceUUID)_Scoring.csv"
         
-        return try CreateOrWriteToFile.createOrWriteToFile(tripOrRouteName: tripOrRouteName, fileNameUUID: fileNameUUID, fileName: fileName, folderName: "scoring", message: "\(timestamp),\(organismName),\(score)", header: "line_written_on,organism_name,score\n")
+        return try CreateOrWriteToFile.createOrWriteToFile(tripOrRouteName: tripOrRouteName, fileNameUUID: fileNameUUID, fileName: fileName, folderName: "scoring", message: "\(fromView),\(timestamp),\(longitude),\(latitude),\(organismName),\(score)", header: "from_view,line_written_on,longitude,latitude,organism_name,score\n")
     }
 }
 
