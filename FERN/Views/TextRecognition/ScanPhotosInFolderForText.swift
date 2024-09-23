@@ -4,17 +4,20 @@
 //
 //  Created by Hopp, Dan on 5/14/24.
 //
-//  Whipped-up view to scan the images within a trip's folder.
+//  Whipped-up view to scan the images within a trip's folder. Currently looks for images within the trip name's folder. Image cycling is not built to handle the new subfolder setup (The "metadata", "scoring", and "upload_history" folders under the trip name folder)
 //
-//  13-JUN-2024: No need to have the GPS feed running while this view is active.
+//  20-SEP-2024: No need to have the GPS feed running while this view is active.
 
 import SwiftUI
 import SwiftData
 
 struct ScanPhotosInFolderForText: View {
     
+    var gps: GpsClass
+    
     @Environment(\.modelContext) var modelContext // swift data
     @Query var sdTrips: [SDTrip]
+    @Query var settings: [Settings]
     
     @State private var image = UIImage()
     @State private var consoleText = ""
@@ -24,6 +27,8 @@ struct ScanPhotosInFolderForText: View {
     @State private var showAcceptScannedText = false
     @State private var showTripList = true
     @State private var showGetNextPic = true
+    
+    @State private var scannedText = ""
     
     @State private var fileList: [String] = []
     
@@ -46,18 +51,18 @@ struct ScanPhotosInFolderForText: View {
                         showTripList = false
                     }
                 }
-            }
+            }.onAppear(perform: {gps.stopGPSFeed(settings: settings)})
         }
         if showGetNextPic {
-//            Button("Get next pic"){
-//                getNextPic(tripName: selectedTrip)
-//                showAcceptScannedText = false
-//            }
-//            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
-//            .background(Color.blue)
-//            .foregroundColor(.white)
-//            .cornerRadius(20)
-//            .padding(.horizontal)
+            Button("Get next pic"){
+                getNextPic(tripName: selectedTrip)
+                showAcceptScannedText = false
+            }
+            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(20)
+            .padding(.horizontal)
         }
         Image(uiImage: self.image)
         .resizable()
@@ -78,8 +83,16 @@ struct ScanPhotosInFolderForText: View {
             }
         }
         Spacer()
+        
         if showAcceptScannedText {
+            TextField("Tap here to edit scanned text or manually add text.", text: $scannedText).font(.body).padding().onTapGesture {
+                        scannedText = recognizedContent.items[0].text
+                    }
+            Spacer()
             Button("Save scanned text"){
+                // Get changes (if any)
+//                let textToSave = TextPreviewView(scannedText: recognizedContent.items[0].text).scannedText
+                
                 // Write to text file
                 filterScannedText(tripName: selectedTrip)
             }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
@@ -96,7 +109,7 @@ struct ScanPhotosInFolderForText: View {
             .fixedSize(horizontal: false, vertical: true)
     }
     
-    private func scanForText(tripName: String){
+    private func scanForText(tripName: String) {
 
             appendToTextEditor(text: "Scanning \(fileList[counter - 1])")
             
@@ -108,6 +121,7 @@ struct ScanPhotosInFolderForText: View {
             TextRecognition(scannedImages: imageArray,
                            recognizedContent: recognizedContent) {
                 isRecognizing = false }.recognizeText()
+        
         
     }
     
@@ -156,6 +170,7 @@ struct ScanPhotosInFolderForText: View {
     private func getNextPic(tripName: String){
         // Clear scanned text
         recognizedContent.items[0].text = ""
+        scannedText = ""
         
         if totalFiles == 0 {
             appendToTextEditor(text: "No trip selected")
@@ -193,17 +208,21 @@ struct ScanPhotosInFolderForText: View {
     }
     
     private func filterScannedText(tripName: String){
-        var scannedText = ""
+        var textToSave = ""
         
-        if recognizedContent.items[0].text != ""{
-            scannedText = recognizedContent.items[0].text
-            scannedText = scannedText.replacingOccurrences(of: ScannedTextPattern().pattern, with: "", options: [.regularExpression])
+        if recognizedContent.items[0].text != "" || scannedText != "" {
+            if recognizedContent.items[0].text == scannedText {
+                textToSave = recognizedContent.items[0].text
+            } else {
+                textToSave = scannedText
+            }
+            textToSave = textToSave.replacingOccurrences(of: ScannedTextPattern().pattern, with: "", options: [.regularExpression])
         } else {
-            scannedText = "No text found"
+            textToSave = "No text found"
         }
         
-        writeScannedTextToFile(tripName: tripName, uuid: fileList[counter - 1], scannedText: scannedText)
-        appendToTextEditor(text: "Text \(scannedText) written!")
+        writeScannedTextToFile(tripName: tripName, uuid: fileList[counter - 1], scannedText: textToSave)
+        appendToTextEditor(text: "Text \(textToSave) written!")
         
         showAcceptScannedText = false
         showGetNextPic = true

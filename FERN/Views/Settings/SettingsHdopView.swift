@@ -16,7 +16,7 @@ struct SettingsHdopView: View {
     @Environment(\.modelContext) var modelContext
     
     @State private var min: Double = 0
-    @State private var max: Double = 0.9
+    @State private var max: Double = 2.0
 
     var body: some View {
 
@@ -30,7 +30,7 @@ struct SettingsHdopView: View {
                             max = 40.0
                             setting.hdopThreshold = 10.0
                         } else {
-                            max = 0.9
+                            max = 2.0
                             setting.hdopThreshold = 0.2
                         }
                     }.onAppear(perform: {
@@ -38,7 +38,7 @@ struct SettingsHdopView: View {
                             max = 40.0
                         }
                         else {
-                            max = 0.9
+                            max = 2.0
                         }
                     })
             }
