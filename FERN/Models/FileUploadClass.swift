@@ -247,7 +247,7 @@ import CryptoKit
             try await makeFileList(localFilePath: localFilePath!)
         } catch {
             // failed to read directory – bad permissions, perhaps?
-            print("Directory loop error. Most likely does not exist.")
+//            print("Directory loop error. Most likely does not exist.")
 //            appendToTextEditor(text: "No files found.")
         }
     }
@@ -484,8 +484,8 @@ import CryptoKit
                                     // Open file and split lines into an array
                                     if let lines = try? String(contentsOf: URL(string: "\(uploadHistFilePath)\(f)")!) {
                                         uploadHistoryFileList.append(contentsOf: lines.components(separatedBy: "\n"))
-                                        print("Upload History array:")
-                                        print(uploadHistoryFileList)
+//                                        print("Upload History array:")
+//                                        print(uploadHistoryFileList)
                                         
                                     }
                                 }
