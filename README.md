@@ -1,9 +1,11 @@
 # FERN
-FERN (Field Expedition Routing and Navigation) is an application designed to solve the Traveling Salesman problem for field data scientists. The Application has two major components: The iPad iOS 16.1 application itself and a PostgreSQL database backend on a Linux server with Apache and PHP. The database and the PHP files can be viewed at https://github.com/exnehilo7/fielddata-lite.
+FERN (Field Expedition Routing and Navigation) is an application designed to solve the Traveling Salesman problem for field data scientists. The Application has two major components: The application itself and a PostgreSQL database backend on a Linux server with Apache and PHP. The database and the PHP files can be viewed at https://github.com/exnehilo7/fielddata-lite.
 
-Apple Map performance declines if there are more than 100 displayed annotations. Later versions of the application will hopefully use clustering to allow for more annotations. Until then, the number of items in a saved route or area and plot searches are limited.
+Apple Map performance declines if there are more than 100 displayed annotations. Later versions of the application will hopefully use clustering to allow for more annotations. Until then, the number of items in a saved route are limited.
 
-This application was initially built for a school project. The app can use a device's default GPS or an Arrow Gold GPS. Other 3rd party GPS can be used with an appropriate library.
+The app can use a device's default GPS or an Arrow Gold GPS. Other 3rd party GPS can be used with an appropriate library.
+
+Note: This application was initially built for a school project. From start to present, many features have been added and many have been removed. A smooth and polished user experience has a ways to go.
 
 
 ## iOS App and XCode Behaviors
