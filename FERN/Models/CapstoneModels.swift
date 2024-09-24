@@ -8,11 +8,6 @@
 import Foundation
 
 
-// Model object for SelectAreaView.
-class SelectNameModel: Codable, Identifiable {
-    var name = ""
-}
-
 // Model for SelectNoteView
 struct SelectNoteModel: Codable, Identifiable, Hashable {
     var id = ""

@@ -215,9 +215,9 @@ import CryptoKit
          await getUploadHistories()
          // Make list of trip files
          for trip in sdTrips {
-             await getLocalFilePaths(tripName: trip.name, folderName: "metadata")
-             await getLocalFilePaths(tripName: trip.name, folderName: "scores")
-             await getLocalFilePaths(tripName: trip.name, folderName: "images")
+             await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "metadata")
+             await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "scores")
+             await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "images")
          }
          // See if a file doesn't exist in Upload History
          if await anyFilesToUpload() {
@@ -231,7 +231,7 @@ import CryptoKit
          }
      }
     
-    func getLocalFilePaths(tripName: String, folderName: String) async {
+    func getLocalFilePathsForTripOnDevice(tripName: String, folderName: String) async {
         
         var rootDir: URL? {
             guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
@@ -302,13 +302,13 @@ import CryptoKit
             print("--- Processing \(trip.name)'s files. ---")
             appendToTextEditor(text: "--- Processing \(trip.name)'s files. ---")
             await resetVars()
-            await getLocalFilePaths(tripName: trip.name, folderName: "metadata")
+            await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "metadata")
             await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "metadata", tripIsComplete: trip.isComplete)
             await resetVars()
-            await getLocalFilePaths(tripName: trip.name, folderName: "scores")
+            await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "scores")
             await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "scores", tripIsComplete: trip.isComplete)
             await resetVars()
-            await getLocalFilePaths(tripName: trip.name, folderName: "images")
+            await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "images")
             await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "images", tripIsComplete: trip.isComplete)
             print("--- \(trip.name) files complete. ---")
             appendToTextEditor(text: "--- \(trip.name) files complete. ---\n")

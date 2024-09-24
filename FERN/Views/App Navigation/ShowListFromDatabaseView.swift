@@ -23,6 +23,7 @@ struct ShowListFromDatabaseView: View {
     var mapQuery: String
     var tripType: String
     var measurements: MeasurementsClass
+    var offlineModeModel: OfflineModeModel
 
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
@@ -33,17 +34,19 @@ struct ShowListFromDatabaseView: View {
         VStack {
             HStack{
                 Spacer()
-                Button ("Refresh"){
-                    Task {
-                        await getListItems()
-                    }
-                }.padding(.trailing, 25)
+                if !offlineModeModel.offlineModeIsOn {
+                    Button ("Refresh"){
+                        Task {
+                            await getListItems()
+                        }
+                    }.padding(.trailing, 25)
+                }
             }
             NavigationStack {
                 List (self.list) { (item) in
                     NavigationLink(item.name) {                        
                         // Pass var to view. Query for route does not need a column or organism name.
-                        MapView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, tripOrRouteName: item.name, columnName: columnName, organismName: organismName, queryName: mapQuery, measurements: measurements)
+                        MapView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, tripOrRouteName: item.name, columnName: columnName, organismName: organismName, queryName: mapQuery, measurements: measurements, offlineModeModel: offlineModeModel)
                             .navigationTitle(item.name).font(.subheadline)
                     }
                 }
@@ -72,13 +75,36 @@ struct ShowListFromDatabaseView: View {
     }
     
     private func getListOfTravelingSalesmanRoutes() async {
-        
-        self.list = await menuListBridgingCoordinator.menuListController.getTripListFromDatabase(settings: settings, nameList: list, phpFile: "menuLoadSavedRouteView.php", isMethodPost: false)
+        // If mode is offline
+        if offlineModeModel.offlineModeIsOn {
+            await getRoutesFromCache()
+        } else {
+            self.list = await menuListBridgingCoordinator.menuListController.getTripListFromDatabase(settings: settings, nameList: list, phpFile: "menuLoadSavedRouteView.php", isMethodPost: false)
+        }
     }
     
     private func getListOfTripsInDatabase() async {
         
         self.list = await menuListBridgingCoordinator.menuListController.getTripListFromDatabase(settings: settings, nameList: list, phpFile: "menusAndReports.php", isMethodPost: true, postString: "_query_name=trips_in_db_view&_trip_type=\(self.tripType)")
+    }
+    
+    private func getRoutesFromCache() async {
+        do {
+            let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            let path = dir.appendingPathComponent("\(DeviceUUID().deviceUUID)/cache/routing_menu.txt")
+            // Assuming there'll be one word per line:
+            let string = try String(contentsOf: path, encoding: .utf8)
+            let wordArray = string.components(separatedBy: CharacterSet.newlines)
+            for (i, word) in wordArray.enumerated() {
+                let trimmedString = word.trimmingCharacters(in: .whitespaces)
+                if trimmedString.count > 0 { // Skip \n-only lines
+                    self.list.append(SelectNameModel())
+                    self.list[i].name = trimmedString
+                }
+            }
+        } catch {
+            print("Error decoding data: \(error)")
+        }
     }
     
 }
