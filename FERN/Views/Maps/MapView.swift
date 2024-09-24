@@ -33,6 +33,7 @@ struct MapView: View {
     var organismName: String
     var queryName: String
     @Bindable var measurements: MeasurementsClass
+    var offlineModeModel: OfflineModeModel
     
     // scoring
     @State private var isScoringActive = false
@@ -350,8 +351,61 @@ struct MapView: View {
     } //end body view
     
     private func getMapPoints() async {
-        await map.getMapPointsFromDatabase(settings: settings, phpFile: "getMapItemsForApp.php", postString: "_column_name=\(columnName)&_column_value=\(tripOrRouteName)&_org_name=\(organismName)&_query_name=\(queryName)")
+        // If mode is offline
+        if offlineModeModel.offlineModeIsOn {
+            do {
+                // Get JSON file
+                let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                let fileURL = documentsDirectory.appendingPathComponent("\(DeviceUUID().deviceUUID)/cache/\(tripOrRouteName).json")
+                let jsonData = try Data(contentsOf: fileURL)
+                let jsonDecoder = JSONDecoder()
+                var mapResults = try jsonDecoder.decode([TempMapPointModel].self, from: jsonData)
+                
+                // Need to combine dup code into another funciton(?) (see MapClass.getMapPointsFromDatabase:
+                for result in mapResults {
+                    map.annotationItems.append(MapAnnotationItem(
+                        latitude: Double(result.lat) ?? 0,
+                        longitude: Double(result.long) ?? 0,
+                        routeID: result.routeID,
+                        pointOrder: result.pointOrder,
+                        organismName: result.organismName,
+                        systemName: "xmark.diamond.fill",
+                        highlightColor: Color (
+                            red: Double(result.r) ?? 0,
+                            green: Double(result.g) ?? 0,
+                            blue: Double(result.b) ?? 0
+                        )
+                    ))
+                }
+                // Will need to count items & assign to map class
+                map.totalAnnoItems = (mapResults.count - 1) // adjust for array 0-indexing
+                
+                // Set staring regoin to the first point in the list
+                // For 17.0's new MapKit SDK:
+                map.cameraPosition = MapCameraPosition.region(
+                    MKCoordinateRegion(
+                        center: CLLocationCoordinate2D(latitude: Double(mapResults[0].lat) ?? 0, longitude: Double(mapResults[0].long) ?? 0),
+                        span: MKCoordinateSpan(latitudeDelta: 0.015, longitudeDelta: 0.015)
+                ))
+        
+                // Toggle on next and previous arrows
+                if map.hasMapPointsResults == false {
+                    map.hasMapPointsResults.toggle()
+                }
+                
+                // Release memory?
+                mapResults = [TempMapPointModel]()
+            } catch {
+                print("Error decoding data: \(error)")
+            }
+
+        } else {
+            // Else
+            await map.getMapPointsFromDatabase(settings: settings, phpFile: "getMapItemsForApp.php", postString: "_column_name=\(columnName)&_column_value=\(tripOrRouteName)&_org_name=\(organismName)&_query_name=\(queryName)")
+        }
     }
+    
+    
     
     private func refreshMapPoints() async {
         await map.refreshMap(settings: settings, phpFile: "getMapItemsForApp.php", postString: "_column_name=\(columnName)&_column_value=\(tripOrRouteName)&_org_name=\(organismName)&_query_name=\(queryName)")

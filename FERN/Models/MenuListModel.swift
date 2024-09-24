@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+// Model object for Navigation Stack views.
+class SelectNameModel: Codable, Identifiable {
+    var name = ""
+}
+
 // ViewController which contains functions that need to be called from SwiftUI
 class MenuListController: UIViewController {
     

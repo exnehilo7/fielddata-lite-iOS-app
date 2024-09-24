@@ -139,7 +139,7 @@ class MapPointSize {
                                 span: MKCoordinateSpan(latitudeDelta: 0.015, longitudeDelta: 0.015)
                         ))
                         
-                        // Toggle next and previous arrows(What was this originally for?)
+                        // Toggle on next and previous arrows
                         if hasMapPointsResults == false {
                             hasMapPointsResults.toggle()
                         }

@@ -58,6 +58,16 @@ struct SettingsView: View {
                         Text("GPS Settings")
                     }
                 }
+                // Offline Mode
+//                NavigationLink {
+//                    SettingsOfflineModeView(setting: settings[0])
+//                        .navigationTitle("Offline Mode")
+//                } label: {
+//                    HStack {
+//                        Image(systemName: "antenna.radiowaves.left.and.right.slash").bold(false).foregroundColor(.gray)
+//                        Text("Offline Mode")
+//                    }
+//                }
             }
         }
     }
