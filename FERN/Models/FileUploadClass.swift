@@ -23,6 +23,7 @@ import CryptoKit
     var consoleText = ""
     var showUploadButton = false
     var showPopover = false
+    var tripsSubfolders: [String] = [] // Trip and route names within the trips folder
     var fileList: [String] = []
     var uploadHistoryFileList: [String] = []
     var parameters: [String:String]?
@@ -206,30 +207,33 @@ import CryptoKit
         return complete
     }
     
-    // ASYNC TESTING ---------------------------------------------------------------------------------------------
+    // ASYNC FUNCTIONS ---------------------------------------------------------------------------------------------
     func checkForUploads(sdTrips: [SDTrip], uploadURL: String) async {
-         await resetVars()
+        await resetVars()
         await resetConsoleText()
-         // Get upload history
-         await clearUploadHistoryList()
-         await getUploadHistories()
-         // Make list of trip files
-         for trip in sdTrips {
-             await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "metadata")
-             await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "scores")
-             await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "images")
-         }
-         // See if a file doesn't exist in Upload History
-         if await anyFilesToUpload() {
+        // Get upload history
+        await clearUploadHistoryList()
+        await getUploadHistories()
+        
+        // Make list of ALL trip and route files
+        await getTripAndRouteNames()
+        for subfolder in tripsSubfolders {
+            await getLocalFilePathsForTripOnDevice(tripName: subfolder, folderName: "metadata")
+            await getLocalFilePathsForTripOnDevice(tripName: subfolder, folderName: "scoring")
+            await getLocalFilePathsForTripOnDevice(tripName: subfolder, folderName: "images")
+        }
+        
+        // See if a file doesn't exist in Upload History
+        if await anyFilesToUpload() {
             print("There are files to upload!")
-             appendToTextEditor(text: "There are files to upload!")
-             // Check network connections
-             await isNetworkGood(sdTrips: sdTrips, uploadURL: uploadURL)
-         } else {
-             print("No new files to upload")
+            appendToTextEditor(text: "There are files to upload!")
+            // Check network connections
+            await isNetworkGood(sdTrips: sdTrips, uploadURL: uploadURL)
+        } else {
+            print("No new files to upload")
             appendToTextEditor(text: "No new files to upload.")
-         }
-     }
+        }
+    }
     
     func getLocalFilePathsForTripOnDevice(tripName: String, folderName: String) async {
         
@@ -238,7 +242,9 @@ import CryptoKit
             return documentsDirectory
         }
         
-        // Get device ID and make path
+        // Get device ID and make path for all trips and routes
+        // Get all trip and route subfolder names
+        
         tripFolderPath = "\(DeviceUUID().deviceUUID)/trips/\(tripName)/\(folderName)"
         localFilePath = (rootDir?.appendingPathComponent(tripFolderPath))!
         
@@ -297,36 +303,92 @@ import CryptoKit
     }
     
     func loopThroughTripsAndUpload(sdTrips: [SDTrip], uploadURL: String) async {
-        // Loop through trips and upload any new/missed files
-        for trip in sdTrips {
-            print("--- Processing \(trip.name)'s files. ---")
-            appendToTextEditor(text: "--- Processing \(trip.name)'s files. ---")
-            await resetVars()
-            await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "metadata")
-            await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "metadata", tripIsComplete: trip.isComplete)
-            await resetVars()
-            await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "scores")
-            await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "scores", tripIsComplete: trip.isComplete)
-            await resetVars()
-            await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "images")
-            await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "images", tripIsComplete: trip.isComplete)
-            print("--- \(trip.name) files complete. ---")
-            appendToTextEditor(text: "--- \(trip.name) files complete. ---\n")
+        var itemIsTrip = false
+        
+        // Loop through trips and upload any new/missed files. If the subfolder name under the trips folder is in sdTrips, upload CSVs. Proceed with image files if trip is complete. Upload images and CSVs for a route.
+        for subfolder in tripsSubfolders {
+            print("--- Processing \(subfolder)'s files ---")
+            appendToTextEditor(text: "--- Processing \(subfolder)'s files ---")
+            
+            // Is name in sdTrips?
+            for trip in sdTrips {
+                if trip.name == subfolder {
+                    print("  \(subfolder) is a TRIP")
+                    appendToTextEditor(text: "  \(subfolder) is a TRIP")
+                    itemIsTrip = true
+                    // Upload scoring and metadata
+
+                    await resetVars()
+                    await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "metadata")
+                    await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "metadata",  writeToUploadHistory: false)
+                    await resetVars()
+                    await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "scoring")
+                    await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "scoring", writeToUploadHistory: false)
+                    // If complete, ulpload images
+                    if trip.isComplete {
+                        print("  Trip is marked as complete!")
+                        appendToTextEditor(text: "  Trip is marked as complete!")
+                        
+                        await resetVars()
+                        await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "images")
+                        await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "images", writeToUploadHistory: true)
+                    }
+                    else {
+                        print("  Trip is not marked as complete, skipping image files...")
+                        appendToTextEditor(text: "  Trip is not marked as complete, skipping image files...")
+                    }
+                }
+            }
+            
+            // Processes as route if subfolder name not a trip
+            if !itemIsTrip {
+                print("  \(subfolder) is a ROUTE")
+                appendToTextEditor(text: "  \(subfolder) is a ROUTE")
+                await resetVars()
+                await getLocalFilePathsForTripOnDevice(tripName: subfolder, folderName: "metadata")
+                await uploadAndShowError(tripName: subfolder, uploadURL: uploadURL, folderName: "metadata",  writeToUploadHistory: false)
+                await resetVars()
+                await getLocalFilePathsForTripOnDevice(tripName: subfolder, folderName: "scoring")
+                await uploadAndShowError(tripName: subfolder, uploadURL: uploadURL, folderName: "scoring", writeToUploadHistory: false)
+                await resetVars()
+                await getLocalFilePathsForTripOnDevice(tripName: subfolder, folderName: "images")
+                await uploadAndShowError(tripName: subfolder, uploadURL: uploadURL, folderName: "images", writeToUploadHistory: true)
+            }
+            
+            print("\(subfolder) is complete.")
+            appendToTextEditor(text: "\(subfolder) is complete.")
+            
+            // Time for next subfolder name
+            itemIsTrip = false
+            
         }
-        print("🔵 Trips loop complete.")
-        appendToTextEditor(text: "🔵 Trips loop complete.")
+        print("🔵 Upload process finsihed.")
+        appendToTextEditor(text: "🔵 Upload process finsihed.")
+    }
+    
+    func printProcessingFileType(fileType: String) {
+        print("  Processing \(fileType) files...")
+        appendToTextEditor(text: "  Processing \(fileType) files...")
     }
     
     // This function runs on the main thread
-    func uploadAndShowError(tripName: String, uploadURL: String, folderName: String, tripIsComplete: Bool) async {
-        // No files in list, don't do
-        if fileList.count == 0 {return}
+    func uploadAndShowError(tripName: String, uploadURL: String, folderName: String, writeToUploadHistory: Bool) async {
+        
+        // If no files in list, don't do
+        if fileList.count == 0 {
+            print("  No \(folderName) files found, skipping...")
+            appendToTextEditor(text: "  No \(folderName) files found, skipping...")
+            return
+        }
+        
+        printProcessingFileType(fileType: folderName)
+        
         // Create file for upload history, if not exists
         do {
             _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripName, fileNameUUID: "", fileName: "")
             do {
                 // The function is suspended here, but the main thread is not blocked.
-                try await uploadAsync(tripName: tripName, fileList: fileList, uploadURL: uploadURL, folderName: folderName, tripIsComplete: tripIsComplete)
+                try await uploadAsync(tripName: tripName, fileList: fileList, uploadURL: uploadURL, folderName: folderName, writeToUploadHistory: writeToUploadHistory)
             } catch {
                 // Show error if occurred, this will run on the main thread
                 print("error occurred: \(error.localizedDescription)")
@@ -337,7 +399,7 @@ import CryptoKit
     }
     
     // This function asynchronously uploads data for all passed URLs.
-    func uploadAsync(tripName: String, fileList: [String], uploadURL: String, folderName: String, tripIsComplete: Bool) async throws {
+    func uploadAsync(tripName: String, fileList: [String], uploadURL: String, folderName: String, writeToUploadHistory: Bool) async throws {
         isLoading = true
         currentTripUploading = tripName
         let session = URLSession(configuration: .default)
@@ -345,16 +407,16 @@ import CryptoKit
         /*  If a trip is NOT complete, do not add CSVs to a Upload History file. (Keep uploading/reuploading (Also handled in the PHP script)). If a trip is complete, add CSV files to Upload History.
             Always upload new pics and write to Upload History.
             */
-        var writeToUploadHistory = false
-        if tripIsComplete || folderName == "images" {
-            writeToUploadHistory = true
-        }
+//        var writeToUploadHistory = true
+//        if tripIsComplete || folderName == "images" {
+//            writeToUploadHistory = true
+//        }
         
         
         for item in fileList {
             if !uploadHistoryFileList.contains(item) {
-                print("Uploading \(item)...")
-                appendToTextEditor(text: "Uploading \(item)...")
+                print("  Uploading \(item)...")
+                appendToTextEditor(text: "  Uploading \(item)...")
 
                 let boundary = "Boundary-\(NSUUID().uuidString)"
                 
@@ -411,42 +473,45 @@ import CryptoKit
                                 if writeToUploadHistory {
                                     do {
                                         _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripName, fileNameUUID: "No uuid", fileName: item)
-                                    } catch { print ("Error writing to upload history after a sucessful save to server.")}
+                                    } catch {
+                                        print ("  🔴 Error writing to upload history after a sucessful save to server.")
+                                        appendToTextEditor(text: "  🔴 Error writing to upload history after a sucessful save to server.")
+                                    }
                                 }
                                 
-                                print("🟢 \(item) is uploaded!")
-                                appendToTextEditor(text: "🟢 \(item) is uploaded!")
+                                print("  🟢 \(item) is uploaded!")
+                                appendToTextEditor(text: "  🟢 \(item) is uploaded!")
                                 self.totalUploaded += 1
                             }
                             
                             // Checksum failed?
                             else if (responseString ?? "No response string").contains("Hashes do not match!") {
-                                print("🔴 Hashes do not match for \(item)!")
-                                appendToTextEditor(text: "🔴 Hashes do not match for \(item)!")
+                                print("  🔴 Hashes do not match for \(item)!")
+                                appendToTextEditor(text: "  🔴 Hashes do not match for \(item)!")
                             } else if (responseString ?? "No response string").contains("file exists!") {
-                                print("🟡 File already exists.")
+                                print("  🟡 File already exists.")
                                 self.totalUploaded += 1
-                                appendToTextEditor(text: "🟡 File already exists.")
+                                appendToTextEditor(text: "  🟡 File already exists.")
                             } else {
-                                print(responseString ?? "Response string does not contain 'successfully!' or 'Hashes do not match!' or 'file exists!'")
-                                appendToTextEditor(text: (responseString ?? "Response string does not contain text for a successful save, matching hash, or an existing file.") as String)
+                                print(responseString ?? "  Response string does not contain 'successfully!' or 'Hashes do not match!' or 'file exists!'")
+                                appendToTextEditor(text: (responseString ?? "  Response string does not contain text for a successful save, matching hash, or an existing file.") as String)
                             }
                             
                         } else {
-                            print("🟡 Status code: \(statusCode)")
-                            appendToTextEditor(text: "🟡 Status code: \(statusCode)")
+                            print("  🟡 Status code: \(statusCode)")
+                            appendToTextEditor(text: "  🟡 Status code: \(statusCode)")
                         }
                 } catch {
                     print(error)
-                    appendToTextEditor(text: "\(error)")
+                    appendToTextEditor(text: "  \(error)")
                 }
             } else { 
                 self.totalUploaded += 1
-                print("🟠 Filename exists in upload history.")
+                print("  🟠 Filename exists in upload history.")
             }
         }
-        print("  \(tripName) \(folderName) processed.")
-        appendToTextEditor(text: "  \(tripName) \(folderName) processed.")
+        print("  \(folderName.capitalized) process complete.")
+        appendToTextEditor(text: "  \(folderName.capitalized) process complete.")
         isLoading = false
     }
     
@@ -499,5 +564,31 @@ import CryptoKit
         } catch {
             // folder error
         }
+    }
+    
+    func getTripAndRouteNames() async {
+        
+        tripsSubfolders = []
+        
+        // Run through local folders and make a list of trip and route folder names.
+        let fm = FileManager.default
+        
+        var rootDir: URL? {
+            guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
+            return documentsDirectory
+        }
+    
+        // Get device ID and make path
+        let appRootPath = "\(DeviceUUID().deviceUUID)/trips"
+        localFilePath = (rootDir?.appendingPathComponent(appRootPath))!
+
+        // Loop through trips
+        do {
+            let tripPaths = try fm.contentsOfDirectory(atPath: localFilePath!.path)
+            
+            for trip in tripPaths {
+                tripsSubfolders.append(trip)
+            }
+        } catch {}
     }
 }
