@@ -305,7 +305,8 @@ import CryptoKit
     func loopThroughTripsAndUpload(sdTrips: [SDTrip], uploadURL: String) async {
         var itemIsTrip = false
         
-        // Loop through trips and upload any new/missed files. If the subfolder name under the trips folder is in sdTrips, upload CSVs. Proceed with image files if trip is complete. Upload images and CSVs for a route.
+        /* Loop through trips and upload any new/missed files. If the subfolder name under the trips folder is in sdTrips, keep uploading its CSVs and skip the images until the trip is marked as complete. Once complete, write to the history file to prevent future uploads.
+          For a route, always upload its CSVs until it's decided how to handle "completed" route data acquisition. */
         for subfolder in tripsSubfolders {
             print("--- Processing \(subfolder)'s files ---")
             appendToTextEditor(text: "--- Processing \(subfolder)'s files ---")
@@ -316,24 +317,31 @@ import CryptoKit
                     print("  \(subfolder) is a TRIP")
                     appendToTextEditor(text: "  \(subfolder) is a TRIP")
                     itemIsTrip = true
-                    // Upload scoring and metadata
-
-                    await resetVars()
-                    await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "metadata")
-                    await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "metadata",  writeToUploadHistory: false)
-                    await resetVars()
-                    await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "scoring")
-                    await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "scoring", writeToUploadHistory: false)
-                    // If complete, ulpload images
+                    
+                    // If complete, ulpload all file types
                     if trip.isComplete {
                         print("  Trip is marked as complete!")
                         appendToTextEditor(text: "  Trip is marked as complete!")
                         
                         await resetVars()
+                        await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "metadata")
+                        await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "metadata",  writeToUploadHistory: true)
+                        await resetVars()
+                        await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "scoring")
+                        await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "scoring", writeToUploadHistory: true)
+                        await resetVars()
                         await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "images")
                         await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "images", writeToUploadHistory: true)
                     }
                     else {
+                        // Upload scoring and metadata
+                        await resetVars()
+                        await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "metadata")
+                        await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "metadata",  writeToUploadHistory: false)
+                        await resetVars()
+                        await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "scoring")
+                        await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "scoring", writeToUploadHistory: false)
+                        // No image files
                         print("  Trip is not marked as complete, skipping image files...")
                         appendToTextEditor(text: "  Trip is not marked as complete, skipping image files...")
                     }
