@@ -5,7 +5,7 @@ Apple Map performance declines if there are more than 100 displayed annotations.
 
 The app can use a device's default GPS or an Arrow Gold GPS. Other 3rd party GPS can be used with an appropriate library.
 
-Note: This application was initially built for a school project. From start to present, many features have been added and many have been removed. A smooth and polished user experience has a ways to go.
+Note: This application was initially built for a school project. From start to present, many features have been added and many have been removed. A smooth and polished user experience has a ways to go. Also, be aware when uploading data. The app currently does not have Inactive, Background, and Suspended life-cycle events. 
 
 
 ## iOS App and XCode Behaviors
