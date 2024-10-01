@@ -188,6 +188,15 @@ struct MainMenuView: View {
         }
     // ---------------------------------------------------------------------------------------------------------------
         
+        // Try button to "refresh" nmea connection when GPS signal is lost in an area under a lot of trees
+        Button {
+            Task.detached {
+                await restartArrow()
+            }
+        } label: {
+            Text("Reset Arrow Feed")
+        }.buttonStyle(.borderedProminent).tint(.orange)
+        
         
         // Get the bridging connectors going in the parent view
         HStack {
@@ -237,6 +246,10 @@ struct MainMenuView: View {
     
     private func startGPS() {
         gps.startGPSFeed(settings: settings)
+    }
+    
+    private func restartArrow() async {
+        await gps.restartArrow(settings: settings)
     }
     
     // TEMP ---------------------------------------------------------------------------------------------------------

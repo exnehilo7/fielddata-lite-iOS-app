@@ -17,7 +17,7 @@ import SwiftData
     func startGPSFeed(settings: [Settings]) {
         if settings[0].useBluetoothDevice {
             // Check NMEA stream? In not running, then start NMEA
-            if nmea == nil {
+            if nmea == nil { // Try button to "refresh" nmea connection when GPS signal is lost in an area under a lot of trees
                 nmea = NMEA()
                 nmea!.startNMEA()
             }
@@ -42,7 +42,8 @@ import SwiftData
             // Check NMEA stream
             if nmea != nil {
                 print("Stopping NMEA")
-                setNmeaVarToNil()
+                nmea?.endStreaming()
+                nmea = nil
             }
         } else {
             // If default GPS is not active
@@ -55,8 +56,15 @@ import SwiftData
         UIDevice.current.isBatteryMonitoringEnabled = false
     }
     
-    func setNmeaVarToNil(){
-        nmea = nil
+    func restartArrow(settings: [Settings]) async {
+        if nmea != nil {
+            print("Restarting NMEA")
+//            nmea?.endStreaming()
+            nmea = NMEA()
+            nmea!.startNMEA()
+        } else {
+            print("nmea variable in GPSClass is already nil")
+        }
     }
     
 }

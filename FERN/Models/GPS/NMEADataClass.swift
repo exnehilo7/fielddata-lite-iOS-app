@@ -70,6 +70,7 @@ import ExternalAccessory
         
         // Fire off Parser, CoreLocation registration, and create the ComThread. To init only once, the original code was wrapped in a dispatch_once.
         lazy var initOnce: Void = {
+            hasNMEAStreamStopped = false
             initNMEAParser()
             registerCoreLocation()
             createComThread()
@@ -320,10 +321,19 @@ import ExternalAccessory
         // [O] kill stream
         self.accessorySession?.inputStream?.close()
         self.accessorySession?.inputStream?.remove(from: .current, forMode: .default)
+        
+        // Can accessorySession be reset/cleared?
+//        self.accessorySession = nil
+//        accessorySession = EASession()
 
         // [O] exit thread (Code was commented out in the original)
         //NSMutableDictionary *threadDict = [[NSThread currentThread] threadDictionary];
         //[threadDict setValue:[NSNumber numberWithBool:TRUE] forKey:@"ThreadShouldExitNow"];
+        
+        // kill com thread and run loop?
+//        self.comThread?.cancel()
+//        self.runLoop = nil
+        
     }
     // end Com thread
     

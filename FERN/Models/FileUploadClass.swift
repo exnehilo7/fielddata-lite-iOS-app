@@ -370,8 +370,8 @@ import CryptoKit
             itemIsTrip = false
             
         }
-        print("🔵 Upload process finsihed.")
-        appendToTextEditor(text: "🔵 Upload process finsihed.")
+        print("🔵 Upload process finished.")
+        appendToTextEditor(text: "🔵 Upload process finished.")
     }
     
     func printProcessingFileType(fileType: String) {
