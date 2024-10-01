@@ -66,7 +66,7 @@ struct MainMenuView: View {
                         } label: {
                             HStack {
                                 Image(systemName: "mappin.and.ellipse").bold(false).foregroundColor(.gray)
-                                Text("View New Trip")
+                                Text("View Captured Points")
                             }
                         }
                         // Select a saved route
