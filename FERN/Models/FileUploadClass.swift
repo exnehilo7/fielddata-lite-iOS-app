@@ -396,7 +396,7 @@ import CryptoKit
             _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripName, fileNameUUID: "", fileName: "")
             do {
                 // The function is suspended here, but the main thread is not blocked.
-                try await uploadAsync(tripName: tripName, fileList: fileList, uploadURL: uploadURL, folderName: folderName, writeToUploadHistory: writeToUploadHistory)
+                try await uploadAsync(tripName: tripName, fileList: fileList, uploadURL: uploadURL, folderName: folderName, writeToHistory: writeToUploadHistory)
             } catch {
                 // Show error if occurred, this will run on the main thread
                 print("error occurred: \(error.localizedDescription)")
@@ -407,7 +407,7 @@ import CryptoKit
     }
     
     // This function asynchronously uploads data for all passed URLs.
-    func uploadAsync(tripName: String, fileList: [String], uploadURL: String, folderName: String, writeToUploadHistory: Bool) async throws {
+    func uploadAsync(tripName: String, fileList: [String], uploadURL: String, folderName: String, writeToHistory: Bool) async throws {
         isLoading = true
         currentTripUploading = tripName
         let session = URLSession(configuration: .default)
@@ -478,13 +478,8 @@ import CryptoKit
                             // Is success?
                             if (responseString ?? "No response string").contains("successfully!") {
                                 // Write file name to upload history file.
-                                if writeToUploadHistory {
-                                    do {
-                                        _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripName, fileNameUUID: "No uuid", fileName: item)
-                                    } catch {
-                                        print ("  🔴 Error writing to upload history after a sucessful save to server.")
-                                        appendToTextEditor(text: "  🔴 Error writing to upload history after a sucessful save to server.")
-                                    }
+                                if writeToHistory {
+                                    await writeToUploadHistory(tripOrRouteName: tripName, fileNameUUID: "No uuid", fileName: item)
                                 }
                                 
                                 print("  🟢 \(item) is uploaded!")
@@ -496,10 +491,14 @@ import CryptoKit
                             else if (responseString ?? "No response string").contains("Hashes do not match!") {
                                 print("  🔴 Hashes do not match for \(item)!")
                                 appendToTextEditor(text: "  🔴 Hashes do not match for \(item)!")
+                            // File exists?
                             } else if (responseString ?? "No response string").contains("file exists!") {
+                                // To circumvent a bug where a file is written to the server but its name fails to write to the local history file, write to local history if exists:
+                                await writeToUploadHistory(tripOrRouteName: tripName, fileNameUUID: "No uuid", fileName: item)
                                 print("  🟡 File already exists.")
                                 self.totalUploaded += 1
                                 appendToTextEditor(text: "  🟡 File already exists.")
+                                
                             } else {
                                 print(responseString ?? "  Response string does not contain 'successfully!' or 'Hashes do not match!' or 'file exists!'")
                                 appendToTextEditor(text: (responseString ?? "  Response string does not contain text for a successful save, matching hash, or an existing file.") as String)
@@ -521,6 +520,15 @@ import CryptoKit
         print("  \(folderName.capitalized) process complete.")
         appendToTextEditor(text: "  \(folderName.capitalized) process complete.")
         isLoading = false
+    }
+    
+    func writeToUploadHistory(tripOrRouteName: String, fileNameUUID: String, fileName: String) async {
+        do {
+            _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripOrRouteName, fileNameUUID: fileNameUUID, fileName: fileName)
+        } catch {
+            print ("  🔴 Error writing to upload history after a sucessful save to server.")
+            appendToTextEditor(text: "  🔴 Error writing to upload history after a sucessful save to server.")
+        }
     }
     
     func getUploadHistories() async {
