@@ -14,6 +14,7 @@ struct FERNApp: App {
     
     // Send multiple model configurations into a single model container
     var container: ModelContainer
+    @Environment(\.scenePhase) private var scenePhase // to see the app's phases
 
     init() {
         do {
@@ -28,7 +29,8 @@ struct FERNApp: App {
         WindowGroup {
             NavigationStack {
                 StartScreenView()
-           }
+            }
         }.modelContainer(container)
+            .onChange(of: scenePhase) {phase in print(phase)}
     }
 }

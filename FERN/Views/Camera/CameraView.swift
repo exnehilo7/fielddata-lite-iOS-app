@@ -245,6 +245,42 @@ struct CameraView: View {
         })
     }
     
+    // Restart Arrow button
+    var restartArrowButton: some View {
+        Button(action: {
+            Task.detached {
+                await gps.restartArrow()
+            }
+        },
+               label: {HStack {
+            Image(systemName: "arrow.circlepath").font(.system(size: 15))
+            Text("Restart Arrow").font(.system(size: 15))
+        }
+               .frame(minWidth: 95, maxWidth: 100, minHeight: 0, maxHeight: 50)
+               .background(Color.green)
+               .foregroundColor(.white)
+               .cornerRadius(10)
+               .padding().padding()
+        })
+    }
+    var startArrowButton: some View {
+        Button(action: {
+            Task.detached {
+                await gps.startGPSFeed(settings: settings)
+            }
+        },
+               label: {HStack {
+            Image(systemName: "arrow.circlepath").font(.system(size: 15))
+            Text("START Arrow").font(.system(size: 15))
+        }
+               .frame(minWidth: 95, maxWidth: 100, minHeight: 0, maxHeight: 50)
+               .background(Color.blue)
+               .foregroundColor(.white)
+               .cornerRadius(10)
+               .padding().padding()
+        })
+    }
+    
     // Swipe down chevron
     var swipeDownChevron: some View {
         Image(systemName: "chevron.compact.down").bold(false).foregroundColor(.white).font(.system(size:32))
@@ -591,7 +627,13 @@ struct CameraView: View {
                     ImagePicker(sourceType: .camera, selectedImage: $camera.image, imageIsSelected: $camera.isImageSelected)
                     // GPS data on sheet
                     if settings[0].useBluetoothDevice {
-                        arrowGpsData
+                        HStack {
+                            arrowGpsData
+                            VStack {
+//                                startArrowButton
+                                restartArrowButton
+                            }
+                        }
                     }
                     else {
                         coreLocationGpsData

@@ -194,8 +194,8 @@ struct MainMenuView: View {
                 await restartArrow()
             }
         } label: {
-            Text("Reset Arrow Feed")
-        }.buttonStyle(.borderedProminent).tint(.orange)
+            Text("Restart Arrow Feed")
+        }.buttonStyle(.borderedProminent).tint(.green)
         
         
         // Get the bridging connectors going in the parent view
@@ -205,6 +205,7 @@ struct MainMenuView: View {
         
         Text("Version: \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Cannot get version #")").font(.footnote)
             .onAppear(perform: {
+                print("Lifecycle Print: MainMenuView version text onAppear. Checking for uploads, starting GPS, resetting camera vars")
                 // Upload any non-uploaded files.
                 if !upload.isLoading {
                     Task.detached {
@@ -245,11 +246,17 @@ struct MainMenuView: View {
     }
     
     private func startGPS() {
+        print("Lifecycle Print: calling gps.startGPSFeed")
         gps.startGPSFeed(settings: settings)
     }
     
+//    private func restartArrow() async {
+//        await gps.restartArrow()
+//    }
+    
     private func restartArrow() async {
-        await gps.restartArrow(settings: settings)
+        print("Lifecycle Print: calling gps.startGPSFeed")
+        gps.startGPSFeed(settings: settings)
     }
     
     // TEMP ---------------------------------------------------------------------------------------------------------
