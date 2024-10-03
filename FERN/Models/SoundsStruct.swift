@@ -30,7 +30,6 @@ public struct playSound {
     
     // Complete sound
     func playSuccess() {
-        
         var complete: SystemSoundID = .zero
         
         if complete == .zero {
@@ -41,7 +40,6 @@ public struct playSound {
     
     //Error alert
     func playError() {
-        
         var complete: SystemSoundID = .zero
         
         if complete == .zero {
@@ -54,7 +52,6 @@ public struct playSound {
 
     // Ding!
     func playDing() {
-        
         var complete: SystemSoundID = .zero
         
         if complete == .zero {
@@ -64,4 +61,65 @@ public struct playSound {
         // Add a vibrate
         AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate, nil)
     }
+    
+    // Active
+    func playActive() {
+        var complete: SystemSoundID = .zero
+        
+        if complete == .zero {
+            complete = createSysSound(fileName: "/System/Library/Audio/UISounds/short_double_high.caf")
+        }
+        AudioServicesPlaySystemSound(complete)
+        // Add a vibrate
+        AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate, nil)
+    }
+    
+    // Inactive
+    func playInactive() {
+        var complete: SystemSoundID = .zero
+        
+        if complete == .zero {
+            complete = createSysSound(fileName: "/System/Library/Audio/UISounds/short_double_low.caf")
+        }
+        AudioServicesPlaySystemSound(complete)
+        // Add a vibrate
+        AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate, nil)
+    }
+    
+    // Background
+    func playBackground() {
+        var complete: SystemSoundID = .zero
+        
+        if complete == .zero {
+            complete = createSysSound(fileName: "/System/Library/Audio/UISounds/nano/vc~ended.caf")
+        }
+        AudioServicesPlaySystemSound(complete)
+        // Add a vibrate
+        AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate, nil)
+    }
+    
+    // Arrow Connection Regained
+    func playArrowConnRegained() {
+        var complete: SystemSoundID = .zero
+        
+        if complete == .zero {
+            complete = createSysSound(fileName: "/System/Library/Audio/UISounds/nano/3rdParty_Success_Haptic.caf") //or PINDelete_AX.caf?
+        }
+        AudioServicesPlaySystemSound(complete)
+        // Add a vibrate
+        AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate, nil)
+    }
+    
+    // Arrow Connection Lost
+    func playArrowConnLost() {
+        var complete: SystemSoundID = .zero
+        
+        if complete == .zero {
+            complete = createSysSound(fileName: "/System/Library/Audio/UISounds/nano/3rdParty_Stop_Haptic.caf")//or SIMToolkitCallDropped.caf?
+        }
+        AudioServicesPlaySystemSound(complete)
+        // Add a vibrate
+        AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate, nil)
+    }
+    
 }
