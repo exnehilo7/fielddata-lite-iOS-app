@@ -60,7 +60,7 @@ import SwiftData
         UIDevice.current.isBatteryMonitoringEnabled = false
     }
     
-    func restartArrow() async {
+    func restartArrow() {
         if nmea != nil {
             print("Lifecycle Print: Restarting NMEA")
 //            Task {
