@@ -629,10 +629,10 @@ struct CameraView: View {
                     if settings[0].useBluetoothDevice {
                         HStack {
                             arrowGpsData
-                            VStack {
+//                            VStack {
 //                                startArrowButton
-                                restartArrowButton
-                            }
+//                                restartArrowButton
+//                            }
                         }
                     }
                     else {

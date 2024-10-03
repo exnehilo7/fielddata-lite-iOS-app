@@ -122,4 +122,39 @@ public struct playSound {
         AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate, nil)
     }
     
+    // endStreaming Called
+    func playArrowEndStreamingCalled() {
+        var complete: SystemSoundID = .zero
+        
+        if complete == .zero {
+            complete = createSysSound(fileName: "/System/Library/Audio/UISounds/nano/ringback_tone_uk.caf")
+        }
+        AudioServicesPlaySystemSound(complete)
+        // Add a vibrate
+        AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate, nil)
+    }
+    
+    // Set Has NMEA Stream Stopped to True
+    func playSetHasNMEAStreamStoppedToTrue() {
+        var complete: SystemSoundID = .zero
+        
+        if complete == .zero {
+            complete = createSysSound(fileName: "/System/Library/Audio/UISounds/SIMToolkitCallDropped.caf")
+        }
+        AudioServicesPlaySystemSound(complete)
+        // Add a vibrate
+        AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate, nil)
+    }
+    
+    // Accessory Session is Nil
+    func playAccessorySessionIsNil() {
+        var complete: SystemSoundID = .zero
+        
+        if complete == .zero {
+            complete = createSysSound(fileName: "/System/Library/Audio/UISounds/nano/Siren_Countdown_Minor_Haptic.caf")
+        }
+        AudioServicesPlaySystemSound(complete)
+        // Add a vibrate
+        AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate, nil)
+    }
 }

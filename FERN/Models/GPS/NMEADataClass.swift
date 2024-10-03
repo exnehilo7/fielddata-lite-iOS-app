@@ -40,6 +40,13 @@ import ExternalAccessory
     // To alert the view if the stream has stopped
     var hasNMEAStreamStopped = false
     
+    // Sounds
+    let audio = playSound()
+    
+    let sharedAccessoryManager = EAAccessoryManager.shared()
+    
+    private var callRestartFunc = false
+    private var tempCounter = 0
     
     // MARK: - Main Function
     // Main(?) function from ViewController @implementation
@@ -51,14 +58,13 @@ import ExternalAccessory
         // [O] register for EA notif
         print("Lifecycle Print: // registering for EA notification")
         print("Lifecycle Print: let sharedAccessoryManager = EAAccessoryManager.shared()")
-        let sharedAccessoryManager = EAAccessoryManager.shared()
+//        let sharedAccessoryManager = EAAccessoryManager.shared()
         print("Lifecycle Print: sharedAccessoryManager.registerForLocalNotifications()")
         sharedAccessoryManager.registerForLocalNotifications()
         
-         // 13-JUN-2024: Class' notification center was never used since the Objective-C translation in May 2023.
-//        let defaultCenter = NotificationCenter()
-//        defaultCenter.addObserver(self, selector: #selector(didConnectNotif), name: NSNotification.Name("EAAccessoryDidConnect"), object: nil)
-//        defaultCenter.addObserver(self, selector: #selector(didDisconnectNotif), name: NSNotification.Name("EAAccessoryDidDisconnect"), object: nil)
+        let defaultCenter = NotificationCenter()
+        defaultCenter.addObserver(self, selector: #selector(didConnectNotif), name: NSNotification.Name("EAAccessoryDidConnect"), object: nil)
+        defaultCenter.addObserver(self, selector: #selector(didDisconnectNotif), name: NSNotification.Name("EAAccessoryDidDisconnect"), object: nil)
         
         // [O] BT button - If you want users to be able to pair to the receivers from inside your apps. Otherwise users can use Settings>bluetooth to initiate the pairing.
         // [Original Objective-C code]
@@ -76,7 +82,7 @@ import ExternalAccessory
         // Fire off Parser, CoreLocation registration, and create the ComThread. To init only once, the original code was wrapped in a dispatch_once.
         print("Lifecycle Print: creating initOnce")
         lazy var initOnce: Void = {
-            hasNMEAStreamStopped = false
+            hasNMEAStreamStopped = false // was added to try a NMEA feed restart by calling startNMEA() again
             initNMEAParser()
             registerCoreLocation()
             createComThread()
@@ -118,6 +124,15 @@ import ExternalAccessory
 //        // [O] Dispose of any resources that can be recreated.
 //    }
 
+    func loopToRestart() {
+        while (callRestartFunc) {
+            if (sharedAccessoryManager.connectedAccessories.count > 0) {
+                print("Restarting...")
+                restartNMEA()
+            }
+        }
+    }
+    
     // Not used in original code?
     func dealloc(sharedAccessoryManager:EAAccessoryManager, defaultCenter:NSNotification) {
         print("Lifecycle Print: dealloc function called")
@@ -134,11 +149,11 @@ import ExternalAccessory
         print("Lifecycle Print: restartNMEA function called")
         
        // [O] register for EA notif
-        print("Lifecycle Print: // registering for EA notification")
-        print("Lifecycle Print: let sharedAccessoryManager = EAAccessoryManager.shared()")
-       let sharedAccessoryManager = EAAccessoryManager.shared()
-        print("Lifecycle Print: sharedAccessoryManager.registerForLocalNotifications()")
-       sharedAccessoryManager.registerForLocalNotifications()
+//        print("Lifecycle Print: // registering for EA notification")
+//        print("Lifecycle Print: let sharedAccessoryManager = EAAccessoryManager.shared()")
+//       let sharedAccessoryManager = EAAccessoryManager.shared()
+//        print("Lifecycle Print: sharedAccessoryManager.registerForLocalNotifications()")
+//       sharedAccessoryManager.registerForLocalNotifications()
        
        // [O] Did we start with an accessory already connected ?
         print("Lifecycle Print: // Did we start with an accessory already connected?")
@@ -204,6 +219,7 @@ import ExternalAccessory
             print("Lifecycle Print: if (accessory?.protocolStrings.count == 0) {")
             if (accessory?.protocolStrings.count == 0) {
                 print("No protocol declared yet")
+                print("Lifecycle Print: }")
                 return
             } else {print("Lifecycle Print: accessory?.protocolStrings.count is not 0")}
             print("Lifecycle Print: }")
@@ -211,6 +227,7 @@ import ExternalAccessory
             print("Lifecycle Print: if (self.accessorySession?.accessory?.connectionID == accessory?.connectionID) {")
             if (self.accessorySession?.accessory?.connectionID == accessory?.connectionID) {
                 print("re entrance")
+                print("Lifecycle Print: }")
                 return
             }
             print("Lifecycle Print: }")
@@ -252,10 +269,17 @@ import ExternalAccessory
             
             print("Lifecycle Print: if (accessorySession == nil) {")
             if (accessorySession == nil) {
+                audio.playAccessorySessionIsNil()
                 print("Error, accessory can't communicate")
+                callRestartFunc = true
+                loopToRestart()
                 // Alert accessory can't communicate
                 // [Original Obj-C code]
-            } else {print("Lifecycle Print: accessorySession is not nil")}
+            } else {print(
+                "Lifecycle Print: accessorySession is not nil")
+                callRestartFunc = false
+                audio.playArrowConnRegained()
+            }
             print("Lifecycle Print: }")
             
             // [O] link stream to the com thread
@@ -349,13 +373,6 @@ import ExternalAccessory
         self.runLoop = RunLoop.current
 //        let runLoop = RunLoop.current  // Original line
         
-        print("""
-        // [O] add exitNow bool in thread dictionnary
-        // Swift-translated code was commented out for class-wide runLoop attempt:
-//        let threadDict:NSMutableDictionary = Thread.current.threadDictionary
-//        threadDict.setValue(exitNow, forKey: "ThreadShouldExitNow") // If the original code commented out this key's call, is this dict necesssary?
-//        threadDict.setObject(runLoop, forKey: kComThreadRunloop! as NSCopying)
-""")
         // [O] add exitNow bool in thread dictionnary
         // Swift-translated code was commented out for class-wide runLoop attempt:
 //        let threadDict:NSMutableDictionary = Thread.current.threadDictionary
@@ -363,7 +380,6 @@ import ExternalAccessory
 //        threadDict.setObject(runLoop, forKey: kComThreadRunloop! as NSCopying)
         
         print("""
-----
         // [O] create a timer which will fire in centuries to keep the runloop until input stream is added
         let myTimer = Timer(fireAt: .distantFuture, interval: 0, target: self, selector: #selector(timerCall), userInfo: nil, repeats: false)
         runLoop!.add(myTimer, forMode: .common)
@@ -386,6 +402,13 @@ import ExternalAccessory
     
     // What calls this function? If declared verbatum like in the apple documentation (minus the 'optional') the func will be auto-called. Per docs: "It is a delegate that recieves this message when a given event has occured in a given stream."
     func stream(_ aStream: Stream, handle eventCode:Stream.Event){
+        
+//        if callRestartFunc {
+//            tempCounter += 1
+//            print(tempCounter)
+//            restartNMEA()
+//        }
+        
         print("stream function has been auto-called. Per Apple docs, when declared verbatum it 'is a delegate that recieves a message when a given event has occured in a given stream.'")
         // Original method signature was: "- (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode {" It is a delegate that recieves the handleEvent message when a given event has occured in a given stream. Swift's handleEvent equiv is stream(_:handle:)
         
@@ -461,8 +484,10 @@ import ExternalAccessory
             case Stream.Event.endEncountered:
                 print("Lifecycle Print: case Stream.Event.endEncountered:")
                 print("endEncountered (NSStreamEventEndEncountered)")
-                print("Lifecycle Print: calling endStreaming()")
-                endStreaming()
+//                print("Lifecycle Print: calling endStreaming()")
+                callRestartFunc = true
+                loopToRestart()
+//                endStreaming()
                 break;
             default:
                 print("Unused event \(eventCode)")
@@ -473,6 +498,9 @@ import ExternalAccessory
     }
     
     func endStreaming(){
+        
+        audio.playArrowEndStreamingCalled()
+        
         print("Lifecycle Print: endStreaming is called")
         
         print("Lifecycle Print: calling setHasNMEAStreamStoppedToTrue()")
@@ -495,9 +523,11 @@ import ExternalAccessory
         //NSMutableDictionary *threadDict = [[NSThread currentThread] threadDictionary];
         //[threadDict setValue:[NSNumber numberWithBool:TRUE] forKey:@"ThreadShouldExitNow"];
         
-        // kill com thread and run loop?
+        // kill com thread?
 //        self.comThread?.cancel()
+        // kill run loop? (How to stop it?)
 //        self.runLoop = nil
+//        runLoop!.remove(<#T##aPort: Port##Port#>, forMode: .common)
         
     }
     // end Com thread
@@ -586,6 +616,9 @@ import ExternalAccessory
     // end NMEA
     
     func setHasNMEAStreamStoppedToTrue(){
+        
+        audio.playSetHasNMEAStreamStoppedToTrue()
+        
         print("Lifecycle Print: setHasNMEAStreamStoppedToTrue is called")
         print("""
         DispatchQueue.main.async { [self] in

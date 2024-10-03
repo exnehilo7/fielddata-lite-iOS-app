@@ -189,13 +189,13 @@ struct MainMenuView: View {
     // ---------------------------------------------------------------------------------------------------------------
         
         // Try button to "refresh" nmea connection when GPS signal is lost in an area under a lot of trees
-        Button {
-            Task.detached {
-                await restartArrow()
-            }
-        } label: {
-            Text("Restart Arrow Feed")
-        }.buttonStyle(.borderedProminent).tint(.green)
+//        Button {
+//            Task.detached {
+//                await restartArrow()
+//            }
+//        } label: {
+//            Text("Restart Arrow Feed")
+//        }.buttonStyle(.borderedProminent).tint(.green)
         
         
         // Get the bridging connectors going in the parent view
@@ -256,7 +256,7 @@ struct MainMenuView: View {
     
     private func restartArrow() async {
         print("Lifecycle Print: calling gps.startGPSFeed")
-        gps.startGPSFeed(settings: settings)
+        gps.restartArrow()
     }
     
     // TEMP ---------------------------------------------------------------------------------------------------------
