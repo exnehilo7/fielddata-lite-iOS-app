@@ -12,7 +12,7 @@ import SwiftUI
     var isShowCamera = false
     var isImageSelected = false
     var image = UIImage()
-    var showingStoppedNMEAAlert = false
+    var showingNoStreamDataAlert = false
     var showingInvalidSyntaxAlert = false
     var showingHDOPOverLimit = false
     var textNotes = ""
@@ -47,45 +47,45 @@ import SwiftUI
             }
     }
     
-    func processImageOLD(useBluetooth: Bool, hasBTStreamStopped: Bool, hdopThreshold: Double, imgFile: UIImage, tripOrRouteName: String, uuid: String, gpsUsed: String, hdop: String = "0.00", longitude: String = "0.00000000", latitude: String = "0.00000000", altitude: String = "0.00", scannedText: String, notes: String) -> Bool {
-        
-        var savePic = false
-        
-        if useBluetooth {
-            // Alert user if feed has stopped or values are zero
-            if hasBTStreamStopped || (hdop == "0.00" || longitude == "0.00000000" || latitude == "0.00000000" || altitude == "0.00")
-            {
-                audio.playError()
-                isImageSelected = false
-                showingStoppedNMEAAlert = true
-                resetSnaphotCords()
-            } else {
-                savePic = true
-            }
-        } else {
-            savePic = true
-        }
-        if savePic {
-            // Save pic to a folder and write metadata to a text file
-            savePicIfUnderThreshold(hdopThreshold: hdopThreshold, imgFile: imgFile, tripOrRouteName: tripOrRouteName, uuid: uuid, gpsUsed: gpsUsed, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude, scannedText: scannedText, notes: notes)
-
-            return true
-        }
-        
-        return false
-    }
+//    func processImageOLD(useBluetooth: Bool, btStreamHasNoData: Bool, hdopThreshold: Double, imgFile: UIImage, tripOrRouteName: String, uuid: String, gpsUsed: String, hdop: String = "0.00", longitude: String = "0.00000000", latitude: String = "0.00000000", altitude: String = "0.00", scannedText: String, notes: String) -> Bool {
+//
+//        var savePic = false
+//        
+//        if useBluetooth {
+//            // Alert user if feed has stopped or values are zero
+//            if btStreamHasNoData || (hdop == "0.00" || longitude == "0.00000000" || latitude == "0.00000000" || altitude == "0.00")
+//            {
+//                audio.playError()
+//                isImageSelected = false
+//                showingNoStreamDataAlert = true
+//                resetSnaphotCords()
+//            } else {
+//                savePic = true
+//            }
+//        } else {
+//            savePic = true
+//        }
+//        if savePic {
+//            // Save pic to a folder and write metadata to a text file
+//            savePicIfUnderThreshold(hdopThreshold: hdopThreshold, imgFile: imgFile, tripOrRouteName: tripOrRouteName, uuid: uuid, gpsUsed: gpsUsed, hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude, scannedText: scannedText, notes: notes)
+//
+//            return true
+//        }
+//        
+//        return false
+//    }
     
-    func processImage(useBluetooth: Bool, hasBTStreamStopped: Bool, hdopThreshold: Double, imgFile: UIImage, tripOrRouteName: String, uuid: String, gpsUsed: String, scannedText: String, notes: String) -> Bool {
+    func processImage(useBluetooth: Bool, btStreamHasNoData: Bool, btEndEventHasNoData: Bool, hdopThreshold: Double, imgFile: UIImage, tripOrRouteName: String, uuid: String, gpsUsed: String, scannedText: String, notes: String) -> Bool {
         
         var savePic = false
         
         if useBluetooth {
             // Alert user if feed has stopped or values are zero
-            if hasBTStreamStopped || (snapshotHorzAccuracy == "0.00" || snapshotLongitude == "0.00000000" || snapshotLatitude == "0.00000000" || snapshotAltitude == "0.00")
+            if btStreamHasNoData || (snapshotHorzAccuracy == "0.00" || snapshotLongitude == "0.00000000" || snapshotLatitude == "0.00000000" || snapshotAltitude == "0.00")
             {
                 audio.playError()
                 isImageSelected = false
-                showingStoppedNMEAAlert = true
+                showingNoStreamDataAlert = true
                 resetSnaphotCords()
             } else {
                 savePic = true
