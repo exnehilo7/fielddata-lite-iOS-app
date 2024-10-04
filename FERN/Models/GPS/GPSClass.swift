@@ -17,17 +17,13 @@ import SwiftData
     func startGPSFeed(settings: [Settings]) {
         if settings[0].useBluetoothDevice {
             // Check NMEA stream? In not running, then start NMEA
-            if nmea == nil { // Try button to "refresh" nmea connection when GPS signal is lost in an area under a lot of trees
-                print("Lifecycle Print: nmea is nil")
+            if nmea == nil {
                 nmea = NMEA()
-                print("Lifecycle Print: calling nmea!.startNMEA()")
                 nmea!.startNMEA()
-            } else {print("Lifecycle Print: nmea is NOT nil")}
+            }
         } else {
-            
             // Check if default GPS is not active? If not then, use default GPS
             if clLocationHelper == nil {
-                print("Lifecycle Print: starting iOS GPS")
                 clLocationHelper = LocationHelper()
             }
         }
@@ -45,41 +41,26 @@ import SwiftData
         if settings[0].useBluetoothDevice {
             // Check NMEA stream
             if nmea != nil {
-                print("Lifecycle Print: Stopping NMEA")
+                print("NMEA endStreaming")
                 nmea?.endStreaming()
                 nmea = nil
             }
         } else {
             // If default GPS is not active
-            print("Lifecycle Print: Stopping standard GPS")
+            print("stopUpdatingDefaultCoreLocation")
             clLocationHelper!.stopUpdatingDefaultCoreLocation()
         }
         
-        // Toggle back device feed
         UIApplication.shared.isIdleTimerDisabled = false
         UIDevice.current.isBatteryMonitoringEnabled = false
     }
     
     func restartArrow() {
         if nmea != nil {
-            print("Lifecycle Print: Restarting NMEA")
-//            Task {
-//                nmea?.endStreaming()
-//            }
-//            nmea = NMEA()
+            print("restartNMEA")
             nmea!.restartNMEA()
         } else {
-            print("Lifecycle Print: nmea variable in GPSClass is already nil")
+            print("No restart, variable in GPSClass is already nil")
         }
     }
-    
-    func startStartArrow() async {
-        if nmea != nil {
-            print("Lifecycle Print: Start-starting NMEA")
-            nmea!.startNMEA()
-        } else {
-            print("Lifecycle Print: nmea variable in GPSClass is already nil")
-        }
-    }
-    
 }

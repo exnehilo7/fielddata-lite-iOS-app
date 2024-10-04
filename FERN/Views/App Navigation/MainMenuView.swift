@@ -39,6 +39,9 @@ struct MainMenuView: View {
     @Query var settings: [Settings]
     @Query var sdTrips: [SDTrip]
     
+    // Sounds
+    let audio = playSound()
+    
     var body: some View {
         if hideUntilDone {
             NavigationStack{
@@ -147,8 +150,21 @@ struct MainMenuView: View {
         }
             
         
-    // TEMP ---------------------------------------------------------------------------------------------------------
+// TEMP ----------------------------------------------------------------------------------------------------------------------
         VStack {
+            // To test sounds:
+//            Button {
+//                audio.playArrowConnSuccess()
+//            } label: {
+//                Text("Arrow Connection Success")
+//            }.buttonStyle(.borderedProminent).tint(.green)
+//            
+//            Button {
+//                audio.playArrowConnLost()
+//            } label: {
+//                Text("Arrow Connection Lost")
+//            }.buttonStyle(.borderedProminent).tint(.green)
+
             if hideUntilDone {
                 Spacer()
                 //            Text("Cache is refreshing!").bold(true).foregroundColor(.yellow)
@@ -186,17 +202,7 @@ struct MainMenuView: View {
                 Spacer()
             }
         }
-    // ---------------------------------------------------------------------------------------------------------------
-        
-        // Try button to "refresh" nmea connection when GPS signal is lost in an area under a lot of trees
-//        Button {
-//            Task.detached {
-//                await restartArrow()
-//            }
-//        } label: {
-//            Text("Restart Arrow Feed")
-//        }.buttonStyle(.borderedProminent).tint(.green)
-        
+// ----------------------------------------------------------------------------------------------------------------------------
         
         // Get the bridging connectors going in the parent view
         HStack {
@@ -205,7 +211,6 @@ struct MainMenuView: View {
         
         Text("Version: \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Cannot get version #")").font(.footnote)
             .onAppear(perform: {
-                print("Lifecycle Print: MainMenuView version text onAppear. Checking for uploads, starting GPS, resetting camera vars")
                 // Upload any non-uploaded files.
                 if !upload.isLoading {
                     Task.detached {
@@ -246,18 +251,9 @@ struct MainMenuView: View {
     }
     
     private func startGPS() {
-        print("Lifecycle Print: calling gps.startGPSFeed")
         gps.startGPSFeed(settings: settings)
     }
     
-//    private func restartArrow() async {
-//        await gps.restartArrow()
-//    }
-    
-    private func restartArrow() async {
-        print("Lifecycle Print: calling gps.startGPSFeed")
-        gps.restartArrow()
-    }
     
     // TEMP ---------------------------------------------------------------------------------------------------------
     private func refreshCache() async -> Bool {
@@ -265,18 +261,6 @@ struct MainMenuView: View {
         guard let dir = DocumentsDirectory.dir else {return false}
         var filePath: URL
         var list: [SelectNameModel] = []
-        
-        // Create cache folder if not exists
-//        let path = dir.appendingPathComponent("\(DeviceUUID().deviceUUID)/cache")
-//        filePath = ProcessTextfile.createPath(path: path, fileName: "")
-        
-        // Delete files in Cache folder
-//        do {
-//            try FileManager.default.removeItem(at: filePath)
-//            print("Successfully deleted files!")
-//        } catch {
-//            print("Error deleting file: \(error)")
-//        }
         
         // Create routing and view trip menu item files
         // cache folder
@@ -334,11 +318,6 @@ struct MainMenuView: View {
     private func writeMapDataToJSONFile(tripOrRouteName: String, columnName: String, organismName: String, queryName: String) async {
         
         var mapResults: [TempMapPointModel] = []
-        
-//        guard let dir = DocumentsDirectory.dir else {return}
-//        var filePath: URL
-//        let path = dir.appendingPathComponent("\(DeviceUUID().deviceUUID)/cache/")
-//        filePath = ProcessTextfile.createPath(path: path, fileName: "\(tripOrRouteName).json")
         
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let fileURL = documentsDirectory.appendingPathComponent("\(DeviceUUID().deviceUUID)/cache/\(tripOrRouteName).json")

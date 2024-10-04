@@ -62,6 +62,18 @@ public struct playSound {
         AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate, nil)
     }
     
+    // TBD Alert
+    func TBDAlert() {
+        var complete: SystemSoundID = .zero
+        
+        if complete == .zero {
+            complete = createSysSound(fileName: "/System/Library/Audio/UISounds/nano/3rdParty_Stop_Haptic.caf")
+        }
+        AudioServicesPlaySystemSound(complete)
+        // Add a vibrate
+        AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate, nil)
+    }
+    
     // Active
     func playActive() {
         var complete: SystemSoundID = .zero
@@ -91,19 +103,19 @@ public struct playSound {
         var complete: SystemSoundID = .zero
         
         if complete == .zero {
-            complete = createSysSound(fileName: "/System/Library/Audio/UISounds/nano/vc~ended.caf")
+            complete = createSysSound(fileName: "/System/Library/Audio/UISounds/SIMToolkitCallDropped.caf")
         }
         AudioServicesPlaySystemSound(complete)
         // Add a vibrate
         AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate, nil)
     }
     
-    // Arrow Connection Regained
-    func playArrowConnRegained() {
+    // Arrow Connection Success
+    func playArrowConnSuccess() {
         var complete: SystemSoundID = .zero
         
         if complete == .zero {
-            complete = createSysSound(fileName: "/System/Library/Audio/UISounds/nano/3rdParty_Success_Haptic.caf") //or PINDelete_AX.caf?
+            complete = createSysSound(fileName: "/System/Library/Audio/UISounds/nano/3rdParty_Success_Haptic.caf")
         }
         AudioServicesPlaySystemSound(complete)
         // Add a vibrate
@@ -115,43 +127,7 @@ public struct playSound {
         var complete: SystemSoundID = .zero
         
         if complete == .zero {
-            complete = createSysSound(fileName: "/System/Library/Audio/UISounds/nano/3rdParty_Stop_Haptic.caf")//or SIMToolkitCallDropped.caf?
-        }
-        AudioServicesPlaySystemSound(complete)
-        // Add a vibrate
-        AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate, nil)
-    }
-    
-    // endStreaming Called
-    func playArrowEndStreamingCalled() {
-        var complete: SystemSoundID = .zero
-        
-        if complete == .zero {
-            complete = createSysSound(fileName: "/System/Library/Audio/UISounds/nano/ringback_tone_uk.caf")
-        }
-        AudioServicesPlaySystemSound(complete)
-        // Add a vibrate
-        AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate, nil)
-    }
-    
-    // Set Has NMEA Stream Stopped to True
-    func playSetHasNMEAStreamStoppedToTrue() {
-        var complete: SystemSoundID = .zero
-        
-        if complete == .zero {
-            complete = createSysSound(fileName: "/System/Library/Audio/UISounds/SIMToolkitCallDropped.caf")
-        }
-        AudioServicesPlaySystemSound(complete)
-        // Add a vibrate
-        AudioServicesPlaySystemSoundWithCompletion(kSystemSoundID_Vibrate, nil)
-    }
-    
-    // Accessory Session is Nil
-    func playAccessorySessionIsNil() {
-        var complete: SystemSoundID = .zero
-        
-        if complete == .zero {
-            complete = createSysSound(fileName: "/System/Library/Audio/UISounds/nano/Siren_Countdown_Minor_Haptic.caf")
+            complete = createSysSound(fileName: "/System/Library/Audio/UISounds/nano/vc~ended.caf")
         }
         AudioServicesPlaySystemSound(complete)
         // Add a vibrate

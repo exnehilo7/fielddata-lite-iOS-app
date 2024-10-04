@@ -63,7 +63,6 @@ struct StartScreenView: View {
                 StartScreenViewControllerRepresentable(startScreenBridgingCoordinator: bridgingCoordinator)
                 
             }.onAppear {
-                print("Lifecycle Print: Start screen VStack onAppear, calling bridging coordinator to create Settings")
                 let serialQueue = DispatchQueue(label: "StartScreenView.bridgingCoordinator.createSettings")
                 serialQueue.async {
                     bridgingCoordinator.startScreenViewController.createSettings(settings: settings, modelContext: modelContext)

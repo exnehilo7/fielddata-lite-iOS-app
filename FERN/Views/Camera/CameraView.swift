@@ -25,11 +25,11 @@ struct CameraView: View {
     @Query var sdTrips: [SDTrip]
     
     // View toggles
-    @State private var isShowCamera = false
-    @State private var showingStoppedNMEAAlert = false
-    @State private var showingInvalidSyntaxAlert = false
-    @State private var showingHDOPOverLimit = false
-    @State private var showingCompleteAlert = false
+//    @State private var isShowCamera = false
+//    @State private var showingStoppedNMEAAlert = false
+//    @State private var showingInvalidSyntaxAlert = false
+//    @State private var showingHDOPOverLimit = false
+//    @State private var showingCompleteAlert = false
     
     // Text scanning
     @State private var recognizedContent = RecognizedContent()
@@ -123,11 +123,11 @@ struct CameraView: View {
     
     // MARK: Alerts
     // NMEA Alert
-    var stoppedNMEA: some View {
+    var noStreamDataView: some View {
         VStack {
             Spacer()
-            Text("Device Feed Error").bold().foregroundStyle(.red)
-            Text("Photo was not saved. Check the Bluetooth and the device's satellite connections. If both OK, close and restart the app. (Swipe up from the bottom of the screen and pause 1/4 of the way up, release, then swipe up on the app's preview.)")
+            Text("Stream Has No Data").bold().foregroundStyle(.red)
+            Text("Photo was not saved. The Bluetooth device could be attempting to reconnect, there could be issues with the satellite feed to the Bluetooth device or with the Bluetooth device itself. If the app needs to be stopped, swipe up from the bottom of the screen and pause 1/4 of the way up. Release, then swipe up on the app's preview.")
         }
     }
     
@@ -146,6 +146,19 @@ struct CameraView: View {
             Spacer()
             Text("HDOP Over Limit").bold().foregroundStyle(.red)
             Text("The horizontal position accuracy of \(camera.snapshotHorzAccuracy) was over the limit of \(settings[0].hdopThreshold)!")
+        }
+    }
+    
+    // streamWasLostMessage
+    var streamWasLostMessage: some View {
+        VStack {
+            Text("BLUETOOTH END EVENT ENCOUNTERED").bold()
+                .foregroundStyle(.white)
+                .frame(minWidth: 95, maxWidth: 400, minHeight: 0, maxHeight: 50)
+                .background(Color.red)
+                .foregroundColor(.white)
+                .padding(.horizontal)
+            Text("Attempting to reconnect...")
         }
     }
     
@@ -193,7 +206,7 @@ struct CameraView: View {
     var showCameraButton: some View {
         Button {
             camera.isShowCamera = true
-            camera.showingStoppedNMEAAlert = false
+            camera.showingNoStreamDataAlert = false
         } label: {
             Label("Show Camera", systemImage: "camera").foregroundColor(.white)
         }.buttonStyle(.borderedProminent).tint(.blue)
@@ -514,8 +527,8 @@ struct CameraView: View {
                 Spacer()
             }
             // No-NMEA alert
-            if camera.showingStoppedNMEAAlert {
-                stoppedNMEA
+            if camera.showingNoStreamDataAlert {
+                noStreamDataView
             }
             
             if camera.showingInvalidSyntaxAlert {
@@ -628,11 +641,15 @@ struct CameraView: View {
                     // GPS data on sheet
                     if settings[0].useBluetoothDevice {
                         HStack {
-                            arrowGpsData
-//                            VStack {
-//                                startArrowButton
-//                                restartArrowButton
-//                            }
+                            if gps.nmea?.endEventEncountered ?? false {
+                                streamWasLostMessage
+                            } else {
+                                arrowGpsData
+    //                            VStack {
+    //                                startArrowButton
+    //                                restartArrowButton
+    //                            }
+                            }
                         }
                     }
                     else {
@@ -674,9 +691,9 @@ struct CameraView: View {
             
             // Bluetooth?
             if settings[0].useBluetoothDevice {
-                imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: gps.nmea?.hasNMEAStreamStopped ?? false, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "ArrowGold", scannedText: textInPic, notes: result.textNotes)
+                imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, btStreamHasNoData: gps.nmea?.streamHasNoData ?? false, btEndEventHasNoData: gps.nmea?.endEventEncountered ?? false, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "ArrowGold", scannedText: textInPic, notes: result.textNotes)
             } else {
-                imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, hasBTStreamStopped: true, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "iOS", scannedText: textInPic, notes: result.textNotes)
+                imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, btStreamHasNoData: true, btEndEventHasNoData: true, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "iOS", scannedText: textInPic, notes: result.textNotes)
             }
             
             long = camera.snapshotLongitude
