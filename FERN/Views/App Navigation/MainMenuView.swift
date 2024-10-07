@@ -39,6 +39,8 @@ struct MainMenuView: View {
     @Query var settings: [Settings]
     @Query var sdTrips: [SDTrip]
     
+//    @Environment(\.scenePhase) private var scenePhase
+    
     // Sounds
     let audio = playSound()
     
@@ -93,26 +95,36 @@ struct MainMenuView: View {
                                 Text("Settings")
                             }
                         }
-                        //                    // Scan photos in folder for text
-                        //                    NavigationLink {
-                        //                        ScanPhotosInFolderForText(gps: gps)
-                        //                            .navigationTitle("Select Trip")
-                        //                    } label: {
-                        //                        HStack {
-                        //                            Image(systemName: "scanner").bold(false).foregroundColor(.gray)
-                        //                            Text("Post-trip Image OCR")
-                        //                        }
-                        //                    }
-                        //                    // Testing
-                        //                    NavigationLink {
-                        //                        ScoringView()
-                        //                            .navigationTitle("Testing")
-                        //                    } label: {
-                        //                        HStack {
-                        //                            Image(systemName: "testtube.2").bold(false).foregroundColor(.gray)
-                        //                            Text("Testing")
-                        //                        }
-                        //                    }
+//                        // Scan photos in folder for text
+//                        NavigationLink {
+//                            ScanPhotosInFolderForText(gps: gps)
+//                                .navigationTitle("Select Trip")
+//                        } label: {
+//                            HStack {
+//                                Image(systemName: "scanner").bold(false).foregroundColor(.gray)
+//                                Text("Post-trip Image OCR")
+//                            }
+//                        }
+//                        // Testing
+//                        NavigationLink {
+//                            ScoringView()
+//                                .navigationTitle("Testing")
+//                        } label: {
+//                            HStack {
+//                                Image(systemName: "testtube.2").bold(false).foregroundColor(.gray)
+//                                Text("Testing")
+//                            }
+//                        }
+                        // Testing
+                        NavigationLink {
+                            ConsoleTextView(gps: gps)
+                                .navigationTitle("Testing")
+                        } label: {
+                            HStack {
+                                Image(systemName: "text.alignleft").bold(false).foregroundColor(.gray)
+                                Text("Console Text")
+                            }
+                        }
                     }
                     else
                     {
@@ -134,6 +146,17 @@ struct MainMenuView: View {
                 //                })
                 
             }
+//            .onChange(of: scenePhase) {phase in
+//                print(phase)
+//                if phase == .active {
+////                    audio.playActive()
+//                } else if phase == .inactive {
+////                    audio.playInactive()
+//                } else if phase == .background {
+//                    
+////                    audio.playBackground()
+//                }
+//            }
         }
         
         // Upload feedback
@@ -154,9 +177,9 @@ struct MainMenuView: View {
         VStack {
             // To test sounds:
 //            Button {
-//                audio.playArrowConnSuccess()
+//                audio.TBDAlert()
 //            } label: {
-//                Text("Arrow Connection Success")
+//                Text("TBDAlert")
 //            }.buttonStyle(.borderedProminent).tint(.green)
 //            
 //            Button {
@@ -164,7 +187,23 @@ struct MainMenuView: View {
 //            } label: {
 //                Text("Arrow Connection Lost")
 //            }.buttonStyle(.borderedProminent).tint(.green)
-
+            
+            // Manual GPS start
+            Button(action: {
+                startGPS()
+            },
+            label: {
+                HStack {
+                    Image(systemName: "play").font(.system(size: 15))
+                    Text("Manually Start GPS").font(.system(size: 15))
+                }
+               .frame(minWidth: 95, maxWidth: 200, minHeight: 0, maxHeight: 50)
+               .background(Color.green)
+               .foregroundColor(.white)
+               .cornerRadius(10)
+               .padding().padding()
+            })
+            
             if hideUntilDone {
                 Spacer()
                 //            Text("Cache is refreshing!").bold(true).foregroundColor(.yellow)
@@ -218,7 +257,8 @@ struct MainMenuView: View {
                     }
                 }
                 // Start GPS feed if not already running
-                startGPS()
+//                startGPS()
+                
                 // Reset previously snapped pic if view was swiped down before image was saved
                 camera.clearCustomData()
                 camera.resetCamera()
