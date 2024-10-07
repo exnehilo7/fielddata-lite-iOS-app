@@ -259,11 +259,9 @@ struct CameraView: View {
     }
     
     // Restart Arrow button
-    var restartArrowButton: some View {
+    var restartArrowViaStartNMEAButton: some View {
         Button(action: {
-            Task.detached {
-                await gps.restartArrow()
-            }
+                gps.restartArrowViaStartNMEA()
         },
                label: {HStack {
             Image(systemName: "arrow.circlepath").font(.system(size: 15))
@@ -284,7 +282,7 @@ struct CameraView: View {
         },
                label: {HStack {
             Image(systemName: "arrow.circlepath").font(.system(size: 15))
-            Text("START Arrow").font(.system(size: 15))
+            Text("Start Arrow as if app first opened").font(.system(size: 15))
         }
                .frame(minWidth: 95, maxWidth: 100, minHeight: 0, maxHeight: 50)
                .background(Color.blue)
@@ -632,6 +630,7 @@ struct CameraView: View {
             camera.resetSnaphotCords()
             
         })
+        
         .sheet(isPresented: $camera.isShowCamera) {
             // Show the GPS data at all times on the bottom half of the screen
             ZStack {
@@ -643,11 +642,12 @@ struct CameraView: View {
                         HStack {
                             if gps.nmea?.endEventEncountered ?? false {
                                 streamWasLostMessage
+                                restartArrowViaStartNMEAButton
                             } else {
                                 arrowGpsData
     //                            VStack {
     //                                startArrowButton
-    //                                restartArrowButton
+    //                                restartArrowViaStartNMEAButton
     //                            }
                             }
                         }

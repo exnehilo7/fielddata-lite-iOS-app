@@ -57,6 +57,7 @@
 		D1766CA1298DB9C6002F594D /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1766CA0298DB9C6002F594D /* MapView.swift */; };
 		D1807ABD2C5C22DC004EB245 /* NetworkMonitorClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1807ABC2C5C22DC004EB245 /* NetworkMonitorClass.swift */; };
 		D183BB302CA311AD00C124A1 /* SettingsOfflineModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D183BB2F2CA311AD00C124A1 /* SettingsOfflineModeView.swift */; };
+		D183BB342CB08A3D00C124A1 /* ConsoleTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D183BB332CB08A3D00C124A1 /* ConsoleTextView.swift */; };
 		D18B59D32C07C16B005A58DB /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D18B59D22C07C16B005A58DB /* MessageView.swift */; };
 		D19FF3712C17542F00B54B7E /* SettingsHdopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19FF3702C17542F00B54B7E /* SettingsHdopView.swift */; };
 		D1A56E812B051DB300AC8291 /* SelectTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E802B051DB300AC8291 /* SelectTripView.swift */; };
@@ -141,6 +142,7 @@
 		D1766CA0298DB9C6002F594D /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		D1807ABC2C5C22DC004EB245 /* NetworkMonitorClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitorClass.swift; sourceTree = "<group>"; };
 		D183BB2F2CA311AD00C124A1 /* SettingsOfflineModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsOfflineModeView.swift; sourceTree = "<group>"; };
+		D183BB332CB08A3D00C124A1 /* ConsoleTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleTextView.swift; sourceTree = "<group>"; };
 		D18B59D22C07C16B005A58DB /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		D19FF3702C17542F00B54B7E /* SettingsHdopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHdopView.swift; sourceTree = "<group>"; };
 		D1A56E802B051DB300AC8291 /* SelectTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripView.swift; sourceTree = "<group>"; };
@@ -289,6 +291,7 @@
 				D127B37F2A12EDF600F6287A /* NMEADataView.swift */,
 				D167963E2BDAEF2200561875 /* RandoTestingView.swift */,
 				D162E6EB2C59495500E419A5 /* SelectTripForTestingView.swift */,
+				D183BB332CB08A3D00C124A1 /* ConsoleTextView.swift */,
 			);
 			path = Testing;
 			sourceTree = "<group>";
@@ -517,6 +520,7 @@
 				D11B2D902BF3BC81004FEE0B /* ScanPhotosInFolderForText.swift in Sources */,
 				D1036C0F2C1B519E00E2E266 /* StartScreenModel.swift in Sources */,
 				D16FA6572C2DE0340090E756 /* SelectTripTypeView.swift in Sources */,
+				D183BB342CB08A3D00C124A1 /* ConsoleTextView.swift in Sources */,
 				D1E815062C99DA95004E0475 /* AlertsStringsArrays.swift in Sources */,
 				D162E6EC2C59495500E419A5 /* SelectTripForTestingView.swift in Sources */,
 				D127B37E2A12ED3D00F6287A /* NMEADataClass.swift in Sources */,
