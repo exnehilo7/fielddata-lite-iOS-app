@@ -115,16 +115,16 @@ struct MainMenuView: View {
 //                                Text("Testing")
 //                            }
 //                        }
-                        // Testing
-                        NavigationLink {
-                            ConsoleTextView(gps: gps)
-                                .navigationTitle("Testing")
-                        } label: {
-                            HStack {
-                                Image(systemName: "text.alignleft").bold(false).foregroundColor(.gray)
-                                Text("Console Text")
-                            }
-                        }
+//                        // Testing
+//                        NavigationLink {
+//                            ConsoleTextView(gps: gps)
+//                                .navigationTitle("Testing")
+//                        } label: {
+//                            HStack {
+//                                Image(systemName: "text.alignleft").bold(false).foregroundColor(.gray)
+//                                Text("Console Text")
+//                            }
+//                        }
                     }
                     else
                     {
@@ -188,21 +188,21 @@ struct MainMenuView: View {
 //                Text("Arrow Connection Lost")
 //            }.buttonStyle(.borderedProminent).tint(.green)
             
-            // Manual GPS start
-            Button(action: {
-                startGPS()
-            },
-            label: {
-                HStack {
-                    Image(systemName: "play").font(.system(size: 15))
-                    Text("Manually Start GPS").font(.system(size: 15))
-                }
-               .frame(minWidth: 95, maxWidth: 200, minHeight: 0, maxHeight: 50)
-               .background(Color.green)
-               .foregroundColor(.white)
-               .cornerRadius(10)
-               .padding().padding()
-            })
+//            // Manual GPS start
+//            Button(action: {
+//                startGPS()
+//            },
+//            label: {
+//                HStack {
+//                    Image(systemName: "play").font(.system(size: 15))
+//                    Text("Manually Start GPS").font(.system(size: 15))
+//                }
+//               .frame(minWidth: 95, maxWidth: 200, minHeight: 50, maxHeight: 50)
+//               .background(Color.green)
+//               .foregroundColor(.white)
+//               .cornerRadius(10)
+//               .padding().padding()
+//            })
             
             if hideUntilDone {
                 Spacer()
@@ -257,7 +257,7 @@ struct MainMenuView: View {
                     }
                 }
                 // Start GPS feed if not already running
-//                startGPS()
+                startGPS()
                 
                 // Reset previously snapped pic if view was swiped down before image was saved
                 camera.clearCustomData()

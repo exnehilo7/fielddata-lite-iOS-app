@@ -258,37 +258,34 @@ struct CameraView: View {
         })
     }
     
-    // Restart Arrow button
+    // Arrow Restart buttons
     var restartArrowViaStartNMEAButton: some View {
         Button(action: {
-                gps.restartArrowViaStartNMEA()
+            gps.restartArrowViaStartNMEA()
         },
                label: {HStack {
-            Image(systemName: "arrow.circlepath").font(.system(size: 15))
-            Text("Restart Arrow").font(.system(size: 15))
+            Image(systemName: "arrow.uturn.right").font(.system(size: 11))
+            Text("Restart Arrow via startNMEA()").font(.system(size: 11))
         }
-               .frame(minWidth: 95, maxWidth: 100, minHeight: 0, maxHeight: 50)
-               .background(Color.green)
-               .foregroundColor(.white)
+               .frame(minWidth: 95, maxWidth: 200, minHeight: 20, maxHeight: 50)
+               .background(Color.yellow)
+               .foregroundColor(.black)
                .cornerRadius(10)
-               .padding().padding()
         })
     }
-    var startArrowButton: some View {
+    var restartArrowViaRESTARTNMEAButton: some View {
         Button(action: {
-            Task.detached {
-                await gps.startGPSFeed(settings: settings)
-            }
+            gps.restartArrowViaRESTARTNMEA()
         },
                label: {HStack {
-            Image(systemName: "arrow.circlepath").font(.system(size: 15))
-            Text("Start Arrow as if app first opened").font(.system(size: 15))
+            Image(systemName: "arrow.circlepath").font(.system(size: 11))
+            Text("Restart Arrow via reStartNMEA()").font(.system(size: 11))
         }
-               .frame(minWidth: 95, maxWidth: 100, minHeight: 0, maxHeight: 50)
+               .frame(minWidth: 95, maxWidth: 200, minHeight: 20, maxHeight: 50)
                .background(Color.blue)
                .foregroundColor(.white)
                .cornerRadius(10)
-               .padding().padding()
+               .padding()
         })
     }
     
@@ -645,10 +642,10 @@ struct CameraView: View {
                                 restartArrowViaStartNMEAButton
                             } else {
                                 arrowGpsData
-    //                            VStack {
-    //                                startArrowButton
-    //                                restartArrowViaStartNMEAButton
-    //                            }
+                                VStack {
+                                    restartArrowViaStartNMEAButton
+                                    restartArrowViaRESTARTNMEAButton
+                                }
                             }
                         }
                     }

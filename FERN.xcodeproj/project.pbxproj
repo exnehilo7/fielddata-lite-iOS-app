@@ -58,6 +58,7 @@
 		D1807ABD2C5C22DC004EB245 /* NetworkMonitorClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1807ABC2C5C22DC004EB245 /* NetworkMonitorClass.swift */; };
 		D183BB302CA311AD00C124A1 /* SettingsOfflineModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D183BB2F2CA311AD00C124A1 /* SettingsOfflineModeView.swift */; };
 		D183BB342CB08A3D00C124A1 /* ConsoleTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D183BB332CB08A3D00C124A1 /* ConsoleTextView.swift */; };
+		D183BB372CB47FD700C124A1 /* LoggerStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = D183BB362CB47FD700C124A1 /* LoggerStruct.swift */; };
 		D18B59D32C07C16B005A58DB /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D18B59D22C07C16B005A58DB /* MessageView.swift */; };
 		D19FF3712C17542F00B54B7E /* SettingsHdopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19FF3702C17542F00B54B7E /* SettingsHdopView.swift */; };
 		D1A56E812B051DB300AC8291 /* SelectTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E802B051DB300AC8291 /* SelectTripView.swift */; };
@@ -143,6 +144,7 @@
 		D1807ABC2C5C22DC004EB245 /* NetworkMonitorClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitorClass.swift; sourceTree = "<group>"; };
 		D183BB2F2CA311AD00C124A1 /* SettingsOfflineModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsOfflineModeView.swift; sourceTree = "<group>"; };
 		D183BB332CB08A3D00C124A1 /* ConsoleTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleTextView.swift; sourceTree = "<group>"; };
+		D183BB362CB47FD700C124A1 /* LoggerStruct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerStruct.swift; sourceTree = "<group>"; };
 		D18B59D22C07C16B005A58DB /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		D19FF3702C17542F00B54B7E /* SettingsHdopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHdopView.swift; sourceTree = "<group>"; };
 		D1A56E802B051DB300AC8291 /* SelectTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripView.swift; sourceTree = "<group>"; };
@@ -181,6 +183,7 @@
 		D1036C0D2C1B516000E2E266 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				D183BB352CB47F8D00C124A1 /* Logger */,
 				D16FA64A2C25E4890090E756 /* GPS */,
 				D16FA64C2C25E5210090E756 /* Images */,
 				D16FA64D2C25E54B0090E756 /* Maps */,
@@ -340,6 +343,14 @@
 				D16FA6372C25CA380090E756 /* MapStruct.swift */,
 			);
 			path = Maps;
+			sourceTree = "<group>";
+		};
+		D183BB352CB47F8D00C124A1 /* Logger */ = {
+			isa = PBXGroup;
+			children = (
+				D183BB362CB47FD700C124A1 /* LoggerStruct.swift */,
+			);
+			path = Logger;
 			sourceTree = "<group>";
 		};
 		D18B59C92C078849005A58DB /* Capstone Views */ = {
@@ -540,6 +551,7 @@
 				D16FA6592C2F0DCA0090E756 /* FileUploadClass.swift in Sources */,
 				D16A6C88299AF32600835B5E /* ReportRoutes.swift in Sources */,
 				D16FA63B2C25DC0B0090E756 /* TextRecognitionStruct.swift in Sources */,
+				D183BB372CB47FD700C124A1 /* LoggerStruct.swift in Sources */,
 				D19FF3712C17542F00B54B7E /* SettingsHdopView.swift in Sources */,
 				D167963B2BD9B78A00561875 /* SettingsCesiumView.swift in Sources */,
 				D1A56E812B051DB300AC8291 /* SelectTripView.swift in Sources */,
