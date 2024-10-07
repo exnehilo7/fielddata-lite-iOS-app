@@ -14,7 +14,7 @@ struct FERNApp: App {
     
     // Send multiple model configurations into a single model container
     var container: ModelContainer
-//    @Environment(\.scenePhase) private var scenePhase // to see the app's phases
+    @Environment(\.scenePhase) private var scenePhase // to see the app's phases
     
     // Sounds
 //    let audio = playSound()
@@ -34,15 +34,15 @@ struct FERNApp: App {
                 StartScreenView()
             }
         }.modelContainer(container)
-//            .onChange(of: scenePhase) {phase in
-//                print(phase)
-////                if phase == .active {
-////                    audio.playActive()
-////                } else if phase == .inactive {
-////                    audio.playInactive()
-////                } else if phase == .background {
-////                    audio.playBackground()
-////                }
-//            }
+            .onChange(of: scenePhase) {phase in
+                print(phase)
+                if phase == .active {
+                    print("---active---", to: &logger)
+                } else if phase == .inactive {
+                    print("---inactive---", to: &logger)
+                } else if phase == .background {
+                    print("---background---", to: &logger)
+                }
+            }
     }
 }

@@ -56,10 +56,10 @@ import SwiftData
         UIDevice.current.isBatteryMonitoringEnabled = false
     }
     
-    func restartArrowViaStartNMEAWithEventDefaults() {
+    func restartArrowViaStartNMEA() {
         if nmea != nil {
             print("GPS Class 'nmea' var is not nil. Restarting NMEA via startNMEA().")
-            nmea?.appendToTextEditor(text: "GPS Class 'nmea' var is not nil. Restarting NMEA via startNMEA().")
+            print(#function,"::","GPS Class 'nmea' var is not nil. Restarting NMEA via startNMEA().", to: &logger)
             nmea!.startNMEA()
         } else {
             print("No restart, 'nmea' variable in GPS Class is already nil")
@@ -68,9 +68,9 @@ import SwiftData
     
     func restartArrowViaRESTARTNMEA() {
         if nmea != nil {
-            print("GPS Class 'nmea' var is not nil. Restarting NMEA via restartNMEA().")
-            nmea?.appendToTextEditor(text: "GPS Class 'nmea' var is not nil. Restarting NMEA via restartNMEA().")
-            nmea!.restartNMEA()
+            print("GPS Class 'nmea' var is not nil. Restarting NMEA via reStartNMEA().")
+            print(#function,"::","GPS Class 'nmea' var is not nil. Restarting NMEA via reStartNMEA().", to: &logger)
+            nmea!.reStartNMEA()
         } else {
             print("No restart, 'nmea' variable in GPS Class is already nil")
         }
@@ -83,14 +83,14 @@ import SwiftData
             nmea!.startNMEA()
         } else {
             print("No startNMEA() called, 'nmea' variable in GPS Class was NOT nil")
-            nmea?.appendToTextEditor(text: "No startNMEA() called, 'nmea' variable in GPS Class was NOT nil")
+            print(#function,"::","No startNMEA() called, 'nmea' variable in GPS Class was NOT nil", to: &logger)
         }
     }
     
     func stopArrow() {
-        if nmea != nil {
+        if nmea != nil { 
             print("setting CPS Class 'nmea' var to nil")
-            nmea?.appendToTextEditor(text: "setting CPS Class 'nmea' var to nil")
+            print(#function,"::","setting CPS Class 'nmea' var to nil", to: &logger)
             nmea = nil
         }
     }

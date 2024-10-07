@@ -18,7 +18,7 @@ import SwiftUI // For .append
     var locationManager = CLLocationManager()
     var comThread:Thread?
     var accessorySession:EASession?
-    var rxInPause:Bool?
+//    var rxInPause:Bool?
     private var runLoop:RunLoop? // Original code has a dict with a RunLoop and Bool variable type. Bool variable type was commented out. Trying a class-wide var.
     
     let kComThreadRunloop:String! = "kComThreadRunloop"
@@ -51,16 +51,16 @@ import SwiftUI // For .append
     
     private var doRestartLoop = false
     
-    var consoleText:String?
+//    var consoleText:String?
     
-    // MARK: - Console Feedback
-    func resetConsoleText() {
-        consoleText = ""
-    }
+//    // MARK: - Console Feedback
+//    func resetConsoleText() {
+//        consoleText = "NMEA CONSOLE TEXT RESET"
+//    }
     
-    func appendToTextEditor(text: String){
-        self.consoleText?.append(contentsOf: "\n" + text)
-    }
+//    func print(#function,"::",String){
+//        self.consoleText?.append(contentsOf: "\n" + text)
+//    }
     
     // MARK: - Main Function
     // Main(?) function from ViewController @implementation
@@ -69,7 +69,7 @@ import SwiftUI // For .append
 
 //        resetConsoleText()
         print("STARTING NMEA...")
-        appendToTextEditor(text: "STARTING NMEA...")
+        print(#function,"::","STARTING NMEA...", to: &logger)
         
         // [O] register for EA notif
 //        let sharedAccessoryManager = EAAccessoryManager.shared()
@@ -106,12 +106,12 @@ import SwiftUI // For .append
         if (sharedAccessoryManager.connectedAccessories.count > 0) {
 
             print("There are already connected accessories")
-            appendToTextEditor(text: "There are already connected accessories")
+            print(#function,"::","There are already connected accessories", to: &logger)
             
             // [O] get first accessory
             let firstAccessory:EAAccessory = sharedAccessoryManager.connectedAccessories.first!
             print("firstAccessory Accessory : \(firstAccessory.description)")
-            appendToTextEditor(text: "firstAccessory Accessory : \(firstAccessory.description)")
+            print(#function,"::","firstAccessory Accessory : \(firstAccessory.description)", to: &logger)
             
             // [O] Since the app was started after the accessory was connected, Send a connection notification as the system does when the accessory is connected
 //            var accessoryKey:[EAAccessoryKey: EAAccessory]
@@ -134,16 +134,20 @@ import SwiftUI // For .append
     // NOTE: restart will run when screen is in sleep mode and will use 50% CPU. Per Apple: The standard lifecycle for an iOS app is that, when the user moves it to the background, the system suspends it. A suspend app lurks in the background indefinitely. That way, if the user brings it to the front, it can be quickly resumed rather than relaunched. However, if the system comes under memory pressure it will terminate the app, removing it from memory.
         audio.playArrowConnLost()
         
-        print("NMEA looping call is DISABLED.")
-        appendToTextEditor(text: "NMEA looping call is DISABLED.")
+//        print("NMEA looping call is DISABLED.")
+//        print(#function,"::","NMEA looping call is DISABLED.", to: &logger)
         
-//        print("Restarting NMEA with looping calls to restartNMEA()...")
-//        appendToTextEditor(text: "Restarting NMEA with looping calls to restartNMEA()...")
-//        while (doRestartLoop) {
-//            if (sharedAccessoryManager.connectedAccessories.count > 0) {
-//                restartNMEA()
-//            }
-//        }
+        print("Restarting NMEA with looping calls to reStartNMEA()...")
+        print(#function,"::","Restarting NMEA with looping calls to reStartNMEA()...", to: &logger)
+        if doRestartLoop {
+            comThread = nil
+            createComThread()
+        }
+        while (doRestartLoop) {
+            if (sharedAccessoryManager.connectedAccessories.count > 0) {
+                reStartNMEA()
+            }
+        }
     }
     
     // Not used in original code?
@@ -155,7 +159,7 @@ import SwiftUI // For .append
     }
     
     // Try restart function without initOnce'ing the parser, registering CoreLocation, and creating the ComThread
-    func restartNMEA() {
+    func reStartNMEA() {
         
        // [O] Did we start with an accessory already connected ?
        if (sharedAccessoryManager.connectedAccessories.count > 0) {
@@ -197,17 +201,18 @@ import SwiftUI // For .append
         
         if ((accessory != nil) && (accessory?.isConnected != nil)) {
             print("accessory Accessory : \(String(describing: accessory?.description))")
-            appendToTextEditor(text: "accessory Accessory : \(String(describing: accessory?.description))")
+            print(#function,"::","accessory Accessory : \(String(describing: accessory?.description))", to: &logger)
             
             if (accessory?.protocolStrings.count == 0) {
                 print("No protocol declared yet")
-                appendToTextEditor(text: "No protocol declared yet")
+                print(#function,"::","No protocol declared yet", to: &logger)
                 return
             }
             
             if (self.accessorySession?.accessory?.connectionID == accessory?.connectionID) {
                 print("re entrance")
-                appendToTextEditor(text: "re entrance")
+                print(#function,"::","re entrance", to: &logger)
+                doRestartLoop = false
                 return
             }
             
@@ -221,14 +226,14 @@ import SwiftUI // For .append
             
             if (theProtocol == nil){
                 print("Error, incompatible protocol")
-                appendToTextEditor(text: "Error, incompatible protocol")
+                print(#function,"::","Error, incompatible protocol", to: &logger)
                 // Code to raise alert announcing a connected accessory
                 // [Original Obj-C code]
                 return
             }
             
             print("Using protocol \(theProtocol ?? noValueFoundMsg)")
-            appendToTextEditor(text: "Using protocol \(theProtocol ?? noValueFoundMsg)")
+            print(#function,"::","Using protocol \(theProtocol ?? noValueFoundMsg)", to: &logger)
             self.protocolText = theProtocol ?? "No Protocol"
             
             // Start accessory sesion?
@@ -237,7 +242,7 @@ import SwiftUI // For .append
 
             if (accessorySession == nil) {
                 print("Error, accessory can't communicate. accessorySession is nil.")
-                appendToTextEditor(text: "Error, accessory can't communicate. accessorySession is nil.")
+                print(#function,"::","Error, accessory can't communicate. accessorySession is nil.", to: &logger)
                 audio.playError()
                 doRestartLoop = true
                 loopToRestart()
@@ -260,39 +265,39 @@ import SwiftUI // For .append
         
         if (selectedBTAccessory != nil) {
             print("selectedBTAccessory accessory: \(selectedBTAccessory?.description ?? "No selectedBTAccessory found")")
-            appendToTextEditor(text: "selectedBTAccessory accessory: \(selectedBTAccessory?.description ?? "No selectedBTAccessory found")")
+            print(#function,"::","selectedBTAccessory accessory: \(selectedBTAccessory?.description ?? "No selectedBTAccessory found")", to: &logger)
         }
     }
     
     @objc func didDisconnectNotif(notification: NSNotification){
         print("didDisconnectNotif(notification: NSNotification) WAS CALLED")
-        appendToTextEditor(text: "didDisconnectNotif(notification: NSNotification) WAS CALLED")
+        print(#function,"::","didDisconnectNotif(notification: NSNotification) WAS CALLED", to: &logger)
         
         // [O] An accessory just get disconnected
         let accessory = notification.userInfo?[EAAccessoryKey] as? EAAccessory
         print("Checking to stop stream for accessory : \(String(describing: accessory?.description))")
-        appendToTextEditor(text: "Checking to stop stream for accessory : \(String(describing: accessory?.description))")
+        print(#function,"::","Checking to stop stream for accessory : \(String(describing: accessory?.description))", to: &logger)
         
         if (self.accessorySession?.accessory?.connectionID == accessory?.connectionID) {
             print("'accessorySession' == 'accessory?.connectionID'")
-            appendToTextEditor(text: "'accessorySession' == 'accessory?.connectionID'")
+            print(#function,"::","'accessorySession' == 'accessory?.connectionID'", to: &logger)
             
             // [O] stop stream
 //                print("Skipping endStreaming()...")
-//                appendToTextEditor(text: "Skipping endStreaming()...")
+//                print(#function,"::","Skipping endStreaming()...", to: &logger)
             print("Calling endStreaming()...")
-            appendToTextEditor(text: "Calling endStreaming()...")
+            print(#function,"::","Calling endStreaming()...", to: &logger)
             endStreaming()
             
             print("setting 'accessorySession' to nil")
-            appendToTextEditor(text: "setting 'accessorySession' to nil")
+            print(#function,"::","setting 'accessorySession' to nil", to: &logger)
             self.accessorySession = nil
             
             self.protocolText = "No Protocol"
         }
         else {
             print("'accessorySession' != 'accessory?.connectionID', endStreaming() is NOT called and 'accessorySession' is NOT set to nil.")
-            appendToTextEditor(text: "'accessorySession' != 'accessory?.connectionID', endStreaming() is NOT called and 'accessorySession' is NOT set to nil.")
+            print(#function,"::","'accessorySession' != 'accessory?.connectionID', endStreaming() is NOT called and 'accessorySession' is NOT set to nil.", to: &logger)
         }
     }
     // end EA notifications
@@ -316,16 +321,16 @@ import SwiftUI // For .append
         self.comThread?.threadPriority = 0.8
         self.comThread?.start()
         print("Com thread started")
-        appendToTextEditor(text: "Com thread started")
+        print(#function,"::","Com thread started", to: &logger)
     }
     
     @objc func initComThread(){
         print("New com thread starting")
-        appendToTextEditor(text: "New com thread starting")
+        print(#function,"::","New com thread starting", to: &logger)
         /* When we write swift code that is entirely swift, then there is no need for for autoreleasepool. We should however keep autoreleasepool in mind when we use Objective-C objects.
          */
         print("Getting into runloop")
-        appendToTextEditor(text: "Getting into runloop")
+        print(#function,"::","Getting into runloop", to: &logger)
         // [O] create infinte runloop for thread
 //        let exitNow:Bool = false  // commented out for class-wide runLoop attempt
         self.runLoop = RunLoop.current
@@ -345,13 +350,13 @@ import SwiftUI // For .append
         
         // [O] should never come here ... or at app end
         print("Exiting com thread (should never come here ... or at app end)");
-        appendToTextEditor(text: "Exiting com thread (should never come here ... or at app end)")
+        print(#function,"::","Exiting com thread (should never come here ... or at app end)", to: &logger)
     }
     
     @objc func timerCall(){
         // [O] should never be called !!
         print("A \"should not be called\"(?) timerCall function was called");
-        appendToTextEditor(text: "A \"should not be called\"(?) timerCall function was called")
+        print(#function,"::","A \"should not be called\"(?) timerCall function was called", to: &logger)
     }
     
     // What calls this function? If declared verbatum like in the apple documentation (minus the 'optional') the func will be auto-called. Per docs: "It is a delegate that recieves this message when a given event has occured in a given stream."
@@ -365,10 +370,12 @@ import SwiftUI // For .append
             var buf = [UInt8](repeating: 0, count: 1024)// original Obj-c line: uint8_t buf[1024];
             var dataLength:Int? // original type was NSUInteger
             
+            print(eventCode, to: &logger)
+            
             switch (eventCode) {
             case Stream.Event.openCompleted:
                 print("openCompleted (NSStreamEventOpenCompleted)")
-                appendToTextEditor(text: "openCompleted (NSStreamEventOpenCompleted)")
+                print(#function,"::","openCompleted (NSStreamEventOpenCompleted)", to: &logger)
                 break;
             case Stream.Event.hasBytesAvailable:
                 // [O] got bytes to read
@@ -389,71 +396,73 @@ import SwiftUI // For .append
                         updateNMEAUI()
                     } else {
                         print("res has no NMEA sentences")
-                        appendToTextEditor(text: "res has no NMEA sentences")
+                        print(#function,"::","res has no NMEA sentences", to: &logger)
                         setStreamHasNoDataToTrue()
                     }
                 }
                 else {
                     print("dataLength is nil. Nothing to read...")
-                    appendToTextEditor(text: "dataLength is nil. Nothing to read...")
+                    print(#function,"::","dataLength is nil. Nothing to read...", to: &logger)
                     setStreamHasNoDataToTrue()
                 }
                 break;
             case Stream.Event.errorOccurred:
                 print("ERROR event encountered")
-                appendToTextEditor(text: "ERROR event encountered")
+                print(#function,"::","ERROR event encountered", to: &logger)
                 let theError:NSError = aStream.streamError! as NSError
                 print ("Error is \(theError.localizedDescription)")
-                appendToTextEditor(text: "Error is \(theError.localizedDescription)")
+                print(#function,"::","Error is \(theError.localizedDescription)", to: &logger)
                 errorEventEncountered = true
                 doRestartLoop = false
                 
 //                print("Skipping setStreamHasNoDataToTrue()...")
-//                appendToTextEditor(text: "Skipping setStreamHasNoDataToTrue()...")
+//                print(#function,"::","Skipping setStreamHasNoDataToTrue()...", to: &logger)
                 print("Calling setStreamHasNoDataToTrue()...")
-                appendToTextEditor(text: "Calling setStreamHasNoDataToTrue()...")
+                print(#function,"::","Calling setStreamHasNoDataToTrue()...", to: &logger)
                 setStreamHasNoDataToTrue()
 
                 // [O] kill the streaming
 //                print("Skipping endStreaming()...")
-//                appendToTextEditor(text: "Skipping endStreaming()...")
+//                print(#function,"::","Skipping endStreaming()...", to: &logger)
                 print("Calling endStreaming()...")
-                appendToTextEditor(text: "Calling endStreaming()...")
+                print(#function,"::","Calling endStreaming()...", to: &logger)
                 endStreaming()
                 break;
             case Stream.Event.endEncountered:
                 print("END EVENT encountered")
-                appendToTextEditor(text: "END EVENT encountered")
+                print(#function,"::","END EVENT encountered", to: &logger)
                 endEventEncountered = true
                 doRestartLoop = true
                 
 //                print("Skipping setStreamHasNoDataToTrue()...")
-//                appendToTextEditor(text: "Skipping setStreamHasNoDataToTrue()...")
+//                print(#function,"::","Skipping setStreamHasNoDataToTrue()...", to: &logger)
                 print("Calling setStreamHasNoDataToTrue()...")
-                appendToTextEditor(text: "Calling setStreamHasNoDataToTrue()...")
+                print(#function,"::","Calling setStreamHasNoDataToTrue()...", to: &logger)
                 setStreamHasNoDataToTrue()
                 
 //                print("Skipping endStreaming()...")
-//                appendToTextEditor(text: "Skipping endStreaming()...")
+//                print(#function,"::","Skipping endStreaming()...", to: &logger)
                 print("Calling endStreaming()...")
-                appendToTextEditor(text: "Calling endStreaming()...")
+                print(#function,"::","Calling endStreaming()...", to: &logger)
                 endStreaming()
                 
                 print("Calling loopToRestart()...")
-                appendToTextEditor(text: "Calling loopToRestart()...")
+                print(#function,"::","Calling loopToRestart()...", to: &logger)
                 loopToRestart()
                 break;
             default:
                 print("No code for event '\(eventCode)'")
-                appendToTextEditor(text: "No code for event '\(eventCode)'")
+                print(#function,"::","No code for event '\(eventCode)'", to: &logger)
                 break;
             }
+        } else {
+            print("self.accessorySession?.inputStream) IS nil", to: &logger)
         }
     }
     
     func endStreaming() {
         print("end streaming...")
-        appendToTextEditor(text: "end streaming...")
+        print(#function,"::","end streaming...", to: &logger)
         
 //        audio.TBDAlert()
         
@@ -480,7 +489,7 @@ import SwiftUI // For .append
     func parseNMEA(data: NSData) -> Int32{
 
         print("Enter with \(data.length) bytes")
-        appendToTextEditor(text: "Enter with \(data.length) bytes")
+        print(#function,"::","Enter with \(data.length) bytes", to: &logger)
         
         // [O] let's get a C buffer from data
         let buff:String = String(decoding: data, as: UTF8.self)
@@ -523,7 +532,7 @@ import SwiftUI // For .append
     func setStreamHasNoDataToTrue(){
         
         print("Setting NMEA var 'streamHasNoData' to TRUE. Zeroing-out NMEA coordinate vars.")
-        appendToTextEditor(text: "Setting NMEA var 'streamHasNoData' to TRUE. Zeroing-out NMEA coordinate vars.")
+        print(#function,"::","Setting NMEA var 'streamHasNoData' to TRUE. Zeroing-out NMEA coordinate vars.", to: &logger)
         
         DispatchQueue.main.async { [self] in
             self.streamHasNoData = true

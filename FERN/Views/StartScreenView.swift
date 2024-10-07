@@ -63,6 +63,8 @@ struct StartScreenView: View {
                 StartScreenViewControllerRepresentable(startScreenBridgingCoordinator: bridgingCoordinator)
                 
             }.onAppear {
+                print("\n", Date(), ":: START OF LOG --------------------------------------------------------------------", to: &logger)
+                
                 let serialQueue = DispatchQueue(label: "StartScreenView.bridgingCoordinator.createSettings")
                 serialQueue.async {
                     bridgingCoordinator.startScreenViewController.createSettings(settings: settings, modelContext: modelContext)

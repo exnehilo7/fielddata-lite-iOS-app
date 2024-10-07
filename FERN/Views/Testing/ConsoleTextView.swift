@@ -16,20 +16,37 @@ struct ConsoleTextView: View {
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
     
-    // Restart Arrow button
+    var manuallyStartGPS: some View {
+        // Manual GPS start
+        Button(action: {
+            gps.startGPSFeed(settings: settings)
+        },
+        label: {
+            HStack {
+                Image(systemName: "play").font(.system(size: 11))
+                Text("Manually Start GPS").font(.system(size: 11))
+            }
+           .frame(minWidth: 95, maxWidth: 200, minHeight: 20, maxHeight: 50)
+           .background(Color.green)
+           .foregroundColor(.white)
+           .cornerRadius(10)
+           .padding()
+        })
+    }
+    
+    // Arrow Restart buttons
     var restartArrowViaStartNMEAButton: some View {
         Button(action: {
-            gps.restartArrowViaStartNMEAWithEventDefaults()
+            gps.restartArrowViaStartNMEA()
         },
                label: {HStack {
-            Image(systemName: "arrow.uturn.right.circle").font(.system(size: 15))
-            Text("Restart Arrow").font(.system(size: 15))
+            Image(systemName: "arrow.uturn.right").font(.system(size: 11))
+            Text("Restart Arrow via startNMEA()").font(.system(size: 11))
         }
-               .frame(minWidth: 95, maxWidth: 100, minHeight: 0, maxHeight: 50)
-               .background(Color.green)
-               .foregroundColor(.white)
+               .frame(minWidth: 95, maxWidth: 200, minHeight: 20, maxHeight: 50)
+               .background(Color.yellow)
+               .foregroundColor(.black)
                .cornerRadius(10)
-               .padding().padding()
         })
     }
     var restartArrowViaRESTARTNMEAButton: some View {
@@ -37,36 +54,37 @@ struct ConsoleTextView: View {
             gps.restartArrowViaRESTARTNMEA()
         },
                label: {HStack {
-            Image(systemName: "arrow.circlepath").font(.system(size: 15))
-            Text("Start Arrow as if app first opened").font(.system(size: 15))
+            Image(systemName: "arrow.circlepath").font(.system(size: 11))
+            Text("Restart Arrow via reStartNMEA()").font(.system(size: 11))
         }
-               .frame(minWidth: 95, maxWidth: 100, minHeight: 0, maxHeight: 50)
+               .frame(minWidth: 95, maxWidth: 200, minHeight: 20, maxHeight: 50)
                .background(Color.blue)
                .foregroundColor(.white)
                .cornerRadius(10)
-               .padding().padding()
+               .padding()
         })
     }
     
     var body: some View {
-        TextEditor(text: .constant(gps.nmea?.consoleText ?? "No Console String"))
-            .foregroundStyle(.secondary)
-            .font(.system(size: 12)).padding(.horizontal)
-            .frame(minHeight: 800, maxHeight: 800)
-            .fixedSize(horizontal: false, vertical: true)
-            .onChange(of: scenePhase) {phase in
-                if phase == .active {
-                    gps.nmea?.appendToTextEditor(text: "active")
-//                    gps.startArrow()
-                } else if phase == .inactive {
-                    gps.nmea?.appendToTextEditor(text: "inactive")
-                } else if phase == .background {
-                    gps.nmea?.appendToTextEditor(text: "background")
-//                    gps.stopArrow()
-                }
-            }
-        
-        
+//        TextEditor(text: .constant(gps.nmea?.consoleText ?? "No Console String"))
+//            .foregroundStyle(.secondary)
+//            .font(.system(size: 12)).padding(.horizontal)
+//            .frame(minHeight: 600, maxHeight: 600)
+//            .fixedSize(horizontal: false, vertical: true)
+//            .onChange(of: scenePhase) {phase in
+//                if phase == .active {
+//                    gps.nmea?.appendToTextEditor(text: "active")
+////                    gps.startArrow()
+//                } else if phase == .inactive {
+//                    gps.nmea?.appendToTextEditor(text: "inactive")
+//                } else if phase == .background {
+//                    gps.nmea?.appendToTextEditor(text: "background")
+////                    gps.stopArrow()
+//                }
+//            }
+        manuallyStartGPS
+        restartArrowViaStartNMEAButton
+        restartArrowViaRESTARTNMEAButton
     }
     
 }
