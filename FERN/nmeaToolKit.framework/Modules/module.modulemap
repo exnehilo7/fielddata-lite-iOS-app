@@ -1,6 +1,0 @@
-framework module nmeaToolKit {
-  umbrella header "nmeaToolKit.h"
-
-  export *
-  module * { export * }
-}
