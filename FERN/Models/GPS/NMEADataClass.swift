@@ -193,6 +193,7 @@ import SwiftUI // For .append
             if (self.accessorySession?.accessory?.connectionID == accessory?.connectionID) {
                 print("re entrance")
                 print(#function,"::","re entrance", to: &logger)
+                endEventEncountered = false
 //                doRestartLoop = false
                 return
             }
@@ -340,7 +341,7 @@ import SwiftUI // For .append
             var buf = [UInt8](repeating: 0, count: 1024)// original Obj-c line: uint8_t buf[1024];
             var dataLength:Int? // original type was NSUInteger
             
-            print(eventCode, to: &logger)
+//            print(eventCode, to: &logger)
             
             switch (eventCode) {
             case Stream.Event.openCompleted:
@@ -399,9 +400,9 @@ import SwiftUI // For .append
                 print("Calling setStreamHasNoDataToTrue()...")
                 setStreamHasNoDataToTrue()
                 
-//                print("Skipping endStreaming()...")
-                print("Calling endStreaming()...")
-                endStreaming()
+                print("Skipping endStreaming()...")
+//                print("Calling endStreaming()...")
+//                endStreaming()
                 
 //                print("Calling loopToRestart()...")
 //                loopToRestart()
