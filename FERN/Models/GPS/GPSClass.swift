@@ -39,13 +39,6 @@ import SwiftData
         
         if settings[0].useBluetoothDevice {
             stopArrow()
-//            // Check NMEA stream
-//            if nmea != nil {
-////                print("NMEA endStreaming")
-////                nmea?.endStreaming()
-//                print("setting nmea to nil")
-//                nmea = nil
-//            }
         } else {
             // If default GPS is not active
             print("stopUpdatingDefaultCoreLocation")
@@ -59,7 +52,6 @@ import SwiftData
     func restartArrowViaStartNMEA() {
         if nmea != nil {
             print("GPS Class 'nmea' var is not nil. Restarting NMEA via startNMEA().")
-            print(#function,"::","GPS Class 'nmea' var is not nil. Restarting NMEA via startNMEA().", to: &logger)
             nmea!.startNMEA()
         } else {
             print("No restart, 'nmea' variable in GPS Class is already nil")
@@ -69,7 +61,6 @@ import SwiftData
     func restartArrowViaRESTARTNMEA() {
         if nmea != nil {
             print("GPS Class 'nmea' var is not nil. Restarting NMEA via reStartNMEA().")
-            print(#function,"::","GPS Class 'nmea' var is not nil. Restarting NMEA via reStartNMEA().", to: &logger)
             nmea!.reStartNMEA()
         } else {
             print("No restart, 'nmea' variable in GPS Class is already nil")
@@ -82,16 +73,14 @@ import SwiftData
             nmea = NMEA()
             nmea!.startNMEA()
         } else {
-            print("No startNMEA() called, 'nmea' variable in GPS Class was NOT nil")
-            print(#function,"::","No startNMEA() called, 'nmea' variable in GPS Class was NOT nil", to: &logger)
+            print("'nmea' variable already exists, wiping vars and restarting NMEA...")
         }
     }
     
     func stopArrow() {
-        if nmea != nil { 
-            print("setting CPS Class 'nmea' var to nil")
-            print(#function,"::","setting CPS Class 'nmea' var to nil", to: &logger)
-            nmea = nil
-        }
+//        if nmea != nil { 
+//            print("setting CPS Class 'nmea' var to nil")
+//            nmea = nil
+//        }
     }
 }
