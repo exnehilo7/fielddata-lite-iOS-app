@@ -258,36 +258,36 @@ struct CameraView: View {
         })
     }
     
-    // Arrow Restart buttons
-    var restartArrowViaStartNMEAButton: some View {
-        Button(action: {
-            gps.restartArrowViaStartNMEA()
-        },
-               label: {HStack {
-            Image(systemName: "arrow.uturn.right").font(.system(size: 11))
-            Text("Restart Arrow via startNMEA()").font(.system(size: 11))
-        }
-               .frame(minWidth: 95, maxWidth: 200, minHeight: 20, maxHeight: 50)
-               .background(Color.yellow)
-               .foregroundColor(.black)
-               .cornerRadius(10)
-        })
-    }
-    var restartArrowViaRESTARTNMEAButton: some View {
-        Button(action: {
-            gps.restartArrowViaRESTARTNMEA()
-        },
-               label: {HStack {
-            Image(systemName: "arrow.circlepath").font(.system(size: 11))
-            Text("Restart Arrow via reStartNMEA()").font(.system(size: 11))
-        }
-               .frame(minWidth: 95, maxWidth: 200, minHeight: 20, maxHeight: 50)
-               .background(Color.blue)
-               .foregroundColor(.white)
-               .cornerRadius(10)
-               .padding()
-        })
-    }
+    // Arrow Restart testing buttons
+//    var restartArrowViaStartNMEAButton: some View {
+//        Button(action: {
+//            gps.restartArrowViaStartNMEA()
+//        },
+//               label: {HStack {
+//            Image(systemName: "arrow.uturn.right").font(.system(size: 11))
+//            Text("Restart Arrow via startNMEA()").font(.system(size: 11))
+//        }
+//               .frame(minWidth: 95, maxWidth: 200, minHeight: 20, maxHeight: 50)
+//               .background(Color.yellow)
+//               .foregroundColor(.black)
+//               .cornerRadius(10)
+//        })
+//    }
+//    var restartArrowViaRESTARTNMEAButton: some View {
+//        Button(action: {
+//            gps.restartArrowViaRESTARTNMEA()
+//        },
+//               label: {HStack {
+//            Image(systemName: "arrow.circlepath").font(.system(size: 11))
+//            Text("Restart Arrow via reStartNMEA()").font(.system(size: 11))
+//        }
+//               .frame(minWidth: 95, maxWidth: 200, minHeight: 20, maxHeight: 50)
+//               .background(Color.blue)
+//               .foregroundColor(.white)
+//               .cornerRadius(10)
+//               .padding()
+//        })
+//    }
     
     // Swipe down chevron
     var swipeDownChevron: some View {
@@ -639,13 +639,12 @@ struct CameraView: View {
                         HStack {
                             if gps.nmea?.endEventEncountered ?? false {
                                 streamWasLostMessage
-                                restartArrowViaStartNMEAButton
+//                                restartArrowViaStartNMEAButton
                             } else {
                                 arrowGpsData
-                                VStack {
-                                    restartArrowViaStartNMEAButton
-                                    restartArrowViaRESTARTNMEAButton
-                                }
+//                                VStack {
+//                                    restartArrowViaStartNMEAButton
+//                                }
                             }
                         }
                     }

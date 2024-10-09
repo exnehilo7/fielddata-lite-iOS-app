@@ -39,14 +39,12 @@ struct MainMenuView: View {
     @Query var settings: [Settings]
     @Query var sdTrips: [SDTrip]
     
-//    @Environment(\.scenePhase) private var scenePhase
-    
     // Sounds
     let audio = playSound()
     
     var body: some View {
         if hideUntilDone {
-            NavigationStack{
+            NavigationStack {
                 List {
                     // Don't access others until URLs have been set and HDOP threshold is not 0
                     if (settings.count > 0) &&
@@ -146,17 +144,6 @@ struct MainMenuView: View {
                 //                })
                 
             }
-//            .onChange(of: scenePhase) {phase in
-//                print(phase)
-//                if phase == .active {
-////                    audio.playActive()
-//                } else if phase == .inactive {
-////                    audio.playInactive()
-//                } else if phase == .background {
-//                    
-////                    audio.playBackground()
-//                }
-//            }
         }
         
         // Upload feedback
@@ -175,34 +162,6 @@ struct MainMenuView: View {
         
 // TEMP ----------------------------------------------------------------------------------------------------------------------
         VStack {
-            // To test sounds:
-//            Button {
-//                audio.TBDAlert()
-//            } label: {
-//                Text("TBDAlert")
-//            }.buttonStyle(.borderedProminent).tint(.green)
-//            
-//            Button {
-//                audio.playArrowConnLost()
-//            } label: {
-//                Text("Arrow Connection Lost")
-//            }.buttonStyle(.borderedProminent).tint(.green)
-            
-//            // Manual GPS start
-//            Button(action: {
-//                startGPS()
-//            },
-//            label: {
-//                HStack {
-//                    Image(systemName: "play").font(.system(size: 15))
-//                    Text("Manually Start GPS").font(.system(size: 15))
-//                }
-//               .frame(minWidth: 95, maxWidth: 200, minHeight: 50, maxHeight: 50)
-//               .background(Color.green)
-//               .foregroundColor(.white)
-//               .cornerRadius(10)
-//               .padding().padding()
-//            })
             
             if hideUntilDone {
                 Spacer()
@@ -256,6 +215,7 @@ struct MainMenuView: View {
                         await upload.checkForUploads(sdTrips: sdTrips, uploadURL: settings[0].uploadScriptURL)
                     }
                 }
+                
                 // Start GPS feed if not already running
                 startGPS()
                 
