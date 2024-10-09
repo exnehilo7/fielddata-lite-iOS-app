@@ -151,14 +151,19 @@ struct CameraView: View {
     
     // streamWasLostMessage
     var streamWasLostMessage: some View {
-        VStack {
-            Text("BLUETOOTH END EVENT ENCOUNTERED").bold()
-                .foregroundStyle(.white)
-                .frame(minWidth: 95, maxWidth: 400, minHeight: 0, maxHeight: 50)
-                .background(Color.red)
-                .foregroundColor(.white)
-                .padding(.horizontal)
-            Text("Attempting to reconnect...")
+        VStack{
+            Button {
+                gps.restartArrowViaRESTARTNMEA()
+            }
+            label: {
+                Text("LOST GPS SIGNAL Tap to reconnect").bold()
+                    .foregroundStyle(.white)
+                    .frame(minWidth: 95, maxWidth: 400, minHeight: 50, maxHeight: 50)
+                    .background(Color.red)
+                    .foregroundColor(.white)
+                    .padding(.horizontal)
+            }
+            Spacer()
         }
     }
     
@@ -273,7 +278,7 @@ struct CameraView: View {
 //               .cornerRadius(10)
 //        })
 //    }
-//    var restartArrowViaRESTARTNMEAButton: some View {
+//    var restartArrowButton: some View {
 //        Button(action: {
 //            gps.restartArrowViaRESTARTNMEA()
 //        },
@@ -639,12 +644,8 @@ struct CameraView: View {
                         HStack {
                             if gps.nmea?.endEventEncountered ?? false {
                                 streamWasLostMessage
-//                                restartArrowViaStartNMEAButton
                             } else {
                                 arrowGpsData
-//                                VStack {
-//                                    restartArrowViaStartNMEAButton
-//                                }
                             }
                         }
                     }
