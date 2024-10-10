@@ -37,6 +37,7 @@ import CryptoKit
     var showExpensiveNetworkAlert = false
     var showConstrainedNetworkAlert = false
     var networkIsGoodToGo = false
+    var tea = TextEditorAppend()
     
     func resetVars() async {
         currentTripUploading = ""
@@ -84,13 +85,13 @@ import CryptoKit
                 // Exists?
                 if (self.responseString ?? "No response string").contains("file exists!") {
                     print("🟠 \(fileName) already exists.")
-                    appendToTextEditor(text: "🟠 \(fileName) already exists.")
+                    consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "🟠 \(fileName) already exists.")
                     upProcessedAndUploadedByOne()
                     exists = true
                 }
             } else {
                 print("🟡 Status code: \(statusCode)")
-                appendToTextEditor(text: "🟡 Status code: \(statusCode)")
+                consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "🟡 Status code: \(statusCode)")
             }
         } catch let error as NSError {
             NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
@@ -160,9 +161,9 @@ import CryptoKit
         showPopover = true
     }
     
-    func appendToTextEditor(text: String){
-        self.consoleText.append(contentsOf: "\n" + text)
-    }
+//    func appendToTextEditor(oldText: consoleText, newText: String){
+//        self.consoleText.append(contentsOf: "\n" + text)
+//    }
     
     func clearUploadHistoryList() async {
         // Clear var
@@ -191,14 +192,14 @@ import CryptoKit
             // is 200?
             if statusCode == 200 {
                 print("🟣 Calling function to insert trip into the database. Check database for results.")
-                appendToTextEditor(text: "🟣 Calling function to insert trip into the database. Check database for results.")
+                consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "🟣 Calling function to insert trip into the database. Check database for results.")
                 self.responseString = NSString(data: data, encoding: NSUTF8StringEncoding)
 //                print("****** response data = \(self.responseString!)")
                 complete = true
                 return complete
             } else {
                 print("🟡 Status code: \(statusCode)")
-                appendToTextEditor(text: "🟡 Status code: \(statusCode)")
+                consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "🟡 Status code: \(statusCode)")
             }
           } catch let error as NSError {
               NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
@@ -226,12 +227,12 @@ import CryptoKit
         // See if a file doesn't exist in Upload History
         if await anyFilesToUpload() {
             print("There are files to upload!")
-            appendToTextEditor(text: "There are files to upload!")
+            consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "There are files to upload!")
             // Check network connections
             await isNetworkGood(sdTrips: sdTrips, uploadURL: uploadURL)
         } else {
             print("No new files to upload")
-            appendToTextEditor(text: "No new files to upload.")
+            consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "No new files to upload.")
         }
     }
     
@@ -254,7 +255,7 @@ import CryptoKit
         } catch {
             // failed to read directory – bad permissions, perhaps?
 //            print("Directory loop error. Most likely does not exist.")
-//            appendToTextEditor(text: "No files found.")
+//            consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "No files found.")
         }
     }
     
@@ -282,7 +283,7 @@ import CryptoKit
     func isNetworkGood(sdTrips: [SDTrip], uploadURL: String) async {
         // Check network connections
         if network.isActive {
-            appendToTextEditor(text: "Network is active.")
+            consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "Network is active.")
             switch UIDevice.current.batteryState {
             case .unplugged:
                 showUnpluggedBatteryAlert = true
@@ -297,7 +298,7 @@ import CryptoKit
     func checkForExpensiveNetwork(sdTrips: [SDTrip], uploadURL: String) async {
         showUnpluggedBatteryAlert = false
         if network.isExpensive {
-            appendToTextEditor(text: "Network is expensive.")
+            consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "Network is expensive.")
             showExpensiveNetworkAlert = true
         } else {await loopThroughTripsAndUpload(sdTrips: sdTrips, uploadURL: uploadURL)}
     }
@@ -309,19 +310,19 @@ import CryptoKit
           For a route, always upload its CSVs until it's decided how to handle "completed" route data acquisition. */
         for subfolder in tripsSubfolders {
             print("--- Processing \(subfolder)'s files ---")
-            appendToTextEditor(text: "--- Processing \(subfolder)'s files ---")
+            consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "--- Processing \(subfolder)'s files ---")
             
             // Is name in sdTrips?
             for trip in sdTrips {
                 if trip.name == subfolder {
                     print("  \(subfolder) is a TRIP")
-                    appendToTextEditor(text: "  \(subfolder) is a TRIP")
+                    consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  \(subfolder) is a TRIP")
                     itemIsTrip = true
                     
                     // If complete, ulpload all file types
                     if trip.isComplete {
                         print("  Trip is marked as complete!")
-                        appendToTextEditor(text: "  Trip is marked as complete!")
+                        consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  Trip is marked as complete!")
                         
                         await resetVars()
                         await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "metadata")
@@ -343,7 +344,7 @@ import CryptoKit
                         await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "scoring", writeToUploadHistory: false)
                         // No image files
                         print("  Trip is not marked as complete, skipping image files...")
-                        appendToTextEditor(text: "  Trip is not marked as complete, skipping image files...")
+                        consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  Trip is not marked as complete, skipping image files...")
                     }
                 }
             }
@@ -351,7 +352,7 @@ import CryptoKit
             // Processes as route if subfolder name not a trip
             if !itemIsTrip {
                 print("  \(subfolder) is a ROUTE")
-                appendToTextEditor(text: "  \(subfolder) is a ROUTE")
+                consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  \(subfolder) is a ROUTE")
                 await resetVars()
                 await getLocalFilePathsForTripOnDevice(tripName: subfolder, folderName: "metadata")
                 await uploadAndShowError(tripName: subfolder, uploadURL: uploadURL, folderName: "metadata",  writeToUploadHistory: false)
@@ -364,19 +365,19 @@ import CryptoKit
             }
             
             print("\(subfolder) is complete.")
-            appendToTextEditor(text: "\(subfolder) is complete.")
+            consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "\(subfolder) is complete.")
             
             // Time for next subfolder name
             itemIsTrip = false
             
         }
         print("🔵 Upload process finished.")
-        appendToTextEditor(text: "🔵 Upload process finished.")
+        consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "🔵 Upload process finished.")
     }
     
     func printProcessingFileType(fileType: String) {
         print("  Processing \(fileType) files...")
-        appendToTextEditor(text: "  Processing \(fileType) files...")
+        consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  Processing \(fileType) files...")
     }
     
     // This function runs on the main thread
@@ -385,7 +386,7 @@ import CryptoKit
         // If no files in list, don't do
         if fileList.count == 0 {
             print("  No \(folderName) files found, skipping...")
-            appendToTextEditor(text: "  No \(folderName) files found, skipping...")
+            consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  No \(folderName) files found, skipping...")
             return
         }
         
@@ -424,7 +425,7 @@ import CryptoKit
         for item in fileList {
             if !uploadHistoryFileList.contains(item) {
                 print("  Uploading \(item)...")
-                appendToTextEditor(text: "  Uploading \(item)...")
+                consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  Uploading \(item)...")
 
                 let boundary = "Boundary-\(NSUUID().uuidString)"
                 
@@ -483,34 +484,34 @@ import CryptoKit
                                 }
                                 
                                 print("  🟢 \(item) is uploaded!")
-                                appendToTextEditor(text: "  🟢 \(item) is uploaded!")
+                                consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  🟢 \(item) is uploaded!")
                                 self.totalUploaded += 1
                             }
                             
                             // Checksum failed?
                             else if (responseString ?? "No response string").contains("Hashes do not match!") {
                                 print("  🔴 Hashes do not match for \(item)!")
-                                appendToTextEditor(text: "  🔴 Hashes do not match for \(item)!")
+                                consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  🔴 Hashes do not match for \(item)!")
                             // File exists?
                             } else if (responseString ?? "No response string").contains("file exists!") {
                                 // To circumvent a bug where a file is written to the server but its name fails to write to the local history file, write to local history if exists:
                                 await writeToUploadHistory(tripOrRouteName: tripName, fileNameUUID: "No uuid", fileName: item)
                                 print("  🟡 File already exists.")
                                 self.totalUploaded += 1
-                                appendToTextEditor(text: "  🟡 File already exists.")
+                                consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  🟡 File already exists.")
                                 
                             } else {
                                 print(responseString ?? "  Response string does not contain 'successfully!' or 'Hashes do not match!' or 'file exists!'")
-                                appendToTextEditor(text: (responseString ?? "  Response string does not contain text for a successful save, matching hash, or an existing file.") as String)
+                                consoleText = tea.appendToTextEditor(oldText: consoleText, newText: (responseString ?? "  Response string does not contain text for a successful save, matching hash, or an existing file.") as String)
                             }
                             
                         } else {
                             print("  🟡 Status code: \(statusCode)")
-                            appendToTextEditor(text: "  🟡 Status code: \(statusCode)")
+                            consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  🟡 Status code: \(statusCode)")
                         }
                 } catch {
                     print(error)
-                    appendToTextEditor(text: "  \(error)")
+                    consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  \(error)")
                 }
             } else { 
                 self.totalUploaded += 1
@@ -518,7 +519,7 @@ import CryptoKit
             }
         }
         print("  \(folderName.capitalized) process complete.")
-        appendToTextEditor(text: "  \(folderName.capitalized) process complete.")
+        consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  \(folderName.capitalized) process complete.")
         isLoading = false
     }
     
@@ -527,7 +528,7 @@ import CryptoKit
             _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripOrRouteName, fileNameUUID: fileNameUUID, fileName: fileName)
         } catch {
             print ("  🔴 Error writing to upload history after a sucessful save to server.")
-            appendToTextEditor(text: "  🔴 Error writing to upload history after a sucessful save to server.")
+            consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  🔴 Error writing to upload history after a sucessful save to server.")
         }
     }
     

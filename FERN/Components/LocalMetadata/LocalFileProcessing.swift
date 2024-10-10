@@ -10,21 +10,6 @@ import Foundation
 import UIKit
 
 
-class GetFormattedDateStrings {
-    
-    func getDateString_yyyy_MM_dd() -> String {
-        let formatterDate = DateFormatter()
-        formatterDate.dateFormat = "yyyy-MM-dd"
-        return formatterDate.string(from: Date())
-    }
-    
-    func getTimestampSrting_yyyy_MM_dd_HH_mm_ssSSSx() -> String {
-        let formatterDateTime = DateFormatter()
-        formatterDateTime.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSx"
-        return formatterDateTime.string(from: Date())
-    }
-}
-
 class ProcessTextfile {
     
     static func createPath(path: URL, fileName: String) -> URL {

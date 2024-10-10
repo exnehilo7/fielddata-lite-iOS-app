@@ -29,7 +29,13 @@ struct ShowListFromDatabaseView: View {
     @Query var settings: [Settings]
     
     @State private var list: [SelectNameModel] = []
+    @State private var showRouteCacheRefreshWarning = false
+    @State private var hideUntilDone = true
     
+    // MARK:
+    
+    
+    // MARK: MAIN VIEW
     var body: some View {
         VStack {
             HStack{
@@ -37,9 +43,23 @@ struct ShowListFromDatabaseView: View {
                 if !offlineModeModel.offlineModeIsOn {
                     Button ("Refresh"){
                         Task {
-                            await getListItems()
+                            if mapMode == "Traveling Salesman" {
+                                showRouteCacheRefreshWarning = true
+                            } else {
+                                await getListItems()
+                            }
                         }
                     }.padding(.trailing, 25)
+                        .alert("Cache Refresh", isPresented: $showRouteCacheRefreshWarning) {
+                            Button("OK", action: {
+                                showRouteCacheRefreshWarning = false
+                                Task.detached {
+                                    // Kick off folder refresh. Hide button until complete?
+                                    await getListItems()
+                                }
+                            })
+                            Button("Cancel", role: .cancel){showRouteCacheRefreshWarning = false}
+                        } message: {HStack {Text("WARNING! Current routing cache will be overwritten. Continue?")}}
                 }
             }
             NavigationStack {
@@ -77,6 +97,10 @@ struct ShowListFromDatabaseView: View {
     private func getListOfTravelingSalesmanRoutes() async {
         // If mode is offline
         if offlineModeModel.offlineModeIsOn {
+            // Refresh and get. Show progress bar of map files when refreshing.
+            // _ = await refreshCache()
+            
+            // Update view
             await getRoutesFromCache()
         } else {
             self.list = await menuListBridgingCoordinator.menuListController.getTripListFromDatabase(settings: settings, nameList: list, phpFile: "menuLoadSavedRouteView.php", isMethodPost: false)

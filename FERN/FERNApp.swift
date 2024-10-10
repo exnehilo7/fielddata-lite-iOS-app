@@ -4,6 +4,8 @@
 //
 //  Created by Hopp, Dan on 2/1/23.
 //
+//  Classes are reference types. Structs are value types.
+//
 //  Note that the supplied NMEA toolkit was not compiled with the required arm for a live preview within XCode.
 
 import SwiftUI
@@ -14,10 +16,6 @@ struct FERNApp: App {
     
     // Send multiple model configurations into a single model container
     var container: ModelContainer
-//    @Environment(\.scenePhase) private var scenePhase // to see the app's phases
-    
-    // Sounds
-//    let audio = playSound()
 
     init() {
         do {
@@ -34,15 +32,5 @@ struct FERNApp: App {
                 StartScreenView()
             }
         }.modelContainer(container)
-//            .onChange(of: scenePhase) {phase in
-//                print(phase)
-//                if phase == .active {
-//                    print("---active---", to: &logger)
-//                } else if phase == .inactive {
-//                    print("---inactive---", to: &logger)
-//                } else if phase == .background {
-//                    print("---background---", to: &logger)
-//                }
-//            }
     }
 }

@@ -59,11 +59,14 @@
 		D183BB302CA311AD00C124A1 /* SettingsOfflineModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D183BB2F2CA311AD00C124A1 /* SettingsOfflineModeView.swift */; };
 		D183BB342CB08A3D00C124A1 /* ConsoleTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D183BB332CB08A3D00C124A1 /* ConsoleTextView.swift */; };
 		D183BB372CB47FD700C124A1 /* LoggerStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = D183BB362CB47FD700C124A1 /* LoggerStruct.swift */; };
+		D183BB402CB8456500C124A1 /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = D183BB3F2CB8456500C124A1 /* Alerts.swift */; };
+		D183BB432CB845FC00C124A1 /* MeasurementsClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D183BB422CB845FC00C124A1 /* MeasurementsClass.swift */; };
+		D183BB462CB84AFF00C124A1 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D183BB452CB84AFF00C124A1 /* Strings.swift */; };
+		D183BB482CB84D5B00C124A1 /* RoutingCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = D183BB472CB84D5B00C124A1 /* RoutingCache.swift */; };
 		D18B59D32C07C16B005A58DB /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D18B59D22C07C16B005A58DB /* MessageView.swift */; };
 		D19FF3712C17542F00B54B7E /* SettingsHdopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19FF3702C17542F00B54B7E /* SettingsHdopView.swift */; };
 		D1A56E812B051DB300AC8291 /* SelectTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E802B051DB300AC8291 /* SelectTripView.swift */; };
 		D1E260D42C64087300C9CFF7 /* LocalFileProcessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E260D32C64087300C9CFF7 /* LocalFileProcessing.swift */; };
-		D1E815062C99DA95004E0475 /* AlertsStringsArrays.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1E815052C99DA95004E0475 /* AlertsStringsArrays.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -145,11 +148,14 @@
 		D183BB2F2CA311AD00C124A1 /* SettingsOfflineModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsOfflineModeView.swift; sourceTree = "<group>"; };
 		D183BB332CB08A3D00C124A1 /* ConsoleTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleTextView.swift; sourceTree = "<group>"; };
 		D183BB362CB47FD700C124A1 /* LoggerStruct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggerStruct.swift; sourceTree = "<group>"; };
+		D183BB3F2CB8456500C124A1 /* Alerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alerts.swift; sourceTree = "<group>"; };
+		D183BB422CB845FC00C124A1 /* MeasurementsClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsClass.swift; sourceTree = "<group>"; };
+		D183BB452CB84AFF00C124A1 /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
+		D183BB472CB84D5B00C124A1 /* RoutingCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutingCache.swift; sourceTree = "<group>"; };
 		D18B59D22C07C16B005A58DB /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		D19FF3702C17542F00B54B7E /* SettingsHdopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHdopView.swift; sourceTree = "<group>"; };
 		D1A56E802B051DB300AC8291 /* SelectTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripView.swift; sourceTree = "<group>"; };
 		D1E260D32C64087300C9CFF7 /* LocalFileProcessing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFileProcessing.swift; sourceTree = "<group>"; };
-		D1E815052C99DA95004E0475 /* AlertsStringsArrays.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsStringsArrays.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -178,27 +184,6 @@
 				D1036C0B2C1B4FD500E2E266 /* StartScreenController.swift */,
 			);
 			path = Controllers;
-			sourceTree = "<group>";
-		};
-		D1036C0D2C1B516000E2E266 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				D183BB352CB47F8D00C124A1 /* Logger */,
-				D16FA64A2C25E4890090E756 /* GPS */,
-				D16FA64C2C25E5210090E756 /* Images */,
-				D16FA64D2C25E54B0090E756 /* Maps */,
-				D16FA64B2C25E4EC0090E756 /* OCR */,
-				D1E815052C99DA95004E0475 /* AlertsStringsArrays.swift */,
-				D16FA63E2C25E1760090E756 /* CapstoneModels.swift */,
-				D16FA6582C2F0DCA0090E756 /* FileUploadClass.swift */,
-				D16FA6112C1CB7A50090E756 /* MenuListModel.swift */,
-				D16FA6402C25E1F50090E756 /* SoundsStruct.swift */,
-				D1036C0E2C1B519E00E2E266 /* StartScreenModel.swift */,
-				D16FA6332C25C7FC0090E756 /* URLSessionsClass.swift */,
-				D1807ABC2C5C22DC004EB245 /* NetworkMonitorClass.swift */,
-				D1E260D32C64087300C9CFF7 /* LocalFileProcessing.swift */,
-			);
-			path = Models;
 			sourceTree = "<group>";
 		};
 		D107EF192B571C610020F0A2 /* Settings */ = {
@@ -236,7 +221,7 @@
 			isa = PBXGroup;
 			children = (
 				D10BB31B298ADAA400667E86 /* FERNApp.swift */,
-				D1036C0D2C1B516000E2E266 /* Models */,
+				D183BB3B2CB8441100C124A1 /* Components */,
 				D1A56E942B07D05E00AC8291 /* Views */,
 				D1036C082C1B3B5800E2E266 /* Controllers */,
 				D1A56E972B07D0DE00AC8291 /* Persistence */,
@@ -351,6 +336,94 @@
 				D183BB362CB47FD700C124A1 /* LoggerStruct.swift */,
 			);
 			path = Logger;
+			sourceTree = "<group>";
+		};
+		D183BB382CB8406400C124A1 /* OfflineMode */ = {
+			isa = PBXGroup;
+			children = (
+				D183BB472CB84D5B00C124A1 /* RoutingCache.swift */,
+			);
+			path = OfflineMode;
+			sourceTree = "<group>";
+		};
+		D183BB392CB8419D00C124A1 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				D1807ABC2C5C22DC004EB245 /* NetworkMonitorClass.swift */,
+				D183BB3A2CB841BC00C124A1 /* Uploads */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		D183BB3A2CB841BC00C124A1 /* Uploads */ = {
+			isa = PBXGroup;
+			children = (
+				D16FA6582C2F0DCA0090E756 /* FileUploadClass.swift */,
+				D16FA6332C25C7FC0090E756 /* URLSessionsClass.swift */,
+			);
+			path = Uploads;
+			sourceTree = "<group>";
+		};
+		D183BB3B2CB8441100C124A1 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				D16FA63E2C25E1760090E756 /* CapstoneModels.swift */,
+				D16FA6112C1CB7A50090E756 /* MenuListModel.swift */,
+				D1036C0E2C1B519E00E2E266 /* StartScreenModel.swift */,
+				D183BB3E2CB8454100C124A1 /* Alerts */,
+				D16FA64A2C25E4890090E756 /* GPS */,
+				D16FA64C2C25E5210090E756 /* Images */,
+				D183BB3C2CB844C900C124A1 /* LocalMetadata */,
+				D183BB352CB47F8D00C124A1 /* Logger */,
+				D16FA64D2C25E54B0090E756 /* Maps */,
+				D183BB412CB845D200C124A1 /* Measurements */,
+				D183BB392CB8419D00C124A1 /* Networking */,
+				D16FA64B2C25E4EC0090E756 /* OCR */,
+				D183BB382CB8406400C124A1 /* OfflineMode */,
+				D183BB442CB84AE600C124A1 /* Strings */,
+				D183BB3D2CB8451E00C124A1 /* Sounds */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		D183BB3C2CB844C900C124A1 /* LocalMetadata */ = {
+			isa = PBXGroup;
+			children = (
+				D1E260D32C64087300C9CFF7 /* LocalFileProcessing.swift */,
+			);
+			path = LocalMetadata;
+			sourceTree = "<group>";
+		};
+		D183BB3D2CB8451E00C124A1 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				D16FA6402C25E1F50090E756 /* SoundsStruct.swift */,
+			);
+			path = Sounds;
+			sourceTree = "<group>";
+		};
+		D183BB3E2CB8454100C124A1 /* Alerts */ = {
+			isa = PBXGroup;
+			children = (
+				D183BB3F2CB8456500C124A1 /* Alerts.swift */,
+			);
+			path = Alerts;
+			sourceTree = "<group>";
+		};
+		D183BB412CB845D200C124A1 /* Measurements */ = {
+			isa = PBXGroup;
+			children = (
+				D183BB422CB845FC00C124A1 /* MeasurementsClass.swift */,
+			);
+			path = Measurements;
+			sourceTree = "<group>";
+		};
+		D183BB442CB84AE600C124A1 /* Strings */ = {
+			isa = PBXGroup;
+			children = (
+				D183BB452CB84AFF00C124A1 /* Strings.swift */,
+			);
+			path = Strings;
 			sourceTree = "<group>";
 		};
 		D18B59C92C078849005A58DB /* Capstone Views */ = {
@@ -525,6 +598,7 @@
 				D130BADA2B5ADEAE00F0C47C /* Trip.swift in Sources */,
 				D1807ABD2C5C22DC004EB245 /* NetworkMonitorClass.swift in Sources */,
 				D16FA61B2C20BEDC0090E756 /* CameraView.swift in Sources */,
+				D183BB462CB84AFF00C124A1 /* Strings.swift in Sources */,
 				D18B59D32C07C16B005A58DB /* MessageView.swift in Sources */,
 				D16796432BE02CFF00561875 /* SelectTripForCesiumView.swift in Sources */,
 				D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */,
@@ -532,9 +606,9 @@
 				D1036C0F2C1B519E00E2E266 /* StartScreenModel.swift in Sources */,
 				D16FA6572C2DE0340090E756 /* SelectTripTypeView.swift in Sources */,
 				D183BB342CB08A3D00C124A1 /* ConsoleTextView.swift in Sources */,
-				D1E815062C99DA95004E0475 /* AlertsStringsArrays.swift in Sources */,
 				D162E6EC2C59495500E419A5 /* SelectTripForTestingView.swift in Sources */,
 				D127B37E2A12ED3D00F6287A /* NMEADataClass.swift in Sources */,
+				D183BB482CB84D5B00C124A1 /* RoutingCache.swift in Sources */,
 				D16FA65B2C2F57B70090E756 /* UploadFilesView.swift in Sources */,
 				D16FA6472C25E3920090E756 /* CoreLocationClass.swift in Sources */,
 				D16FA6122C1CB7A50090E756 /* MenuListModel.swift in Sources */,
@@ -546,9 +620,11 @@
 				D107EF1B2B571C840020F0A2 /* SettingsDatabaseView.swift in Sources */,
 				D16FA6102C1CB74C0090E756 /* MenuListController.swift in Sources */,
 				D16A6C7C2995D18100835B5E /* StartScreenView.swift in Sources */,
+				D183BB432CB845FC00C124A1 /* MeasurementsClass.swift in Sources */,
 				D16FA6382C25CA380090E756 /* MapStruct.swift in Sources */,
 				D16FA63F2C25E1760090E756 /* CapstoneModels.swift in Sources */,
 				D16FA6592C2F0DCA0090E756 /* FileUploadClass.swift in Sources */,
+				D183BB402CB8456500C124A1 /* Alerts.swift in Sources */,
 				D16A6C88299AF32600835B5E /* ReportRoutes.swift in Sources */,
 				D16FA63B2C25DC0B0090E756 /* TextRecognitionStruct.swift in Sources */,
 				D183BB372CB47FD700C124A1 /* LoggerStruct.swift in Sources */,

@@ -49,8 +49,6 @@ import SwiftUI // For .append
     // 03-OCT-2024 - Try class-wide variable to handle Bluetooth disconnect and reconnects
     let sharedAccessoryManager = EAAccessoryManager.shared()
     
-//    private var doRestartLoop = false
-    
 //    var consoleText:String?
     
     
@@ -118,20 +116,6 @@ import SwiftUI // For .append
 //        super.didReceiveMemoryWarning
 //        // [O] Dispose of any resources that can be recreated.
 //    }
-
-    func loopToRestart() {
-    // NOTE: restart will run when screen is in sleep mode and will use 50% CPU. Per Apple: The standard lifecycle for an iOS app is that, when the user moves it to the background, the system suspends it. A suspend app lurks in the background indefinitely. That way, if the user brings it to the front, it can be quickly resumed rather than relaunched. However, if the system comes under memory pressure it will terminate the app, removing it from memory.
-        audio.playArrowConnLost()
-        
-//        print("NMEA looping call is DISABLED.")
-        
-//        print("Restarting NMEA with looping calls to reStartNMEA()...")
-//        while (doRestartLoop) {
-//            if (sharedAccessoryManager.connectedAccessories.count > 0) {
-//                reStartNMEA()
-//            }
-//        }
-    }
     
     // Not used in original code?
     func dealloc(sharedAccessoryManager:EAAccessoryManager, defaultCenter:NSNotification) {
@@ -192,9 +176,7 @@ import SwiftUI // For .append
             
             if (self.accessorySession?.accessory?.connectionID == accessory?.connectionID) {
                 print("re entrance")
-                print(#function,"::","re entrance", to: &logger)
                 endEventEncountered = false
-//                doRestartLoop = false
                 return
             }
             
@@ -224,15 +206,11 @@ import SwiftUI // For .append
 
             if (accessorySession == nil) {
                 print("Error, accessory can't communicate. accessorySession is nil")
-                print(#function,"::","Error, accessory can't communicate. accessorySession is nil", to: &logger)
-                audio.playError()
-//                doRestartLoop = true
-//                loopToRestart()
+//                audio.playError()
                 
                 // Alert accessory can't communicate
                 // [Original Obj-C code]
             } else {
-//                doRestartLoop = false
                 endEventEncountered = false
 //                audio.playArrowConnSuccess()
             }
@@ -262,7 +240,6 @@ import SwiftUI // For .append
             print("'accessorySession' == 'accessory?.connectionID'")
             
             // [O] stop stream
-            print(#function,"::","stop stream", to: &logger)
 //                print("Skipping endStreaming()...")
             print("Calling endStreaming()...")
             endStreaming()
@@ -341,8 +318,6 @@ import SwiftUI // For .append
             var buf = [UInt8](repeating: 0, count: 1024)// original Obj-c line: uint8_t buf[1024];
             var dataLength:Int? // original type was NSUInteger
             
-//            print(eventCode, to: &logger)
-            
             switch (eventCode) {
             case Stream.Event.openCompleted:
                 print("openCompleted (NSStreamEventOpenCompleted)")
@@ -379,7 +354,6 @@ import SwiftUI // For .append
                 let theError:NSError = aStream.streamError! as NSError
                 print ("Error is \(theError.localizedDescription)")
 //                errorEventEncountered = true
-//                doRestartLoop = false
                 
 //                print("Skipping setStreamHasNoDataToTrue()...")
                 print("Calling setStreamHasNoDataToTrue()...")
@@ -392,9 +366,7 @@ import SwiftUI // For .append
                 break;
             case Stream.Event.endEncountered:
                 print("END EVENT encountered")
-                print(#function,"::","END EVENT encountered", to: &logger)
                 endEventEncountered = true
-//                doRestartLoop = true
                 
 //                print("Skipping setStreamHasNoDataToTrue()...")
                 print("Calling setStreamHasNoDataToTrue()...")

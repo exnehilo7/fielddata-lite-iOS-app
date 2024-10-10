@@ -66,25 +66,7 @@ struct ConsoleTextView: View {
     }
     
     var body: some View {
-//        TextEditor(text: .constant(gps.nmea?.consoleText ?? "No Console String"))
-//            .foregroundStyle(.secondary)
-//            .font(.system(size: 12)).padding(.horizontal)
-//            .frame(minHeight: 600, maxHeight: 600)
-//            .fixedSize(horizontal: false, vertical: true)
-//            .onChange(of: scenePhase) {phase in
-//                if phase == .active {
-//                    gps.nmea?.appendToTextEditor(text: "active")
-////                    gps.startArrow()
-//                } else if phase == .inactive {
-//                    gps.nmea?.appendToTextEditor(text: "inactive")
-//                } else if phase == .background {
-//                    gps.nmea?.appendToTextEditor(text: "background")
-////                    gps.stopArrow()
-//                }
-//            }
-        manuallyStartGPS
-        restartArrowViaStartNMEAButton
-        restartArrowViaRESTARTNMEAButton
+        Text ("tbd")
     }
     
 }

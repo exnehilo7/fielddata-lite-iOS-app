@@ -39,6 +39,7 @@ struct ImagePicker: UIViewControllerRepresentable {
           Coordinator(self)
     }
     
+    //  Classes marked with "final" can not be overridden. When you declare a class as being final, no other class can inherit from it. This means a programmer can’t override your methods in order to change your behavior – they need to use your class the way it was written.
     final class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
      
         var parent: ImagePicker

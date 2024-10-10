@@ -149,19 +149,20 @@ struct CameraView: View {
         }
     }
     
-    // streamWasLostMessage
-    var streamWasLostMessage: some View {
+    // reconnectArrowButton
+    var reconnectArrowButton: some View {
         VStack{
             Button {
                 gps.restartArrowViaRESTARTNMEA()
             }
             label: {
-                Text("LOST GPS SIGNAL Tap to reconnect").bold()
+                Text("LOST GPS SIGNAL Tap to attempt reconnect").bold()
                     .foregroundStyle(.white)
                     .frame(minWidth: 95, maxWidth: 400, minHeight: 50, maxHeight: 50)
                     .background(Color.red)
                     .foregroundColor(.white)
                     .padding(.horizontal)
+                Text("Make sure the device's Bluetooth light is steady on")
             }
             Spacer()
         }
@@ -643,7 +644,7 @@ struct CameraView: View {
                     if settings[0].useBluetoothDevice {
                         HStack {
                             if gps.nmea?.endEventEncountered ?? false {
-                                streamWasLostMessage
+                                reconnectArrowButton
                             } else {
                                 arrowGpsData
                             }
