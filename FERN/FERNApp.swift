@@ -15,22 +15,39 @@ import SwiftData
 struct FERNApp: App {
     
     // Send multiple model configurations into a single model container
-    var container: ModelContainer
+//    var container: ModelContainer
+//
+//    init() {
+//        do {
+//            container = try ModelContainer(for: Settings.self, SDTrip.self //,migrationPlan: SettingsMigrationPlan.self  APR-2024: SwiftData may still be too immature. OCT-2024: Apparently auto-migration was a thing whose documentation had little web saturation per anything foundational with Apple, or it was added to iOS MAY 2024.
+//            )
+//        } catch {
+//                fatalError("Failed to configure SwiftData container.")
+//            }
+//        }
+    
+    var sharedModelContainer: ModelContainer = {
+        let schema = Schema([
+            Settings.self,
+            SDTrip.self
+        ])
+        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
-    init() {
         do {
-            container = try ModelContainer(for: Settings.self, SDTrip.self //,migrationPlan: SettingsMigrationPlan.self  APR-2024: SwiftData may still be too immature
-            )
+            return try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
-                fatalError("Failed to configure SwiftData container.")
-            }
+            fatalError("Could not create ModelContainer: \(error)")
         }
+    }()
     
     var body: some Scene {
         WindowGroup {
             NavigationStack {
                 StartScreenView()
             }
-        }.modelContainer(container)
+        //        }.modelContainer(container)
+        //            .modelContainer(for: Settings.self)
+        //            .modelContainer(for: SDTrip.self)
+        }.modelContainer(sharedModelContainer)
     }
 }

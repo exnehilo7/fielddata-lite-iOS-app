@@ -18,7 +18,6 @@
 	</dict>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>bluetooth-central</string>
 		<string>processing</string>
 		<string>external-accessory</string>
 	</array>

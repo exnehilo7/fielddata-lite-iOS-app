@@ -12,12 +12,14 @@ import SafariServices
 
 struct SelectTripForCesiumView: View {
     
-    @EnvironmentObject var menuListBridgingCoordinator: MenuListBridgingCoordinator
+//    @EnvironmentObject var menuListBridgingCoordinator: MenuListBridgingCoordinator
     
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
     
-    @State private var areaList: [SelectNameModel] = []
+    var menuListClass = MenuListClass()
+    
+    @State private var areaList: [SelectNameClass] = []
     
     
     var body: some View {
@@ -40,7 +42,7 @@ struct SelectTripForCesiumView: View {
     } //end View
     
     private func getTripList() async {
-        self.areaList = await menuListBridgingCoordinator.menuListController.getTripListFromDatabase(settings: settings, nameList: areaList, phpFile: "menusAndReports.php", isMethodPost: true, postString: "_query_name=trip_list_for_cesium")
+        self.areaList = await menuListClass.getTripListFromDatabase(settings: settings, nameList: areaList, phpFile: "menusAndReports.php", isMethodPost: true, postString: "_query_name=trip_list_for_cesium")
     }
     
     // Option to have web browser in-app:

@@ -11,7 +11,7 @@ import SwiftData
 
 struct ShowListFromDatabaseView: View {
     
-    @EnvironmentObject var menuListBridgingCoordinator: MenuListBridgingCoordinator
+//    @EnvironmentObject var menuListBridgingCoordinator: MenuListBridgingCoordinator
     
     var map: MapClass
     var gps: GpsClass
@@ -23,66 +23,98 @@ struct ShowListFromDatabaseView: View {
     var mapQuery: String
     var tripType: String
     var measurements: MeasurementsClass
-    var offlineModeModel: OfflineModeModel
+    var offlineMode: Bool
 
+    var menuListClass = MenuListClass()
+    var routingCache = RoutingCache()
+    
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
     
-    @State private var list: [SelectNameModel] = []
+    @State private var list: [SelectNameClass] = []
     @State private var showRouteCacheRefreshWarning = false
     @State private var hideUntilDone = true
     
-    // MARK:
+    // MARK: PROGRESS BAR
+    var progressBar: some View {
+        VStack {
+            Spacer()
+            Text("Refreshing cache...")
+            ProgressView("File \(routingCache.processedRouteFiles) of \(routingCache.totalRouteFiles) downloaded", value: Double(routingCache.processedRouteFiles), total: Double(routingCache.totalRouteFiles)).progressViewStyle(.linear)
+
+            Spacer()
+        }
+    }
     
+    // MARK: BUTTONS
+    var refreshRouteCache: some View {
+        HStack {
+            Spacer()
+                Button ("Refresh Cache"){
+                    Task {
+                        showRouteCacheRefreshWarning = true
+                    }
+                }.padding(.trailing, 25)
+                    .alert("Refresh Route Cache", isPresented: $showRouteCacheRefreshWarning) {
+                        Button("OK", action: {
+                            showRouteCacheRefreshWarning = false
+                            Task.detached {
+                                // Refresh and get. Show progress bar of map files when refreshing.
+                                _ = await routingCache.refreshCache(settings: settings, map: map)
+                                await getListOfTravelingSalesmanRoutes()
+                            }
+                        })
+                        Button("Cancel", role: .cancel){ showRouteCacheRefreshWarning = false }
+                    } message: {HStack {Text("WARNING! All routes will be overwritten. Continue?")}}
+        }
+    }
+    var refreshDatabaseList: some View {
+        HStack {
+            Spacer()
+                Button ("Refresh"){
+                    Task {
+                        await getListItems()
+                    }
+                }.padding(.trailing, 25)
+        }
+    }
     
     // MARK: MAIN VIEW
     var body: some View {
         VStack {
-            HStack{
-                Spacer()
-                if !offlineModeModel.offlineModeIsOn {
-                    Button ("Refresh"){
-                        Task {
-                            if mapMode == "Traveling Salesman" {
-                                showRouteCacheRefreshWarning = true
-                            } else {
-                                await getListItems()
-                            }
-                        }
-                    }.padding(.trailing, 25)
-                        .alert("Cache Refresh", isPresented: $showRouteCacheRefreshWarning) {
-                            Button("OK", action: {
-                                showRouteCacheRefreshWarning = false
-                                Task.detached {
-                                    // Kick off folder refresh. Hide button until complete?
-                                    await getListItems()
-                                }
-                            })
-                            Button("Cancel", role: .cancel){showRouteCacheRefreshWarning = false}
-                        } message: {HStack {Text("WARNING! Current routing cache will be overwritten. Continue?")}}
-                }
+            // If TS, show cutom offline refresh button
+            if mapMode == "Traveling Salesman" {
+                refreshRouteCache
+            } else {
+                refreshDatabaseList
             }
-            NavigationStack {
-                List (self.list) { (item) in
-                    NavigationLink(item.name) {                        
-                        // Pass var to view. Query for route does not need a column or organism name.
-                        MapView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, tripOrRouteName: item.name, columnName: columnName, organismName: organismName, queryName: mapQuery, measurements: measurements, offlineModeModel: offlineModeModel)
-                            .navigationTitle(item.name).font(.subheadline)
+            // If refreshing offline cache, show progress. Else show list.
+            if routingCache.showProgressBar {
+                progressBar
+            } else {
+                NavigationStack {
+                    List (self.list) { (item) in
+                        NavigationLink(item.name) {
+                            // Pass var to view. Query for route does not need a column or organism name.
+                            MapView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, tripOrRouteName: item.name, columnName: columnName, organismName: organismName, queryName: mapQuery, measurements: measurements, offlineMode: offlineMode)
+                                .navigationTitle(item.name).font(.subheadline)
+                        }
                     }
-                }
-            }.onAppear(perform: {
-                // Reset previously snapped pic if view was swiped down before image was saved
-                camera.clearCustomData()
-                camera.resetCamera()
-                
-                // Need to reset vars in MapModel
-                map.resetMapModelVariables()
-                
-                // Reset measurement / scoring vars
-                measurements.clearMeasurementVars()
-            })
-            // query routes. Call PHP GET
-        }.task { await getListItems()}
+                }.onAppear(perform: {
+                    // Reset previously snapped pic if view was swiped down before image was saved
+                    camera.clearCustomData()
+                    camera.resetCamera()
+                    
+                    // Need to reset vars in MapModel
+                    map.resetMapModelVariables()
+                    
+                    // Reset measurement / scoring vars
+                    measurements.clearMeasurementVars()
+                })
+            }
+        }.task {
+            await getListItems()
+        }
     }
     
     private func getListItems() async {
@@ -95,21 +127,16 @@ struct ShowListFromDatabaseView: View {
     }
     
     private func getListOfTravelingSalesmanRoutes() async {
-        // If mode is offline
-        if offlineModeModel.offlineModeIsOn {
-            // Refresh and get. Show progress bar of map files when refreshing.
-            // _ = await refreshCache()
-            
-            // Update view
-            await getRoutesFromCache()
-        } else {
-            self.list = await menuListBridgingCoordinator.menuListController.getTripListFromDatabase(settings: settings, nameList: list, phpFile: "menuLoadSavedRouteView.php", isMethodPost: false)
-        }
+        // Clear and repopulate
+        list = []
+        await getRoutesFromCache()
+//        } else {
+//            self.list = await menuListClass.getTripListFromDatabase(settings: settings, nameList: list, phpFile: "menuLoadSavedRouteView.php", isMethodPost: false)
     }
     
     private func getListOfTripsInDatabase() async {
         
-        self.list = await menuListBridgingCoordinator.menuListController.getTripListFromDatabase(settings: settings, nameList: list, phpFile: "menusAndReports.php", isMethodPost: true, postString: "_query_name=trips_in_db_view&_trip_type=\(self.tripType)")
+        self.list = await menuListClass.getTripListFromDatabase(settings: settings, nameList: list, phpFile: "menusAndReports.php", isMethodPost: true, postString: "_query_name=trips_in_db_view&_trip_type=\(self.tripType)")
     }
     
     private func getRoutesFromCache() async {
@@ -122,7 +149,7 @@ struct ShowListFromDatabaseView: View {
             for (i, word) in wordArray.enumerated() {
                 let trimmedString = word.trimmingCharacters(in: .whitespaces)
                 if trimmedString.count > 0 { // Skip \n-only lines
-                    self.list.append(SelectNameModel())
+                    self.list.append(SelectNameClass())
                     self.list[i].name = trimmedString
                 }
             }

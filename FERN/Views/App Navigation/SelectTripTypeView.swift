@@ -10,7 +10,7 @@ import SwiftData
 
 struct SelectTripTypeView: View {
     
-    @EnvironmentObject var menuListBridgingCoordinator: MenuListBridgingCoordinator
+//    @EnvironmentObject var menuListBridgingCoordinator: MenuListBridgingCoordinator
     
     var map: MapClass
     var gps: GpsClass
@@ -21,12 +21,15 @@ struct SelectTripTypeView: View {
     var organismName: String
     var mapQuery: String
     var measurements: MeasurementsClass
-    var offlineModeModel: OfflineModeModel
+    var offlineMode: Bool
 
+    var menuListClass = MenuListClass()
+    
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
     
-    @State private var list: [SelectNameModel] = []
+    @State private var list: [SelectNameClass] = []
+    
     
     var body: some View {
         VStack {
@@ -42,9 +45,9 @@ struct SelectTripTypeView: View {
                 List (self.list) { (item) in
                     NavigationLink(item.name) {
                         // Pass var to view. Query for route does not need a column or organism name.
-                        ShowListFromDatabaseView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, columnName: columnName, organismName: organismName, mapQuery: mapQuery, tripType: item.name, measurements: measurements, offlineModeModel: offlineModeModel)
+                        ShowListFromDatabaseView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, columnName: columnName, organismName: organismName, mapQuery: mapQuery, tripType: item.name, measurements: measurements, offlineMode: offlineMode)
                             .navigationTitle("Apple Map")
-                            .environmentObject(menuListBridgingCoordinator)
+//                            .environmentObject(menuListBridgingCoordinator)
                     }
                 }
             }
@@ -63,7 +66,7 @@ struct SelectTripTypeView: View {
 
     private func getListOfTripsInDatabase() async {
         
-        self.list = await menuListBridgingCoordinator.menuListController.getTripListFromDatabase(settings: settings, nameList: list, phpFile: "menusAndReports.php", isMethodPost: true, postString: "_query_name=trip_type_view")
+        self.list = await menuListClass.getTripListFromDatabase(settings: settings, nameList: list, phpFile: "menusAndReports.php", isMethodPost: true, postString: "_query_name=trip_type_view")
     }
     
 }

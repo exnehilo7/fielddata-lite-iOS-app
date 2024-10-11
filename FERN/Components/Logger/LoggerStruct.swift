@@ -5,6 +5,7 @@
 //  Created by Hopp, Dan on 10/7/24.
 //
 //  Code from https://stackoverflow.com/questions/44537133/how-to-write-application-logs-to-file-and-get-them
+//  Usage example: print(#function,"string1", "optional string N", to: &logger)
 
 import Foundation
 

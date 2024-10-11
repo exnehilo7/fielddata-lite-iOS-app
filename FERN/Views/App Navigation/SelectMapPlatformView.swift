@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SelectMapPlatformView: View {
     
-    @EnvironmentObject var menuListBridgingCoordinator: MenuListBridgingCoordinator
+//    @EnvironmentObject var menuListBridgingCoordinator: MenuListBridgingCoordinator
     
     var map: MapClass
     var gps: GpsClass
@@ -20,7 +20,7 @@ struct SelectMapPlatformView: View {
     var organismName: String
     var mapQuery: String
     var measurements: MeasurementsClass
-    var offlineModeModel: OfflineModeModel
+    var offlineMode: Bool
     
     var body: some View {
         
@@ -28,8 +28,8 @@ struct SelectMapPlatformView: View {
             NavigationStack {
                 List {
                     NavigationLink {
-                        SelectTripTypeView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, columnName: columnName, organismName: organismName, mapQuery: mapQuery, measurements: measurements, offlineModeModel: offlineModeModel)
-                            .environmentObject(menuListBridgingCoordinator)
+                        SelectTripTypeView(map: map, gps: gps, camera: camera, upload: upload, mapMode: mapMode, columnName: columnName, organismName: organismName, mapQuery: mapQuery, measurements: measurements, offlineMode: offlineMode)
+//                            .environmentObject(menuListBridgingCoordinator)
                             .navigationTitle("Select Trip Type")
                     } label: {
                         HStack {
@@ -39,7 +39,7 @@ struct SelectMapPlatformView: View {
                     }
                     NavigationLink {
                         SelectTripForCesiumView()
-                            .environmentObject(menuListBridgingCoordinator)
+//                            .environmentObject(menuListBridgingCoordinator)
                             .navigationTitle("Cesium JS")
                     } label: {
                         HStack {

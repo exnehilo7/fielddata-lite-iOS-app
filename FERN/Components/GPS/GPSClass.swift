@@ -73,7 +73,7 @@ import SwiftData
             nmea = NMEA()
             nmea!.startNMEA()
         } else {
-            print("'nmea' variable already exists, wiping vars and restarting NMEA...")
+            print("'nmea' variable already exists")
         }
     }
     

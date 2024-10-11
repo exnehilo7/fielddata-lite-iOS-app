@@ -12,14 +12,14 @@ import SwiftData
 struct StartScreenView: View {
     
     // Bridging coordinator
-    @State private var bridgingCoordinator: StartScreenBridgingCoordinator
+//    @State private var bridgingCoordinator: StartScreenBridgingCoordinator
     
     @State private var active: Bool = false
     
-    init() {
-        let startScreenCoordinator = StartScreenBridgingCoordinator()
-        self._bridgingCoordinator = State(wrappedValue: startScreenCoordinator)
-    }
+//    init() {
+//        let startScreenCoordinator = StartScreenBridgingCoordinator()
+//        self._bridgingCoordinator = State(wrappedValue: startScreenCoordinator)
+//    }
     
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
@@ -60,19 +60,26 @@ struct StartScreenView: View {
                     }
                 Spacer()
                 
-                StartScreenViewControllerRepresentable(startScreenBridgingCoordinator: bridgingCoordinator)
+//                StartScreenViewControllerRepresentable(startScreenBridgingCoordinator: bridgingCoordinator)
                 
             }.onAppear {
                 
-                let serialQueue = DispatchQueue(label: "StartScreenView.bridgingCoordinator.createSettings")
-                serialQueue.async {
-                    bridgingCoordinator.startScreenViewController.createSettings(settings: settings, modelContext: modelContext)
-                }
+                if settings.count < 1 {
+                    modelContext.insert(Settings())
+                    print(#function, "Settings inserted to 'modelContext'!")
+        //            try! modelContext.save()
+                } else { print(#function, "Settings count is at least 1. 'modelContext' insert skipped")}
                 
+//                let serialQueue = DispatchQueue(label: "StartScreenView.bridgingCoordinator.createSettings")
+//                serialQueue.async {
+//                    bridgingCoordinator.startScreenViewController.createSettings(settings: settings, modelContext: modelContext)
+//                }
+//                
                 // Set timer for splashscreen fadeout
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     withAnimation {
-                        active = bridgingCoordinator.startScreenViewController.active ?? true
+//                        active = bridgingCoordinator.startScreenViewController.active ?? true
+                        active = true
                     }
                 }
             }.fullScreenCover(isPresented: $active) {

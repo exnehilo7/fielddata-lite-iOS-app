@@ -14,7 +14,7 @@ struct SelectAreaView: View {
     @Environment(\.modelContext) var modelContext
     @Query var settings: [Settings]
     
-    @State private var areaList: [SelectNameModel] = []
+    @State private var areaList: [SelectNameClass] = []
     var phpFile: String
     var columnName: String
     
@@ -69,7 +69,7 @@ struct SelectAreaView: View {
             
             
             // convert JSON response into class model as an array
-            self.areaList = try decoder.decode([SelectNameModel].self, from: data)
+            self.areaList = try decoder.decode([SelectNameClass].self, from: data)
             
             // Debug catching from https://www.hackingwithswift.com/forums/swiftui/decoding-json-data/3024
         } catch DecodingError.keyNotFound(let key, let context) {

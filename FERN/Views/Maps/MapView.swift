@@ -33,7 +33,7 @@ struct MapView: View {
     var organismName: String
     var queryName: String
     @Bindable var measurements: MeasurementsClass
-    var offlineModeModel: OfflineModeModel
+    var offlineMode: Bool
     
     // scoring
     @State private var isScoringActive = false
@@ -352,7 +352,7 @@ struct MapView: View {
     
     private func getMapPoints() async {
         // If mode is offline
-        if offlineModeModel.offlineModeIsOn {
+        if offlineMode {
             do {
                 // Get JSON file
                 let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -406,10 +406,10 @@ struct MapView: View {
     }
     
     
-    
-    private func refreshMapPoints() async {
-        await map.refreshMap(settings: settings, phpFile: "getMapItemsForApp.php", postString: "_column_name=\(columnName)&_column_value=\(tripOrRouteName)&_org_name=\(organismName)&_query_name=\(queryName)")
-    }
+    // Not used atm
+//    private func refreshMapPoints() async {
+//        await map.refreshMap(settings: settings, phpFile: "getMapItemsForApp.php", postString: "_column_name=\(columnName)&_column_value=\(tripOrRouteName)&_org_name=\(organismName)&_query_name=\(queryName)")
+//    }
     
     // Make sure forward and backward cycling will stay within the annotation's item count.
     private func cycleAnnotations (forward: Bool, _ offset: Int ) {

@@ -63,6 +63,7 @@
 		D183BB432CB845FC00C124A1 /* MeasurementsClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D183BB422CB845FC00C124A1 /* MeasurementsClass.swift */; };
 		D183BB462CB84AFF00C124A1 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D183BB452CB84AFF00C124A1 /* Strings.swift */; };
 		D183BB482CB84D5B00C124A1 /* RoutingCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = D183BB472CB84D5B00C124A1 /* RoutingCache.swift */; };
+		D183BB4A2CB9AC9D00C124A1 /* MenuListClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D183BB492CB9AC9D00C124A1 /* MenuListClass.swift */; };
 		D18B59D32C07C16B005A58DB /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D18B59D22C07C16B005A58DB /* MessageView.swift */; };
 		D19FF3712C17542F00B54B7E /* SettingsHdopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19FF3702C17542F00B54B7E /* SettingsHdopView.swift */; };
 		D1A56E812B051DB300AC8291 /* SelectTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A56E802B051DB300AC8291 /* SelectTripView.swift */; };
@@ -152,6 +153,7 @@
 		D183BB422CB845FC00C124A1 /* MeasurementsClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasurementsClass.swift; sourceTree = "<group>"; };
 		D183BB452CB84AFF00C124A1 /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 		D183BB472CB84D5B00C124A1 /* RoutingCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutingCache.swift; sourceTree = "<group>"; };
+		D183BB492CB9AC9D00C124A1 /* MenuListClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuListClass.swift; sourceTree = "<group>"; };
 		D18B59D22C07C16B005A58DB /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		D19FF3702C17542F00B54B7E /* SettingsHdopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHdopView.swift; sourceTree = "<group>"; };
 		D1A56E802B051DB300AC8291 /* SelectTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTripView.swift; sourceTree = "<group>"; };
@@ -382,6 +384,7 @@
 				D183BB382CB8406400C124A1 /* OfflineMode */,
 				D183BB442CB84AE600C124A1 /* Strings */,
 				D183BB3D2CB8451E00C124A1 /* Sounds */,
+				D183BB492CB9AC9D00C124A1 /* MenuListClass.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -631,6 +634,7 @@
 				D19FF3712C17542F00B54B7E /* SettingsHdopView.swift in Sources */,
 				D167963B2BD9B78A00561875 /* SettingsCesiumView.swift in Sources */,
 				D1A56E812B051DB300AC8291 /* SelectTripView.swift in Sources */,
+				D183BB4A2CB9AC9D00C124A1 /* MenuListClass.swift in Sources */,
 				D16A6C80299AC65600835B5E /* SelectReportView.swift in Sources */,
 				D16FA6552C29E9D20090E756 /* ShowListFromDatabaseView.swift in Sources */,
 				D16FA62E2C2488A10090E756 /* CameraClass.swift in Sources */,
@@ -809,7 +813,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -848,7 +852,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "ORNL.FERN-UT-Battelle";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
