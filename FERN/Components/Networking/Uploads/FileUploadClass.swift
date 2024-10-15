@@ -22,7 +22,7 @@ import CryptoKit
     var allFilesProcessed = false
     var consoleText = ""
     var showUploadButton = false
-    var showPopover = false
+//    var showPopover = false
     var tripsSubfolders: [String] = [] // Trip and route names within the trips folder
     var fileList: [String] = []
     var uploadHistoryFileList: [String] = []
@@ -157,10 +157,10 @@ import CryptoKit
     func setShowUploadButtonToTrue() {
         showUploadButton = true
     }
-    func setShowPopoverToTrue(){
-        showPopover = true
-    }
-    
+//    func setShowPopoverToTrue(){
+//        showPopover = true
+//    }
+//    
 //    func appendToTextEditor(oldText: consoleText, newText: String){
 //        self.consoleText.append(contentsOf: "\n" + text)
 //    }
@@ -168,44 +168,6 @@ import CryptoKit
     func clearUploadHistoryList() async {
         // Clear var
         uploadHistoryFileList = []
-    }
-
-    func insertUploadedFileDataIntoDatabase(uploadURL: String) async -> Bool {
-   
-        var complete = false
-        
-        guard let url: URL = URL(string: uploadURL) else {
-            Swift.print("invalid URL")
-            return complete
-        }
-        
-        var request: URLRequest = URLRequest(url: url)
-        request.httpMethod = "POST"
-        
-        let postString = "insertIntoDB=true"
-        
-        let postData = postString.data(using: .utf8)
-        
-        do {
-            let (data, response) = try await URLSession.shared.upload(for: request as URLRequest, from: postData!, delegate: nil)
-            let statusCode = (response as! HTTPURLResponse).statusCode
-            // is 200?
-            if statusCode == 200 {
-                print("🟣 Calling function to insert trip into the database. Check database for results.")
-                consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "🟣 Calling function to insert trip into the database. Check database for results.")
-                self.responseString = NSString(data: data, encoding: NSUTF8StringEncoding)
-//                print("****** response data = \(self.responseString!)")
-                complete = true
-                return complete
-            } else {
-                print("🟡 Status code: \(statusCode)")
-                consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "🟡 Status code: \(statusCode)")
-            }
-          } catch let error as NSError {
-              NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
-          }
-                                                                      
-        return complete
     }
     
     // ASYNC FUNCTIONS ---------------------------------------------------------------------------------------------
@@ -371,6 +333,11 @@ import CryptoKit
             itemIsTrip = false
             
         }
+        // Insert new data into the database
+        print("🟪 Launching .py script to refresh database...")
+        consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "🟪 Launching .py script to refresh database...")
+        _ = await insertUploadedFileDataIntoDatabase(uploadURL: uploadURL)
+        
         print("🔵 Upload process finished.")
         consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "🔵 Upload process finished.")
     }
@@ -607,5 +574,45 @@ import CryptoKit
                 tripsSubfolders.append(trip)
             }
         } catch {}
+    }
+    
+    // Call PHP to call .py function
+    func insertUploadedFileDataIntoDatabase(uploadURL: String) async -> Bool {
+   
+        var complete = false
+        
+        guard let url: URL = URL(string: uploadURL) else {
+            Swift.print("invalid URL")
+            return complete
+        }
+        
+        var request: URLRequest = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        let postString = "insertIntoDB=true"
+        
+        let postData = postString.data(using: .utf8)
+        
+        do {
+            let (data, response) = try await URLSession.shared.upload(for: request as URLRequest, from: postData!, delegate: nil)
+            let statusCode = (response as! HTTPURLResponse).statusCode
+            // is 200?
+            if statusCode == 200 {
+                print("  🟩 Status code: \(statusCode). Check tables and/or View Captured Points for results.")
+                consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  🟩 Status code: \(statusCode). Check tables and/or View Captured Points for results.")
+                self.responseString = NSString(data: data, encoding: NSUTF8StringEncoding)
+//                print("****** response data = \(self.responseString!)")
+                complete = true
+                return complete
+            } else {
+                print("  🟨 Status code: \(statusCode)")
+                consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  🟨 Status code: \(statusCode)")
+            }
+          } catch let error as NSError {
+              print("  🟥 Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
+              consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  🟥 Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
+          }
+                                                                      
+        return complete
     }
 }

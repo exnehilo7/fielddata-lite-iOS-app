@@ -24,7 +24,7 @@ struct UploadFilesView: View {
     var uploadURL: String
     var cesiumURL: String
     @Bindable var upload: FileUploadClass
-    @ObservedObject var network = NetworkMonitorClass()
+//    @ObservedObject var network = NetworkMonitorClass()
 //    var mapUILayout: String = "none"
     
     // MARK: Views
@@ -67,7 +67,7 @@ struct UploadFilesView: View {
                 }
             }.alert("Device Not Connected to Wi-Fi", isPresented: $upload.showExpensiveNetworkAlert) {
                 Button("OK", action: {
-                    if network.isConstrained {
+                    if upload.network.isConstrained {
                         upload.showExpensiveNetworkAlert = false
                         upload.showConstrainedNetworkAlert = true
                     } else {
@@ -108,10 +108,11 @@ struct UploadFilesView: View {
     var body: some View {
         VStack {
             initalTripUploads
-        }.onDisappear(perform: {
-            upload.showPopover = false
-        }).onAppear(perform: {
-            // Upload any non-uploaded files.
+        }//.onDisappear(perform: {
+//            upload.showPopover = false
+//        })
+        .onAppear(perform: {
+            // Upload all remaining trip and route files.
             if !upload.isLoading {
                 Task.detached {
                     await upload.checkForUploads(sdTrips: sdTrips, uploadURL: uploadURL)

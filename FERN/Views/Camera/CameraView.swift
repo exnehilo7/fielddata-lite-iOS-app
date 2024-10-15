@@ -17,6 +17,7 @@ struct CameraView: View {
     var mapMode: String
     var tripOrRouteName: String
     @Bindable var measurements: MeasurementsClass
+//    @Binding var shouldPopToRootView : Bool
     var openedFromMapView: Bool = false
     
     // Swift Data
@@ -511,6 +512,7 @@ struct CameraView: View {
                             Button("OK"){
                                 item.isComplete = true
                                 camera.showCompleteAlertToggle()
+//                                MainMenuView()
                             }
                             Button("Cancel", role: .cancel){}
                         } message: {

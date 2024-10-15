@@ -38,18 +38,21 @@ struct SelectTripView: View {
                         }
                         // Go to an upload screen
                         else {
-                            // Try to prevent data race by passing swiftdata values(?)
-                            UploadFilesView(tripName: item.name, uploadURL: settings[0].uploadScriptURL, cesiumURL: settings[0].cesiumURL, upload: upload)
+//                            // Try to prevent data race by passing swiftdata values(?)
+//                            UploadFilesView(tripName: item.name, uploadURL: settings[0].uploadScriptURL, cesiumURL: settings[0].cesiumURL, upload: upload)
+                            
+                            // Battery and connectivity popups on UploadFilesView is buggy when a trip is marked complete from CameraView. Since MainMenu already uploads files, skip UploadFilesView and show a simple "Trip complete!" view.
+                            TripCompleteView()
                         }
                     } label: {
                         HStack{
                             if item.isComplete {
-                                Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)//.onTapGesture{
-//                                    // Toggle upload complete
-//                                    if item.isComplete {
-//                                        item.isComplete.toggle()
-//                                    }
-//                                }
+                                Image(systemName: "checkmark.circle.fill").foregroundStyle(.green).onTapGesture{
+                                    // Toggle upload complete
+                                    if item.isComplete {
+                                        item.isComplete.toggle()
+                                    }
+                                }
                             }
                             if item.allFilesUploaded {
                                 Image(systemName: "checkmark.circle.fill").foregroundStyle(.orange)//.onTapGesture{

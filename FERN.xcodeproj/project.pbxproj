@@ -34,6 +34,7 @@
 		D16A6C7E29970E0900835B5E /* SelectNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7D29970E0900835B5E /* SelectNotesView.swift */; };
 		D16A6C80299AC65600835B5E /* SelectReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C7F299AC65600835B5E /* SelectReportView.swift */; };
 		D16A6C88299AF32600835B5E /* ReportRoutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16A6C87299AF32600835B5E /* ReportRoutes.swift */; };
+		D16B38DB2CBF197100AD32C0 /* TripCompleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16B38DA2CBF197100AD32C0 /* TripCompleteView.swift */; };
 		D16FA6102C1CB74C0090E756 /* MenuListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA60F2C1CB74C0090E756 /* MenuListController.swift */; };
 		D16FA6122C1CB7A50090E756 /* MenuListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA6112C1CB7A50090E756 /* MenuListModel.swift */; };
 		D16FA61B2C20BEDC0090E756 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D16FA61A2C20BEDC0090E756 /* CameraView.swift */; };
@@ -124,6 +125,7 @@
 		D16A6C7D29970E0900835B5E /* SelectNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectNotesView.swift; sourceTree = "<group>"; };
 		D16A6C7F299AC65600835B5E /* SelectReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectReportView.swift; sourceTree = "<group>"; };
 		D16A6C87299AF32600835B5E /* ReportRoutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportRoutes.swift; sourceTree = "<group>"; };
+		D16B38DA2CBF197100AD32C0 /* TripCompleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripCompleteView.swift; sourceTree = "<group>"; };
 		D16FA60F2C1CB74C0090E756 /* MenuListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuListController.swift; sourceTree = "<group>"; };
 		D16FA6112C1CB7A50090E756 /* MenuListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuListModel.swift; sourceTree = "<group>"; };
 		D16FA61A2C20BEDC0090E756 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
@@ -450,6 +452,7 @@
 				D16FA6562C2DE0330090E756 /* SelectTripTypeView.swift */,
 				D1A56E802B051DB300AC8291 /* SelectTripView.swift */,
 				D16FA6542C29E9D20090E756 /* ShowListFromDatabaseView.swift */,
+				D16B38DA2CBF197100AD32C0 /* TripCompleteView.swift */,
 			);
 			path = "App Navigation";
 			sourceTree = "<group>";
@@ -603,6 +606,7 @@
 				D16FA61B2C20BEDC0090E756 /* CameraView.swift in Sources */,
 				D183BB462CB84AFF00C124A1 /* Strings.swift in Sources */,
 				D18B59D32C07C16B005A58DB /* MessageView.swift in Sources */,
+				D16B38DB2CBF197100AD32C0 /* TripCompleteView.swift in Sources */,
 				D16796432BE02CFF00561875 /* SelectTripForCesiumView.swift in Sources */,
 				D16A6C7229901A2000835B5E /* SelectAreaView.swift in Sources */,
 				D11B2D902BF3BC81004FEE0B /* ScanPhotosInFolderForText.swift in Sources */,
