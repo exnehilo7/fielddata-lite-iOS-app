@@ -47,12 +47,12 @@ struct SelectTripView: View {
                     } label: {
                         HStack{
                             if item.isComplete {
-                                Image(systemName: "checkmark.circle.fill").foregroundStyle(.green).onTapGesture{
-                                    // Toggle upload complete
-                                    if item.isComplete {
-                                        item.isComplete.toggle()
-                                    }
-                                }
+                                Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)//.onTapGesture{
+//                                    // Toggle upload complete
+//                                    if item.isComplete {
+//                                        item.isComplete.toggle()
+//                                    }
+//                                }
                             }
                             if item.allFilesUploaded {
                                 Image(systemName: "checkmark.circle.fill").foregroundStyle(.orange)//.onTapGesture{
