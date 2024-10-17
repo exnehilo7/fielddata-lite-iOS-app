@@ -94,16 +94,16 @@ class FieldWorkScoringFile {
     }
 }
 
-class UploadHistoryFile {
-    
-    static func writeUploadToTextFile(tripOrRouteName: String, fileNameUUID: String, fileName: String) async throws -> Bool {
-        
-        let fileSaveName = "\(tripOrRouteName)_\(DeviceUUID().deviceUUID)_Upload_History.txt"
-        
-        return try CreateOrWriteToFile.createOrWriteToFile(tripOrRouteName: tripOrRouteName, fileNameUUID: fileNameUUID, fileName: fileSaveName, folderName: "upload_history", message: "\(fileName)", header: "file_name\n")
-    }
-    
-}
+//class UploadHistoryFile {
+//    
+//    static func writeUploadToTextFile(tripOrRouteName: String, fileNameUUID: String, fileName: String) async throws -> Bool {
+//        
+//        let fileSaveName = "\(tripOrRouteName)_\(DeviceUUID().deviceUUID)_Upload_History.txt"
+//        
+//        return try CreateOrWriteToFile.createOrWriteToFile(tripOrRouteName: tripOrRouteName, fileNameUUID: fileNameUUID, fileName: fileSaveName, folderName: "upload_history", message: "\(fileName)", header: "file_name\n")
+//    }
+//    
+//}
 
 class DocumentsDirectory {
     static var dir: URL? {

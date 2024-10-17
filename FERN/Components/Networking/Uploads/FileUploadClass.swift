@@ -9,6 +9,46 @@ import Foundation
 import SwiftUI
 import CryptoKit
 
+
+// For upload history files
+struct UploadedItem: Identifiable {
+    let id = UUID()
+    var fileName = ""
+    var checksum = ""
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(fileName, forKey: .fileName)
+        try container.encode(checksum, forKey: .checksum)
+    }
+    
+    init(fileName: String = "",
+         checksum: String = "") {
+        self.fileName = fileName
+        self.checksum = checksum
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        fileName = try container.decode(String.self, forKey: .fileName)
+        checksum = try container.decode(String.self, forKey: .checksum)
+    }
+}
+extension UploadedItem: Codable {
+    enum CodingKeys: CodingKey {
+        case fileName, checksum
+    }
+}
+
+//struct UploadedItem: Identifiable {
+//    let id = UUID()
+//    var fileName = ""
+//    var checksum = ""
+//}
+
+
 @MainActor
 @Observable class FileUploadClass {
     
@@ -25,7 +65,9 @@ import CryptoKit
 //    var showPopover = false
     var tripsSubfolders: [String] = [] // Trip and route names within the trips folder
     var fileList: [String] = []
-    var uploadHistoryFileList: [String] = []
+//    var uploadHistoryFileList: [String] = [] // TO BE REPLACED BY NEW STRUCT
+    var allUploadedFiles: [UploadedItem] = []
+    var currentSubfolderFiles: [UploadedItem] = []
     var parameters: [String:String]?
     var tripFolderPath = ""
     var localFilePath: URL?
@@ -50,7 +92,7 @@ import CryptoKit
         consoleText = ""
     }
     
-    
+    // 17-OCT-2024 - Not used atm.
     func doesFileExist(fileName: String, params: [String:String], semaphore: DispatchSemaphore, uploadURL: String) async -> Bool {
         
         print("doesFileExist is firing!")
@@ -165,17 +207,24 @@ import CryptoKit
 //        self.consoleText.append(contentsOf: "\n" + text)
 //    }
     
-    func clearUploadHistoryList() async {
+//    func clearUploadHistoryList() async {
+//        // Clear var
+//        uploadHistoryFileList = []
+//    }
+    
+    func clearUploadHistoryItemList() async {
         // Clear var
-        uploadHistoryFileList = []
+        allUploadedFiles = []
     }
+
     
     // ASYNC FUNCTIONS ---------------------------------------------------------------------------------------------
-    func checkForUploads(sdTrips: [SDTrip], uploadURL: String) async {
+    func checkForUploads(sdTrips: [SDTrip], uploadURL: String) async {  // MAY NOT BE NEEDED ANYMORE?
         await resetVars()
         await resetConsoleText()
         // Get upload history
-        await clearUploadHistoryList()
+//        await clearUploadHistoryList()
+        await clearUploadHistoryItemList()
         await getUploadHistories()
         
         // Make list of ALL trip and route files
@@ -213,7 +262,7 @@ import CryptoKit
         
         // Get a list of all trip files: loop through filenames
         do {
-            try await makeFileList(localFilePath: localFilePath!)
+            try await makeFileList(tripName: tripName, localFilePath: localFilePath!)
         } catch {
             // failed to read directory – bad permissions, perhaps?
 //            print("Directory loop error. Most likely does not exist.")
@@ -221,7 +270,7 @@ import CryptoKit
         }
     }
     
-    func makeFileList(localFilePath: URL) async throws {
+    func makeFileList(tripName: String, localFilePath: URL) async throws {
         
         let fm = FileManager.default
         let items = try fm.contentsOfDirectory(atPath: localFilePath.path)
@@ -231,15 +280,47 @@ import CryptoKit
             fileList.append(item)
         }
         totalFiles = fileList.count
+        
+        // Populate currentSubfolderFiles to not lose any previously uploaded files
+//        let jsonData = try Data(contentsOf: URL(string: "\(DeviceUUID().deviceUUID)/trips/\(tripName)/upload_history/\(tripName)_Upload_History.json")!)
+//        let jsonDecoder = JSONDecoder()
+//        var itemResults = try jsonDecoder.decode([UploadedItem].self, from: jsonData)
+//        
+//        for result in itemResults {
+//            currentSubfolderFiles.append(
+//                UploadedItem(fileName: result.fileName,
+//                             checksum: result.checksum)
+//            )
+//        }
+//        itemResults = [UploadedItem]()
     }
     
+    
+    // Should not need this anymore since only changed or new files will be uploaded
      func anyFilesToUpload() async -> Bool {
-        for tripfile in fileList {
-            if !uploadHistoryFileList.contains(tripfile) {
-                return true
-            }
-        }
-        return false
+//        for tripfile in fileList {
+////            if !uploadHistoryFileList.contains(tripfile) {
+////                return true
+////            }
+//            
+//            var uploadedFile = allUploadedFiles.filter{$0.fileName == tripfile}
+//            
+//            let getFile = self.localFilePath!.appendingPathComponent(tripfile)
+//            let hashed = SHA256.hash(data: NSData(contentsOf: getFile)!)
+//            let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
+//            
+//            // Has file checksum changed?
+//            if uploadedFile.count > 0 {
+//                if uploadedFile[0].checksum != hashString {
+//                    return true
+//                }
+//            }
+//            else {
+//                return true
+//            }
+//        }
+//        return false
+         return true
     }
     
     func isNetworkGood(sdTrips: [SDTrip], uploadURL: String) async {
@@ -271,6 +352,9 @@ import CryptoKit
         /* Loop through trips and upload any new/missed files. If the subfolder name under the trips folder is in sdTrips, keep uploading its CSVs and skip the images until the trip is marked as complete. Once complete, write to the history file to prevent future uploads.
           For a route, always upload its CSVs until it's decided how to handle "completed" route data acquisition. */
         for subfolder in tripsSubfolders {
+            // Clear array of subfolder's uploaded files
+            currentSubfolderFiles = []
+            
             print("--- Processing \(subfolder)'s files ---")
             consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "--- Processing \(subfolder)'s files ---")
             
@@ -288,25 +372,25 @@ import CryptoKit
                         
                         await resetVars()
                         await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "metadata")
-                        await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "metadata",  writeToUploadHistory: true)
+                        await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "metadata")//,  writeToUploadHistory: true)
                         await resetVars()
                         await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "scoring")
-                        await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "scoring", writeToUploadHistory: true)
+                        await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "scoring")//, writeToUploadHistory: true)
                         await resetVars()
                         await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "images")
-                        await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "images", writeToUploadHistory: true)
+                        await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "images")//, writeToUploadHistory: true)
                     }
                     else {
                         // Upload scoring and metadata
-                        await resetVars()
-                        await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "metadata")
-                        await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "metadata",  writeToUploadHistory: false)
-                        await resetVars()
-                        await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "scoring")
-                        await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "scoring", writeToUploadHistory: false)
+//                        await resetVars()
+//                        await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "metadata")
+//                        await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "metadata",  writeToUploadHistory: false)
+//                        await resetVars()
+//                        await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "scoring")
+//                        await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "scoring", writeToUploadHistory: false)
                         // No image files
-                        print("  Trip is not marked as complete, skipping image files...")
-                        consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  Trip is not marked as complete, skipping image files...")
+                        print("  Trip is not marked complete, skipping files...")
+                        consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  Trip is not marked complete, skipping files...")
                     }
                 }
             }
@@ -317,13 +401,23 @@ import CryptoKit
                 consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  \(subfolder) is a ROUTE")
                 await resetVars()
                 await getLocalFilePathsForTripOnDevice(tripName: subfolder, folderName: "metadata")
-                await uploadAndShowError(tripName: subfolder, uploadURL: uploadURL, folderName: "metadata",  writeToUploadHistory: false)
+                await uploadAndShowError(tripName: subfolder, uploadURL: uploadURL, folderName: "metadata")//,  writeToUploadHistory: true)
                 await resetVars()
                 await getLocalFilePathsForTripOnDevice(tripName: subfolder, folderName: "scoring")
-                await uploadAndShowError(tripName: subfolder, uploadURL: uploadURL, folderName: "scoring", writeToUploadHistory: false)
+                await uploadAndShowError(tripName: subfolder, uploadURL: uploadURL, folderName: "scoring")//, writeToUploadHistory: true)
                 await resetVars()
                 await getLocalFilePathsForTripOnDevice(tripName: subfolder, folderName: "images")
-                await uploadAndShowError(tripName: subfolder, uploadURL: uploadURL, folderName: "images", writeToUploadHistory: true)
+//                print(currentSubfolderFiles)
+                await uploadAndShowError(tripName: subfolder, uploadURL: uploadURL, folderName: "images")//, writeToUploadHistory: true)
+            }
+            
+            // Write uploaded files to a JSON file
+            if !currentSubfolderFiles.isEmpty {
+                let jsonEncoder = JSONEncoder()
+                let jsonData = try? jsonEncoder.encode(currentSubfolderFiles)
+                let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                let fileURL = documentsDirectory.appendingPathComponent("\(DeviceUUID().deviceUUID)/trips/\(subfolder)/upload_history/\(subfolder)_Upload_History.json")
+                try? jsonData?.write(to: fileURL)
             }
             
             print("\(subfolder) is complete.")
@@ -336,7 +430,7 @@ import CryptoKit
         // Insert new data into the database
         print("🟪 Launching .py script to refresh database...")
         consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "🟪 Launching .py script to refresh database...")
-        _ = await insertUploadedFileDataIntoDatabase(uploadURL: uploadURL)
+//        _ = await insertUploadedFileDataIntoDatabase(uploadURL: uploadURL)
         
         print("🔵 Upload process finished.")
         consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "🔵 Upload process finished.")
@@ -348,7 +442,7 @@ import CryptoKit
     }
     
     // This function runs on the main thread
-    func uploadAndShowError(tripName: String, uploadURL: String, folderName: String, writeToUploadHistory: Bool) async {
+    func uploadAndShowError(tripName: String, uploadURL: String, folderName: String) async {
         
         // If no files in list, don't do
         if fileList.count == 0 {
@@ -360,22 +454,22 @@ import CryptoKit
         printProcessingFileType(fileType: folderName)
         
         // Create file for upload history, if not exists
-        do {
-            _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripName, fileNameUUID: "", fileName: "")
+//        do {
+//            _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripName, fileNameUUID: "", fileName: "")
             do {
                 // The function is suspended here, but the main thread is not blocked.
-                try await uploadAsync(tripName: tripName, fileList: fileList, uploadURL: uploadURL, folderName: folderName, writeToHistory: writeToUploadHistory)
+                try await uploadAsync(tripName: tripName, fileList: fileList, uploadURL: uploadURL, folderName: folderName)//, writeToHistory: writeToUploadHistory)
             } catch {
                 // Show error if occurred, this will run on the main thread
                 print("error occurred: \(error.localizedDescription)")
             }
-        } catch {
-            print("Error creating Upload History file.")
-        }
+//        } catch {
+//            print("Error creating Upload History file.")
+//        }
     }
     
     // This function asynchronously uploads data for all passed URLs.
-    func uploadAsync(tripName: String, fileList: [String], uploadURL: String, folderName: String, writeToHistory: Bool) async throws {
+    func uploadAsync(tripName: String, fileList: [String], uploadURL: String, folderName: String) async throws {
         isLoading = true
         currentTripUploading = tripName
         let session = URLSession(configuration: .default)
@@ -388,9 +482,42 @@ import CryptoKit
 //            writeToUploadHistory = true
 //        }
         
-        
         for item in fileList {
-            if !uploadHistoryFileList.contains(item) {
+            
+            var updateChecksum = false
+            
+//            if !uploadHistoryFileList.contains(item) {
+            
+            // path to get the file:
+            let getFile = self.localFilePath!.appendingPathComponent(item)
+            
+            // Calculate checksum iOS-side
+            let hashed = SHA256.hash(data: NSData(contentsOf: getFile)!)
+            let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
+            
+            // Has file already been uploaded?
+            var uploadedFile = allUploadedFiles.filter{$0.fileName == item}
+            if uploadedFile.count > 0 {
+                // If checksum is same, go to next
+                print("FILE IS IN ALLUPLOADEDFILES!")
+                if uploadedFile[0].checksum == hashString {
+                    print("checksums match")
+                    self.totalUploaded += 1
+                    print("  🟠 Filename exists in upload history.")
+                    // Write to currentSubfolderFiles to not lose any previously uploaded files
+                    currentSubfolderFiles.append(
+                        UploadedItem(fileName: item,
+                                     checksum: hashString)
+                    )
+                    continue
+                } else {
+                    // mark for update after upload
+                    updateChecksum = true
+                }
+            }
+            
+            // If file hasn't been uploaded or checksum is different, continue with upload
+            
                 print("  Uploading \(item)...")
                 consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  Uploading \(item)...")
 
@@ -414,13 +541,7 @@ import CryptoKit
                 
                 // path to save the file:
                 let pathAndFile = "\(tripFolderPath)/\(item)"
-                
-                // path to get the file:
-                let getFile = self.localFilePath!.appendingPathComponent(item)
-                
-                // Calculate checksum iOS-side
-                let hashed = SHA256.hash(data: NSData(contentsOf: getFile)!)
-                let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
+            
                 
                 // Append hash to params
                 let mergeDict = paramDict.merging(["sourceHash":"\(hashString)"]) { (_, new) in new }
@@ -445,9 +566,13 @@ import CryptoKit
                             //                                    print("****** response data = \(self.responseString!)")
                             // Is success?
                             if (responseString ?? "No response string").contains("successfully!") {
-                                // Write file name to upload history file.
-                                if writeToHistory {
-                                    await writeToUploadHistory(tripOrRouteName: tripName, fileNameUUID: "No uuid", fileName: item)
+                                // If new file, write file name and checksum to upload history file.
+                                if !updateChecksum {
+//                                    await writeToUploadHistory(tripOrRouteName: tripName, fileNameUUID: "No uuid", fileName: item, checksum: hashString)
+                                    currentSubfolderFiles.append(UploadedItem(fileName: item, checksum: hashString))
+                                } else {
+                                // If checksum differnet, update vaue
+                                    uploadedFile[0].checksum = hashString
                                 }
                                 
                                 print("  🟢 \(item) is uploaded!")
@@ -459,13 +584,13 @@ import CryptoKit
                             else if (responseString ?? "No response string").contains("Hashes do not match!") {
                                 print("  🔴 Hashes do not match for \(item)!")
                                 consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  🔴 Hashes do not match for \(item)!")
-                            // File exists?
-                            } else if (responseString ?? "No response string").contains("file exists!") {
-                                // To circumvent a bug where a file is written to the server but its name fails to write to the local history file, write to local history if exists:
-                                await writeToUploadHistory(tripOrRouteName: tripName, fileNameUUID: "No uuid", fileName: item)
-                                print("  🟡 File already exists.")
-                                self.totalUploaded += 1
-                                consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  🟡 File already exists.")
+                            // File exists? 17-OCT-2024: PHP NO LONGER CHECKING IF FILE EXISTS ON SERVER
+//                            } //else if (responseString ?? "No response string").contains("file exists!") {
+//                                // To circumvent a bug where a file is written to the server but its name fails to write to the local history file, write to local history if exists:
+//                                await writeToUploadHistory(tripOrRouteName: tripName, fileNameUUID: "No uuid", fileName: item, checksum: hashString)
+//                                print("  🟡 File already exists.")
+//                                self.totalUploaded += 1
+//                                consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  🟡 File already exists.")
                                 
                             } else {
                                 print(responseString ?? "  Response string does not contain 'successfully!' or 'Hashes do not match!' or 'file exists!'")
@@ -480,26 +605,37 @@ import CryptoKit
                     print(error)
                     consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  \(error)")
                 }
-            } else { 
-                self.totalUploaded += 1
-                print("  🟠 Filename exists in upload history.")
-            }
-        }
+            } //else {
+//                self.totalUploaded += 1
+//                print("  🟠 Filename exists in upload history.")
+//            }
+//        }
+        
+//        print("After uploadAsync loop:")
+//        print(currentSubfolderFiles)
+        
+        
         print("  \(folderName.capitalized) process complete.")
         consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  \(folderName.capitalized) process complete.")
         isLoading = false
     }
     
-    func writeToUploadHistory(tripOrRouteName: String, fileNameUUID: String, fileName: String) async {
-        do {
-            _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripOrRouteName, fileNameUUID: fileNameUUID, fileName: fileName)
-        } catch {
-            print ("  🔴 Error writing to upload history after a sucessful save to server.")
-            consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  🔴 Error writing to upload history after a sucessful save to server.")
-        }
+    func writeToUploadHistory(tripOrRouteName: String, fileNameUUID: String, fileName: String, checksum: String) async {
+//        do {
+//            _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripOrRouteName, fileNameUUID: fileNameUUID, fileName: fileName)
+//        } catch {
+//            print ("  🔴 Error writing to upload history after a sucessful save to server.")
+//            consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  🔴 Error writing to upload history after a sucessful save to server.")
+//        }
+        
+        // ADD INFO TO ARRAY FOR JSON CREATION AND SAVE AFTER A TRIP/ROUTE'S LOOP IS COMPLETE?
+        currentSubfolderFiles.append(UploadedItem(fileName: fileName, checksum: checksum))
     }
     
     func getUploadHistories() async {
+        // For UploadedItem JSONs
+        
+        
         // Run through local folders and make a list of filenames.
         let fm = FileManager.default
         
@@ -530,12 +666,30 @@ import CryptoKit
                                 let uploadHistFilePath = (rootDir?.appendingPathComponent(uploadHistoryPath))!
                                 let historyFiles = try fm.contentsOfDirectory(atPath: uploadHistFilePath.path)
                                 for f in historyFiles {
-                                    // Open file and split lines into an array
-                                    if let lines = try? String(contentsOf: URL(string: "\(uploadHistFilePath)\(f)")!) {
-                                        uploadHistoryFileList.append(contentsOf: lines.components(separatedBy: "\n"))
-//                                        print("Upload History array:")
-//                                        print(uploadHistoryFileList)
+//                                    if f.contains(".txt"){
+//                                        // Open file and split lines into an array
+//                                        if let lines = try? String(contentsOf: URL(string: "\(uploadHistFilePath)\(f)")!) {
+//                                            uploadHistoryFileList.append(contentsOf: lines.components(separatedBy: "\n"))
+//                                            //                                        print("Upload History array:")
+//                                            //                                        print(uploadHistoryFileList)
+//                                            
+//                                        }
+//                                    }
+                                    
+                                    // NEW UPLOADED ITEM STRUCT
+                                    if f.contains(".json") {
+                                        let jsonData = try Data(contentsOf: URL(string: "\(uploadHistFilePath)\(f)")!)
+                                        let jsonDecoder = JSONDecoder()
+                                        var itemResults = try jsonDecoder.decode([UploadedItem].self, from: jsonData)
                                         
+                                        for result in itemResults {
+                                            allUploadedFiles.append(
+                                                UploadedItem(fileName: result.fileName,
+                                                             checksum: result.checksum)
+                                            )
+                                        }
+                                        
+                                        itemResults = [UploadedItem]()
                                     }
                                 }
                             } catch { // Yet another folder error (a YAFE!)
