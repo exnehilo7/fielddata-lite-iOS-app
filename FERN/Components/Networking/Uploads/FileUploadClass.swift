@@ -80,6 +80,7 @@ extension UploadedItem: Codable {
     var showConstrainedNetworkAlert = false
     var networkIsGoodToGo = false
     var tea = TextEditorAppend()
+    var alertUserOfFilesToUpload = false
     
     func resetVars() async {
         currentTripUploading = ""
@@ -87,6 +88,7 @@ extension UploadedItem: Codable {
         totalFiles = 0
         totalProcessed = 0
         fileList = []
+        alertUserOfFilesToUpload = false
     }
     func resetConsoleText() async {
         consoleText = ""
@@ -94,8 +96,6 @@ extension UploadedItem: Codable {
     
     // 17-OCT-2024 - Not used atm.
     func doesFileExist(fileName: String, params: [String:String], semaphore: DispatchSemaphore, uploadURL: String) async -> Bool {
-        
-        print("doesFileExist is firing!")
         
         var exists = false
         
@@ -230,13 +230,23 @@ extension UploadedItem: Codable {
         // Make list of ALL trip and route files
         await getTripAndRouteNames()
         for subfolder in tripsSubfolders {
-            await getLocalFilePathsForTripOnDevice(tripName: subfolder, folderName: "metadata")
-            await getLocalFilePathsForTripOnDevice(tripName: subfolder, folderName: "scoring")
-            await getLocalFilePathsForTripOnDevice(tripName: subfolder, folderName: "images")
+            // If there are new files to upload, alert user.
+            if (await getLocalFilePathsForTripOnDevice(sdTrips: sdTrips, tripName: subfolder, folderName: "metadata", checkForNewFiles: true)) {
+                alertUserOfFilesToUpload = true
+                break
+            }
+            if (await getLocalFilePathsForTripOnDevice(sdTrips: sdTrips, tripName: subfolder, folderName: "scoring", checkForNewFiles: true)) {
+                alertUserOfFilesToUpload = true
+                break
+            }
+            if (await getLocalFilePathsForTripOnDevice(sdTrips: sdTrips, tripName: subfolder, folderName: "images", checkForNewFiles: true)) {
+                alertUserOfFilesToUpload = true
+                break
+            }
         }
         
         // See if a file doesn't exist in Upload History
-        if await anyFilesToUpload() {
+        if alertUserOfFilesToUpload {
             print("There are files to upload!")
             consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "There are files to upload!")
             // Check network connections
@@ -247,7 +257,7 @@ extension UploadedItem: Codable {
         }
     }
     
-    func getLocalFilePathsForTripOnDevice(tripName: String, folderName: String) async {
+    func getLocalFilePathsForTripOnDevice(sdTrips: [SDTrip] = [], tripName: String, folderName: String, checkForNewFiles: Bool = false) async -> Bool {
         
         var rootDir: URL? {
             guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
@@ -262,15 +272,16 @@ extension UploadedItem: Codable {
         
         // Get a list of all trip files: loop through filenames
         do {
-            try await makeFileList(tripName: tripName, localFilePath: localFilePath!)
+            return try await makeFileList(sdTrips: sdTrips, tripName: tripName, localFilePath: localFilePath!, folderName: folderName, checkForNewFiles: checkForNewFiles)
         } catch {
             // failed to read directory – bad permissions, perhaps?
 //            print("Directory loop error. Most likely does not exist.")
 //            consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "No files found.")
         }
+        return false
     }
     
-    func makeFileList(tripName: String, localFilePath: URL) async throws {
+    func makeFileList(sdTrips: [SDTrip], tripName: String, localFilePath: URL, folderName: String, checkForNewFiles: Bool) async throws -> Bool {
         
         let fm = FileManager.default
         let items = try fm.contentsOfDirectory(atPath: localFilePath.path)
@@ -278,39 +289,99 @@ extension UploadedItem: Codable {
         // Populate array with filenames
         for item in items {
             fileList.append(item)
+            
+            // Check for files to upload
+            if checkForNewFiles {
+                var rootDir: URL? {
+                    guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
+                    return documentsDirectory
+                }
+               
+//               print(item)
+//               print(folderName)
+               
+               let tempPath = "\(DeviceUUID().deviceUUID)/trips/\(tripName)/\(folderName)"
+               let tempFilePath = (rootDir?.appendingPathComponent(tempPath))!
+               
+//               print(tempFilePath)
+               let uploadedFile = allUploadedFiles.filter{$0.fileName == item}
+               
+               // Does file already exist in upload history?
+               if uploadedFile.count > 0 {
+                   // Has file checksum changed?
+                   let getFile = tempFilePath.appendingPathComponent(item)
+                   // print(getFile)
+                   let hashed = SHA256.hash(data: NSData(contentsOf: getFile)!)
+                   let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
+
+                   if uploadedFile[0].checksum != hashString {
+                       return true
+                   }
+               }
+                // File does not exist in upload history
+               else {
+                   // check if name is trip and if so check if trip is completed
+                   let currentTrip = sdTrips.filter{$0.name == tripName}
+                   if currentTrip.count > 0 {
+                       if currentTrip[0].isComplete {
+                           return true
+                       }
+                   } else {
+                       // It's a route, upload new files
+                       return true
+                   }
+                   
+               }
+//            return false
+            }
         }
         totalFiles = fileList.count
         
-        // Populate currentSubfolderFiles to not lose any previously uploaded files
-//        let jsonData = try Data(contentsOf: URL(string: "\(DeviceUUID().deviceUUID)/trips/\(tripName)/upload_history/\(tripName)_Upload_History.json")!)
-//        let jsonDecoder = JSONDecoder()
-//        var itemResults = try jsonDecoder.decode([UploadedItem].self, from: jsonData)
-//        
-//        for result in itemResults {
-//            currentSubfolderFiles.append(
-//                UploadedItem(fileName: result.fileName,
-//                             checksum: result.checksum)
-//            )
-//        }
-//        itemResults = [UploadedItem]()
+        return false
     }
     
     
     // Should not need this anymore since only changed or new files will be uploaded
-     func anyFilesToUpload() async -> Bool {
+//     func anyFilesToUpload() async -> Bool {
+//         
+//         var rootDir: URL? {
+//             guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
+//             return documentsDirectory
+//         }
+//         
+//        var folderName = ""
+//         
 //        for tripfile in fileList {
 ////            if !uploadHistoryFileList.contains(tripfile) {
 ////                return true
 ////            }
 //            
-//            var uploadedFile = allUploadedFiles.filter{$0.fileName == tripfile}
+//            if tripfile.contains(".heic") || tripfile.contains(".heif") || tripfile.contains(".jpg") || tripfile.contains(".jpeg") {
+//                folderName = "images"
+//            }
+//            else if tripfile.contains("_Scoring") {
+//                folderName = "scoring"
+//            }
+//            else {
+//                folderName = "metadata"
+//            }
 //            
-//            let getFile = self.localFilePath!.appendingPathComponent(tripfile)
-//            let hashed = SHA256.hash(data: NSData(contentsOf: getFile)!)
-//            let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
+//            print(tripfile)
+//            print(folderName)
+//            
+//            let tempPath = "\(DeviceUUID().deviceUUID)/trips/\(tripfile)/\(folderName)"
+//            let tempFilePath = (rootDir?.appendingPathComponent(tempPath))!
+//            
+//            print(tempFilePath)
+//            var uploadedFile = allUploadedFiles.filter{$0.fileName == tripfile}
 //            
 //            // Has file checksum changed?
 //            if uploadedFile.count > 0 {
+//                let getFile = tempFilePath.appendingPathComponent(tripfile)
+//                // print(getFile)
+//                let hashed = SHA256.hash(data: NSData(contentsOf: getFile)!)
+//                let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
+//
 //                if uploadedFile[0].checksum != hashString {
 //                    return true
 //                }
@@ -320,8 +391,8 @@ extension UploadedItem: Codable {
 //            }
 //        }
 //        return false
-         return true
-    }
+////         return true
+//    }
     
     func isNetworkGood(sdTrips: [SDTrip], uploadURL: String) async {
         // Check network connections
@@ -371,13 +442,13 @@ extension UploadedItem: Codable {
                         consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  Trip is marked as complete!")
                         
                         await resetVars()
-                        await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "metadata")
+                        _ = await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "metadata")
                         await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "metadata")//,  writeToUploadHistory: true)
                         await resetVars()
-                        await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "scoring")
+                        _ = await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "scoring")
                         await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "scoring")//, writeToUploadHistory: true)
                         await resetVars()
-                        await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "images")
+                        _ = await getLocalFilePathsForTripOnDevice(tripName: trip.name, folderName: "images")
                         await uploadAndShowError(tripName: trip.name, uploadURL: uploadURL, folderName: "images")//, writeToUploadHistory: true)
                     }
                     else {
@@ -400,14 +471,13 @@ extension UploadedItem: Codable {
                 print("  \(subfolder) is a ROUTE")
                 consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  \(subfolder) is a ROUTE")
                 await resetVars()
-                await getLocalFilePathsForTripOnDevice(tripName: subfolder, folderName: "metadata")
+                _ = await getLocalFilePathsForTripOnDevice(tripName: subfolder, folderName: "metadata")
                 await uploadAndShowError(tripName: subfolder, uploadURL: uploadURL, folderName: "metadata")//,  writeToUploadHistory: true)
                 await resetVars()
-                await getLocalFilePathsForTripOnDevice(tripName: subfolder, folderName: "scoring")
+                _ = await getLocalFilePathsForTripOnDevice(tripName: subfolder, folderName: "scoring")
                 await uploadAndShowError(tripName: subfolder, uploadURL: uploadURL, folderName: "scoring")//, writeToUploadHistory: true)
                 await resetVars()
-                await getLocalFilePathsForTripOnDevice(tripName: subfolder, folderName: "images")
-//                print(currentSubfolderFiles)
+                _ = await getLocalFilePathsForTripOnDevice(tripName: subfolder, folderName: "images")
                 await uploadAndShowError(tripName: subfolder, uploadURL: uploadURL, folderName: "images")//, writeToUploadHistory: true)
             }
             
@@ -499,16 +569,11 @@ extension UploadedItem: Codable {
             var uploadedFile = allUploadedFiles.filter{$0.fileName == item}
             if uploadedFile.count > 0 {
                 // If checksum is same, go to next
-                print("FILE IS IN ALLUPLOADEDFILES!")
                 if uploadedFile[0].checksum == hashString {
-                    print("checksums match")
                     self.totalUploaded += 1
                     print("  🟠 Filename exists in upload history.")
                     // Write to currentSubfolderFiles to not lose any previously uploaded files
-                    currentSubfolderFiles.append(
-                        UploadedItem(fileName: item,
-                                     checksum: hashString)
-                    )
+                    await addToUploadHistory(tripOrRouteName: tripName, fileName: item, checksum: hashString)
                     continue
                 } else {
                     // mark for update after upload
@@ -518,94 +583,96 @@ extension UploadedItem: Codable {
             
             // If file hasn't been uploaded or checksum is different, continue with upload
             
-                print("  Uploading \(item)...")
-                consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  Uploading \(item)...")
+            print("  Uploading \(item)...")
+            consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  Uploading \(item)...")
 
-                let boundary = "Boundary-\(NSUUID().uuidString)"
-                
-                let myUrl = NSURL(string: uploadURL)
-                
-                var request = URLRequest(url:myUrl! as URL)
-                request.httpMethod = "POST"
-                
-                request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-                
-                //KeyValuePairs
-                let paramDict = [
-                    "firstName"     : "FERN",
-                    "lastName"      : "Demo",
-                    "userId"        : "0",
-                    "fileSavePath"  : "\(tripFolderPath)",
-                    "fileName"      : "\(item)"
-                ]
-                
-                // path to save the file:
-                let pathAndFile = "\(tripFolderPath)/\(item)"
+            let boundary = "Boundary-\(NSUUID().uuidString)"
             
-                
-                // Append hash to params
-                let mergeDict = paramDict.merging(["sourceHash":"\(hashString)"]) { (_, new) in new }
-                
-                // Upload file
-                request.httpBody = self.createBodyWithParameters(parameters: mergeDict, filePathKey: "file",
-                                                                 fileData: NSData(contentsOf: getFile)!,
-                                                                 boundary: boundary, uploadFilePath: pathAndFile) as Data
+            let myUrl = NSURL(string: uploadURL)
+            
+            var request = URLRequest(url:myUrl! as URL)
+            request.httpMethod = "POST"
+            
+            request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+            
+            //KeyValuePairs
+            let paramDict = [
+                "firstName"     : "FERN",
+                "lastName"      : "Demo",
+                "userId"        : "0",
+                "fileSavePath"  : "\(tripFolderPath)",
+                "fileName"      : "\(item)"
+            ]
+            
+            // path to save the file:
+            let pathAndFile = "\(tripFolderPath)/\(item)"
+        
+            
+            // Append hash to params
+            let mergeDict = paramDict.merging(["sourceHash":"\(hashString)"]) { (_, new) in new }
+            
+            // Upload file
+            request.httpBody = self.createBodyWithParameters(parameters: mergeDict, filePathKey: "file",
+                                                             fileData: NSData(contentsOf: getFile)!,
+                                                             boundary: boundary, uploadFilePath: pathAndFile) as Data
 
-                do {
-                    let (data, response) = try await session.data(for: request)
-   
-                        // Print out response object
-                        //            print("******* response = \(String(describing: response))")
+            do {
+                let (data, response) = try await session.data(for: request)
+
+                    // Print out response object
+                    //            print("******* response = \(String(describing: response))")
+                    
+                    let statusCode = (response as! HTTPURLResponse).statusCode
+                    // is 200?
+                    if statusCode == 200 {
                         
-                        let statusCode = (response as! HTTPURLResponse).statusCode
-                        // is 200?
-                        if statusCode == 200 {
-                            
-                            // Get response
-                            let responseString = NSString(data: data, encoding: NSUTF8StringEncoding)
-                            //                                    print("****** response data = \(self.responseString!)")
-                            // Is success?
-                            if (responseString ?? "No response string").contains("successfully!") {
-                                // If new file, write file name and checksum to upload history file.
-                                if !updateChecksum {
+                        // Get response
+                        let responseString = NSString(data: data, encoding: NSUTF8StringEncoding)
+                        //                                    print("****** response data = \(self.responseString!)")
+                        // Is success?
+                        if (responseString ?? "No response string").contains("successfully!") {
+                            // If new file, write file name and checksum to upload history file.
+//                            if !updateChecksum {
 //                                    await writeToUploadHistory(tripOrRouteName: tripName, fileNameUUID: "No uuid", fileName: item, checksum: hashString)
-                                    currentSubfolderFiles.append(UploadedItem(fileName: item, checksum: hashString))
-                                } else {
-                                // If checksum differnet, update vaue
-                                    uploadedFile[0].checksum = hashString
-                                }
-                                
-                                print("  🟢 \(item) is uploaded!")
-                                consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  🟢 \(item) is uploaded!")
-                                self.totalUploaded += 1
-                            }
+                                await addToUploadHistory(tripOrRouteName: tripName, fileName: item, checksum: hashString)
+//                                currentSubfolderFiles.append(UploadedItem(fileName: item, checksum: hashString))
+//                            } else {
+//                            // If checksum differnet, update vaue
+//                                print("updating checksum value in JSON!")
+//                                uploadedFile[0].checksum = hashString
+//                            }
                             
-                            // Checksum failed?
-                            else if (responseString ?? "No response string").contains("Hashes do not match!") {
-                                print("  🔴 Hashes do not match for \(item)!")
-                                consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  🔴 Hashes do not match for \(item)!")
-                            // File exists? 17-OCT-2024: PHP NO LONGER CHECKING IF FILE EXISTS ON SERVER
+                            print("  🟢 \(item) is uploaded!")
+                            consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  🟢 \(item) is uploaded!")
+                            self.totalUploaded += 1
+                        }
+                        
+                        // Checksum failed?
+                        else if (responseString ?? "No response string").contains("Hashes do not match!") {
+                            print("  🔴 Hashes do not match for \(item)!")
+                            consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  🔴 Hashes do not match for \(item)!")
+                        // File exists? 17-OCT-2024: PHP NO LONGER CHECKING IF FILE EXISTS ON SERVER
 //                            } //else if (responseString ?? "No response string").contains("file exists!") {
 //                                // To circumvent a bug where a file is written to the server but its name fails to write to the local history file, write to local history if exists:
 //                                await writeToUploadHistory(tripOrRouteName: tripName, fileNameUUID: "No uuid", fileName: item, checksum: hashString)
 //                                print("  🟡 File already exists.")
 //                                self.totalUploaded += 1
 //                                consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  🟡 File already exists.")
-                                
-                            } else {
-                                print(responseString ?? "  Response string does not contain 'successfully!' or 'Hashes do not match!' or 'file exists!'")
-                                consoleText = tea.appendToTextEditor(oldText: consoleText, newText: (responseString ?? "  Response string does not contain text for a successful save, matching hash, or an existing file.") as String)
-                            }
                             
                         } else {
-                            print("  🟡 Status code: \(statusCode)")
-                            consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  🟡 Status code: \(statusCode)")
+                            print(responseString ?? "  Response string does not contain 'successfully!' or 'Hashes do not match!' or 'file exists!'")
+                            consoleText = tea.appendToTextEditor(oldText: consoleText, newText: (responseString ?? "  Response string does not contain text for a successful save, matching hash, or an existing file.") as String)
                         }
-                } catch {
-                    print(error)
-                    consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  \(error)")
-                }
-            } //else {
+                        
+                    } else {
+                        print("  🟡 Status code: \(statusCode)")
+                        consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  🟡 Status code: \(statusCode)")
+                    }
+            } catch {
+                print(error)
+                consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  \(error)")
+            }
+        } //else {
 //                self.totalUploaded += 1
 //                print("  🟠 Filename exists in upload history.")
 //            }
@@ -620,13 +687,21 @@ extension UploadedItem: Codable {
         isLoading = false
     }
     
-    func writeToUploadHistory(tripOrRouteName: String, fileNameUUID: String, fileName: String, checksum: String) async {
+    func addToUploadHistory(tripOrRouteName: String, fileName: String, checksum: String) async {
 //        do {
 //            _ = try await UploadHistoryFile.writeUploadToTextFile(tripOrRouteName: tripOrRouteName, fileNameUUID: fileNameUUID, fileName: fileName)
 //        } catch {
 //            print ("  🔴 Error writing to upload history after a sucessful save to server.")
 //            consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "  🔴 Error writing to upload history after a sucessful save to server.")
 //        }
+        
+        // Create folder if req'd
+        guard let dir = DocumentsDirectory.dir else {
+            return
+        }
+//        var filePath: URL
+        let path = dir.appendingPathComponent("\(DeviceUUID().deviceUUID)/trips/\(tripOrRouteName)/upload_history")
+        _ = ProcessTextfile.createPath(path: path, fileName: fileName)
         
         // ADD INFO TO ARRAY FOR JSON CREATION AND SAVE AFTER A TRIP/ROUTE'S LOOP IS COMPLETE?
         currentSubfolderFiles.append(UploadedItem(fileName: fileName, checksum: checksum))
