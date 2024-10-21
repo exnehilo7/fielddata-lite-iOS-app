@@ -500,7 +500,7 @@ extension UploadedItem: Codable {
         // Insert new data into the database
         print("🟪 Launching .py script to refresh database...")
         consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "🟪 Launching .py script to refresh database...")
-//        _ = await insertUploadedFileDataIntoDatabase(uploadURL: uploadURL)
+        _ = await insertUploadedFileDataIntoDatabase(uploadURL: uploadURL)
         
         print("🔵 Upload process finished.")
         consoleText = tea.appendToTextEditor(oldText: consoleText, newText: "🔵 Upload process finished.")
