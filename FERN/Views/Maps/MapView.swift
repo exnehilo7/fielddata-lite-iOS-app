@@ -177,8 +177,9 @@ struct MapView: View {
                         
                         // Put scores into JSON format, write to CSV
                         let scoresJSON = measurements.createScoreJSON()
-                        map.saveScoreToTextFile(tripOrRouteName: tripOrRouteName, longitude: "\(map.annotationItems[map.currentAnnoItem].longitude)", latitude: "\(map.annotationItems[map.currentAnnoItem].latitude)", score: scoresJSON)
-                        
+                        Task.detached {
+                            await map.saveScoreToTextFile(tripOrRouteName: tripOrRouteName, longitude: "\(map.annotationItems[map.currentAnnoItem].longitude)", latitude: "\(map.annotationItems[map.currentAnnoItem].latitude)", score: scoresJSON)
+                        }
                         // Hide
                         showScoreTextField = false
                     }
@@ -345,9 +346,9 @@ struct MapView: View {
                 } //end selected item info and arrow buttons VStack
            } //end if hasMapPointsResults
         } //end VStack
-        .onAppear(perform: {
-                map.createScoringFileForTheDay(tripOrRouteName: tripOrRouteName)
-        })
+//        .onAppear(perform: {
+//                map.createScoringFileForTheDay(tripOrRouteName: tripOrRouteName)
+//        })
     } //end body view
     
     private func getMapPoints() async {

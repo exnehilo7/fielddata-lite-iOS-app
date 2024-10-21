@@ -626,10 +626,10 @@ struct CameraView: View {
             }
         }.onAppear(perform: {
             // Create Image Metadata file
-            camera.createImageCsvFileForTheDay(tripOrRouteName: tripOrRouteName)
+//            camera.createImageCsvFileForTheDay(tripOrRouteName: tripOrRouteName)
             
             // Create Scoring file
-            map.createScoringFileForTheDay(tripOrRouteName: tripOrRouteName)
+//            map.createScoringFileForTheDay(tripOrRouteName: tripOrRouteName)
             
             // Clear snapshot GPS vals
             camera.resetSnaphotCords()
@@ -691,9 +691,13 @@ struct CameraView: View {
             
             // Bluetooth?
             if settings[0].useBluetoothDevice {
-                imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, btStreamHasNoData: gps.nmea?.streamHasNoData ?? false, btEndEventHasNoData: gps.nmea?.endEventEncountered ?? false, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "ArrowGold", scannedText: textInPic, notes: result.textNotes)
+                Task.detached {
+                    imageSuccessful = await camera.processImage(useBluetooth: settings[0].useBluetoothDevice, btStreamHasNoData: gps.nmea?.streamHasNoData ?? false, btEndEventHasNoData: gps.nmea?.endEventEncountered ?? false, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "ArrowGold", scannedText: textInPic, notes: result.textNotes)
+                }
             } else {
-                imageSuccessful = camera.processImage(useBluetooth: settings[0].useBluetoothDevice, btStreamHasNoData: true, btEndEventHasNoData: true, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "iOS", scannedText: textInPic, notes: result.textNotes)
+                Task.detached {
+                    imageSuccessful = await camera.processImage(useBluetooth: settings[0].useBluetoothDevice, btStreamHasNoData: true, btEndEventHasNoData: true, hdopThreshold: settings[0].hdopThreshold, imgFile: image, tripOrRouteName: tripOrRouteName, uuid: upperUUID, gpsUsed: "iOS", scannedText: textInPic, notes: result.textNotes)
+                }
             }
             
             long = camera.snapshotLongitude
@@ -743,7 +747,9 @@ struct CameraView: View {
             if imageSuccessful {
                 // Put scores into JSON format, write to CSV
                 let scoresJSON = measurements.createScoreJSON()
-                camera.saveScoreToTextFile(tripOrRouteName: tripOrRouteName, fileNameUUID: upperUUID, longitude: camera.snapshotLongitude, latitude: camera.snapshotLatitude, organismName: upperUUID, score: scoresJSON)
+                Task.detached {
+                    await camera.saveScoreToTextFile(tripOrRouteName: tripOrRouteName, fileNameUUID: upperUUID, longitude: camera.snapshotLongitude, latitude: camera.snapshotLatitude, organismName: upperUUID, score: scoresJSON)
+                }
                 measurements.clearMeasurementVars()
             }
             

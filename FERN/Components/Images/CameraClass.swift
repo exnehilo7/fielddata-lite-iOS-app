@@ -29,7 +29,7 @@ import SwiftUI
     let audio = playSound()
     
     // create new txt file for the day for GPS data.
-    func createImageCsvFileForTheDay(tripOrRouteName: String) {
+    func createImageCsvFileForTheDay(tripOrRouteName: String) async {
         do {
             _ = try FieldWorkGPSFile.writePicDataToCsvFile(tripOrRouteName: tripOrRouteName, fileNameUUID: "", gpsUsed: "", hdop: "", longitude: "", latitude: "", altitude: "", scannedText: "", notes: "")
         } catch {
@@ -37,7 +37,18 @@ import SwiftUI
         }
     }
     
-    func saveScoreToTextFile(tripOrRouteName: String, fileNameUUID: String, longitude: String, latitude: String, organismName: String, score: String) {
+    // create Scoring File for the day
+    func createScoringFileForTheDay(tripOrRouteName: String) async {
+        do {
+            _ = try FieldWorkScoringFile.writeScoreToCSVFile(tripOrRouteName: tripOrRouteName, fileNameUUID: "", fromView: "", longitude: "", latitude: "", organismName: "", score: "")
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func saveScoreToTextFile(tripOrRouteName: String, fileNameUUID: String, longitude: String, latitude: String, organismName: String, score: String) async {
+        
+        await createScoringFileForTheDay(tripOrRouteName: tripOrRouteName)
         
 //        let uuid = UUID().uuidString
             do {
@@ -75,7 +86,7 @@ import SwiftUI
 //        return false
 //    }
     
-    func processImage(useBluetooth: Bool, btStreamHasNoData: Bool, btEndEventHasNoData: Bool, hdopThreshold: Double, imgFile: UIImage, tripOrRouteName: String, uuid: String, gpsUsed: String, scannedText: String, notes: String) -> Bool {
+    func processImage(useBluetooth: Bool, btStreamHasNoData: Bool, btEndEventHasNoData: Bool, hdopThreshold: Double, imgFile: UIImage, tripOrRouteName: String, uuid: String, gpsUsed: String, scannedText: String, notes: String) async -> Bool {
         
         var savePic = false
         
@@ -95,7 +106,7 @@ import SwiftUI
         }
         if savePic {
             // Save pic to a folder and write metadata to a text file
-            savePicIfUnderThreshold(hdopThreshold: hdopThreshold, imgFile: imgFile, tripOrRouteName: tripOrRouteName, uuid: uuid, gpsUsed: gpsUsed, hdop: snapshotHorzAccuracy, longitude: snapshotLongitude, latitude: snapshotLatitude, altitude: snapshotAltitude, scannedText: scannedText, notes: notes)
+            await savePicIfUnderThreshold(hdopThreshold: hdopThreshold, imgFile: imgFile, tripOrRouteName: tripOrRouteName, uuid: uuid, gpsUsed: gpsUsed, hdop: snapshotHorzAccuracy, longitude: snapshotLongitude, latitude: snapshotLatitude, altitude: snapshotAltitude, scannedText: scannedText, notes: notes)
 
             return true
         }
@@ -103,12 +114,12 @@ import SwiftUI
         return false
     }
     
-    func savePicIfUnderThreshold(hdopThreshold: Double, imgFile: UIImage, tripOrRouteName: String, uuid: String, gpsUsed: String, hdop: String, longitude: String, latitude: String, altitude: String, scannedText: String, notes: String) {
+    func savePicIfUnderThreshold(hdopThreshold: Double, imgFile: UIImage, tripOrRouteName: String, uuid: String, gpsUsed: String, hdop: String, longitude: String, latitude: String, altitude: String, scannedText: String, notes: String) async {
         
         // HDOP within the threshold?
         if Double(hdop) ?? 99.0 <= hdopThreshold {
             // Pass Bluetooth GPS data
-            savePicToFolder(imgFile: image, tripOrRouteName: tripOrRouteName, uuid: uuid, gpsUsed: gpsUsed,
+            await savePicToFolder(imgFile: image, tripOrRouteName: tripOrRouteName, uuid: uuid, gpsUsed: gpsUsed,
                             hdop: hdop, longitude: longitude, latitude: latitude, altitude: altitude,
                             scannedText: scannedText, notes: textNotes)
             
@@ -123,7 +134,7 @@ import SwiftUI
     
     func savePicToFolder(imgFile: UIImage, tripOrRouteName: String, uuid: String, gpsUsed: String,
                                  hdop: String, longitude: String, latitude: String, altitude: String,
-                                 scannedText: String, notes: String) {
+                                 scannedText: String, notes: String) async {
         
         do {
             // Save image to Trip's folder
@@ -132,6 +143,9 @@ import SwiftUI
             print(error.localizedDescription)
             audio.playError()
         }
+        
+        await createImageCsvFileForTheDay(tripOrRouteName: tripOrRouteName)
+        
         
         // Write the pic's info to a .txt file
         do {

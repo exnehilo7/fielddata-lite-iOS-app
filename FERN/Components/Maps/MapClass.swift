@@ -38,7 +38,7 @@ class MapPointSize {
     
     
     // create Scoring File for the day
-    func createScoringFileForTheDay(tripOrRouteName: String) {
+    func createScoringFileForTheDay(tripOrRouteName: String) async {
         do {
             _ = try FieldWorkScoringFile.writeScoreToCSVFile(tripOrRouteName: tripOrRouteName, fileNameUUID: "", fromView: "", longitude: "", latitude: "", organismName: "", score: "")
         } catch {
@@ -46,13 +46,15 @@ class MapPointSize {
         }
     }
     
-    func saveScoreToTextFile(tripOrRouteName: String, longitude: String, latitude: String, score: String) {
+    func saveScoreToTextFile(tripOrRouteName: String, longitude: String, latitude: String, score: String) async {
         
-            do {
-                try _ = FieldWorkScoringFile.writeScoreToCSVFile(tripOrRouteName: tripOrRouteName, fileNameUUID: "No UUID", fromView: "Map", longitude: longitude, latitude: latitude, organismName: annotationItems[currentAnnoItem].organismName, score: score)
-            } catch {
-                print(error.localizedDescription)
-            }
+        await createScoringFileForTheDay(tripOrRouteName: tripOrRouteName)
+        
+        do {
+            try _ = FieldWorkScoringFile.writeScoreToCSVFile(tripOrRouteName: tripOrRouteName, fileNameUUID: "No UUID", fromView: "Map", longitude: longitude, latitude: latitude, organismName: annotationItems[currentAnnoItem].organismName, score: score)
+        } catch {
+            print(error.localizedDescription)
+        }
     }
     
     func resetRouteMarkers(settings: [Settings], phpFile: String, postString: String = "") async {
