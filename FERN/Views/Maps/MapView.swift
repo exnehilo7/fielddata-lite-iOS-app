@@ -41,8 +41,7 @@ struct MapView: View {
     @State private var showMeasurementSelect = false
     
     
-    //MARK: Views
-    // Map
+    //MARK: Map
     var appleMap: some View {
         VStack {
             // 17.0's new MapKit SDK:
@@ -70,6 +69,7 @@ struct MapView: View {
         }
     }
     
+    //MARK: Buttons
     // Take pic button. Use a swipe-up view.
     var popupCameraButton: some View {
         Button {
@@ -86,6 +86,27 @@ struct MapView: View {
             // Show view
             CameraView(map: map, gps: gps, camera: camera, mapMode: mapMode, tripOrRouteName: tripOrRouteName, measurements: measurements, openedFromMapView: true)
         }
+    }
+    
+    var googleMapButton: some View {
+        Button {
+            // create URL
+            let url = URL(string:"comgooglemaps://?saddr=&daddr=\(map.annotationItems[map.currentAnnoItem].latitude),\(map.annotationItems[map.currentAnnoItem].longitude)")
+            
+            // check URL
+            if UIApplication.shared.canOpenURL(url!){
+                UIApplication.shared.open(url!, options: [:], completionHandler: nil)
+            } else {
+                // If no google map app, open in browser
+                let browserURL = URL(string: "https://www.google.co.in/maps/dir/??saddr=?&daddr=\(map.annotationItems[map.currentAnnoItem].latitude),\(map.annotationItems[map.currentAnnoItem].longitude)")
+                UIApplication.shared.open(browserURL!, options: [:], completionHandler: nil)
+            }
+        } label: {
+            VStack {
+                currentPointOrganismName
+                currentPointCoordinates
+            }
+        }.foregroundColor(.white)
     }
     
     // MARK: CURRENT POINT
@@ -327,9 +348,10 @@ struct MapView: View {
             // If no results, don't display navigation buttons
             if map.hasMapPointsResults {
                 VStack {
-                    currentPointOrganismName
-                    
-                    currentPointCoordinates
+                    googleMapButton
+//                    currentPointOrganismName
+//                    
+//                    currentPointCoordinates
                         
                     // Scoring view
                     if showScoreTextField {
